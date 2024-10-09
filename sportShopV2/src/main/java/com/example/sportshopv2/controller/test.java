@@ -6,8 +6,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class test {
 
-    @GetMapping("/test")
-    public String test() {
+    @GetMapping("/a")
+    public String a() {
         return "Menu";
     }
+    @GetMapping("/b")
+    public String b() {
+        return "Khachhang/khachhang";
+    }
+
+
 }

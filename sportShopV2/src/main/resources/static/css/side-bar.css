@@ -39,7 +39,7 @@ body {
     min-width: 70px;
     z-index: 1000;
     transition: all .25s ease-in-out;
-    background-color: #0e2238;
+    background-color: #00CCFF;
     display: flex;
     flex-direction: column;
 }
@@ -123,7 +123,7 @@ a.sidebar-link:hover{
     position: absolute;
     top: 0;
     left: 70px;
-    background-color: #0e2238;
+    background-color: #00CCFF;
     padding: 0;
     min-width: 15rem;
     display: none;
@@ -176,7 +176,7 @@ a.sidebar-link:hover{
 }
 
 .card:hover{
-    background-color: #293b5f;
+    background-color: #66FFFF;
     color: #FFF;
     transform: translateY(-10.5px);
 }
@@ -191,7 +191,7 @@ a.sidebar-link:hover{
 
 .table>thead tr{
     color: #FFF;
-    background-color: #293b5f;
+    background-color: #66FFFF;
 }
 
 .content{
