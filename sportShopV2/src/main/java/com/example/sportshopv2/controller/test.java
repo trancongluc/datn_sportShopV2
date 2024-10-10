@@ -12,7 +12,11 @@ public class test {
     }
     @GetMapping("/b")
     public String b() {
-        return "Khachhang/khachhang";
+        return "KhachHang/khachhang";
+    }
+    @GetMapping("/c")
+    public String c() {
+        return "KhachHang/tao-khach-hang";
     }
 
 

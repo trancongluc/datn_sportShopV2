@@ -84,3 +84,51 @@ tbody tr:nth-child(even) {
     color: green;
     font-weight: bold;
 }
+
+---------------------------------------------------
+
+.container {
+    margin-top: 20px;
+}
+.form-label {
+    font-weight: bold;
+}
+.image-upload {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    width: 200px;
+    border: 1px dashed #ccc;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    position: relative;
+}
+.image-upload input {
+    opacity: 0;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+}
+.image-upload img {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.btn-scan-qr {
+    background-color: #ff5722; /* Màu cam */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: 1100px;
+}
+
+.btn-scan-qr:hover {
+    background-color: #e64a19; /* Màu cam đậm khi hover */
+}
