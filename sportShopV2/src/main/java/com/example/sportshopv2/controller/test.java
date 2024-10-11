@@ -14,6 +14,9 @@ public class test {
     public String b() {
         return "Khachhang/khachhang";
     }
-
+    @GetMapping("/c")
+    public String c() {
+        return "KhachHang/tao-khach-hang";
+    }
 
 }
