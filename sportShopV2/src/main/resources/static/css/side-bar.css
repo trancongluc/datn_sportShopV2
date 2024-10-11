@@ -21,19 +21,29 @@ body {
 
 .wrapper{
     display: flex;
+    height: 100vh; /* Đảm bảo chiều cao của wrapper là 100% viewport */
+    overflow: hidden;
+    width: 100%;
 }
 
 .main{
     display: flex;
     flex-direction: column;
+    flex: 1;
     min-height: 100vh;
     width: 100%;
     overflow: hidden;
     transition: all 0.35s ease-in-out;
-    background-color: #fff;
-    min-width: 0;
-}
+    margin-left: 50px;
 
+}
+#sidebar.expand ~ .main {
+    margin-left: 260px; /* Điều chỉnh margin cho main khi sidebar mở rộng */
+}
+.sidebar-link.active {
+    background-color: black; /* Màu nền cho mục đang được chọn */
+    color: whitesmoke; /* Màu chữ cho mục đang được chọn */
+}
 #sidebar{
     width: 70px;
     min-width: 70px;
@@ -42,18 +52,24 @@ body {
     background-color: #00CCFF;
     display: flex;
     flex-direction: column;
+
+    position: fixed;
+
+    height: 100%;
+
 }
 
 #sidebar.expand{
     width: 260px;
     min-width: 260px;
+
 }
 
 #toggle-btn{
     background-color: transparent;
     cursor: pointer;
     border: 0;
-    padding: 1rem 1.5rem;
+    padding: 0.5rem 1rem;
 }
 
 #toggle-btn i {
@@ -66,11 +82,116 @@ body {
     margin: auto 0;
 }
 
-.sidebar-logo a{
-    color: #FFF;
-    font-size: 1.15rem;
-    font-weight: 600;
+
+.navbar {
+    width: calc(100% - 260px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px ;
+    background-color: white;
+    border-bottom: 1px solid #ddd;
+    margin-left: 10px;
+
 }
+#sidebar.expand ~ .main .navbar {
+    width: calc(100% - 70px); /* Giảm chiều rộng navbar khi sidebar thu gọn */
+    transition: all 0.25s ease-in-out;
+    margin-left: 10px;
+}
+.content {
+    padding: 20px;
+    overflow: auto; /* Đảm bảo cuộn trong nội dung không ảnh hưởng đến navbar */
+    height: calc(100vh - 70px); /* Chiều cao động, tránh đè lên footer */
+}
+.right-section {
+    display: flex;
+    align-items: center;
+    padding-right: 20px;
+}
+.notification {
+    position: relative;
+    margin-right: 20px;
+    cursor: pointer;
+}
+.notification .badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+}
+.user-name {
+    margin-right: 10px;
+}
+.user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+
+}
+.dropdown-menu {
+    display: none; /* Ẩn menu dropdown mặc định */
+}
+
+.dropdown-menu {
+    display: none; /* Ẩn menu dropdown mặc định */
+    position: absolute; /* Định vị tuyệt đối cho menu dropdown */
+    right: 0; /* Đặt menu ở phía bên phải */
+    z-index: 1000; /* Đảm bảo menu nằm trên cùng */
+    background-color: white; /* Màu nền của menu */
+    border: 1px solid #ddd; /* Đường viền cho menu */
+    border-radius: 5px; /* Bo góc cho menu */
+}
+.d-flex {
+    display: flex;
+    justify-content: center; /* Đặt các phần tử về phía bên trái */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    padding: 20px;
+    color: white;
+}
+
+.sidebar-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+.sidebar-nav {
+    padding: 1rem 0; /* Giảm padding để giảm khoảng cách giữa các mục */
+}
+
+.sidebar-item {
+    margin: 0; /* Bỏ hoặc giảm margin để giảm khoảng cách giữa các mục */
+}
+.logo {
+    width: 60%; /* Điều chỉnh kích thước logo theo nhu cầu */
+
+
+}
+.sidebar-link {
+    text-decoration: none;
+}
+
+.sidebar-dropdown .sidebar-item {
+    padding-left: 20px; /* Khoảng cách lùi vào bên trái */
+}
+.sidebar-dropdown .sidebar-item a::before {
+    content: '•'; /* Dấu chấm */
+    color: white; /* Màu sắc của dấu chấm */
+    font-size: 16px; /* Kích thước dấu chấm */
+    margin-right: 8px; /* Khoảng cách giữa dấu chấm và văn bản */
+    display: inline-block; /* Đảm bảo dấu chấm hiển thị đúng cách */
+}
+
+/*h3 {*/
+/*    font-size: 24px;*/
+/*    margin: 0; !* Xóa khoảng cách mặc định của h3 *!*/
+
+/*}*/
 
 #sidebar:not(.expand) .sidebar-logo,
 #sidebar:not(.expand) a.sidebar-link span {
@@ -111,8 +232,9 @@ a.sidebar-link{
 }
 
 a.sidebar-link:hover{
-    background-color: rgba(255, 255, 255, .075);
+    /*background-color: rgba(255, 255, 255, .075);*/
     border-left:  3px solid #3b7ddd;
+    background-color: gray;
 }
 
 .sidebar-item{
@@ -160,7 +282,7 @@ a.sidebar-link:hover{
 }
 
 .navbar-expand , .navbar-collapse{
-    min-width: 20;
+    min-width: 20%;
 }
 
 .avatar{
@@ -170,7 +292,7 @@ a.sidebar-link:hover{
 
 .card{
     background-color: #f5f5f5;
-    transform: .4s;
+    transition: transform .4s;
     cursor: pointer;
     color: #000;
 }

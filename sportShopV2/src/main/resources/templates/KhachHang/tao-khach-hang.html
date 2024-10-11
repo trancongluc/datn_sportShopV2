@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en"
+<<<<<<< HEAD
       xmlns:th="http://www.thymeleaf.org"
+=======
+>>>>>>> luctcph35904
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{Menu}"
 >
@@ -14,6 +17,7 @@
 <body>
 
 
+<<<<<<< HEAD
 
 <main layout:fragment="main1">
     <script src="https://esgoo.net/scripts/jquery.js"></script>
@@ -122,3 +126,122 @@
 </main>
 </body>
 </html>
+=======
+<main layout:fragment="main1">
+    <script src="https://esgoo.net/scripts/jquery.js"></script>
+    <style type="text/css">
+        .css_select_div {
+            text-align: center;
+        }
+
+        .css_select {
+            display: inline-table;
+            width: 25%;
+            padding: 5px;
+            margin: 5px 2%;
+            border: solid 1px #686868;
+            border-radius: 5px;
+        }
+    </style>
+    <script src="/js/KhachHang.js"></script>
+
+    <div class="container" >
+        <h2 class="mb-4">Tạo Khách Hàng</h2>
+        <form>
+            <a class="btn btn-success" href="/b">Quay lại</a>
+            <button class="btn-scan-qr">Scan QR Code</button>
+            <div class="row">
+                <!-- Cột bên trái -->
+                <div class="col-md-4 text-center">
+                    <div class="image-upload">
+                        <label for="file-input">
+                            <img src="https://via.placeholder.com/1080" alt="placeholder image" id="image-preview">
+                        </label>
+                        <input id="file-input" type="file" accept="image/*" onchange="loadImage(event)">
+                    </div>
+                    <small>Thêm hình ảnh khách hàng (phải là 1080x1080 px)</small>
+                </div>
+
+                <!-- Cột bên phải -->
+                <div class="col-md-8">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="hoTen" class="form-label">Họ và tên</label>
+                            <input type="text" class="form-control" id="hoTen" placeholder="Nhập họ và tên">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="ngaySinh" class="form-label">Ngày sinh</label>
+                            <input type="date" class="form-control" id="ngaySinh">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">E-mail</label>
+                            <input type="email" class="form-control" id="email" placeholder="Nhập email">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="gioiTinh" class="form-label">Giới tính</label>
+                            <select class="form-select" id="gioiTinh">
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="soDienThoai" class="form-label">Số điện thoại</label>
+                        <input type="text" class="form-control" id="soDienThoai" placeholder="Nhập số điện thoại">
+                    </div>
+
+
+                    <div class="css_select_div">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="tinh" class="form-label">Tỉnh</label>
+                                <select class="form-select" id="tinh" name="tinh" title="Chọn Tỉnh Thành">
+                                    <option value="0">Tỉnh Thành</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="quan" class="form-label">Huyện</label>
+                                <select class="form-select" id="quan" name="quan" title="Chọn Quận Huyện">
+                                    <option value="0">Quận Huyện</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="phuong" class="form-label">Phường</label>
+                                <select class="form-select" id="phuong" name="phuong" title="Chọn Phường Xã">
+                                    <option value="0">Phường Xã</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="soNha" class="form-label">Số nhà</label>
+                        <input type="text" class="form-control" id="soNha"
+                               placeholder="Nhập số nhà và địa chỉ chi tiết">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function loadImage(event) {
+            const image = document.getElementById('image-preview');
+            image.src = URL.createObjectURL(event.target.files[0]);
+            image.onload = function () {
+                URL.revokeObjectURL(image.src) // free memory
+            }
+        }
+    </script>
+</main>
+</body>
+</html>
+>>>>>>> luctcph35904
