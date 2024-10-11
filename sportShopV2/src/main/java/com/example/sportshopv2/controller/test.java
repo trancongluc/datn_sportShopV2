@@ -14,10 +14,10 @@ public class test {
     public String b() {
         return "KhachHang/khachhang";
     }
+
     @GetMapping("/c")
     public String c() {
         return "KhachHang/tao-khach-hang";
     }
-
 
 }

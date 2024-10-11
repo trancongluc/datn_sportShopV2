@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> a6338e6bba014971a149375c57b4f2a9dd3803aa
 $(document).ready(function () {
     //Lấy tỉnh thành
     $.getJSON('https://esgoo.net/api-tinhthanh/1/0.htm', function (data_tinh) {
@@ -23,6 +27,10 @@ $(document).ready(function () {
                                     $("#phuong").html('<option value="0">Phường Xã</option>');
                                     $.each(data_phuong.data, function (key_phuong, val_phuong) {
                                         $("#phuong").append('<option value="' + val_phuong.id + '">' + val_phuong.full_name + '</option>');
+<<<<<<< HEAD
+=======
+
+>>>>>>> a6338e6bba014971a149375c57b4f2a9dd3803aa
                                     });
                                 }
                             });
@@ -34,6 +42,7 @@ $(document).ready(function () {
 
         }
     });
+
 });
 
 
