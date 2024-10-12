@@ -21,9 +21,8 @@ body {
 
 .wrapper{
     display: flex;
-    height: 100vh; /* Đảm bảo chiều cao của wrapper là 100% viewport */
     overflow: hidden;
-    width: 100%;
+
 }
 
 .main{
@@ -31,14 +30,16 @@ body {
     flex-direction: column;
     flex: 1;
     min-height: 100vh;
-    width: 100%;
+    width: calc(100% - 70px);
     overflow: hidden;
+    margin-left: 70px; /* Điều chỉnh giá trị này theo chiều rộng của sidebar khi thu gọn */
     transition: all 0.35s ease-in-out;
-    margin-left: 50px;
+
 
 }
 #sidebar.expand ~ .main {
-    margin-left: 260px; /* Điều chỉnh margin cho main khi sidebar mở rộng */
+    margin-left: 260px;
+    margin-right: 10px;
 }
 .sidebar-link.active {
     background-color: black; /* Màu nền cho mục đang được chọn */
@@ -84,20 +85,31 @@ body {
 
 
 .navbar {
-    width: calc(100% - 260px);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px ;
-    background-color: white;
-    border-bottom: 1px solid #ddd;
-    margin-left: 10px;
+    /*width: 100%;*/
+    /*margin-right: 0; !* Loại bỏ mọi khoảng margin bên phải *!*/
+    /*padding-right: 0;*/
+    /*box-shadow: 0 0 2rem rgba(33, 37, 41, .1);*/
+    /*background-color: whitesmoke;*/
+    /*justify-content: space-between;*/
+    /*border-bottom: 1px solid #ddd;*/
 
+    width: 100%; /* Chiếm toàn bộ chiều rộng của main */
+    padding: 0;  /* Đảm bảo không có padding không mong muốn */
+    margin: 0;   /* Đảm bảo không có margin không mong muốn */
+    box-shadow: 0 0 2rem rgba(33, 37, 41, .1);
+}
+.main.navbar{
+    width: 100%;
 }
 #sidebar.expand ~ .main .navbar {
-    width: calc(100% - 70px); /* Giảm chiều rộng navbar khi sidebar thu gọn */
+    width: 100%;
     transition: all 0.25s ease-in-out;
-    margin-left: 10px;
+    margin-left: 0px;
+}
+#sidebar:not(.expand) ~ .main .navbar {
+    width: 100%;
+    transition: all 0.25s ease-in-out;
+    margin-left: 0; /* Đảm bảo không có margin */
 }
 .content {
     padding: 20px;

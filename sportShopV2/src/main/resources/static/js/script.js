@@ -43,10 +43,6 @@ document.querySelectorAll('.sidebar-link').forEach(link => {
         showContent(activeItemId);
 
         // Điều hướng đến đường dẫn của liên kết
-        const href = this.getAttribute('href');
-        if (href) {
-            window.location.href = href; // Chuyển hướng đến đường dẫn
-        }
     });
 });
 
@@ -63,3 +59,8 @@ function showContent(itemId) {
         contentSection.style.display = 'block';
     }
 }
+
+
+
+
+
