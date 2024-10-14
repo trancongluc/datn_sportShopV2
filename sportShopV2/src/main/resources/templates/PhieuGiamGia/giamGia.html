@@ -33,17 +33,17 @@
             font-size: 24px;
             margin: 0;
         }
-        .header .breadcrumb {
-            font-size: 14px;
-            color: #888;
-        }
-        .header .breadcrumb a {
-            color: #888;
-            text-decoration: none;
-        }
-        .header .breadcrumb a:hover {
-            text-decoration: underline;
-        }
+        /*.header .breadcrumb {*/
+        /*    font-size: 14px;*/
+        /*    color: #888;*/
+        /*}*/
+        /*.header .breadcrumb a {*/
+        /*    color: #888;*/
+        /*    text-decoration: none;*/
+        /*}*/
+        /*.header .breadcrumb a:hover {*/
+        /*    text-decoration: underline;*/
+        /*}*/
         .filter-section {
             background-color: #fff;
             padding: 20px;
@@ -73,6 +73,7 @@
             justify-content: flex-end;
             margin-bottom: 20px;
         }
+
         .add-button button {
             background-color: #007bff;
             color: #fff;
@@ -80,9 +81,19 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            transition: background-color 0.3s, transform 0.2s;
         }
+
+        .add-button button i {
+            margin-right: 8px;
+        }
+
         .add-button button:hover {
-            background-color: #0056b3;
+            background-color: #727cf5;
+            transform: scale(1.05);
+            text-decoration: none;
         }
         .table-section {
             background-color: #fff;
@@ -123,6 +134,7 @@
     </style>
 </head>
 <body>
+<main layout:fragment="main1">
 <div class="container">
     <div class="header">
         <div>
@@ -132,8 +144,9 @@
             <h1>Phiếu Giảm Giá</h1>
         </div>
         <div class="add-button">
-            <button onclick="nextToAdd()"><i class="fas fa-user-plus"></i> Thêm Mới</button>
+            <button ><i class="fas fa-user-plus"></i> <a href="/add-giam-gia" style="text-decoration: none; color: black"> Thêm Mới</a> </button>
         </div>
+
     </div>
     <div class="filter-section">
         <div class="filter-row">
@@ -263,11 +276,7 @@
             </tbody>
         </table>
     </div>
-    <script>
-        function nextToAdd() {
-            window.location.href = 'add.html';
-        }
-    </script>
 </div>
+</main>
 </body>
 </html>

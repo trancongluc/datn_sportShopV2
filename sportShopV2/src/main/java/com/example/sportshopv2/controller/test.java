@@ -19,5 +19,12 @@ public class test {
     public String c() {
         return "KhachHang/tao-khach-hang";
     }
-
+    @GetMapping("/giam-gia")
+        public String GiamGia(){
+            return "PhieuGiamGia/giamGia";
+    }
+    @GetMapping("/add-giam-gia")
+    public String AddGiamGia(){
+        return "PhieuGiamGia/add.html";
+    }
 }

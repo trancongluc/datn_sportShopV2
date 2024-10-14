@@ -149,23 +149,29 @@
             cursor: pointer;
             font-size: 16px;
         }
-        .back-button {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        .back-button button {
+            background-color: #007bff; /* Màu nền */
+            color: #fff; /* Màu chữ */
+            padding: 10px 20px; /* Khoảng cách nội dung */
+            border: none; /* Không viền */
+            border-radius: 5px; /* Bo góc */
+            cursor: pointer; /* Con trỏ chuột khi hover */
+            display: inline-flex; /* Để căn giữa văn bản và biểu tượng */
+            align-items: center; /* Căn giữa theo chiều dọc */
+            transition: background-color 0.3s, transform 0.2s; /* Hiệu ứng chuyển tiếp */
         }
-        .back-button :hover {
-            background-color: #0056b3;
+        .back-button button:hover {
+            background-color: #727cf5; /* Màu nền khi hover */
+            transform: scale(1.05); /* Hiệu ứng phóng to khi hover */
+            text-decoration: none; /* Bỏ gạch chân */
         }
+
     </style>
     <script>
 
-            function backToHome() {
-                window.location.href = 'giamGia.html';
-            }
+            // function backToHome() {
+            //     window.location.href = 'giamGia.html';
+            // }
 
         function updatePreview() {
             var tenPhieu = document.getElementById('ten-phieu').value || 'VCXXXXX';
@@ -206,11 +212,10 @@
 <div class="container">
     <div class="header">
         <h1>Thêm Phiếu Giảm Giá</h1>
-<!--        <div class="back-button">-->
-<!--            <button onclick="backToHome()"><i class="fas fa-user-plus"></i> Trở về</button>-->
-<!--        </div>-->
-        <button class="back-button" onclick="backToHome()">Trở Về</button>
-    </div>
+        <div class="back-button">
+            <button> <a href="/giam-gia" style="text-decoration: none; color: black"> Trở Về</a></button>
+        </div>
+        </div>
     <div class="main-content">
         <div class="form-section">
             <div class="form-box">
