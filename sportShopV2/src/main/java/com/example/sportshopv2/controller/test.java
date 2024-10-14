@@ -1,4 +1,4 @@
-package com.example.sportshopv2.controller;
+package com.example.sportshopv2.Controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
