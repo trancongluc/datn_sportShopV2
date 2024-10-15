@@ -9,6 +9,6 @@ public class HoaDonController {
     @GetMapping("/bill/view")
     public String view(Model model) {
 //        model.addAttribute("messager", "Hello");
-        return "view/HoaDon";
+        return "HoaDon/HoaDon";
     }
 }

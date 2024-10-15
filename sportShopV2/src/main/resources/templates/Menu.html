@@ -103,8 +103,8 @@
 
                 </ul>
             </li>
-            <li class="sidebar-item">
-                <a href="" class="sidebar-link">
+            <li class="sidebar-item" th:classappend="${activePage == 'quan-ly-hoa-don' ? 'active' : ''}">
+                <a th:href="@{/statistical/view}" class="sidebar-link">
                     <i class="fas fa-chart-bar"></i>
                     <span>Thống Kê</span>
                 </a>

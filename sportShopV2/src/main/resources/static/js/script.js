@@ -42,7 +42,6 @@ document.querySelectorAll('.sidebar-link').forEach(link => {
     });
 });
 
-// Hàm tải nội dung từ URL mà không tải lại trang
 
 // Hàm tải nội dung từ URL mà không tải lại trang
 function fetchContent(url) {
