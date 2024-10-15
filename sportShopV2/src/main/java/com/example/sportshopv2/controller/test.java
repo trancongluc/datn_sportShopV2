@@ -19,5 +19,9 @@ public class test {
     public String c() {
         return "KhachHang/tao-khach-hang";
     }
+    @GetMapping("/d")
+    public String d() {
+        return "BanHangTaiQuay/BanHangTaiQuay";
+    }
 
 }
