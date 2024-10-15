@@ -89,9 +89,9 @@ body {
     /*margin-right: 0; !* Loại bỏ mọi khoảng margin bên phải *!*/
     /*padding-right: 0;*/
     /*box-shadow: 0 0 2rem rgba(33, 37, 41, .1);*/
-    /*background-color: whitesmoke;*/
-    /*justify-content: space-between;*/
-    /*border-bottom: 1px solid #ddd;*/
+    background-color: whitesmoke;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd;
 
     width: 100%; /* Chiếm toàn bộ chiều rộng của main */
     padding: 0;  /* Đảm bảo không có padding không mong muốn */
