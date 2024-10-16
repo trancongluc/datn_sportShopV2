@@ -39,10 +39,19 @@ document.querySelectorAll('.sidebar-link').forEach(link => {
 
         // Thêm lớp active cho mục đang được chọn
         this.classList.add('active');
+<<<<<<< HEAD
+=======
+
+        // Gọi hàm hiển thị nội dung tương ứng
+        showContent(activeItemId);
+
+        // Điều hướng đến đường dẫn của liên kết
+>>>>>>> luctcph35904
     });
 });
 
 
+<<<<<<< HEAD
 // Hàm tải nội dung từ URL mà không tải lại trang
 function fetchContent(url) {
     fetch(url)
@@ -79,3 +88,11 @@ function reattachToggleSidebarEvent() {
 }
 
 
+=======
+    // Hiển thị phần nội dung tương ứng với ID được chọn
+    const contentSection = document.querySelector(`.content-section[data-id="${itemId}"]`);
+    if (contentSection) {
+        contentSection.style.display = 'block';
+    }
+}
+>>>>>>> luctcph35904
