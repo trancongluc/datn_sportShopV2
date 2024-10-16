@@ -26,8 +26,19 @@ public class test {
         return "KhachHang/tao-khach-hang";
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> NguyenTuanThuat
 
+=======
+    @GetMapping("/giam-gia")
+        public String GiamGia(){
+            return "PhieuGiamGia/giamGia";
+    }
+    @GetMapping("/add-giam-gia")
+    public String AddGiamGia(){
+        return "PhieuGiamGia/add.html";
+    }
+>>>>>>> tan
 }

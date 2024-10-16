@@ -1,4 +1,5 @@
 // Xử lý toggle mở rộng/thu gọn sidebar
+<<<<<<< HEAD
 function debounce(func, wait) {
     let timeout;
     return function (...args) {
@@ -8,6 +9,9 @@ function debounce(func, wait) {
 }
 
 document.getElementById('toggle-btn').addEventListener('click', debounce(function () {
+=======
+document.getElementById('toggle-btn').addEventListener('click', function () {
+>>>>>>> tan
     var sidebar = document.getElementById('sidebar');
     var main = document.querySelector('.main');
 
@@ -20,10 +24,27 @@ document.getElementById('toggle-btn').addEventListener('click', debounce(functio
     }
 }, 300)); // Khoảng cách debounce là 300ms
 
+<<<<<<< HEAD
+=======
+// Hiển thị nội dung tương ứng với mục được chọn trong sidebar
+// Khi trang được tải
+window.onload = function () {
+    // Khôi phục trạng thái đã chọn cho các mục trong sidebar
+    const activeItemId = localStorage.getItem("activeSidebarItem");
+    if (activeItemId) {
+        const activeLink = document.querySelector(`.sidebar-link[data-id="${activeItemId}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active'); // Thêm lớp active cho mục đang được chọn
+            showContent(activeItemId); // Gọi hàm hiển thị nội dung tương ứng
+        }
+    }
+};
+>>>>>>> tan
 
 // Lưu trạng thái lựa chọn cho các mục trong sidebar
 document.querySelectorAll('.sidebar-link').forEach(link => {
     link.addEventListener('click', function (e) {
+<<<<<<< HEAD
         e.preventDefault(); // Ngăn chặn tải lại trang
 
         // Lấy đường dẫn của liên kết
@@ -33,6 +54,11 @@ document.querySelectorAll('.sidebar-link').forEach(link => {
             // Gọi hàm để tải nội dung bằng AJAX
             fetchContent(href);
         }
+=======
+        // Lưu ID của mục đang được chọn vào Local Storage
+        const activeItemId = this.getAttribute('data-id');
+        localStorage.setItem("activeSidebarItem", activeItemId);
+>>>>>>> tan
 
         // Xóa lớp active từ tất cả các mục trong sidebar
         document.querySelectorAll('.sidebar-link').forEach(item => item.classList.remove('active'));
