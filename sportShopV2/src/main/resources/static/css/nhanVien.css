@@ -84,7 +84,18 @@ tbody tr:nth-child(even) {
     color: green;
     font-weight: bold;
 }
-
+.pagination {
+    display: flex;
+    justify-content: center; /* Căn giữa phần tử */
+    align-items: center;     /* Căn giữa theo chiều dọc nếu cần */
+    margin-top: 20px;        /* Khoảng cách phía trên nếu muốn */
+}
+.txt{
+    background-color: #00CCFF;
+    font-weight: bold;
+    padding-left: 10px;
+    color: white;
+}
 ---------------------------------------------------
 
 .container {
