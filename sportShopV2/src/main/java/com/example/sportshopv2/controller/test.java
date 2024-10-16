@@ -28,12 +28,26 @@ public class test {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     @GetMapping("/d")
     public String d() {
         return "BanHangTaiQuay/BanHangTaiQuay";
     }
 >>>>>>> long
+=======
+//<<<<<<< Updated upstream
+//=======
+    @GetMapping("/d")
+    public String d() {
+        return "NhanVien/QL-nhan-vien";
+    }
+    @GetMapping("/e")
+    public String e() {
+        return "NhanVien/nhan-vien-add";
+    }
+//>>>>>>> Stashed changes
+>>>>>>> minh
 
 =======
 >>>>>>> NguyenTuanThuat
