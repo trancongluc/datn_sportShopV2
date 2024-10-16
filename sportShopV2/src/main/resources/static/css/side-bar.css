@@ -400,4 +400,11 @@ footer{
     .navbar-expand .navbar-nav .dropdown-menu{
         box-shadow:  0 .1rem .2rem rgba(0, 0, 0, .05);
     }
+
+    .sidebar-link.active {
+        background-color: #007bff; /* Thay đổi theo màu của bạn */
+        color: white;
+    }
+
+
 }

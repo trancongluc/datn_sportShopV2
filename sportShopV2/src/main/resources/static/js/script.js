@@ -121,4 +121,11 @@ function reattachToggleSidebarEvent() {
         contentSection.style.display = 'block';
     }
 }
+<<<<<<< HEAD
 >>>>>>> luctcph35904
+=======
+
+
+
+
+>>>>>>> long

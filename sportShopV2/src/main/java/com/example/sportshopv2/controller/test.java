@@ -27,6 +27,13 @@ public class test {
     }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    @GetMapping("/d")
+    public String d() {
+        return "BanHangTaiQuay/BanHangTaiQuay";
+    }
+>>>>>>> long
 
 =======
 >>>>>>> NguyenTuanThuat
