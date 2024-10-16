@@ -1,4 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+/* Ẩn sidebar cho desktop trên mobile */
+/*@media (max-width: 768px) {*/
+/*    .sidebar-desktop {*/
+/*        display: none;*/
+/*    }*/
+/*}*/
+
+/*!* Ẩn sidebar cho mobile trên desktop *!*/
+/*@media (min-width: 769px) {*/
+/*    .sidebar-mobile {*/
+/*        display: none;*/
+/*    }*/
+/*}*/
 
 ::after,
 ::before {
@@ -37,6 +50,8 @@ body {
     margin-left: 50px;
 
 }
+
+
 #sidebar.expand ~ .main {
     margin-left: 260px; /* Điều chỉnh margin cho main khi sidebar mở rộng */
 }
@@ -82,23 +97,24 @@ body {
     margin: auto 0;
 }
 
-
 .navbar {
-    width: calc(100% - 260px);
+    position: relative; /* Để navbar không cố định */
+    top: 0; /* Đặt navbar ở đầu phần nội dung */
+    margin-left: 30px; /* Đặt bắt đầu từ bên trái */
+    width: calc(100% - 70px); /* Chiều rộng khi sidebar thu gọn */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px ;
+    padding: 10px 20px;
     background-color: white;
     border-bottom: 1px solid #ddd;
-    margin-left: 10px;
+    z-index: 1000; /* Đảm bảo navbar nằm trên cùng */
+}
 
-}
 #sidebar.expand ~ .main .navbar {
-    width: calc(100% - 70px); /* Giảm chiều rộng navbar khi sidebar thu gọn */
-    transition: all 0.25s ease-in-out;
-    margin-left: 10px;
+    width: calc(100% - 70px); /* Chiều rộng khi sidebar mở rộng */
 }
+
 .content {
     padding: 20px;
     overflow: auto; /* Đảm bảo cuộn trong nội dung không ảnh hưởng đến navbar */
@@ -332,7 +348,7 @@ footer{
 
     .input-group-navbar .form-control:focus{
         outline: none;
-        box-shadow: 0 0 0 0 rgba(255, 255, 255);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255,255);
         border: none;
     }
 
