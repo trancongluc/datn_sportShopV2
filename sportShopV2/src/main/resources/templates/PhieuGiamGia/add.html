@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Menu}"
+>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <title>THEM MOI</title>
+    <title>Thêm Giảm Giá</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -168,11 +172,6 @@
 
     </style>
     <script>
-
-            // function backToHome() {
-            //     window.location.href = 'giamGia.html';
-            // }
-
         function updatePreview() {
             var tenPhieu = document.getElementById('ten-phieu').value || 'VCXXXXX';
             var giaTriDonHang = document.getElementById('gia-tri-don-hang').value || '0';
@@ -209,6 +208,7 @@
     </script>
 </head>
 <body>
+<main layout:fragment="main1">
 <div class="container">
     <div class="header">
         <h1>Thêm Phiếu Giảm Giá</h1>
@@ -297,5 +297,6 @@
     </div>
     <button class="save-button">Lưu</button>
 </div>
+</main>
 </body>
 </html>

@@ -10,6 +10,7 @@ public class test {
     public String a() {
         return "Menu";
     }
+
     @GetMapping("/b")
     public String b() {
         return "KhachHang/khachhang";
@@ -19,12 +20,24 @@ public class test {
     public String c() {
         return "KhachHang/tao-khach-hang";
     }
+
     @GetMapping("/giam-gia")
-        public String GiamGia(){
-            return "PhieuGiamGia/giamGia";
+    public String GiamGia() {
+        return "PhieuGiamGia/giamGia";
     }
+
     @GetMapping("/add-giam-gia")
-    public String AddGiamGia(){
-        return "PhieuGiamGia/add.html";
+    public String AddGiamGia() {
+        return "PhieuGiamGia/add";
+    }
+
+    @GetMapping("/dot-giam-gia")
+    public String DotGiamGia() {
+        return "PhieuGiamGia/dotGiamGia";
+    }
+
+    @GetMapping("/add-dot-giam-gia")
+    public String AddDotGiamGia() {
+        return "PhieuGiamGia/addDotGiamGia";
     }
 }
