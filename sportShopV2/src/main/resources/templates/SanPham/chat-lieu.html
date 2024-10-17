@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Menu}"
+>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/thuoc-tinh-sp.css"/>
+    <title>Quản Lý Chất Liệu</title>
+
+</head>
+<body>
+<main layout:fragment="main1">
+    <div >
+        <div class="header">
+            <i class="fas fa-box"></i>
+            Quản lý chất liệu
+        </div>
+        <div class="filter-section">
+            <div class="form-row align-items-end">
+                <div class="form-group col-md-3">
+                    <label for="filter" class="font-weight-bold">Bộ lọc</label>
+                    <input type="text" class="form-control" id="filter" placeholder="Tìm kiếm">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="status" class="font-weight-bold">Trạng thái</label>
+                    <select id="status" class="form-control">
+                        <option value="all">Tất cả</option>
+                    </select>
+                </div>
+                <div class="filter-buttons">
+                    <button class="btn btn-primary mr-2">Tìm kiếm</button>
+                    <button class="btn btn-danger">Làm mới bộ lọc</button>
+                </div>
+            </div>
+        </div>
+        <div class="table-section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="header">
+                    <i class="fas fa-list"></i>
+                    Danh sách chất liệu
+                </div>
+                <button class="btn btn-primary add-btn">+ Thêm</button>
+            </div>
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên Chất Liệu</th>
+                    <th>Ngày cập nhật</th>
+                    <th>Trạng Thái</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Giày Vải</td>
+                    <td>23-12-2023</td>
+                    <td><span class="status active">Đang sử dụng</span></td>
+                    <td class="actions">
+                        <i class="fas fa-eye"></i>
+                        <i class="fas fa-edit"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Chất Liệu Da PU</td>
+                    <td>20-12-2023</td>
+                    <td><span class="status active">Đang sử dụng</span></td>
+                    <td class="actions">
+                        <i class="fas fa-eye"></i>
+                        <i class="fas fa-edit"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Giày slip-on</td>
+                    <td>19-12-2023</td>
+                    <td><span class="status active">Đang sử dụng</span></td>
+                    <td class="actions">
+                        <i class="fas fa-eye"></i>
+                        <i class="fas fa-edit"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Da Cá Sấu</td>
+                    <td>09-12-2023</td>
+                    <td><span class="status active">Đang sử dụng</span></td>
+                    <td class="actions">
+                        <i class="fas fa-eye"></i>
+                        <i class="fas fa-edit"></i>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</main>
+</body>
+</html>

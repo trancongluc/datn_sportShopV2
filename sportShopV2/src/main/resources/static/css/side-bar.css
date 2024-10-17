@@ -1,17 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-/* Ẩn sidebar cho desktop trên mobile */
-/*@media (max-width: 768px) {*/
-/*    .sidebar-desktop {*/
-/*        display: none;*/
-/*    }*/
-/*}*/
-
-/*!* Ẩn sidebar cho mobile trên desktop *!*/
-/*@media (min-width: 769px) {*/
-/*    .sidebar-mobile {*/
-/*        display: none;*/
-/*    }*/
-/*}*/
 
 ::after,
 ::before {
@@ -19,7 +6,9 @@
     margin: 0;
     padding: 0;
 }
-
+*, *::before, *::after {
+    box-sizing: border-box;
+}
 a {
     text-decoration: none;
 }
@@ -30,13 +19,14 @@ li {
 
 body {
     font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
 }
 
 .wrapper{
     display: flex;
-    height: 100vh; /* Đảm bảo chiều cao của wrapper là 100% viewport */
-    overflow: hidden;
     width: 100%;
+    min-height: 100vh;
+
 }
 
 .main{
@@ -44,16 +34,16 @@ body {
     flex-direction: column;
     flex: 1;
     min-height: 100vh;
-    width: 100%;
+    width: calc(100% - 70px);
     overflow: hidden;
+    margin-left: 70px;
     transition: all 0.35s ease-in-out;
-    margin-left: 50px;
+
 
 }
-
-
 #sidebar.expand ~ .main {
-    margin-left: 260px; /* Điều chỉnh margin cho main khi sidebar mở rộng */
+    margin-left: 260px;
+    margin-right: 10px;
 }
 .sidebar-link.active {
     background-color: black; /* Màu nền cho mục đang được chọn */
@@ -97,28 +87,37 @@ body {
     margin: auto 0;
 }
 
+
 .navbar {
-    position: relative; /* Để navbar không cố định */
-    top: 0; /* Đặt navbar ở đầu phần nội dung */
-    margin-left: 30px; /* Đặt bắt đầu từ bên trái */
-    width: calc(100% - 70px); /* Chiều rộng khi sidebar thu gọn */
-    display: flex;
+
+    background-color: whitesmoke;
     justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: white;
     border-bottom: 1px solid #ddd;
-    z-index: 1000; /* Đảm bảo navbar nằm trên cùng */
-}
 
+    width: 100%; /* Chiếm toàn bộ chiều rộng của main */
+    padding: 0;  /* Đảm bảo không có padding không mong muốn */
+    margin: 0;   /* Đảm bảo không có margin không mong muốn */
+    box-shadow: 0 0 2rem rgba(33, 37, 41, .1);
+}
+.main.navbar{
+    width: 100%;
+}
 #sidebar.expand ~ .main .navbar {
-    width: calc(100% - 70px); /* Chiều rộng khi sidebar mở rộng */
+    width: 100%;
+    transition: all 0.25s ease-in-out;
+    margin-left: 0px;
 }
-
+#sidebar:not(.expand) ~ .main .navbar {
+    width: 100%;
+    transition: all 0.25s ease-in-out;
+    margin-left: 0; /* Đảm bảo không có margin */
+}
 .content {
     padding: 20px;
     overflow: auto; /* Đảm bảo cuộn trong nội dung không ảnh hưởng đến navbar */
     height: calc(100vh - 70px); /* Chiều cao động, tránh đè lên footer */
+    width: 100%;
+    box-sizing: border-box;
 }
 .right-section {
     display: flex;
