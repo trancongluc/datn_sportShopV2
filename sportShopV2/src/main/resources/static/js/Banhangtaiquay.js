@@ -103,3 +103,23 @@ function deleteInvoice(invoiceId) {
         document.getElementById('product-list').innerHTML = ''; // Xóa sản phẩm khi không có hóa đơn nào được chọn
     }
 }
+
+
+
+document.getElementById("select-customer-btn").addEventListener("click", function() {
+    // Giả sử bạn đã tìm thấy khách hàng, hiển thị thông tin khách hàng
+    var customerName = document.getElementById("search-customer").value;
+
+    // Nếu đã chọn khách hàng (dữ liệu hợp lệ), hiển thị thông tin
+    if (customerName) {
+        document.getElementById("customer-info").style.display = "block";
+        document.getElementById("customer-name").innerText = customerName;
+
+        // Ở đây bạn có thể thêm các giá trị cho email và số điện thoại tương ứng
+        document.getElementById("customer-email").innerText = "DungNA29@gmail.com";
+        document.getElementById("customer-phone").innerText = "0387811111";
+    } else {
+        // Nếu chưa chọn khách hàng, ẩn thông tin khách hàng
+        document.getElementById("customer-info").style.display = "none";
+    }
+});

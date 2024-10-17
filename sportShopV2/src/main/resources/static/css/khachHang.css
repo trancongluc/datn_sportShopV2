@@ -8,11 +8,13 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f8f8f8;
     /*padding: 20px;*/
+
 }
 
 .container {
     width: 90%;
     margin: auto;
+    margin-top: 20px;
 }
 
 h1 {
@@ -85,11 +87,9 @@ tbody tr:nth-child(even) {
     font-weight: bold;
 }
 
----------------------------------------------------
 
-.container {
-    margin-top: 20px;
-}
+
+
 .form-label {
     font-weight: bold;
 }
