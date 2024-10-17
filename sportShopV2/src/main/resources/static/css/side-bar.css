@@ -1,17 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-/* Ẩn sidebar cho desktop trên mobile */
-/*@media (max-width: 768px) {*/
-/*    .sidebar-desktop {*/
-/*        display: none;*/
-/*    }*/
-/*}*/
-
-/*!* Ẩn sidebar cho mobile trên desktop *!*/
-/*@media (min-width: 769px) {*/
-/*    .sidebar-mobile {*/
-/*        display: none;*/
-/*    }*/
-/*}*/
 
 ::after,
 ::before {
@@ -19,7 +6,9 @@
     margin: 0;
     padding: 0;
 }
-
+*, *::before, *::after {
+    box-sizing: border-box;
+}
 a {
     text-decoration: none;
 }
@@ -30,11 +19,13 @@ li {
 
 body {
     font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
 }
 
 .wrapper{
     display: flex;
-    overflow: hidden;
+    width: 100%;
+    min-height: 100vh;
 
 }
 
@@ -45,13 +36,11 @@ body {
     min-height: 100vh;
     width: calc(100% - 70px);
     overflow: hidden;
-    margin-left: 70px; /* Điều chỉnh giá trị này theo chiều rộng của sidebar khi thu gọn */
+    margin-left: 70px;
     transition: all 0.35s ease-in-out;
 
 
 }
-
-
 #sidebar.expand ~ .main {
     margin-left: 260px;
     margin-right: 10px;
@@ -98,28 +87,9 @@ body {
     margin: auto 0;
 }
 
-.navbar {
-<<<<<<< HEAD
-    position: relative; /* Để navbar không cố định */
-    top: 0; /* Đặt navbar ở đầu phần nội dung */
-    margin-left: 30px; /* Đặt bắt đầu từ bên trái */
-    width: calc(100% - 70px); /* Chiều rộng khi sidebar thu gọn */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: white;
-    border-bottom: 1px solid #ddd;
-    z-index: 1000; /* Đảm bảo navbar nằm trên cùng */
-}
 
-#sidebar.expand ~ .main .navbar {
-    width: calc(100% - 70px); /* Chiều rộng khi sidebar mở rộng */
-=======
-    /*width: 100%;*/
-    /*margin-right: 0; !* Loại bỏ mọi khoảng margin bên phải *!*/
-    /*padding-right: 0;*/
-    /*box-shadow: 0 0 2rem rgba(33, 37, 41, .1);*/
+.navbar {
+
     background-color: whitesmoke;
     justify-content: space-between;
     border-bottom: 1px solid #ddd;
@@ -141,13 +111,13 @@ body {
     width: 100%;
     transition: all 0.25s ease-in-out;
     margin-left: 0; /* Đảm bảo không có margin */
->>>>>>> luctcph35904
 }
-
 .content {
     padding: 20px;
     overflow: auto; /* Đảm bảo cuộn trong nội dung không ảnh hưởng đến navbar */
     height: calc(100vh - 70px); /* Chiều cao động, tránh đè lên footer */
+    width: 100%;
+    box-sizing: border-box;
 }
 .right-section {
     display: flex;
@@ -400,11 +370,4 @@ footer{
     .navbar-expand .navbar-nav .dropdown-menu{
         box-shadow:  0 .1rem .2rem rgba(0, 0, 0, .05);
     }
-
-    .sidebar-link.active {
-        background-color: #007bff; /* Thay đổi theo màu của bạn */
-        color: white;
-    }
-
-
 }
