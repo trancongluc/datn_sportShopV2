@@ -42,4 +42,10 @@ public class test {
     public String AddDotGiamGia() {
         return "PhieuGiamGia/addDotGiamGia";
     }
+
+
+    @GetMapping("/mua-sam")
+    public String MuaSam(){
+        return "MuaHang/view";
+    }
 }
