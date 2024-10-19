@@ -11,4 +11,14 @@ public class HoaDonController {
 //        model.addAttribute("messager", "Hello");
         return "HoaDon/HoaDon";
     }
+    @GetMapping("/doitra/view")
+    public String viewDT(Model model) {
+//        model.addAttribute("messager", "Hello");
+        return "DoiTra/DoiTra";
+    }
+    @GetMapping("/doitra/detail")
+    public String viewDTCT(Model model) {
+//        model.addAttribute("messager", "Hello");
+        return "DoiTra/DoiTraChiTiet";
+    }
 }

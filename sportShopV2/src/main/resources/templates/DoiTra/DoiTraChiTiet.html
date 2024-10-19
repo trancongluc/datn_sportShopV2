@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Menu}">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Quản lý trả hàng</title>
+ <link rel="stylesheet" href="/css/DoiTraChiTiet.css">
+ <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+</head>
+<body>
+<main layout:fragment="main1">
+ <div class="container">
+  <div class="header">
+   <img src="/images/img.png" width="20px" height="20px">
+   <h1>Quản lý trả hàng</h1>
+  </div>
+
+  <!-- Thông tin khách hàng -->
+  <div class="section">
+   <h2><i class="fas fa-info-circle"></i> Thông tin khách hàng</h2>
+   <div class="customer-info">
+    <div>
+     <p><span>Tên khách hàng:</span> </p>
+     <p><span>Số điện thoại:</span> 1234567890</p>
+     <p><span>Địa chỉ:</span> </p>
+     <p><span>Ghi chú:</span></p>
+    </div>
+    <div>
+     <p><span>Ngày giao hàng:</span> </p>
+     <p><span>Ngày nhận hàng:</span> </p>
+     <div class="status-buttons">
+      <button class="success">Thành công</button>
+      <button class="online">ONLINE</button>
+     </div>
+    </div>
+   </div>
+  </div>
+
+  <!-- Thông tin đơn hàng -->
+  <div class="section">
+   <h2>Thông tin đơn hàng</h2>
+   <table class="order-table">
+    <thead>
+    <tr>
+     <th>STT</th>
+     <th>Ảnh</th>
+     <th>Thông tin sản phẩm</th>
+     <th>Màu Sắc</th>
+     <th>Số lượng</th>
+     <th>Tổng tiền</th>
+     <th>Trạng thái</th>
+     <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+     <td>1</td>
+     <td><img src="https://storage.googleapis.com/a1aa/image/4TiPev4yK9V2J6xm3Hvl4ohnV85Z76QHL90wLZf6klVq3tnTA.jpg" alt="Product image with 10% discount label" /></td>
+     <td>
+      <p>KAPPA GIÀY SNEAKERS 123[ 36 - Maroon ]</p>
+      <p style="color: red; font-weight: bold;">4.500.000 VND</p>
+      <p style="text-decoration: line-through;">5.000.000 VND</p>
+     </td>
+     <td>
+      <div style="background-color: maroon; width: 25px; height: 25px; border-radius: 50%;"></div>
+     </td>
+     <td>1</td>
+     <td>4.500.000 VND</td>
+     <td><div class="status">Thành công</div></td>
+     <td class="action"><button><i class="fas fa-undo"></i></button></td>
+    </tr>
+    </tbody>
+   </table>
+
+   <!-- Nút trả hàng tất cả -->
+   <div class="return-all">
+    <button>Trả hàng tất cả</button>
+   </div>
+  </div>
+ </div>
+ <div class="container2">
+  <table class="cart-table">
+   <thead>
+   <tr>
+    <th>
+     STT
+    </th>
+    <th>
+     Ảnh
+    </th>
+    <th>
+     Tên sản phẩm
+    </th>
+    <th>
+     Màu Sắc
+    </th>
+    <th>
+     Số lượng
+    </th>
+    <th>
+     Giá tiền
+    </th>
+    <th>
+     Tổng tiền
+    </th>
+    <th>
+     Hành động
+    </th>
+   </tr>
+   </thead>
+   <tbody>
+   <tr>
+    <td>
+     1
+    </td>
+    <td>
+     <img alt="Image of a black running shoe" height="50" src="https://storage.googleapis.com/a1aa/image/DenA334sR31LY6TnvMNYyEwUOfHsavICDmuAUFQQAmVgiunTA.jpg" width="50"/>
+    </td>
+    <td>
+     Giày Chạy Nam Adidas Ultraboost Cc_1 Dna FZ2545[ 42 - black ]
+    </td>
+    <td>
+     Black
+    </td>
+    <td>
+     <input min="1" style="width: 50px;" type="number" value="1"/>
+    </td>
+    <td>
+     2.500.000 VND
+    </td>
+    <td>
+     2.500.000 VND
+    </td>
+    <td>
+     <i class="fas fa-trash delete-btn">
+     </i>
+    </td>
+   </tr>
+   </tbody>
+  </table>
+  <div class="summary">
+   <p>
+    Tổng giá hàng gốc:
+    <span>
+      9.500.000 VND
+     </span>
+   </p>
+   <p>
+    Voucher đã sử dụng:
+    <span>
+      150.000 VND
+     </span>
+   </p>
+   <p>
+    Tiền ship:
+    <span>
+      0 VND
+     </span>
+   </p>
+   <p>
+    Điểm sử dụng (0):
+    <span>
+      0 VND
+     </span>
+   </p>
+   <p class="total">
+    Tổng tiền thanh toán:
+    <span>
+      9.350.000 VND
+     </span>
+   </p>
+   <p>
+    Tổng giá hàng trả:
+    <span>
+      2.500.000 VND
+     </span>
+   </p>
+   <p>
+    Voucher mới:
+    <span>
+      150.000 VND
+     </span>
+   </p>
+   <hr/>
+   <p class="total">
+    Tổng tiền trả khách:
+    <span>
+      2.500.000 VND
+     </span>
+   </p>
+   <div class="return">
+    <p>
+     * Mô tả:
+    </p>
+    <textarea placeholder="Nhập mô tả"></textarea>
+    <button>
+     Trả hàng
+    </button>
+   </div>
+  </div>
+ </div>
+</main>
+</body>
+</html>
