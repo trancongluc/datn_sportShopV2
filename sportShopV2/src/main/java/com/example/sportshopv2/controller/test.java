@@ -43,4 +43,13 @@ public class test {
         return "PhieuGiamGia/add.html";
     }
 
+    @GetMapping("/ggkhachhang")
+    public String ggkhachhang() {
+        return "PhieuGiamGiaKhachHang/PhieuGiamGiaKhachHang";
+    }
+    @GetMapping("/thongtin")
+    public String thongtin() {
+        return "TaiKhoanKhachHang/TaiKhoanKhachHang";
+    }
+
 }

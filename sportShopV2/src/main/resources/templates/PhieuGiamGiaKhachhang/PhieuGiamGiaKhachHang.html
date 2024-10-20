@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <title>Phiếu Giảm Giá</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 400px;
+            margin: 50px auto;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .support {
+            float: right;
+            font-size: 14px;
+            color: #888;
+        }
+        .tab {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab button {
+            flex: 1;
+            padding: 10px;
+            background-color: white;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .tab button.active {
+            border-bottom: 2px solid #ff5722;
+            font-weight: bold;
+        }
+        .voucher-input {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .voucher-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px 0 0 5px;
+        }
+        .voucher-input button {
+            padding: 10px 20px;
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+        .voucher-list {
+            margin-bottom: 20px;
+        }
+        .voucher-item {
+            display: flex;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        .voucher-item img {
+            width: 60px;
+            height: 60px;
+            margin-right: 10px;
+        }
+        .voucher-details {
+            flex: 1;
+        }
+        .voucher-details p {
+            margin: 5px 0;
+        }
+        .voucher-details .highlight {
+            color: #ff5722;
+        }
+        .voucher-select {
+            display: flex;
+            align-items: center;
+        }
+        .voucher-select input {
+            margin-left: 10px;
+        }
+        .warning {
+            color: #ff5722;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .footer {
+            display: flex;
+            justify-content: space-between;
+        }
+        .footer button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .footer .back {
+            background-color: #ddd;
+        }
+        .footer .ok {
+            background-color: #ff5722;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        Chọn Phiếu Giảm Giá
+
+    </div>
+    <div class="tab">
+        <button class="active">
+            Mã Giảm Giá
+        </button>
+
+    </div>
+    <div class="voucher-input">
+        <input placeholder="Mã Giảm Giá" type="text"/>
+        <button>
+            ÁP DỤNG
+        </button>
+    </div>
+    <div class="voucher-list">
+        <div class="voucher-item">
+            <img alt="Voucher image" height="60" src="https://storage.googleapis.com/a1aa/image/mpPGRtxSiaaNIlutspwGzCMPWKHoGmiUAqPcaUeonb75tI0JA.jpg" width="60"/>
+            <div class="voucher-details">
+                <p>
+                    Mã giảm giá :GG123
+                </p>
+                <p>
+                    Giảm : 100.000 đ
+                </p>
+                <p class="highlight">
+
+                </p>
+                <p>
+                    HSD: 23.10.2024
+
+                </p>
+            </div>
+            <div class="voucher-select">
+                <input name="voucher" type="radio"/>
+            </div>
+        </div>
+
+        <div class="voucher-item">
+            <img alt="Voucher image" height="60" src="https://storage.googleapis.com/a1aa/image/mpPGRtxSiaaNIlutspwGzCMPWKHoGmiUAqPcaUeonb75tI0JA.jpg" width="60"/>
+            <div class="voucher-details">
+                <p>
+                    Mã Giảm Giá : GGABC
+                </p>
+                <p>
+                    Giảm : 10%
+                </p>
+                <p>
+                    HSD: 23.10.2024
+
+                </p>
+            </div>
+            <div class="voucher-select">
+                <input name="voucher" type="radio"/>
+            </div>
+        </div>
+
+    </div>
+    <div class="footer">
+        <button class="back">
+            TRỞ LẠI
+        </button>
+        <button class="ok">
+            OK
+        </button>
+    </div>
+</div>
+</body>
+</html>

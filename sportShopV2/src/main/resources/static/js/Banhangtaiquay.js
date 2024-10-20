@@ -1,3 +1,5 @@
+
+
 // Nếu cần thêm các chức năng JavaScript, bạn có thể viết vào đây
 // Ví dụ, xử lý sự kiện cho các nút
 
@@ -16,7 +18,7 @@ let invoices = []; // Mảng chứa các hóa đơn
 let currentInvoiceId = null; // ID của hóa đơn hiện tại
 
 document.getElementById('create-invoice-btn').addEventListener('click', createInvoice);
-document.getElementById('add-product-btn').addEventListener('click', addProduct);
+// document.getElementById('add-product-btn').addEventListener('click', addProduct);
 
 // Hàm tạo hóa đơn mới
 function createInvoice() {
@@ -123,3 +125,141 @@ document.getElementById("select-customer-btn").addEventListener("click", functio
         document.getElementById("customer-info").style.display = "none";
     }
 });
+
+// Lắng nghe sự kiện khi chọn hoặc bỏ chọn checkbox giao hàng
+document.getElementById("delivery").addEventListener("change", function() {
+    var customerInfoRight = document.getElementById("customer-info-right");
+
+    // Nếu chọn giao hàng, hiển thị thông tin khách hàng bên phải
+    if (this.checked) {
+        customerInfoRight.style.display = "block";
+    } else {
+        // Nếu bỏ chọn, ẩn thông tin khách hàng
+        customerInfoRight.style.display = "none";
+    }
+});
+
+
+
+
+
+
+
+
+
+// Hiện modal sản phẩm khi nhấn nút "Thêm sản phẩm"
+document.querySelector('.add-product-btn').addEventListener('click', function() {
+    document.getElementById('product-modal').style.display = 'flex';
+});
+
+// Đóng modal khi nhấn nút đóng
+document.querySelector('.close').addEventListener('click', function() {
+    document.getElementById('product-modal').style.display = 'none';
+});
+
+// Đóng modal khi nhấn ra ngoài nó
+window.onclick = function(event) {
+    const modal = document.getElementById('product-modal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+};
+
+// Thêm sự kiện cho các sản phẩm
+document.querySelectorAll('.product-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+        const productId = this.getAttribute('data-product-id');
+        const productName = this.textContent;
+
+        // Thêm sản phẩm đã chọn vào danh sách hóa đơn
+        const invoiceList = document.getElementById('invoice-list');
+        const li = document.createElement('li');
+        li.textContent = productName + " (ID: " + productId + ")";
+        invoiceList.appendChild(li);
+
+        // Đóng modal sau khi chọn
+        document.getElementById('product-modal').style.display = 'none';
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Nút thêm khách hàng mới
+    const addNewCustomerBtn = document.getElementById("add-new-customer-btn");
+    const newCustomerForm = document.getElementById("new-customer-form");
+    const customerForm = document.getElementById("customer-form");
+
+    // Kiểm tra sự tồn tại của nút và form
+    if (addNewCustomerBtn && newCustomerForm) {
+        addNewCustomerBtn.addEventListener("click", function() {
+            // Hiển thị form nếu đang ẩn
+            if (newCustomerForm.style.display === "none" || newCustomerForm.style.display === "") {
+                newCustomerForm.style.display = "block";
+            } else {
+                newCustomerForm.style.display = "none";
+            }
+        });
+    } else {
+        console.error("Nút hoặc form không tồn tại!");
+    }
+
+    // Xử lý việc lưu thông tin khách hàng mới (giả lập lưu vào console)
+    if (customerForm) {
+        customerForm.addEventListener("submit", function(event) {
+            event.preventDefault();  // Ngăn form submit mặc định
+
+            // Lấy thông tin từ form
+            const hoTen = document.getElementById("hoTen").value;
+            const email = document.getElementById("email").value;
+            const ngaySinh = document.getElementById("ngaySinh").value;
+            const gioiTinh = document.getElementById("gioiTinh").value;
+            const soDienThoai = document.getElementById("soDienThoai").value;
+            const soNha = document.getElementById("soNha").value;
+
+            // Giả lập lưu khách hàng mới (ví dụ: in ra console)
+            console.log("Khách hàng mới:", {
+                hoTen: hoTen,
+                email: email,
+                ngaySinh: ngaySinh,
+                gioiTinh: gioiTinh,
+                soDienThoai: soDienThoai,
+                soNha: soNha
+            });
+
+            // Sau khi lưu, ẩn form
+            newCustomerForm.style.display = "none";
+        });
+    } else {
+        console.error("Form khách hàng không tồn tại!");
+    }
+
+    // Hàm hiển thị hình ảnh preview khi chọn tệp
+    function loadImage(event) {
+        const image = document.getElementById('image-preview');
+        if (image) {
+            image.src = URL.createObjectURL(event.target.files[0]);
+        } else {
+            console.error("Phần tử hình ảnh không tồn tại!");
+        }
+    }
+
+    // Thêm sự kiện cho input file
+    const fileInput = document.getElementById('file-input');
+    if (fileInput) {
+        fileInput.addEventListener('change', loadImage);
+    } else {
+        console.error("Input file không tồn tại!");
+    }
+});
+    

@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
+    background-color: #f9f9f9;
     height: 100vh;
     width: 100%;
     display: flex;
@@ -14,6 +14,8 @@ body {
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+
 }
 
 .header {
@@ -106,6 +108,522 @@ button:hover {
 
 .delete-btn:hover svg {
     fill: darkred; /* Màu khi hover */
+}
+
+
+.payment-section {
+    display: flex;
+
+}
+
+.payment-info {
+    width: 50%;
+
+}
+
+.customer-info {
+    width: 40%;
+    border-left: 2px solid #ddd;
+    padding-left: 20px;
+}
+
+
+.customer-info-right {
+    margin-left: -20px; /* Điều chỉnh giá trị này để di chuyển khối sang trái */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    /*padding: 20px;*/
+
+}
+
+.container {
+    width: 90%;
+    margin: auto;
+    margin-top: 20px;
+}
+
+h1 {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.filter-section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.filter-section input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 40%;
+}
+
+.filter-section button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.create-button {
+    background-color: #ff5733;
+    color: white;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+thead {
+    background-color: #ff5733;
+    color: white;
+}
+
+thead th {
+    padding: 15px;
+    text-align: left;
+}
+
+tbody td {
+    padding: 15px;
+    border-bottom: 1px solid #ccc;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.active-status {
+    color: green;
+    font-weight: bold;
+}
+
+
+
+
+.form-label {
+    font-weight: bold;
+}
+.image-upload {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    width: 200px;
+    border: 1px dashed #ccc;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    position: relative;
+}
+.image-upload input {
+    opacity: 0;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+}
+.image-upload img {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.btn-scan-qr {
+    background-color: #ff5722; /* Màu cam */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: 1100px;
+}
+
+.btn-scan-qr:hover {
+    background-color: #e64a19; /* Màu cam đậm khi hover */
+}
+.css_select_div .row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.css_select_div .col-md-4 {
+    flex: 1;
+    margin-right: 10px; /* Adjust spacing between the columns */
+}
+
+.css_select_div .col-md-4:last-child {
+    margin-right: 0; /* Remove margin for the last column */
+}
+-------------------------------------------
+    /* Áp dụng phong cách đồng nhất cho phần tử select */
+select {
+    appearance: none; /* Loại bỏ mũi tên mặc định trên hầu hết các trình duyệt */
+    -webkit-appearance: none; /* Loại bỏ mũi tên mặc định trên Chrome/Safari */
+    -moz-appearance: none; /* Loại bỏ mũi tên mặc định trên Firefox */
+    padding: 10px; /* Thêm khoảng đệm cho giao diện thoải mái hơn */
+    border: 1px solid #ccc; /* Thêm viền nhẹ */
+    border-radius: 5px; /* Bo tròn góc cạnh */
+    background-color: #f9f9f9; /* Màu nền nhạt */
+    font-size: 16px; /* Tăng kích thước chữ để dễ đọc */
+    color: #333; /* Màu chữ đậm hơn để tương phản tốt */
+    width: 100%; /* Đảm bảo phần tử chiếm hết chiều rộng trong bố cục đáp ứng */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Thêm bóng nhẹ */
+    cursor: pointer; /* Con trỏ chuột sẽ thay đổi thành dạng "pointer" khi di chuột qua */
+}
+
+/* Phong cách cho phần tử select khi được focus (khi người dùng nhấn vào) */
+select:focus {
+    outline: none; /* Loại bỏ viền mặc định khi focus */
+    border-color: #007bff; /* Viền màu xanh khi focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Hiệu ứng sáng lên khi focus */
+}
+
+/* Mũi tên tùy chỉnh sử dụng ảnh nền */
+select {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB...'); /* Thêm biểu tượng mũi tên tùy chỉnh */
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    background-size: 12px;
+}
+
+/* Đảm bảo khoảng cách giữa các dòng trông gọn gàng */
+.css_select_div .row {
+    margin-bottom: 15px; /* Khoảng cách dưới mỗi dòng */
+}
+
+/* Điều chỉnh bố cục cột cho màn hình lớn hơn */
+@media (min-width: 768px) {
+    .col-md-4 {
+        width: 30%; /* Điều chỉnh chiều rộng nếu cần thiết */
+    }
+}
+
+
+/* Phong cách cho input tìm kiếm */
+input[type="text"] {
+    padding: 10px; /* Khoảng đệm giúp tăng diện tích vùng nhấn */
+    border: 1px solid #ccc; /* Viền nhẹ để giữ giao diện gọn gàng */
+    border-radius: 5px; /* Bo tròn các góc */
+    font-size: 16px; /* Kích thước chữ dễ đọc hơn */
+    width: 250px; /* Chiều rộng cố định cho input */
+    transition: all 0.3s ease; /* Hiệu ứng chuyển mượt mà khi hover hoặc focus */
+}
+
+input[type="text"]:focus {
+    outline: none; /* Loại bỏ viền mặc định */
+    border-color: #007bff; /* Đổi màu viền khi focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Hiệu ứng phát sáng khi focus */
+}
+
+/* Phong cách cho các nút bấm */
+button {
+    padding: 10px 20px; /* Khoảng đệm lớn hơn cho nút */
+    border: none; /* Loại bỏ viền mặc định */
+    border-radius: 5px; /* Bo tròn góc cạnh */
+    background-color: #007bff; /* Màu nền xanh cho nút */
+    color: white; /* Màu chữ trắng */
+    font-size: 16px; /* Kích thước chữ */
+    cursor: pointer; /* Con trỏ thay đổi khi hover vào nút */
+    transition: background-color 0.3s ease; /* Hiệu ứng mượt mà khi đổi màu */
+}
+
+button:hover {
+    background-color: #0056b3; /* Đổi màu nền khi hover */
+}
+
+button:active {
+    background-color: #004085; /* Màu nền tối hơn khi nhấn nút */
+}
+
+/* Phong cách cho vùng bao quanh các phần tử */
+.form-group {
+    display: flex;
+    gap: 10px; /* Khoảng cách giữa các phần tử input và nút */
+    align-items: center; /* Căn giữa dọc các phần tử */
+}
+
+
+.modal {
+    display: flex;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.product-item {
+    cursor: pointer;
+}
+
+/* Điều chỉnh modal */
+.modal-content {
+    width: 60%; /* Chiều rộng tùy chỉnh, bạn có thể thay đổi giá trị */
+    max-width: 900px; /* Chiều rộng tối đa */
+    max-height: 500px;
+
+    margin: 0 auto; /* Căn giữa modal */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Căn giữa modal */
+.modal {
+    display: flex;
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    position: fixed; /* Đặt modal ở vị trí cố định */
+    top: 0;
+    left: 0;
+    width: 100vw; /* Chiều rộng toàn màn hình */
+    height: 100vh; /* Chiều cao toàn màn hình */
+    background-color: rgba(0, 0, 0, 0.3); /* Thêm nền tối mờ */
+    z-index: 9999; /* Đảm bảo modal luôn nổi trên cùng */
+}
+
+/* Điều chỉnh modal */
+.modal-content {
+    width: 60%; /* Chiều rộng tùy chỉnh */
+    max-width: 900px; /* Chiều rộng tối đa */
+    max-height: 500px; /* Chiều cao tối đa */
+    background-color: #fff; /* Đảm bảo nền trắng cho modal */
+    margin: 0 auto; /* Căn giữa theo chiều ngang */
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: auto; /* Cho phép cuộn nếu nội dung vượt quá chiều cao */
+}
+
+/* Điều chỉnh danh sách sản phẩm */
+#product-list {
+    max-height: 300px; /* Giới hạn chiều cao của danh sách sản phẩm */
+    overflow-y: auto; /* Thêm cuộn dọc nếu danh sách dài hơn chiều cao */
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+/* Điều chỉnh từng item của danh sách sản phẩm */
+.product-item {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+}
+
+/* Thêm hiệu ứng khi hover */
+.product-item:hover {
+    background-color: #f0f0f0;
+}
+
+
+
+.customer-info-right {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+
+    margin-left: 350px;
+}
+
+
+
+
+
+.customer-info-right h3 {
+    font-size: 22px;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"] {
+    background-color: #fff;
+    color: #333;
+}
+
+input[disabled] {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+    .customer-info-right {
+        padding: 15px;
+    }
+
+    .customer-info-right h3 {
+        font-size: 18px;
+    }
+
+    .form-control {
+        font-size: 12px;
+    }
+}
+
+.payment-section {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+
+}
+
+
+/* Khoảng cách cho container chính */
+.container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 15px;
+}
+
+/* Khoảng cách giữa các phần tiêu đề và nội dung */
+.header {
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Khoảng cách cho danh sách sản phẩm */
+.cart-message {
+    margin-bottom: 30px;
+}
+
+.cart-message h2 {
+    margin-bottom: 10px;
+}
+
+/* Khoảng cách cho các nút hành động */
+.actions {
+    margin-bottom: 30px;
+}
+
+.add-product-btn {
+    padding: 10px 20px;
+}
+
+/* Khoảng cách cho modal */
+.modal-content {
+    padding: 20px;
+}
+
+.modal h2 {
+    margin-bottom: 20px;
+}
+
+/* Khoảng cách cho form thêm mới khách hàng */
+#new-customer-form {
+    padding: 20px;
+    border: 1px solid #ddd;
+    margin-bottom: 30px;
+}
+
+#new-customer-form .col-md-6 {
+    margin-bottom: 15px;
+}
+
+/* Khoảng cách cho thông tin khách hàng */
+#customer-info {
+    padding: 20px;
+    border: 1px solid #ddd;
+    margin-bottom: 30px;
+}
+
+/* Khoảng cách cho phần thanh toán */
+.payment-section {
+    padding: 20px;
+    border-top: 2px solid #ddd;
+    margin-top: 30px;
+}
+
+.payment-info {
+    margin-bottom: 20px;
+}
+
+.payment-info h2 {
+    margin-bottom: 15px;
+}
+
+.customer-info-right {
+    margin-top: 20px;
 }
 
 
