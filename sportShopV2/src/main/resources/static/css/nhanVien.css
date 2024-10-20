@@ -95,6 +95,7 @@ tbody tr:nth-child(even) {
     font-weight: bold;
     padding-left: 10px;
     color: white;
+    border-radius: 5px;
 }
 ---------------------------------------------------
 
