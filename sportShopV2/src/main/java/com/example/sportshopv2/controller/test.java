@@ -36,7 +36,7 @@ public class test {
     //>>>>>>> Stashed changes
     @GetMapping("/f")
     public String f() {
-        return "GioHang/giohang";
+        return "TheoDoi/TheoDoi";
     }
     @GetMapping("/g")
     public String g() {
