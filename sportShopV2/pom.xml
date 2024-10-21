@@ -59,6 +59,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+<<<<<<< HEAD
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
@@ -76,6 +77,29 @@
         <!--            <groupId>org.springframework.boot</groupId>-->
         <!--            <artifactId>spring-boot-starter-oauth2-client</artifactId>-->
         <!--        </dependency>-->
+=======
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-devtools</artifactId>-->
+<!--            <scope>runtime</scope>-->
+<!--            <optional>true</optional>-->
+<!--        </dependency>-->
+<!--                <dependency>-->
+<!--                    <groupId>com.microsoft.sqlserver</groupId>-->
+<!--                    <artifactId>mssql-jdbc</artifactId>-->
+<!--                    <scope>runtime</scope>-->
+<!--                </dependency>-->
+<!--                <dependency>-->
+<!--                    <groupId>org.springframework.boot</groupId>-->
+<!--                    <artifactId>spring-boot-starter-security</artifactId>-->
+<!--                </dependency>-->
+<!--                <dependency>-->
+<!--                    <groupId>org.springframework.boot</groupId>-->
+<!--                    <artifactId>spring-boot-starter-oauth2-client</artifactId>-->
+<!--                </dependency>-->
+>>>>>>> tan
 
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
