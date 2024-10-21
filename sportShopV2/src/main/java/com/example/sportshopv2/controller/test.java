@@ -22,6 +22,7 @@ public class test {
         return "KhachHang/tao-khach-hang";
     }
 
+<<<<<<< HEAD
 
     @GetMapping("/d")
     public String d() {
@@ -60,5 +61,9 @@ public class test {
         return "MuaHang/view";
 
     }
+=======
+
+
+>>>>>>> tan
 
 }
