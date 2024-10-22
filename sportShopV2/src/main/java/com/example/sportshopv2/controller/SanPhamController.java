@@ -4,10 +4,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class MuaSamController {
-    @GetMapping("/mua-sam")
-    public String MuaSam(){
-        return "MuaHang/view";
+public class SanPhamController {
+    @GetMapping("/san-pham")
+    public String SanPham() {
+        return "MuaHang/san-pham";
     }
 
 }

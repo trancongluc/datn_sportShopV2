@@ -126,10 +126,10 @@
             }
         }
 
-        .products {
+        /* .products {
             padding: 50px 20px;
             background-color: #f9f9f9;
-        }
+        } */
 
         .products h2 {
             text-align: center;
@@ -371,6 +371,71 @@
         .item:nth-child(2) img {
             width: 300px;
         }
+        /* .products {
+    padding: 20px;
+} */
+
+        .product-nav {
+            display: flex; /* Sử dụng flexbox */
+            justify-content: center; /* Căn giữa theo chiều ngang */
+            margin: 20px 0; /* Khoảng cách trên và dưới */
+        }
+
+        .product-nav a {
+            margin: 0 10px; /* Khoảng cách giữa các thẻ */
+            text-decoration: none;
+            color: black; /* Màu chữ */
+            padding: 10px 15px; /* Khoảng cách bên trong */
+            border-radius: 5px; /* Bo góc */
+            transition: color 0.3s, transform 0.2s, opacity 0.3s; /* Hiệu ứng chuyển đổi */
+            opacity: 0.7; /* Độ mờ ban đầu */
+        }
+
+        .product-nav a:hover {
+            color: #000 !important; /* Màu chữ khi hover */
+            transform: scale(1.2) !important; /* Phóng to khi hover */
+        }
+
+        .product-nav a.active {
+            opacity: 1 !important; /* Đậm lên khi được chọn */
+            transform: scale(1.2) !important; /* Phóng to khi được chọn */
+        }
+
+        .product-list {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .product-item {
+            margin: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 300px;
+        }
+
+        .product-item img {
+            max-width: 100%;
+        }
+        .rating {
+            display: flex;
+            justify-content: center; /* Căn giữa các ngôi sao */
+            margin: 10px 0; /* Khoảng cách trên và dưới */
+        }
+
+        .star {
+            color: #ffd700; /* Màu của ngôi sao đã chọn (sáng) */
+        }
+        /*.star.selected {*/
+        /*    color: #ffd700; !* Màu của ngôi sao đã chọn *!*/
+        /*}*/
+
+        /*!* Thêm lớp này để tất cả các ngôi sao đều sáng mặc định *!*/
+        /*.star.default-selected {*/
+        /*    color: #ffd700; !* Màu của ngôi sao đã chọn *!*/
+        /*}*/
+        .star.inactive {
+            color: #ccc; /* Màu của ngôi sao không được chọn (mờ) */
+        }
     </style>
     <script>
         let lastScrollTop = 0;
@@ -407,6 +472,90 @@
                 });
             });
         });
+
+        function filterProducts(style) {
+            // Ẩn tất cả sản phẩm
+            const items = document.querySelectorAll('.product-item');
+            items.forEach(item => item.style.display = 'none');
+
+            // Hiện sản phẩm theo kiểu đã chọn
+            const selectedItems = document.querySelectorAll('.product-item.' + style);
+            selectedItems.forEach(item => item.style.display = 'block');
+        }
+        function filterProducts(style) {
+            const items = document.querySelectorAll('.product-item');
+            items.forEach(item => item.style.display = 'none');
+
+            const selectedItems = document.querySelectorAll('.product-item.' + style);
+            selectedItems.forEach(item => item.style.display = 'block');
+
+            // Cập nhật trạng thái active cho các thẻ a
+            const links = document.querySelectorAll('.product-nav a');
+            links.forEach(link => {
+                link.classList.remove('active'); // Xóa trạng thái active
+            });
+
+            // Thêm trạng thái active cho thẻ đã nhấn
+            const activeLink = Array.from(links).find(link => link.textContent === style);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+
+        document.querySelectorAll('.star').forEach(star => {
+            // Thêm lớp 'default-selected' cho tất cả các ngôi sao ngay từ đầu
+            star.classList.add('default-selected');
+
+            star.addEventListener('click', function() {
+                const ratingValue = this.getAttribute('data-value');
+                const stars = this.parentElement.querySelectorAll('.star');
+
+                // Đánh dấu tất cả các ngôi sao từ 1 đến 4
+                stars.forEach((s, index) => {
+                    if (index < 4) { // Đảm bảo rằng chỉ có 4 ngôi sao được đánh dấu
+                        s.classList.add('selected');
+                    }
+                });
+            });
+
+            // Thêm sự kiện hover
+            star.addEventListener('mouseover', function() {
+                const ratingValue = this.getAttribute('data-value');
+                const stars = this.parentElement.querySelectorAll('.star');
+
+                // Đánh dấu các ngôi sao cho đến ngôi sao hiện tại
+                stars.forEach((s, index) => {
+                    if (index < ratingValue) {
+                        s.classList.add('selected');
+                    } else {
+                        s.classList.remove('selected');
+                    }
+                });
+            });
+
+            // Khôi phục trạng thái ban đầu khi không hover
+            star.addEventListener('mouseout', function() {
+                const stars = this.parentElement.querySelectorAll('.star');
+
+                // Đánh dấu lại các sao đã được chọn
+                const currentRating = this.parentElement.querySelector('.star.selected');
+                if (currentRating) {
+                    const currentRatingValue = currentRating.getAttribute('data-value');
+                    stars.forEach((s, index) => {
+                        if (index < currentRatingValue) {
+                            s.classList.add('selected'); // Đánh dấu lại các sao đã chọn
+                        } else {
+                            s.classList.remove('selected');
+                        }
+                    });
+                }
+            });
+        });
+
+        // Đảm bảo rằng tất cả các ngôi sao đều sáng mặc định
+        document.querySelectorAll('.star').forEach(star => {
+            star.classList.add('selected');
+        });
     </script>
 </head>
 <body>
@@ -418,14 +567,20 @@
     </span>
     </div>
     <div class="menu">
-        <a class="active" href="#">
+        <a class="active" href="/mua-sam">
             TRANG CHỦ
         </a>
-        <a href="#">
+        <a href="/san-pham">
             SẢN PHẨM
         </a>
         <a href="#">
-            VỀ CHÚNG TÔI
+            TRA CỨU
+        </a>
+        <a href="#">
+            LIÊN HỆ
+        </a>
+        <a href="#">
+            THÔNG TIN
         </a>
     </div>
     <div class="icons">
@@ -452,10 +607,10 @@
             <img alt="..." class="d-block w-100" src="images/snk2.png"/>
             <div class="carousel-caption">
                 <h1>
-                    Bộ sưu tập Thu Đông 2030
+                    Bộ sưu tập Thu Đông 2040
                 </h1>
                 <p>
-                    Một nhãn hiệu chuyên tạo ra những sản phẩm thiết yếu và sang trọng.
+                    Một nhãn hiệu chuyên tạo ra những sản phẩm hot trend, đi trước xu hướng
                 </p>
             </div>
         </div>
@@ -463,10 +618,10 @@
             <img alt="..." class="d-block w-100" src="images/snk3.png"/>
             <div class="carousel-caption">
                 <h1>
-                    Bộ sưu tập Thu Đông 2030
+                    Bộ sưu tập Thu Đông 2050
                 </h1>
                 <p>
-                    Một nhãn hiệu chuyên tạo ra những sản phẩm thiết yếu và sang trọng.
+                    Quan tâm trải nghiệm khách hàng, chất liệu sản phẩm để không ai bị bỏ lại
                 </p>
             </div>
         </div>
@@ -493,7 +648,7 @@
             <h2>
                 Bộ sưu tập giày 2024
             </h2>
-            <a href="#">
+            <a href="/san-pham">
                 MUA NGAY
             </a>
         </div>
@@ -525,146 +680,156 @@
     </div>
 </div>
 <div class="products">
-    <h2>
-        Sản Phẩm Bán Chạy
-    </h2>
+    <h2>Sản Phẩm</h2>
+    <div class="product-nav">
+        <a href="javascript:void(0)" onclick="filterProducts('style1')">Bán Chạy</a>
+        <a href="javascript:void(0)" onclick="filterProducts('style2')">Sản Phẩm Mới</a>
+        <a href="javascript:void(0)" onclick="filterProducts('style3')">Giảm Giá Sốc</a>
+    </div>
     <div class="product-list">
-        <div class="product-item">
+        <div class="product-item style1">
             <img alt="Sneaker 1" height="300" src="images/snk1.png" width="300"/>
-            <h3>
-                Sneaker Phong Cách
-            </h3>
-            <p>
-                Đứng ở dưới thì nhảy mạnh lên
-                <br/>
-                Ai sợ thì đi về
-            </p>
-            <div class="price">
-                $100
+            <h3>Sneaker 6789</h3>
+            <p>Sống bằng tình cảm<br>Ai sợ thì đi về</p>
+            <div class="price">$100</div>
+            <div class="rating">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star inactive" data-value="5">★</span>
             </div>
-            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">
-                Mua Ngay
-            </a>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
         </div>
-        <div class="product-item">
-            <img alt="Sneaker 2" height="300" src="images/snk2.png" width="300"/>
-            <h3>
-                Sneaker 8386
-            </h3>
-            <p>
-                Phát tài phát lộc
-            </p>
-            <div class="price">
-                $120
+        <div class="product-item style1">
+            <img alt="Sneaker 1" height="300" src="images/snk2.png" width="300"/>
+            <h3>Sneaker Phong Cách</h3>
+            <p>Đứng ở dưới thì nhảy mạnh lên<br>Ai sợ thì đi về</p>
+            <div class="price">$100</div>
+            <div class="rating">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star inactive" data-value="5">★</span>
             </div>
-            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">
-                Mua Ngay
-            </a>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
         </div>
-        <div class="product-item">
-            <img alt="Sneaker 3" height="300" src="images/snk3.png" width="300"/>
-            <h3>
-                Sneaker Phát Tài
-            </h3>
-            <p>
-                Giàu vì bạn sang vì vợ
-            </p>
-            <div class="price">
-                $150
+        <div class="product-item style1">
+            <img alt="Sneaker 1" height="300" src="images/snk3.png" width="300"/>
+            <h3>Sneaker 8386</h3>
+            <p>Phát tài phát lộc<br>Sức khỏe dồi dào</p>
+            <div class="price">$100</div>
+            <div class="rating">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star" data-value="5">★</span>
             </div>
-            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">
-                Mua Ngay
-            </a>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
         </div>
-        <div class="product-item">
-            <img alt="Sneaker 4" height="300" src="images/snk4.png" width="300"/>
-            <h3>
-                Sneaker Phát Lộc
-            </h3>
-            <p>
-                Lộc lá quanh năm suốt tháng
-            </p>
-            <div class="price">
-                $130
+        <div class="product-item style2" style="display:none;">
+            <img alt="Sneaker 2" height="300" src="images/snk4.png" width="300"/>
+            <h3>Sneaker 7939</h3>
+            <p>Thần tài lớn thần tài nhỏ</p>
+            <div class="price">$120</div>
+            <div class="rating">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star" data-value="5">★</span>
             </div>
-            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">
-                Mua Ngay
-            </a>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
         </div>
-        <div class="product-item">
-            <img alt="Sneaker 5" height="300"
-                 src="images/snk5.png"
-                 width="300"/>
-            <h3>
-                Sneaker Sức Khỏe
-            </h3>
-            <p>
-                Dồi dào sức khỏe <br>
-                Ốm đau bệnh tật đi xa
-            </p>
-            <div class="price">
-                $130
+        <div class="product-item style2" style="display:none;">
+            <img alt="Sneaker 2" height="300" src="images/snk5.png" width="300"/>
+            <h3>Sneaker Tiến Tới</h3>
+            <p>Tiền vào như nước</p> <br> <p>Tiền ra nhỏ giọt</p>
+            <div class="price">$120</div>
+            <div class="rating">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star" data-value="5">★</span>
             </div>
-            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">
-                Mua Ngay
-            </a>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
         </div>
-        <div class="product-item">
-            <img alt="Sneaker 6" height="300"
-                 src="images/snk6.png"
-                 width="300"/>
-            <h3>
-                Sneaker Bình An
-            </h3>
-            <p>
-                Gia đình bình an<br>
-                Công việc tiến tới
-            </p>
-            <div class="price">
-                $130
+        <div class="product-item style2" style="display:none;">
+            <img alt="Sneaker 2" height="300" src="images/snk6.png" width="300"/>
+            <h3>Sneaker 4567</h3>
+            <p>Tiền vào như nước sông Đà</p> <br> <p>Tiền ra nhỏ giọt như cà phê phin</p>
+            <div class="price">$120</div>
+            <div class="rating">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star inactive" data-value="5">★</span>
             </div>
-            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">
-                Mua Ngay
-            </a>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
         </div>
-        <div class="product-item">
-            <img alt="Sneaker 7" height="300"
-                 src="images/snk7.png"
-                 width="300"/>
-            <h3>
-                Sneaker Vạn Sự
-            </h3>
-            <p>
-                Vạn sự tinh thông<br>
-                Công việc ổn định
-            </p>
-            <div class="price">
-                $130
+        <div class="product-item style3" style="display:none;">
+            <img alt="Sneaker 3" height="300" src="images/snk7.png" width="300"/>
+            <h3>Sneaker Phát Lộc</h3>
+            <p>Lộc lá quanh năm</p>
+            <div class="price">$150</div>
+            <div class="rating">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star inactive" data-value="5">★</span>
             </div>
-            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">
-                Mua Ngay
-            </a>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
         </div>
-        <div class="product-item">
-            <img alt="Sneaker 8" height="300"
-                 src="images/snk8.png"
-                 width="300"/>
-            <h3>
-                Sneaker Như Ý
-            </h3>
-            <p>
-                Mọi việc như ý<br>
-                Tinh thông vạn vật
-            </p>
-            <div class="price">
-                $130
+        <div class="product-item style3" style="display:none;">
+            <img alt="Sneaker 3" height="300" src="images/snk8.png" width="300"/>
+            <h3>Sneaker Không Sợ</h3>
+            <p>Ai sợ thì đi về</p>
+            <div class="price">$150</div>
+            <div class="rating">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star" data-value="5">★</span>
             </div>
-            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">
-                Mua Ngay
-            </a>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
+        </div>
+        <div class="product-item style3" style="display:none;">
+            <img alt="Sneaker 3" height="300" src="images/snk9.png" width="300"/>
+            <h3>Sneaker Sức Khỏe</h3>
+            <p>Sức khỏe dồi dào </p>
+            <div class="price">$150</div>
+            <div class="rating">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star inactive" data-value="5">★</span>
+            </div>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
+        </div>
+        <div class="product-item style3" style="display:none;">
+            <img alt="Sneaker 3" height="300" src="images/snk10.png" width="300"/>
+            <h3>Sneaker Công Việc Thuận Lợi</h3>
+            <p>Ngày càng thành công phát triển không cài số lùi</p>
+            <div class="price">$150</div>
+            <div class="rating">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star" data-value="5">★</span>
+            </div>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
         </div>
     </div>
 </div>
+
 <div class="modal" id="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal()">
@@ -730,5 +895,4 @@
         </div>
     </div>
 </div>
-
 
