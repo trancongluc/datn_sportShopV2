@@ -34,3 +34,20 @@ h1 {
     text-align: left;
     margin-bottom: 20px;
 }
+.card:hover {
+    background-color: #f8f9fa; /* Màu nền mới */
+    transform: scale(1.02); /* Hiệu ứng phóng to */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Bóng đổ */
+    transition: all 0.3s ease; /* Hiệu ứng chuyển động */
+
+}
+p{
+    color: black;
+}
+
+h5{
+    color: black;
+}
+h4{
+    color: black;
+}
