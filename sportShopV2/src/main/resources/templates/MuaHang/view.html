@@ -179,6 +179,17 @@
             margin-bottom: 10px;
         }
 
+        .product-item .cart-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #ffa07a;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
         .product-item .buy-btn {
             display: inline-block;
             padding: 10px 20px;
@@ -352,6 +363,7 @@
 
         .item a:hover::after {
             width: 100%;
+
         }
 
         .item:nth-child(odd) {
@@ -394,6 +406,7 @@
         .product-nav a:hover {
             color: #000 !important; /* Màu chữ khi hover */
             transform: scale(1.2) !important; /* Phóng to khi hover */
+
         }
 
         .product-nav a.active {
@@ -415,6 +428,17 @@
 
         .product-item img {
             max-width: 100%;
+        }
+        .product-item h3,
+
+        .product-item .buy-btn {
+            transition: transform 0.3s; /* Thêm hiệu ứng chuyển tiếp cho chữ */
+        }
+
+        .product-item:hover h3,
+
+        .product-item:hover .buy-btn {
+            transform: translateY(10px); /* Dịch xuống 10px khi hover */
         }
         .rating {
             display: flex;
@@ -699,7 +723,10 @@
                 <span class="star" data-value="4">★</span>
                 <span class="star inactive" data-value="5">★</span>
             </div>
-            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
+            <a class="buy-btn" href="/mua-ngay">Mua Ngay</a>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">
+                <i class="bi bi-cart"></i> Thêm vào giỏ hàng
+            </a>
         </div>
         <div class="product-item style1">
             <img alt="Sneaker 1" height="300" src="images/snk2.png" width="300"/>
@@ -713,7 +740,8 @@
                 <span class="star" data-value="4">★</span>
                 <span class="star inactive" data-value="5">★</span>
             </div>
-            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
+            <a class="buy-btn" href="/mua-ngay">Mua Ngay</a>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Thêm vào giỏ hàng</a>
         </div>
         <div class="product-item style1">
             <img alt="Sneaker 1" height="300" src="images/snk3.png" width="300"/>
@@ -727,7 +755,8 @@
                 <span class="star" data-value="4">★</span>
                 <span class="star" data-value="5">★</span>
             </div>
-            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
+            <a class="buy-btn" href="/mua-ngay">Mua Ngay</a>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Thêm vào giỏ hàng</a>
         </div>
         <div class="product-item style2" style="display:none;">
             <img alt="Sneaker 2" height="300" src="images/snk4.png" width="300"/>
@@ -741,12 +770,13 @@
                 <span class="star" data-value="4">★</span>
                 <span class="star" data-value="5">★</span>
             </div>
-            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
+            <a class="buy-btn" href="/mua-ngay">Mua Ngay</a>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Thêm vào giỏ hàng</a>
         </div>
         <div class="product-item style2" style="display:none;">
             <img alt="Sneaker 2" height="300" src="images/snk5.png" width="300"/>
             <h3>Sneaker Tiến Tới</h3>
-            <p>Tiền vào như nước</p> <br> <p>Tiền ra nhỏ giọt</p>
+            <p>Tiền vào như nước <br>Tiền ra nhỏ giọt</p>
             <div class="price">$120</div>
             <div class="rating">
                 <span class="star" data-value="1">★</span>
@@ -755,12 +785,13 @@
                 <span class="star" data-value="4">★</span>
                 <span class="star" data-value="5">★</span>
             </div>
-            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
+            <a class="buy-btn" href="/mua-ngay">Mua Ngay</a>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Thêm vào giỏ hàng</a>
         </div>
         <div class="product-item style2" style="display:none;">
             <img alt="Sneaker 2" height="300" src="images/snk6.png" width="300"/>
             <h3>Sneaker 4567</h3>
-            <p>Tiền vào như nước sông Đà</p> <br> <p>Tiền ra nhỏ giọt như cà phê phin</p>
+            <p>Tiền vào như nước sông Đà <br>Tiền ra nhỏ giọt như cà phê phin</p>
             <div class="price">$120</div>
             <div class="rating">
                 <span class="star" data-value="1">★</span>
@@ -769,7 +800,8 @@
                 <span class="star" data-value="4">★</span>
                 <span class="star inactive" data-value="5">★</span>
             </div>
-            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
+            <a class="buy-btn" href="/mua-ngay">Mua Ngay</a>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Thêm vào giỏ hàng</a>
         </div>
         <div class="product-item style3" style="display:none;">
             <img alt="Sneaker 3" height="300" src="images/snk7.png" width="300"/>
@@ -783,7 +815,8 @@
                 <span class="star" data-value="4">★</span>
                 <span class="star inactive" data-value="5">★</span>
             </div>
-            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
+            <a class="buy-btn" href="/mua-ngay">Mua Ngay</a>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Thêm vào giỏ hàng</a>
         </div>
         <div class="product-item style3" style="display:none;">
             <img alt="Sneaker 3" height="300" src="images/snk8.png" width="300"/>
@@ -797,7 +830,8 @@
                 <span class="star" data-value="4">★</span>
                 <span class="star" data-value="5">★</span>
             </div>
-            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
+            <a class="buy-btn" href="/mua-ngay">Mua Ngay</a>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Thêm vào giỏ hàng</a>
         </div>
         <div class="product-item style3" style="display:none;">
             <img alt="Sneaker 3" height="300" src="images/snk9.png" width="300"/>
@@ -811,7 +845,8 @@
                 <span class="star" data-value="4">★</span>
                 <span class="star inactive" data-value="5">★</span>
             </div>
-            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
+            <a class="buy-btn" href="/mua-ngay">Mua Ngay</a>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Thêm vào giỏ hàng</a>
         </div>
         <div class="product-item style3" style="display:none;">
             <img alt="Sneaker 3" height="300" src="images/snk10.png" width="300"/>
@@ -825,7 +860,8 @@
                 <span class="star" data-value="4">★</span>
                 <span class="star" data-value="5">★</span>
             </div>
-            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Mua Ngay</a>
+            <a class="buy-btn" href="/mua-ngay">Mua Ngay</a>
+            <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">Thêm vào giỏ hàng</a>
         </div>
     </div>
 </div>

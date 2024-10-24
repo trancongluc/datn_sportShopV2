@@ -10,4 +10,9 @@ public class MuaSamController {
         return "MuaHang/view";
     }
 
+    @GetMapping("/mua-ngay")
+    public String MuaNgay(){
+        return "MuaHang/mua-ngay";
+    }
 }
+
