@@ -22,8 +22,6 @@ public class test {
         return "KhachHang/tao-khach-hang";
     }
 
-<<<<<<< HEAD
-
     @GetMapping("/d")
     public String d() {
         return "BanHangTaiQuay/BanHangTaiQuay";
@@ -35,35 +33,9 @@ public class test {
         return "NhanVien/nhan-vien-add";
     }
 
-    @GetMapping("/giam-gia")
-    public String GiamGia() {
-        return "PhieuGiamGia/giamGia";
-    }
-
-    @GetMapping("/add-giam-gia")
-    public String AddGiamGia() {
-        return "PhieuGiamGia/add.html";
-    }
-
-    @GetMapping("/dot-giam-gia")
-    public String DotGiamGia() {
-        return "PhieuGiamGia/dotGiamGia";
-    }
-
-    @GetMapping("/add-dot-giam-gia")
-    public String AddDotGiamGia() {
-        return "PhieuGiamGia/addDotGiamGia";
-    }
 
 
-    @GetMapping("/mua-sam")
-    public String MuaSam() {
-        return "MuaHang/view";
-
-    }
-=======
 
 
->>>>>>> tan
 
 }
