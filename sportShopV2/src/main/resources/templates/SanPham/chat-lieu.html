@@ -3,11 +3,14 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{Menu}"
 >
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <link rel="stylesheet" href="/css/thuoc-tinh-sp.css"/>
     <title>Quản Lý Chất Liệu</title>
     <style>
@@ -22,6 +25,7 @@
             overflow: auto;
             background-color: rgba(0, 0, 0, 0.4);
         }
+
         .modal-content {
             position: relative;
             background-color: #fff;
@@ -32,6 +36,7 @@
             max-width: 500px;
             border-radius: 8px;
         }
+
         .close {
             position: absolute;
             top: 10px;
@@ -39,24 +44,29 @@
             font-size: 20px;
             cursor: pointer;
         }
+
         .close:hover,
         .close:focus {
             color: black;
             text-decoration: none;
             cursor: pointer;
         }
+
         .form-group {
             margin-bottom: 15px;
         }
+
         .form-group label {
             display: block;
             margin-bottom: 5px;
         }
+
         .form-group input, .form-group select {
             width: 100%;
             padding: 8px;
             box-sizing: border-box;
         }
+
         .form-group button {
             background-color: #28a745;
             color: #fff;
@@ -65,6 +75,7 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
         .form-group button:hover {
             background-color: #218838;
         }
@@ -72,7 +83,7 @@
 </head>
 <body>
 <main layout:fragment="main1">
-    <div >
+    <div>
         <div class="header">
             <i class="fas fa-box"></i>
             Quản lý chất liệu
@@ -101,9 +112,9 @@
                     <i class="fas fa-list"></i>
                     Danh sách chất liệu
                 </div>
-                <button class="btn btn-primary add-btn" id="addBtn">+ Thêm</button>
+                <button class="btn btn-primary add-btn" onclick="showModal('add')">+ Thêm</button>
             </div>
-            <table class="table table-bordered table-hover">
+            <table class="table table-bordered table-hover" id="tableChatLieu">
                 <thead>
                 <tr>
                     <th>STT</th>
@@ -115,43 +126,73 @@
                 </thead>
                 <tbody>
 
-                <tr>
-                    <td>1</td>
-                    <td>Giày Vải</td>
-                    <td>23-12-2023</td>
-                    <td><span class="status active">Đang sử dụng</span></td>
+                <tr th:each="chatLieu,iterStat  : ${cl}">
+                    <td th:text="${iterStat.index + 1}"></td>
+                    <td th:text="${chatLieu.tenChatLieu}"></td>
+                    <td th:text="${chatLieu.updateAt}"></td>
+                    <td><span class="status active" th:text="${chatLieu.trangThai}"></span></td>
                     <td class="actions">
-                        <i class="fas fa-eye"></i>
-                        <i class="fas fa-edit"></i>
+                        <i class="fas fa-eye" th:data-row-id="${chatLieu.id}"
+                           onclick="showModal('view', this.dataset.rowId)"></i>
+                        <i class="fas fa-edit" th:data-row-id="${chatLieu.id}"
+                           onclick="showModal('edit', this.dataset.rowId)"></i>
                     </td>
                 </tr>
 
                 </tbody>
             </table>
+            <!-- Pagination -->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{/chat-lieu(page=${currentPage - 1})}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a class="page-link" th:href="@{/chat-lieu(page=${i})}" th:text="${i + 1}"></a>
+                    </li>
+
+                    <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{/chat-lieu(page=${currentPage + 1})}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+
         </div>
     </div>
     <!-- The Modal -->
     <div id="myModal" class="modal">
         <div class="modal-content">
-            <span class="close" >&times;</span>
-            <h2>Thêm chất liệu mới</h2>
-            <div class="form-group">
-                <label for="tenChatLieu">Tên Chất Liệu</label>
-                <input type="text" id="tenChatLieu" name="tenChatLieu">
-            </div>
-            <div class="form-group">
-                <label for="trangThai">Trạng Thái</label>
-                <select id="trangThai" name="trangThai">
-                    <option value="1">Đang sử dụng</option>
-                    <option value="0">Ngừng sử dụng</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <button type="submit">Lưu</button>
-            </div>
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Chất Liệu</h2>
+            <input type="hidden" id="actionType" name="actionType" value="add">
+            <form id="chatLieuForm">
+                <input type="hidden" id="chatLieuId" name="chatLieuId" value="">
+                <div class="form-group">
+                    <label for="tenChatLieu">Tên Chất Liệu</label>
+                    <input type="text" id="tenChatLieu" name="tenChatLieu" required>
+                </div>
+                <div class="form-group">
+                    <label for="trangThai">Trạng Thái</label>
+                    <select id="trangThai" name="trangThai" required>
+                        <option value="Đang hoạt động">Đang hoạt động</option>
+                        <option value="Không hoạt động">Không hoạt động</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Lưu</button>
+                </div>
+            </form>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="/js/ThuocTinhSanPham.js"></script>

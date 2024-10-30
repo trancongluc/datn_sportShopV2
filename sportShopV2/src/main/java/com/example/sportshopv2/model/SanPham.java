@@ -9,14 +9,16 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Material")
-public class ChatLieu extends BaseEntity{
+@Table(name = "Product")
+public class SanPham extends BaseEntity{
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(name = "code")
+    private String code;
     @Column(name = "name")
-    private String tenChatLieu;
+    private String tenSanPham;
     @Column(name = "status")
     private String trangThai;
 }

@@ -10,13 +10,13 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "Material")
-public class ChatLieu extends BaseEntity{
+public class ThuongHieu extends BaseEntity{
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "name")
-    private String tenChatLieu;
+    private String tenThuongHieu;
     @Column(name = "status")
     private String trangThai;
 }
