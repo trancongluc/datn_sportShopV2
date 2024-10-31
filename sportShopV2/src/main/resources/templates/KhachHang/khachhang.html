@@ -18,351 +18,108 @@
 <main layout:fragment="main1">
 
 
+
     <div class="container" >
-        <from>
+        <from >
             <h1>Khách Hàng</h1>
             <div class="filter-section">
-                <input type="text" placeholder="Tìm kiếm theo tên, điện thoại, email và địa chỉ">
-                <input type="text" placeholder="Tìm kiếm theo trạng thái">
-                <button >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                         class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
-                    </svg>
-                    Làm mới
-                </button>
-                <a href="/c" class="btn btn-success">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                         class="bi bi-plus-circle" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-                    </svg>
-                    Thêm
-                </a>
+                <form th:action="@{/khach-hang/list}" method="get">
+                    <input type="text" name="keyword"  placeholder="Tìm kiếm theo tên, điện thoại và email " >
+                    <button style="color: black;background: #00CCFF" type="submit" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
 
-
+                        </svg>Tìm Kiếm</button>
+                    <button href="/khach-hang/list">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+                        </svg>
+                        Làm mới
+                    </button>
+                    <a href="/add" class="btn btn-success">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-plus-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                        </svg>
+                        Thêm
+                    </a>
+                </form>
             </div>
+
         </from>
         <table>
             <thead>
             <tr>
                 <th>#</th>
+
                 <th>Họ và tên</th>
                 <th>Điện thoại</th>
                 <th>E-mail</th>
                 <th>Ngày sinh</th>
+                <th>Giới tính</th>
                 <th>Địa chỉ</th>
-                <th>Trạng thái</th>
+                <th>Điểm</th>
                 <th>Hành động</th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td>1</td>
-                <td>Judah Humphrey</td>
-                <td>N/A</td>
-                <td>nec@outlook.ca</td>
-                <td>2034-06-09</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
+            <tr th:each="khachHang, iterStat : ${customers}">
+                <td th:text="${iterStat.index + 1}"></td>
+
                 <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
+                    <div class="d-flex align-items-center">
+                        <img th:src="@{/uploads/{imageFileName}(imageFileName=${khachHang.imageFileName})}" alt="Ảnh khách hàng" width="50" height="50" class="rounded-circle me-2">
+                        <span th:text="${khachHang.fullName}" style="color: black;"></span>
+                    </div>
+                </td>
+                <td th:text="${khachHang.phoneNumber}"></td>
+                <td th:text="${khachHang.email}"></td>
+                <td th:text="${khachHang.date}"></td>
+                <td th:text="${khachHang.gender}"></td>
+                <td>
+                    <div th:each="address : ${khachHang.addresses}">
+                        <span th:text="${address.tinh}"></span>,
+                        <span th:text="${address.quan}"></span>,
+                        <span th:text="${address.phuong}"></span>
+                        <br/>
+                    </div>
+                </td>
+                <td>
+                    <span class="active-status" th:text="${khachHang.points}"></span>
+                </td>
+                <td>
+                    <a th:href="@{/customer/detail/{id}(id=${khachHang.id})}" class="btn btn-warning">✏️</a>
+                    <a th:href="@{/delete/{id}(id=${khachHang.id})}" class="btn btn-danger">🗑️</a>
                 </td>
             </tr>
-            <tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>Kennan Fitzgerald</td>
-                <td>N/A</td>
-                <td>gestas@hotmail.co.uk</td>
-                <td>2039-08-31</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr><tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr><tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr><tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr><tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr><tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr><tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Devin Decker</td>
-                <td>N/A</td>
-                <td>fusce.fermentum@icloud.co.uk</td>
-                <td>2037-07-14</td>
-                <td>N/A</td>
-                <td><span class="active-status">Đang hoạt động</span></td>
-                <td>
-                    <button class="icon">👁️</button>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
+
             </tbody>
         </table>
+        <nav>
+        <div class="d-flex justify-content-center">
+            <div class="pagination">
+                <ul class="pagination">
+                    <li th:if="${currentPage > 0}">
+                        <a th:href="@{/khach-hang/list(page=${currentPage - 1}, size=${size})}" class="btn btn-secondary"><</a>
+                    </li>
+                    <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                        <a th:href="@{/khach-hang/list(page=${i}, size=${size})}"
+                           th:text="${i + 1}"
+                           th:class="${i == currentPage} ? 'btn btn-primary' : 'btn btn-secondary'"></a>
+                    </li>
+                    <li th:if="${currentPage < totalPages - 1}">
+                        <a th:href="@{/khach-hang/list(page=${currentPage + 1}, size=${size})}" class="btn btn-secondary">></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        </nav>
     </div>
+
 </main>
 </body>
 </html>

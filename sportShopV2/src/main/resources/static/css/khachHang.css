@@ -140,3 +140,18 @@ tbody tr:nth-child(even) {
 .btn-scan-qr:hover {
     background-color: #e64a19; /* Màu cam đậm khi hover */
 }
+
+.pagination .active .page-link {
+    background-color: #007bff; /* Màu nền của nút hiện tại */
+    border-color: #007bff; /* Màu viền của nút hiện tại */
+    color: white; /* Màu chữ của nút hiện tại */
+}
+input[type="text"] {
+    width: 700px; /* Adjust the width as needed */
+}
+.btn-scan-qr {
+    margin-right: 20px; /* Điều chỉnh số pixel để di chuyển nút sang trái */
+    /* Hoặc bạn có thể sử dụng position */
+    position: relative;
+    right: 20px; /* Giảm giá trị này để di chuyển nút sang trái */
+}
