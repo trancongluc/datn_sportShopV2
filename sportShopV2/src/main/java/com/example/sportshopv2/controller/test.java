@@ -20,26 +20,4 @@ public class test {
     public String c() {
         return "KhachHang/tao-khach-hang";
     }
-
-    //<<<<<<< Updated upstream
-//=======
-    @GetMapping("/d")
-    public String d() {
-        return "NhanVien/QL-nhan-vien";
-    }
-
-    @GetMapping("/e")
-    public String e() {
-        return "NhanVien/nhan-vien-add";
-    }
-
-    //>>>>>>> Stashed changes
-    @GetMapping("/f")
-    public String f() {
-        return "TheoDoi/TheoDoi";
-    }
-    @GetMapping("/g")
-    public String g() {
-        return "GioHang/giohang";
-    }
 }

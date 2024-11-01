@@ -1,12 +1,13 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+.container {
+    width: 100%;        /* Chiếm 100% không gian màn hình */
+    margin: 0 auto;     /* Căn giữa trang */
+    padding: 0 10px;    /* Giữ khoảng cách 10px từ hai bên để nội dung không sát mép */
+    max-width: none;
 }
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f8f8;
+/* Đặt chiều cao cố định và bật cuộn dọc */
+.scroll-container {
+    max-height: 700px; /* Chiều cao cố định */
+    overflow-y: auto; /* Bật cuộn dọc */
 }
 
 .cart-empty {

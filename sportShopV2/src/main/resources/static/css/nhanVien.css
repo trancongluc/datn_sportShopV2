@@ -1,18 +1,10 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f8f8;
-    /*padding: 20px;*/
-}
 
 .container {
-    width: 90%;
-    margin: auto;
+    width: 100%;        /* Chiếm 100% không gian màn hình */
+    margin: 0 auto;     /* Căn giữa trang */
+    padding: 0 10px;    /* Giữ khoảng cách 10px từ hai bên để nội dung không sát mép */
+    max-width: none;
 }
 
 h1 {
@@ -100,8 +92,16 @@ tbody tr:nth-child(even) {
 ---------------------------------------------------
 
 .container {
+    width: 100%;        /* Chiếm 100% không gian màn hình */
+    margin: 0 auto;     /* Căn giữa trang */
+    padding: 0 10px;    /* Giữ khoảng cách 10px từ hai bên để nội dung không sát mép */
+    max-width: none;
     margin-top: 20px;
 }
+form{
+    padding-top: 20px;
+}
+
 .form-label {
     font-weight: bold;
 }
