@@ -23,7 +23,7 @@ public class deGiayController {
                                @RequestParam(defaultValue = "5") int size, Model model) {
         Page<DeGiay> deGiayPage = deGiayService.getAllDeGiay(PageRequest.of(page, size));
 
-        model.addAttribute("cl", deGiayPage.getContent());
+        model.addAttribute("deGiay", deGiayPage.getContent());
         model.addAttribute("currentPage", page); // Đảm bảo currentPage là số nguyên
         model.addAttribute("totalPages", deGiayPage.getTotalPages()); // Đảm bảo totalPages cũng là số nguyên
         return "SanPham/de-giay"; // Trả về trang mẫu

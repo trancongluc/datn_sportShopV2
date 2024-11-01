@@ -23,29 +23,29 @@ public class thuongHieuController {
                                 @RequestParam(defaultValue = "5") int size, Model model) {
         Page<ThuongHieu> thuongHieuPage = thuongHieuService.getAllThuongHieu(PageRequest.of(page, size));
 
-        model.addAttribute("cl", thuongHieuPage.getContent());
+        model.addAttribute("thuongHieu", thuongHieuPage.getContent());
         model.addAttribute("currentPage", page); // Đảm bảo currentPage là số nguyên
         model.addAttribute("totalPages", thuongHieuPage.getTotalPages()); // Đảm bảo totalPages cũng là số nguyên
-        return "SanPham/the-loai"; // Trả về trang mẫu
+        return "SanPham/thuong-hieu"; // Trả về trang mẫu
     }
 
 
-    @PostMapping("/them-the-loai")
+    @PostMapping("/them-thuong-hieu")
     @ResponseBody
-    public ResponseEntity<String> themChatLieu(@RequestBody ThuongHieu thuongHieu) {
+    public ResponseEntity<String> themThuongHieu(@RequestBody ThuongHieu thuongHieu) {
         thuongHieuService.addThuongHieu(thuongHieu);
         return ResponseEntity.ok("Thêm thành công");
     }
 
     @GetMapping("/{id}")
     @ResponseBody
-    public ThuongHieu deGiayById(@PathVariable Integer id) {
+    public ThuongHieu thuongHieuById(@PathVariable Integer id) {
         return thuongHieuService.getThuongHieuById(id);
     }
 
     @PutMapping("/{id}")
     @ResponseBody
-    public ResponseEntity<ThuongHieu> updateChatLieu(@PathVariable Integer id, @RequestBody ThuongHieu thuongHieu) {
+    public ResponseEntity<ThuongHieu> updateThuongHieu(@PathVariable Integer id, @RequestBody ThuongHieu thuongHieu) {
         ThuongHieu updateThuongHieu = thuongHieuService.update(id, thuongHieu);
         if (updateThuongHieu != null) {
             return ResponseEntity.ok(updateThuongHieu);

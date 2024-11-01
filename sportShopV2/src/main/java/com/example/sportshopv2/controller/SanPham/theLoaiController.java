@@ -23,7 +23,7 @@ public class theLoaiController {
                                @RequestParam(defaultValue = "5") int size, Model model) {
         Page<TheLoai> theLoaiPage = theLoaiService.getAllTheLoai(PageRequest.of(page, size));
 
-        model.addAttribute("cl", theLoaiPage.getContent());
+        model.addAttribute("theLoai", theLoaiPage.getContent());
         model.addAttribute("currentPage", page); // Đảm bảo currentPage là số nguyên
         model.addAttribute("totalPages", theLoaiPage.getTotalPages()); // Đảm bảo totalPages cũng là số nguyên
         return "SanPham/the-loai"; // Trả về trang mẫu

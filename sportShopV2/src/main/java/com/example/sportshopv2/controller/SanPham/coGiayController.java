@@ -21,7 +21,7 @@ public class coGiayController {
                                @RequestParam(defaultValue = "5") int size, Model model) {
         Page<CoGiay> coGiayPage = coGiayService.getAllCoGiay(PageRequest.of(page, size));
 
-        model.addAttribute("cl", coGiayPage.getContent());
+        model.addAttribute("coGiay", coGiayPage.getContent());
         model.addAttribute("currentPage", page); // Đảm bảo currentPage là số nguyên
         model.addAttribute("totalPages", coGiayPage.getTotalPages()); // Đảm bảo totalPages cũng là số nguyên
         return "SanPham/co-giay"; // Trả về trang mẫu

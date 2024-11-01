@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Material")
+@Table(name = "Brand")
 public class ThuongHieu extends BaseEntity{
     @Id
     @Column(name = "id")

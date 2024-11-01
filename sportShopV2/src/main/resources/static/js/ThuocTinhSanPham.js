@@ -51,7 +51,7 @@ $('#chatLieuForm').submit(function (event) {
         success: function (response) {
             alert(actionType === 'add' ? 'Thêm chất liệu thành công!' : 'Cập nhật chất liệu thành công!');
             closeModal();
-            // Reload bảng hoặc cập nhật danh sách
+            window.location.reload();
         },
         error: function (jqXHR, textStatus) {
             console.error("Error:", textStatus);
@@ -69,3 +69,4 @@ function closeModal() {
 $(window).on('click', function (event) {
     if (event.target.id === 'myModal') closeModal();
 });
+// co giay
