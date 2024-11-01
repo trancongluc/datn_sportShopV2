@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/thuong-hieu")
 @RequiredArgsConstructor
@@ -28,7 +30,11 @@ public class thuongHieuController {
         model.addAttribute("totalPages", thuongHieuPage.getTotalPages()); // Đảm bảo totalPages cũng là số nguyên
         return "SanPham/thuong-hieu"; // Trả về trang mẫu
     }
-
+    @GetMapping("/combobox")
+    public ResponseEntity<List<ThuongHieu>> getAllCbo() {
+        List<ThuongHieu> brands = thuongHieuService.getAll();
+        return ResponseEntity.ok(brands); // Trả về danh sách thương hiệu
+    }
 
     @PostMapping("/them-thuong-hieu")
     @ResponseBody
@@ -36,7 +42,13 @@ public class thuongHieuController {
         thuongHieuService.addThuongHieu(thuongHieu);
         return ResponseEntity.ok("Thêm thành công");
     }
-
+    @PostMapping("/them-nhanh")
+    @ResponseBody
+    public ResponseEntity<String> themNhanh(@RequestBody ThuongHieu thuongHieu) {
+        thuongHieu.setTrangThai("Đang hoạt động");
+        thuongHieuService.addThuongHieu(thuongHieu);
+        return ResponseEntity.ok("Thêm thành công");
+    }
     @GetMapping("/{id}")
     @ResponseBody
     public ThuongHieu thuongHieuById(@PathVariable Integer id) {

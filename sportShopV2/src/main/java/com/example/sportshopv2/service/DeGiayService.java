@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,7 +21,9 @@ public class DeGiayService {
     public Page<DeGiay> getAllDeGiay(Pageable pageable) {
         return deGiayRepository.findAllByOrderByCreateAtDesc(pageable);
     }
-
+    public List<DeGiay> getAll() {
+        return deGiayRepository.findAllByOrderByCreateAtDesc();
+    }
     public DeGiay addDeGiay(DeGiay deGiay) {
         deGiay.setCreateBy("NV1");
         return deGiayRepository.save(deGiay);

@@ -1,25 +1,25 @@
 function showModal(type, id) {
     $('#myModal').css('display', 'block'); // Hiện modal
-    $('#coGiayId').val(id); // Cập nhật ID chất liệu vào input ẩn
-    $('#coGiayForm')[0].reset(); // Reset form khi mở modal
-    console.log("id :" + id);
+    $('#chatLieuId').val(id); // Cập nhật ID chất liệu vào input ẩn
+    $('#chatLieuForm')[0].reset(); // Reset form khi mở modal
+    console.log("id:" + id);
 
     if (type === 'view' || type === 'edit') {
         // Gọi API để lấy chi tiết chất liệu
-        $.get('/co-giay/' + id)
-            .done(function (coGiay) {
-                $('#myModal h2').text(type === 'view' ? 'Chi tiết Cổ Giày' : 'Cập nhật Cổ Giày');
-                $('#tenCoGiay').val(coGiay.tenCoGiay);
-                $('#trangThai').val(coGiay.trangThai); // Đặt giá trị trạng thái vào combobox
+        $.get('/chat-lieu/' + id)
+            .done(function (chatLieu) {
+                $('#myModal h2').text(type === 'view' ? 'Chi tiết chất liệu' : 'Cập nhật chất liệu');
+                $('#tenChatLieu').val(chatLieu.tenChatLieu);
+                $('#trangThai').val(chatLieu.trangThai); // Đặt giá trị trạng thái vào combobox
                 $('#actionType').val(type); // Gán hành động
                 $('#myModal button[type=submit]').toggle(type === 'edit'); // Hiện nút lưu nếu là edit
             })
             .fail(function (jqXHR, textStatus) {
                 console.error("Error:", textStatus);
-                alert('Có lỗi xảy ra khi lấy thông tin.');
+                alert('Có lỗi xảy ra khi lấy thông tin chất liệu.');
             });
     } else if (type === 'add') {
-        $('#myModal h2').text('Thêm cổ giày mới');
+        $('#myModal h2').text('Thêm chất liệu mới');
         $('#actionType').val('add'); // Gán hành động
         $('#myModal button[type=submit]').show(); // Hiện nút lưu
     }
@@ -27,7 +27,7 @@ function showModal(type, id) {
 
 // Xử lý sự kiện submit của form
 $(document).ready(function () {
-    $('#coGiayForm').submit(function (event) {
+    $('#chatLieuForm').submit(function (event) {
         event.preventDefault(); // Ngăn chặn hành động submit mặc định
         // Gọi modal xác nhận trước khi submit
         showConfirmation('lưu');
@@ -37,7 +37,7 @@ $(document).ready(function () {
 function showConfirmation(action) {
     const modal = $('#confirmationModal');
     const modalMessage = $('#modalMessage');
-    modalMessage.text(`Bạn có chắc muốn ${action} ?`); // Sử dụng đúng ký tự tiếng Việt
+    modalMessage.text(`Bạn có chắc muốn ${action} thông tin?`); // Sử dụng đúng ký tự tiếng Việt
     modal.css('display', 'block');
     setTimeout(() => {
         modal.css('opacity', '1');
@@ -48,20 +48,20 @@ function showConfirmation(action) {
 // Xác nhận hành động
 function confirmAction() {
     const actionType = $('#actionType').val();
-    const coGiayId = $('#coGiayId').val();
+    const chatLieuId = $('#chatLieuId').val();
     let url = '';
     let method = '';
 
     if (actionType === 'add') {
-        url = '/co-giay/them-co-giay';
+        url = '/chat-lieu/them-chat-lieu';
         method = 'POST';
     } else if (actionType === 'edit') {
-        url = '/co-giay/' + coGiayId;
+        url = '/chat-lieu/' + chatLieuId;
         method = 'PUT';
     }
 
     const formData = JSON.stringify({
-        tenCoGiay: $('#tenCoGiay').val(),
+        tenChatLieu: $('#tenChatLieu').val(),
         trangThai: $('#trangThai').val()
     });
 

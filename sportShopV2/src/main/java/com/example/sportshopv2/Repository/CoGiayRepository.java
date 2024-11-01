@@ -12,6 +12,7 @@ import java.util.Optional;
 
 public interface CoGiayRepository extends JpaRepository<CoGiay, Integer> {
     Page<CoGiay> findAllByOrderByCreateAtDesc(Pageable pageable);
+    List<CoGiay> findAllByOrderByCreateAtDesc();
     Optional<CoGiay> findById(Integer id);
 
     @Query("SELECT cg FROM CoGiay cg ORDER BY cg.createAt DESC ")

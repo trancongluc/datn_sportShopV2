@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/the-loai")
 @RequiredArgsConstructor
@@ -28,7 +30,11 @@ public class theLoaiController {
         model.addAttribute("totalPages", theLoaiPage.getTotalPages()); // Đảm bảo totalPages cũng là số nguyên
         return "SanPham/the-loai"; // Trả về trang mẫu
     }
-
+    @GetMapping("/combobox")
+    public ResponseEntity<List<TheLoai>> getAllCbo() {
+        List<TheLoai> theLoais = theLoaiService.getAll();
+        return ResponseEntity.ok(theLoais); // Trả về danh sách thương hiệu
+    }
 
     @PostMapping("/them-the-loai")
     @ResponseBody
@@ -36,7 +42,13 @@ public class theLoaiController {
         theLoaiService.addTheLoai(theLoai);
         return ResponseEntity.ok("Thêm thành công");
     }
-
+    @PostMapping("/them-nhanh")
+    @ResponseBody
+    public ResponseEntity<String> themNhanh(@RequestBody TheLoai theLoai) {
+        theLoai.setTrangThai("Đang hoạt động");
+        theLoaiService.addTheLoai(theLoai);
+        return ResponseEntity.ok("Thêm thành công");
+    }
     @GetMapping("/{id}")
     @ResponseBody
     public TheLoai deGiayById(@PathVariable Integer id) {

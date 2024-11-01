@@ -20,7 +20,9 @@ public class ChatLieuService {
     public Page<ChatLieu> getAllChatLieu(Pageable pageable) {
         return chatLieuRepository.findAllByOrderByCreateAtDesc(pageable);
     }
-
+    public List<ChatLieu> getAll() {
+        return chatLieuRepository.findAllByOrderByCreateAtDesc();
+    }
     public ChatLieu addChatLieu(ChatLieu chatLieu) {
         chatLieu.setCreateBy("NV1");
         return chatLieuRepository.save(chatLieu);

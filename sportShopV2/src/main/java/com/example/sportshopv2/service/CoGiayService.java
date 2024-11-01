@@ -4,12 +4,14 @@ import com.example.sportshopv2.Repository.ChatLieuRepository;
 import com.example.sportshopv2.Repository.CoGiayRepository;
 import com.example.sportshopv2.model.ChatLieu;
 import com.example.sportshopv2.model.CoGiay;
+import com.example.sportshopv2.model.ThuongHieu;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,7 +22,9 @@ public class CoGiayService {
     public Page<CoGiay> getAllCoGiay(Pageable pageable) {
         return coGiayRepository.findAllByOrderByCreateAtDesc(pageable);
     }
-
+    public List<CoGiay> getAll() {
+        return coGiayRepository.findAllByOrderByCreateAtDesc();
+    }
     public CoGiay addCoGiay(CoGiay coGiay) {
         coGiay.setCreateBy("NV1");
         return coGiayRepository.save(coGiay);

@@ -1,6 +1,8 @@
 package com.example.sportshopv2.controller.SanPham;
 
+import com.example.sportshopv2.model.ChatLieu;
 import com.example.sportshopv2.model.CoGiay;
+import com.example.sportshopv2.model.DeGiay;
 import com.example.sportshopv2.service.CoGiayService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -9,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/co-giay")
@@ -27,7 +31,18 @@ public class coGiayController {
         return "SanPham/co-giay"; // Trả về trang mẫu
     }
 
-
+    @GetMapping("/combobox")
+    public ResponseEntity<List<CoGiay>> getAllCoGiay() {
+        List<CoGiay> coGiays = coGiayService.getAll();
+        return ResponseEntity.ok(coGiays); // Trả về danh sách thương hiệu
+    }
+    @PostMapping("/them-nhanh")
+    @ResponseBody
+    public ResponseEntity<String> themNhanh(@RequestBody CoGiay coGiay) {
+        coGiay.setTrangThai("Đang hoạt động");
+        coGiayService.addCoGiay(coGiay);
+        return ResponseEntity.ok("Thêm thành công");
+    }
     @PostMapping("/them-co-giay")
     @ResponseBody
     public ResponseEntity<String> themChatLieu(@RequestBody CoGiay coGiay) {

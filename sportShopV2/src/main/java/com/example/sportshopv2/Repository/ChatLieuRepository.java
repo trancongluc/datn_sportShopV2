@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface ChatLieuRepository extends JpaRepository<ChatLieu, Integer> {
     Page<ChatLieu> findAllByOrderByCreateAtDesc(Pageable pageable);
     Optional<ChatLieu> findById(Integer id);
-
+    List<ChatLieu> findAllByOrderByCreateAtDesc();
     @Query("SELECT c FROM ChatLieu c ORDER BY c.createAt DESC ")
     List<ChatLieu> findAllChatLieuByCreatedAtDesc();
 }

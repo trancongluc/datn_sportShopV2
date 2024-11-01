@@ -12,6 +12,7 @@ import java.util.Optional;
 
 public interface DeGiayRepository extends JpaRepository<DeGiay, Integer> {
     Page<DeGiay> findAllByOrderByCreateAtDesc(Pageable pageable);
+    List<DeGiay> findAllByOrderByCreateAtDesc( );
     Optional<DeGiay> findById(Integer id);
 
 

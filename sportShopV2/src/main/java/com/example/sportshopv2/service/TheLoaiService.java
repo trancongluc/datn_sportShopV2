@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,7 +21,9 @@ public class TheLoaiService {
     public Page<TheLoai> getAllTheLoai(Pageable pageable) {
         return theLoaiRepository.findAllByOrderByCreateAtDesc(pageable);
     }
-
+    public List<TheLoai> getAll() {
+        return theLoaiRepository.findAllByOrderByCreateAtDesc();
+    }
     public TheLoai addTheLoai(TheLoai theLoai) {
         theLoai.setCreateBy("NV1");
         return theLoaiRepository.save(theLoai);

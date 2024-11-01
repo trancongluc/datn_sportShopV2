@@ -12,5 +12,6 @@ import java.util.Optional;
 
 public interface TheLoaiRepository extends JpaRepository<TheLoai, Integer> {
     Page<TheLoai> findAllByOrderByCreateAtDesc(Pageable pageable);
+    List<TheLoai> findAllByOrderByCreateAtDesc();
     Optional<TheLoai> findById(Integer id);
 }
