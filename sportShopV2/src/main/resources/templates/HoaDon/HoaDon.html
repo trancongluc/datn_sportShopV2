@@ -2,12 +2,11 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{Menu}"
->
+      layout:decorate="~{Menu}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Management</title>
+    <title>Quản lý hóa đơn</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -53,30 +52,72 @@
         <div class="section-title">
             <i class="fas fa-list"></i>
             <span>Danh sách Hóa đơn</span>
-            <button class="btn btn-primary">+ Tạo đơn hàng</button>
+            <div class="button-export">
+                <button class="btn btn-primary">+ Tạo đơn hàng</button>
+                <a th:href="@{/export/excel}">
+                    <button class="btn btn-primary">
+                        <img th:src="@{/images/img_2.png}" width="25px" height="25px" alt="Icon">
+                        Xuất Excel
+                    </button>
+                </a>
+            </div>
+
         </div>
         <div class="invoice-section">
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#" onclick="showTab(event, 'all')">Tất cả</a>
+                    <a class="nav-link"
+                       th:href="@{/bill/view}"
+                       th:classappend="${tab == 'all'} ? 'active' : ''">Tất cả</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="showTab(event, 'pending')">Chờ xác nhận <span class="badge">8</span></a>
+                    <a class="nav-link"
+                       th:href="@{/bill/tab(status='Chờ xác nhận')}"
+                       th:classappend="${tab == 'pending'} ? 'active' : ''">Chờ xác nhận</a>
+                </li>
+
+                <!--                <li class="nav-item">-->
+                <!--                    <a class="nav-link" th:href="@{/bill/detail(status='Pending')}" th:class="${tab == 'pending'} ? 'nav-link active' : 'nav-link">Chờ xác nhận <span class="badge">8</span></a>-->
+                <!--                </li>-->
+                <!--                <li class="nav-item">-->
+                <!--                    <a class="nav-link" th:href="@{/bill/detail(status='Đã xác nhận')}" onclick="showTab(event, 'confirmed')">Đã xác nhận <span class="badge">3</span></a>-->
+                <!--                </li>-->
+                <!--                <li class="nav-item">-->
+                <!--                    <a class="nav-link" th:href="@{/bill/detail(status='Shipping')}" onclick="showTab(event, 'shipping')">Chờ vận chuyển <span class="badge">9</span></a>-->
+                <!--                </li>-->
+                <!--                <li class="nav-item">-->
+                <!--                    <a class="nav-link" th:href="@{/bill/detail(status='Payment')}" onclick="showTab(event, 'payment')">Thanh toán <span class="badge">4</span></a>-->
+                <!--                </li>-->
+                <!--                <li class="nav-item">-->
+                <!--                    <a class="nav-link" th:href="@{/bill/detail(status='Completed')}" onclick="showTab(event, 'completed')">Hoàn thành <span class="badge">99+</span></a>-->
+                <!--                </li>-->
+                <!--                <li class="nav-item">-->
+                <!--                    <a class="nav-link" th:href="@{/bill/detail(status='Cancelled')}" onclick="showTab(event, 'cancelled')">Hủy <span class="badge">8</span></a>-->
+                <!--                </li>-->
+                <li class="nav-item">
+                    <a class="nav-link"
+                       th:href="@{/bill/tab(status='Đã xác nhận')}"
+                       th:classappend="${tab == 'confirmed'} ? 'active' : ''">Đã xác nhận</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="showTab(event, 'confirmed')">Đã xác nhận <span class="badge">3</span></a>
+                    <a class="nav-link"
+                       th:href="@{/bill/tab(status='Chờ vận chuyển')}"
+                       th:classappend="${tab == 'shipping'} ? 'active' : ''">Chờ vận chuyển</a>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       th:href="@{/bill/tab(status='Thanh toán')}"
+                       th:classappend="${tab == 'payment'} ? 'active' : ''">Thanh toán</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="showTab(event, 'shipping')">Chờ vận chuyển <span class="badge">9</span></a>
+                    <a class="nav-link"
+                       th:href="@{/bill/tab(status='Hoàn thành')}"
+                       th:classappend="${tab == 'completed'} ? 'active' : ''">Hoàn thành</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="showTab(event, 'payment')">Thanh toán <span class="badge">4</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="showTab(event, 'completed')">Hoàn thành <span class="badge">99+</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="showTab(event, 'cancelled')">Hủy <span class="badge">8</span></a>
+                    <a class="nav-link"
+                       th:href="@{/bill/tab(status='Hủy')}"
+                       th:classappend="${tab == 'cancelled'} ? 'active' : ''">Hủy</a>
                 </li>
             </ul>
             <div id="all" class="tab-content active">
@@ -95,66 +136,198 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>HD881712</td>
-                        <td>Vĩnh Nguyên Văn</td>
-                        <td>Nguyễn Văn Vinh</td>
-                        <td>Online</td>
-                        <td>16:37:35 23-12-2023</td>
-                        <td>150.000 VND</td>
-                        <td>4.850.000 VND</td>
-                        <td><button class="btn btn-warning"><i class="fas fa-eye"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>HD086843</td>
-                        <td>Nguyễn Hà Nhật Nam</td>
-                        <td>Nguyễn Văn Vinh</td>
-                        <td>Tại quầy</td>
-                        <td>09:42:09 19-12-2023</td>
-                        <td>300.000 VND</td>
-                        <td>9.422.222 VND</td>
-                        <td><button class="btn btn-warning"><i class="fas fa-eye"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>HD841957</td>
-                        <td>Nguyễn Văn Vinh</td>
-                        <td>Nguyễn Văn Vinh</td>
-                        <td>Tại quầy</td>
-                        <td>16:31:09 23-12-2023</td>
-                        <td>300.000 VND</td>
-                        <td>6.200.000 VND</td>
-                        <td><button class="btn btn-warning"><i class="fas fa-eye"></i></button></td>
+                    <tr th:each="hdct, index : ${hdctList}">
+                        <td th:text="${index.index + 1}"></td>
+                        <td th:text="${hdct.hoaDon.id}"></td>
+                        <td th:text="${hdct.hoaDon.user_name}"></td>
+                        <td th:text="${hdct.hoaDon.email}"></td>
+                        <td th:text="${hdct.hoaDon.type}"></td>
+                        <td th:text="${hdct.create_at}"></td>
+                        <td th:text="${hdct.quantity}"></td>
+                        <td th:text="${hdct.hoaDon.total_money}"></td>
+                        <td>
+                            <a th:href="@{/bill/detail(id=${hdct.id})}">
+                                <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
+                            </a>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
+
             <div id="pending" class="tab-content">
-                <p>Chờ xác nhận content...</p>
+                <table class="table table-bordered invoice-table mt-3">
+                    <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã hóa đơn</th>
+                        <th>Tên khách hàng</th>
+                        <th>Tên nhân viên</th>
+                        <th>Loại</th>
+                        <th>Ngày tạo</th>
+                        <th>Tiền giảm</th>
+                        <th>Tổng tiền</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="hdct, index : ${hdctList}">
+                        <td th:text="${index.index + 1}"></td>
+                        <td th:text="${hdct.hoaDon.id}"></td>
+                        <td th:text="${hdct.hoaDon.user_name}"></td>
+                        <td th:text="${hdct.hoaDon.email}"></td>
+                        <td th:text="${hdct.hoaDon.type}"></td>
+                        <td th:text="${hdct.create_at}"></td>
+                        <td th:text="${hdct.quantity}"></td>
+                        <td th:text="${hdct.price}"></td>
+                        <td>
+                            <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
             </div>
-            <div id="confirmed" class="tab-content">
-                <p>Đã xác nhận content...</p>
-            </div>
+
             <div id="shipping" class="tab-content">
-                <p>Chờ vận chuyển content...</p>
+                <table class="table table-bordered invoice-table mt-3">
+                    <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã hóa đơn</th>
+                        <th>Tên khách hàng</th>
+                        <th>Tên nhân viên</th>
+                        <th>Loại</th>
+                        <th>Ngày tạo</th>
+                        <th>Tiền giảm</th>
+                        <th>Tổng tiền</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="hdct, index : ${hdctList}">
+                        <td th:text="${index.index + 1}"></td>
+                        <td th:text="${hdct.hoaDon.id}"></td>
+                        <td th:text="${hdct.hoaDon.user_name}"></td>
+                        <td th:text="${hdct.hoaDon.email}"></td>
+                        <td th:text="${hdct.hoaDon.type}"></td>
+                        <td th:text="${hdct.create_at}"></td>
+                        <td th:text="${hdct.quantity}"></td>
+                        <td th:text="${hdct.price}"></td>
+                        <td>
+                            <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
             <div id="payment" class="tab-content">
-                <p>Thanh toán content...</p>
+                <table class="table table-bordered invoice-table mt-3">
+                    <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã hóa đơn</th>
+                        <th>Tên khách hàng</th>
+                        <th>Tên nhân viên</th>
+                        <th>Loại</th>
+                        <th>Ngày tạo</th>
+                        <th>Tiền giảm</th>
+                        <th>Tổng tiền</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="hdct, index : ${hdctList}">
+                        <td th:text="${index.index + 1}"></td>
+                        <td th:text="${hdct.hoaDon.id}"></td>
+                        <td th:text="${hdct.hoaDon.user_name}"></td>
+                        <td th:text="${hdct.hoaDon.email}"></td>
+                        <td th:text="${hdct.hoaDon.type}"></td>
+                        <td th:text="${hdct.create_at}"></td>
+                        <td th:text="${hdct.quantity}"></td>
+                        <td th:text="${hdct.price}"></td>
+                        <td>
+                            <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
             </div>
             <div id="completed" class="tab-content">
-                <p>Hoàn thành content...</p>
+                <table class="table table-bordered invoice-table mt-3">
+                    <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã hóa đơn</th>
+                        <th>Tên khách hàng</th>
+                        <th>Tên nhân viên</th>
+                        <th>Loại</th>
+                        <th>Ngày tạo</th>
+                        <th>Tiền giảm</th>
+                        <th>Tổng tiền</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="hdct, index : ${hdctList}">
+                        <td th:text="${index.index + 1}"></td>
+                        <td th:text="${hdct.hoaDon.id}"></td>
+                        <td th:text="${hdct.hoaDon.user_name}"></td>
+                        <td th:text="${hdct.hoaDon.email}"></td>
+                        <td th:text="${hdct.hoaDon.type}"></td>
+                        <td th:text="${hdct.create_at}"></td>
+                        <td th:text="${hdct.quantity}"></td>
+                        <td th:text="${hdct.price}"></td>
+                        <td>
+                            <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
             <div id="cancelled" class="tab-content">
-                <p>Hủy content...</p>
+                <table class="table table-bordered invoice-table mt-3">
+                    <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã hóa đơn</th>
+                        <th>Tên khách hàng</th>
+                        <th>Tên nhân viên</th>
+                        <th>Loại</th>
+                        <th>Ngày tạo</th>
+                        <th>Tiền giảm</th>
+                        <th>Tổng tiền</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="hdct, index : ${hdctList}">
+                        <td th:text="${index.index + 1}"></td>
+                        <td th:text="${hdct.hoaDon.id}"></td>
+                        <td th:text="${hdct.hoaDon.user_name}"></td>
+                        <td th:text="${hdct.hoaDon.email}"></td>
+                        <td th:text="${hdct.hoaDon.type}"></td>
+                        <td th:text="${hdct.create_at}"></td>
+                        <td th:text="${hdct.quantity}"></td>
+                        <td th:text="${hdct.price}"></td>
+                        <td>
+                            <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
             </div>
+
+
+            <!-- Add similar blocks for 'shipping', 'payment', 'completed', and 'cancelled' -->
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script>
-        $(function() {
+        $(function () {
             $("#start-date, #end-date").datepicker({
                 dateFormat: "dd/mm/yy"
             });
@@ -162,17 +335,19 @@
 
         function showTab(event, tabId) {
             event.preventDefault();
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].classList.remove("active");
+            var tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(function (content) {
+                content.classList.remove('active');
+            });
+            var tabLinks = document.querySelectorAll('.nav-link');
+            tabLinks.forEach(function (link) {
+                link.classList.remove('active');
+            });
+            var selectedTab = document.getElementById(tabId);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+                event.currentTarget.classList.add('active');
             }
-            tablinks = document.getElementsByClassName("nav-link");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].classList.remove("active");
-            }
-            document.getElementById(tabId).classList.add("active");
-            event.currentTarget.classList.add("active");
         }
     </script>
 </main>

@@ -1,10 +1,134 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Menu}">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>
+        Order Information
+    </title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 </head>
-<body>
-$END$
+<body class="bg-gray-100 p-4">
+<main layout:fragment="main1" th:object="${list}">
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-bold mb-4" th:text="${list.hoaDon.getBill_code()}">
+        </h2>
+        <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+                <p class="mb-2">
+      <span class="font-semibold">
+       Trạng thái :
+      </span>
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded-full" th:text="${list.hoaDon.status}">
+                    </button>
+                </p>
+                <p class="mb-2">
+      <span class="font-semibold">
+       Loại:
+      </span>
+                    <button class="bg-purple-500 text-white px-4 py-2 rounded-full" th:text="${list.hoaDon.type}">
+                    </button>
+                </p>
+                <p class="mb-2">
+      <span class="font-semibold">
+       Địa chỉ:
+      </span>
+                <p th:text="${list.hoaDon.address}"></p>
+                </p>
+            </div>
+            <div>
+                <p class="mb-2">
+      <span class="font-semibold">
+       Tên khách hàng:
+      </span>
+                <p th:text="${list.hoaDon.user_name}"></p>
+                </p>
+                <p class="mb-2">
+      <span class="font-semibold">
+       Số điện thoại:
+      </span>
+                <p th:text="${list.hoaDon.phone_number}"></p>
+                </p>
+                <p class="mb-2">
+      <span class="font-semibold">
+       Ghi chú:
+      </span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="bg-white p-6 mt-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-bold mb-4">
+            Thông tin sản phẩm đã mua
+        </h2>
+        <table class="w-full table-auto">
+            <thead>
+            <tr class="bg-orange-500 text-white">
+                <th class="px-4 py-2">
+                    STT
+                </th>
+                <th class="px-4 py-2">
+                    Ảnh Sản Phẩm
+                </th>
+                <th class="px-4 py-2">
+                    Thông tin sản phẩm
+                </th>
+                <th class="px-4 py-2">
+                    Màu sắc
+                </th>
+                <th class="px-4 py-2">
+                    Số lượng
+                </th>
+                <th class="px-4 py-2">
+                    Tổng tiền
+                </th>
+                <th class="px-4 py-2">
+                    Trạng Thái
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="bg-gray-100">
+                <td class="border px-4 py-2 text-center">
+                    1
+                </td>
+                <td class="border px-4 py-2 text-center">
+                    <img alt="Giày Thể Thao Nam Nike Nike Dbreak-Type" height="50"
+                         src="https://storage.googleapis.com/a1aa/image/xHB8yttxBmLvI9OlqGbf0wA6fLUah2ROjyM4WsJERKYe6fvOB.jpg"
+                         width="50"/>
+                </td>
+                <td class="border px-4 py-2">
+                    <p th:text="${list.sanPhamChiTiet.id}">
+
+                    </p>
+                    <p class="text-red-500" th:text="${list.sanPhamChiTiet.id}">
+
+                    </p>
+                    <p>
+                        Kích cỡ ;
+                    <p th:text="${list.sanPhamChiTiet.id}"></p>
+                    </p>
+                </td>
+                <td class="border px-4 py-2 text-center">
+                    <div class="w-6 h-6 bg-black mx-auto">
+                    </div>
+                </td>
+                <td class="border px-4 py-2 text-center" th:text="${list.quantity}">
+                </td>
+                <td class="border px-4 py-2 text-center" th:text="${list.price}">
+                    2.500.000 VND
+                </td>
+                <td class="border px-4 py-2 text-center">
+                    <button class="bg-green-500 text-white px-4 py-2 rounded-full" th:href="">
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
 </body>
 </html>

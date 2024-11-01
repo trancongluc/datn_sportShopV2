@@ -1,4 +1,8 @@
 package com.example.sportshopv2.Repository;
 
-public class HoaDon {
+import com.example.sportshopv2.Entity.HoaDon;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
+
 }
