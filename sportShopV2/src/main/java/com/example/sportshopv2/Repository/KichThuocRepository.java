@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface KichThuocRepository extends JpaRepository<KichThuoc, Integer> {
-    Page<KichThuoc> findAllByOrderByCreateAtDesc(Pageable pageable);
+    List<KichThuoc> findAllByOrderByCreateAtDesc();
     Optional<KichThuoc> findById(Integer id);
 
 

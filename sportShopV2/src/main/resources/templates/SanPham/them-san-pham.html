@@ -193,13 +193,15 @@
                 <button class="plus-button" disabled><i class="fas fa-plus"></i></button>
             </div>
             <div class="form-group">
-                <label for="status">* Trạng thái :</label>
-                <select id="status">
-                    <option value="" disabled selected hidden>Chọn Trạng Thái</option>
-                    <option>Đang hoạt động</option>
-                    <option>Không hoạt động</option>
+                <label for="colar">* Cổ Giày :</label>
+                <select id="colar">
+                    <option value="" disabled selected hidden>Chọn cổ giày</option>
+                    <option th:each="coGiay : ${cg}"
+                            th:value="${coGiay.id}"
+                            th:text="${coGiay.tenCoGiay}">
+                    </option>
                 </select>
-                <button class="plus-button" disabled><i class="fas fa-plus"></i></button>
+                <button class="plus-button" onclick="openModal('colarModal')"><i class="fas fa-plus"></i></button>
             </div>
 
         </div>
@@ -208,11 +210,11 @@
         <h1>KÍCH CỠ VÀ MÀU SẮC</h1>
         <div class="form-group">
             <h5>Kích Cỡ:</h5>
-            <button class="plus-button"><i class="fas fa-plus"></i></button>
+            <button class="plus-button" onclick="openModal('kichThuocModal')"><i class="fas fa-plus"></i></button>
         </div>
         <div class="form-group">
             <h5>Màu Sắc:</h5>
-            <button class="plus-button"><i class="fas fa-plus"></i></button>
+            <button class="plus-button" onclick="openModal('mauSacModal')"><i class="fas fa-plus"></i></button>
         </div>
     </div>
     <div class="container">
@@ -295,15 +297,28 @@
         </div>
     </div>
 
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('categoryModal')">&times;</span>
+            <h2>Thêm Thể Loại</h2>
+            <form id="theLoaiForm" action="the-loai/them-nhanh" method="post" onsubmit="return addTheLoai(event)">
+                <input type="text" id="newTheLoai" placeholder="Nhập thể loại mới" required>
+                <div class="buttons">
+                    <button type="button" class="cancel-button" onclick="closeModal('categoryModal')">Hủy</button>
+                    <button class="add-button" type="submit">Thêm</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <div id="materialModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('materialModal')">&times;</span>
             <h2>Thêm Chất Liệu</h2>
             <form id="chatLieuForm" action="chat-lieu/them-nhanh" method="post" onsubmit="return addChatLieu(event)">
-                <input type="text" id="tenChatLieu" placeholder="Nhập chất liệu mới">
+                <input type="text" id="newChatLieu" placeholder="Nhập chất liệu mới" required>
                 <div class="buttons">
-                    <button class="cancel-button" onclick="closeModal('materialModal')">Hủy</button>
+                    <button type="button" class="cancel-button" onclick="closeModal('materialModal')">Hủy</button>
                     <button class="add-button" type="submit">Thêm</button>
                 </div>
             </form>
@@ -314,25 +329,33 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('soleModal')">&times;</span>
             <h2>Thêm Đế Giày</h2>
-            <input type="text" placeholder="Nhập đế giày mới">
-            <div class="buttons">
-                <button class="cancel-button" onclick="closeModal('soleModal')">Hủy</button>
-                <button class="add-button">Thêm</button>
-            </div>
+            <form id="deGiayForm" action="de-giay/them-nhanh" method="post" onsubmit="return addDeGiay(event)">
+                <input type="text" id="newDeGiay" placeholder="Nhập đế giày mới" required>
+
+                <div class="buttons">
+                    <button type="button" class="cancel-button" onclick="closeModal('soleModal')">Hủy</button>
+                    <button class="add-button" type="submit">Thêm</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <div id="categoryModal" class="modal">
+
+    <div id="collarModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal('categoryModal')">&times;</span>
-            <h2>Thêm Thể Loại</h2>
-            <input type="text" placeholder="Nhập thể loại mới">
-            <div class="buttons">
-                <button class="cancel-button" onclick="closeModal('categoryModal')">Hủy</button>
-                <button class="add-button">Thêm</button>
-            </div>
+            <span class="close" onclick="closeModal('collarModal')">&times;</span>
+            <h2>Thêm Cổ Giày</h2>
+            <form id="coGiayForm" action="co-giay/them-nhanh" method="post" onsubmit="return addCoGiay(event)">
+                <input type="text" id="newCoGiay" placeholder="Nhập cổ giày mới" required>
+                <div class="buttons">
+                    <button type="button" class="cancel-button" onclick="closeModal('collarModal')">Hủy</button>
+                    <button class="add-button" type="submit">Thêm</button>
+                </div>
+            </form>
         </div>
     </div>
+
+
     <script src="/js/ThemSanPham.js"></script>
 </main>
 </body>
