@@ -23,6 +23,7 @@ window.onclick = function (event) {
     }
 }
 
+
 function addBrand(event) {
     event.preventDefault(); // Ngăn chặn hành động gửi mặc định
 
@@ -41,6 +42,7 @@ function addBrand(event) {
                 updateBrandList(); // Cập nhật danh sách thương hiệu trong combobox
                 closeModal('brandModal'); // Đóng modal
                 document.getElementById('brandForm').reset(); // Reset form
+                showNotification("Thành Công!");
             } else {
                 console.error('Error adding brand:', response.statusText);
             }
@@ -84,6 +86,7 @@ function addTheLoai(event) {
                 updateCboTheLoai(); // Cập nhật danh sách thương hiệu trong combobox
                 closeModal('categoryModal'); // Đóng modal
                 document.getElementById('theLoaiForm').reset(); // Reset form
+                showNotification("Thành Công!");
             } else {
                 console.error('Error adding :', response.statusText);
             }
@@ -127,6 +130,7 @@ function addChatLieu(event) {
                 updateCboChatLieu(); // Cập nhật danh sách thương hiệu trong combobox
                 closeModal('materialModal'); // Đóng modal
                 document.getElementById('chatLieuForm').reset(); // Reset form
+                showNotification("Thành Công!");
             } else {
                 console.error('Error adding :', response.statusText);
             }
@@ -168,6 +172,7 @@ function addCoGiay(event) {
                 updateCboCoGiay(); // Cập nhật danh sách thương hiệu trong combobox
                 closeModal('collarModal'); // Đóng modal
                 document.getElementById('coGiayForm').reset(); // Reset form
+                showNotification("Thành Công!");
             } else {
                 console.error('Error adding :', response.statusText);
             }
@@ -209,6 +214,7 @@ function addDeGiay(event) {
                 updateCboDeGiay(); // Cập nhật danh sách thương hiệu trong combobox
                 closeModal('soleModal'); // Đóng modal
                 document.getElementById('deGiayForm').reset(); // Reset form
+                showNotification("Thành Công!");
             } else {
                 console.error('Error adding :', response.statusText);
             }
@@ -229,4 +235,23 @@ function updateCboDeGiay() {
             });
         })
         .catch(error => console.error('Error fetching brand list:', error));
+}
+
+//Thông báo khi thành công
+
+// Hiển thị thông báo
+function showNotification(message) {
+    const $notification = $('.notification');
+    const $progressBar = $('.progress-bar');
+    $notification.find('.message').text(message); // Cập nhật nội dung thông báo
+    $notification.css('display', 'flex');
+    $progressBar.css('animation', 'progress 3s linear forwards');
+    setTimeout(() => {
+        $notification.css('opacity', '0');
+        setTimeout(() => {
+            $notification.css('display', 'none');
+            $notification.css('opacity', '1');
+            $progressBar.css('animation', 'none');
+        }, 500);
+    }, 3000);
 }

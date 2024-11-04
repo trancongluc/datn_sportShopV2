@@ -118,6 +118,59 @@
             background-color: #218838;
             transform: scale(1.05);
         }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            display: none;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .notification .icon {
+            color: #4CAF50;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        .notification .message {
+            flex-grow: 1;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .notification .close {
+            color: #999;
+            cursor: pointer;
+        }
+
+        .notification .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: #4CAF50;
+            animation: progress 3s linear forwards;
+        }
+
+        @keyframes progress {
+            from {
+                width: 100%;
+            }
+            to {
+                width: 0;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -193,15 +246,15 @@
                 <button class="plus-button" disabled><i class="fas fa-plus"></i></button>
             </div>
             <div class="form-group">
-                <label for="colar">* Cổ Giày :</label>
-                <select id="colar">
+                <label for="collar">* Cổ Giày :</label>
+                <select id="collar">
                     <option value="" disabled selected hidden>Chọn cổ giày</option>
                     <option th:each="coGiay : ${cg}"
                             th:value="${coGiay.id}"
                             th:text="${coGiay.tenCoGiay}">
                     </option>
                 </select>
-                <button class="plus-button" onclick="openModal('colarModal')"><i class="fas fa-plus"></i></button>
+                <button class="plus-button" onclick="openModal('collarModal')"><i class="fas fa-plus"></i></button>
             </div>
 
         </div>
@@ -354,7 +407,12 @@
             </form>
         </div>
     </div>
-
+    <div class="notification">
+        <i class="icon fas fa-check-circle"></i>
+        <div class="message">Thành Công!</div>
+        <i class="close fas fa-times" onclick="document.querySelector('.notification').style.display='none'"></i>
+        <div class="progress-bar"></div>
+    </div>
 
     <script src="/js/ThemSanPham.js"></script>
 </main>
