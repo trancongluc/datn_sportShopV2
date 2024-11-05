@@ -1,5 +1,6 @@
 package com.example.sportshopv2.controller.SanPham;
 
+import com.example.sportshopv2.model.ChatLieu;
 import com.example.sportshopv2.model.KichThuoc;
 import com.example.sportshopv2.service.KichThuocService;
 import lombok.RequiredArgsConstructor;
@@ -15,42 +16,20 @@ import java.util.List;
 public class kichThuocController {
     private final KichThuocService kichThuocService;
 
-    //    @GetMapping("")
-//    public String getAllKichThuoc(@RequestParam(defaultValue = "0") int page,
-//                               @RequestParam(defaultValue = "5") int size, Model model) {
-//        Page<KichThuoc> kichThuocs = deGiayService.getAllDeGiay(PageRequest.of(page, size));
-//
-//        model.addAttribute("deGiay", deGiayPage.getContent());
-//        model.addAttribute("currentPage", page); // Đảm bảo currentPage là số nguyên
-//        model.addAttribute("totalPages", deGiayPage.getTotalPages()); // Đảm bảo totalPages cũng là số nguyên
-//        return "SanPham/de-giay"; // Trả về trang mẫu
-//    }
-//    @GetMapping("")
-//    public ResponseEntity<List<KichThuoc>> getAll() {
-//        List<KichThuoc> kichThuocs = kichThuocService.getAllKichThuoc();
-//        return ResponseEntity.ok(kichThuocs); // Trả về danh sách thương hiệu
-//    }
-//
-//    @PostMapping("/them-nhanh")
-//    @ResponseBody
-//    public ResponseEntity<String> themNhanh(@RequestBody KichThuoc kichThuoc) {
-//        kichThuoc.setTrangThai("Đang hoạt động");
-//        kichThuocService.addKichThuoc(kichThuoc);
-//        return ResponseEntity.ok("Thêm thành công");
-//    }
 
-//    @PostMapping("/them-de-giay")
-//    @ResponseBody
-//    public ResponseEntity<String> themChatLieu(@RequestBody DeGiay deGiay) {
-//        deGiayService.addDeGiay(deGiay);
-//        return ResponseEntity.ok("Thêm thành công");
-//    }
-//
-//    @GetMapping("/{id}")
-//    @ResponseBody
-//    public DeGiay deGiayById(@PathVariable Integer id) {
-//        return deGiayService.getDeGiayById(id);
-//    }
+    @PostMapping("/them-nhanh")
+    @ResponseBody
+    public ResponseEntity<String> themKichThuoc(@RequestBody KichThuoc kichThuoc) {
+        kichThuocService.addKichThuoc(kichThuoc);
+        return ResponseEntity.ok("Thêm thành công");
+    }
+
+    //
+    @GetMapping("")
+    public ResponseEntity<List<KichThuoc>> getAllKichThuoc() {
+        List<KichThuoc> kichThuocs = kichThuocService.getAllKichThuoc();
+        return ResponseEntity.ok(kichThuocs); // Trả về danh sách thương hiệu
+    }
 //
 //    @PutMapping("/{id}")
 //    @ResponseBody

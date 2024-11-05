@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,16 +18,17 @@ import java.util.Optional;
 public class MauSacService {
     private final MauSacRepository mauSacRepository;
 
-    public Page<MauSac> getAllMauSac(Pageable pageable) {
-        return mauSacRepository.findAllByOrderByCreateAtDesc(pageable);
+    public List<MauSac> getAllMauSac( ) {
+        return mauSacRepository.findAllByOrderByCreateAtDesc();
     }
 
-    public MauSac addChatLieu(MauSac mauSac) {
+    public MauSac addMauSac(MauSac mauSac) {
         mauSac.setCreateBy("NV1");
+        mauSac.setTrangThai("Đang hoạt động");
         return mauSacRepository.save(mauSac);
     }
 
-    public MauSac getChatLieuById(Integer id) {
+    public MauSac getMauSacById(Integer id) {
         Optional<MauSac> mauSacDetail = mauSacRepository.findById(id);
         return mauSacDetail.orElse(null);
     }

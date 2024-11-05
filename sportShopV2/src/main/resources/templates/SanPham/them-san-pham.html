@@ -118,6 +118,7 @@
             background-color: #218838;
             transform: scale(1.05);
         }
+
         .notification {
             position: fixed;
             top: 20px;
@@ -170,6 +171,126 @@
                 width: 0;
             }
         }
+
+        .add-size {
+            text-align: right; /* Căn giữa phần thêm kích cỡ */
+            margin-bottom: 20px; /* Khoảng cách dưới */
+        }
+
+        .add-ms {
+            text-align: right; /* Căn giữa phần thêm kích cỡ */
+            margin-bottom: 20px; /* Khoảng cách dưới */
+        }
+
+        .size-list {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 cột */
+            grid-gap: 10px; /* Khoảng cách giữa các nút */
+        }
+
+        .size-list button {
+            background-color: #f1f1f1;
+            border: 1px solid #000;
+            border-radius: 8px; /* Bo tròn các góc */
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s; /* Hiệu ứng chuyển đổi */
+        }
+
+        .size-list button:hover {
+            background-color: #ddd; /* Màu nền khi hover */
+            transform: translateY(-2px); /* Nâng nút lên khi hover */
+        }
+
+        .size-list button.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between; /* Căn giữa các nút */
+            margin-top: 20px; /* Khoảng cách trên */
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px; /* Bo tròn các góc */
+            cursor: pointer;
+            transition: background-color 0.3s; /* Hiệu ứng chuyển đổi */
+        }
+
+        .size-list button.active {
+            border: 2px solid #4CAF50;
+        }
+
+        .ms-list button.active {
+            border: 2px solid #4CAF50;
+        }
+
+        .ms-list {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 cột */
+            grid-gap: 10px; /* Khoảng cách giữa các nút */
+        }
+
+        .ms-list button {
+            background-color: #f1f1f1;
+            border: 1px solid #000;
+            border-radius: 8px; /* Bo tròn các góc */
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s; /* Hiệu ứng chuyển đổi */
+        }
+
+        .ms-list button:hover {
+            background-color: #ddd; /* Màu nền khi hover */
+            transform: translateY(-2px); /* Nâng nút lên khi hover */
+        }
+
+        .ms-list button.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .selected-sizes {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+
+        .selected-size {
+            background-color: white; /* Màu nền */
+            border: 2px solid #4CAF50;
+            color: black; /* Màu chữ */
+            padding: 10px 15px; /* Khoảng cách bên trong */
+            border-radius: 5px; /* Bo góc */
+            margin: 10px; /* Khoảng cách giữa các kích cỡ */
+            font-weight: bold; /* Đậm chữ */
+        }
+
+        .selected-size:hover {
+            background-color: #0056b3; /* Màu nền khi hover */
+            cursor: pointer; /* Thay đổi con trỏ */
+        }
+
+        .selected-colors-display {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .selected-color {
+            width: 30px; /* Kích thước của mỗi ô màu */
+            height: 30px; /* Kích thước của mỗi ô màu */
+            margin: 10px;
+            padding-left: 20px;
+            border: 1px solid #000; /* Đường viền nếu cần */
+        }
+
 
     </style>
 </head>
@@ -263,10 +384,12 @@
         <h1>KÍCH CỠ VÀ MÀU SẮC</h1>
         <div class="form-group">
             <h5>Kích Cỡ:</h5>
-            <button class="plus-button" onclick="openModal('kichThuocModal')"><i class="fas fa-plus"></i></button>
+            <div id="selected-sizes" class="selected-sizes"></div>
+            <button class="plus-button" onclick="openModal('sizeModal')"><i class="fas fa-plus"></i></button>
         </div>
         <div class="form-group">
             <h5>Màu Sắc:</h5>
+            <div id="selected-colors" class="selected-colors-display"></div>
             <button class="plus-button" onclick="openModal('mauSacModal')"><i class="fas fa-plus"></i></button>
         </div>
     </div>
@@ -285,8 +408,8 @@
                 <th>STT</th>
                 <th>Tên Sản Phẩm</th>
                 <th>Số lượng</th>
-                <th>Giá Bán</th>
-                <th>Hành động</th>
+                <th class="price-column">Giá Bán</th>
+                <th class="action-column">Hành động</th>
                 <th>Upload Ảnh</th>
             </tr>
             </thead>
@@ -296,8 +419,15 @@
                 <td>1</td>
                 <td>KAPPA GIÀY SNEAKERS 123 [ 36 - maroon ]</td>
                 <td><input type="number" value="1" style="width: 50px;"></td>
-                <td>1.000.000 VND</td>
-                <td class="action-buttons"><i class="fas fa-trash-alt"></i></td>
+                <td>
+                    <input type="text" class="price" value="1.000.000 VNĐ" style="width: 180px;"
+                           onblur="formatPrice(this)">
+                </td>
+                <td class="action-buttons">
+                    <div>
+                        <i class="fas fa-trash-alt"></i>
+                    </div>
+                </td>
                 <td>
                     <div class="upload-button" onclick="triggerFileInput(this)">
                         <i class="fas fa-plus"></i> Upload
@@ -307,23 +437,6 @@
                     <div class="uploaded-images"></div>
                 </td>
             </tr>
-            <tr>
-                <td><input type="checkbox" class="selectItem"></td>
-                <td>2</td>
-                <td>KAPPA GIÀY SNEAKERS 123 [ 37 - maroon ]</td>
-                <td><input type="number" value="1" style="width: 50px;"></td>
-                <td>1.000.000 VND</td>
-                <td class="action-buttons"><i class="fas fa-trash-alt"></i></td>
-                <td>
-                    <div class="upload-button" onclick="triggerFileInput(this)">
-                        <i class="fas fa-plus"></i> Upload
-                    </div>
-                    <input type="file" class="fileInput" style="display:none;" multiple
-                           onchange="handleFileSelect(this)">
-                    <div class="uploaded-images"></div>
-                </td>
-            </tr>
-
             </tbody>
         </table>
 
@@ -407,13 +520,86 @@
             </form>
         </div>
     </div>
+    <div id="sizeAddModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('sizeAddModal'), openModal('sizeModal')">&times;</span>
+            <h2>Thêm Kích Thước</h2>
+            <form id="sizeForm" action="kich-thuoc/them-nhanh" method="post" onsubmit="return addKichThuoc(event)">
+                <input type="text" id="newSize" placeholder="Nhập kích thước mới" required>
+                <div class="buttons">
+                    <button type="button" class="cancel-button"
+                            onclick="closeModal('sizeAddModal'),openModal('sizeModal')">Hủy
+                    </button>
+                    <button class="add-button" type="submit" onclick="openModal('sizeModal')">Thêm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Modal Chọn Màu Tùy Ý -->
+    <div id="colorPickerModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('colorPickerModal')">&times;</span>
+            <h2>Thêm Màu</h2>
+            <form id="mauSacForm" action="mau-sac/them-nhanh" method="post" onsubmit="return addMauSac(event)">
+                <input type="color" id="mauSacNew" onchange="updateColorPreview(this.value)"/>
+                <div class="color-preview" id="colorPreview"
+                     style="width: 100%; height: 100px; margin-top: 10px; border: 1px solid #ccc;"></div>
+                <div class="buttons">
+                    <button type="button" class="cancel-button"
+                            onclick="closeModal('colorPickerModal'),openModal('mauSacModal')">Hủy
+                    </button>
+                    <button class="btn btn-primary" type="submit" onclick="openModal('mauSacModal')">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <div class="notification">
         <i class="icon fas fa-check-circle"></i>
         <div class="message">Thành Công!</div>
         <i class="close fas fa-times" onclick="document.querySelector('.notification').style.display='none'"></i>
         <div class="progress-bar"></div>
     </div>
-
+    <div id="sizeModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('sizeModal')">&times;</span>
+            <h2>Chọn kích cỡ</h2>
+            <div class="add-size">
+                <button class="btn btn-primary" onclick="openModal('sizeAddModal'), closeModal('sizeModal')">Thêm Kích
+                    Thước
+                </button>
+            </div>
+            <div class="size-list">
+                <button th:each="size : ${kt}" th:text="${size.tenKichThuoc}" th:data-size="${size.id}"
+                        onclick="selectSize(this)"></button>
+            </div>
+            <div class="buttons">
+                <button class="btn btn-secondary" onclick="closeModal('sizeModal')">Hủy</button>
+                <button class="btn btn-primary" onclick="confirmSelectedSizes()">Chọn</button>
+            </div>
+        </div>
+    </div>
+    <div id="mauSacModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('sizeModal')">&times;</span>
+            <h2>Chọn màu sắc</h2>
+            <div class="add-ms">
+                <button class="btn btn-primary" onclick="openModal('colorPickerModal'), closeModal('mauSacModal')">Thêm
+                    Màu
+                    Sắc
+                </button>
+            </div>
+            <div class="ms-list">
+                <button th:each="mauSac : ${ms}" th:style="'background-color: ' + ${mauSac.tenMauSac}"
+                        th:data-size="${mauSac.id}" onclick="selectedColor(this)">
+                    <span th:text="${mauSac.tenMauSac}"></span>
+                </button>
+            </div>
+            <div class="buttons">
+                <button class="btn btn-secondary" onclick="closeModal('mauSacModal')">Hủy</button>
+                <button class="btn btn-primary" onclick="confirmSelectedColors()">Chọn</button>
+            </div>
+        </div>
+    </div>
     <script src="/js/ThemSanPham.js"></script>
 </main>
 </body>

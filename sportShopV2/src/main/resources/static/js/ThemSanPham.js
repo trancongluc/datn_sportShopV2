@@ -10,7 +10,9 @@ function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.style.display = 'none';
+
     }
+
 }
 
 // Đóng modal khi nhấn ngoài modal
@@ -254,4 +256,225 @@ function showNotification(message) {
             $progressBar.css('animation', 'none');
         }, 500);
     }, 3000);
+}
+
+//Chọn size
+
+let selectedSizes = []; // Mảng lưu trữ kích cỡ đã chọn
+
+function selectSize(button) {
+    const size = button.textContent; // Lấy tên kích cỡ
+    const sizeId = button.getAttribute('data-size'); // Lấy ID kích cỡ
+
+    const sizeObj = { id: sizeId, name: size }; // Tạo đối tượng với tên và ID
+
+    if (selectedSizes.some(s => s.id === sizeId)) {
+        // Nếu kích cỡ đã được chọn, xóa nó khỏi mảng
+        selectedSizes = selectedSizes.filter(s => s.id !== sizeId);
+        button.classList.remove('active');
+    } else {
+        // Nếu chưa chọn, thêm vào mảng
+        selectedSizes.push(sizeObj);
+        button.classList.add('active');
+    }
+
+    console.log('Kích cỡ đã chọn:', selectedSizes); // In ra mảng chứa kích cỡ đã chọn
+}
+
+function updateSelectedSizes() {
+    const selectedSizesElement = document.getElementById('selected-sizes');
+    selectedSizesElement.innerHTML = ''; // Xóa nội dung cũ
+
+    selectedSizes.forEach(size => {
+        const span = document.createElement('span');
+        span.className = 'selected-size';
+        span.textContent = size.name; // Hiển thị tên kích cỡ
+        span.onclick = () => removeSize(size.id); // Thêm sự kiện để xóa kích cỡ khi nhấp
+        selectedSizesElement.appendChild(span);
+    });
+}
+
+function removeSize(sizeId) {
+    // Xóa kích cỡ khỏi mảng và cập nhật lại
+    selectedSizes = selectedSizes.filter(s => s.id !== sizeId);
+    updateSelectedSizes(); // Cập nhật hiển thị bên ngoài modal
+
+    // Cập nhật trạng thái của các nút trong modal
+    const sizeButtons = document.querySelectorAll('.size-button');
+    sizeButtons.forEach(button => {
+        if (button.getAttribute('data-size') === sizeId) {
+            button.classList.remove('active'); // Bỏ chọn nút tương ứng trong modal
+        }
+    });
+}
+
+function confirmSelectedSizes() {
+    updateSelectedSizes();
+    closeModal('sizeModal');
+
+}
+// function updateModalState() {
+//     const sizeButtons = document.querySelectorAll('.size-button');
+//     sizeButtons.forEach(button => {
+//         const sizeId = button.getAttribute('data-size');
+//         // Đánh dấu các nút trong modal là active nếu chúng có trong selectedSizes
+//         if (selectedSizes.some(size => size.id === sizeId)) {
+//             button.classList.add('active');
+//         } else {
+//             button.classList.remove('active');
+//         }
+//     });
+// }
+let selectedColors = [];
+
+function selectedColor(colorButton) {
+    // Lấy mã màu và ID từ nút
+    const colorCode = colorButton.style.backgroundColor;
+    const colorId = colorButton.getAttribute('data-size');
+
+    // Kiểm tra xem mã màu đã được chọn chưa
+    if (selectedColors.some(color => color.id === colorId)) {
+        // Nếu đã chọn, xóa nó khỏi danh sách
+        selectedColors = selectedColors.filter(color => color.id !== colorId);
+        colorButton.classList.remove('active');
+    } else {
+        // Nếu chưa chọn, thêm vào danh sách
+        selectedColors.push({id: colorId, code: colorCode});
+        colorButton.classList.add('active');
+    }
+
+    console.log('Các màu sắc đã chọn:', selectedColors);
+}
+function confirmSelectedColors() {
+    updateSelectedColors(); // Cập nhật hiển thị các màu sắc đã chọn
+    closeModal('mauSacModal'); // Đóng modal màu sắc
+}
+
+function updateSelectedColors() {
+    const selectedColorsElement = document.getElementById('selected-colors'); // Phần tử hiển thị màu sắc đã chọn
+    selectedColorsElement.innerHTML = ''; // Xóa nội dung cũ
+
+    selectedColors.forEach(color => {
+        const span = document.createElement('span');
+        span.className = 'selected-color';
+        span.style.backgroundColor = color.code; // Đặt màu nền cho span
+        span.title = color.code; // Thêm title để hiển thị mã màu
+        selectedColorsElement.appendChild(span);
+    });
+}
+function updateColorPreview(color) {
+    document.getElementById('colorPreview').style.backgroundColor = color;
+}
+
+// function saveCustomColor() {
+//     const selectedColor = document.getElementById('tenMauSac').value;
+//     console.log('Màu đã chọn:', selectedColor);
+//     // Lưu màu sắc vào database hoặc sử dụng cho mục đích khác
+//     closeModal('colorPickerModal');
+// }
+
+//Kích THước
+function addKichThuoc(event) {
+    event.preventDefault(); // Ngăn chặn hành động gửi mặc định
+
+    const newSize = document.getElementById('newSize').value;
+
+    // Gửi yêu cầu thêm thương hiệu mới
+    fetch('/kich-thuoc/them-nhanh', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({tenKichThuoc: newSize}) // Gửi tên thương hiệu mới
+    })
+        .then(response => {
+            if (response.ok) {
+                updateSizeList(); // Cập nhật danh sách thương hiệu trong combobox
+                closeModal('sizeAddModal'); // Đóng modal
+                document.getElementById('sizeForm').reset(); // Reset form
+                showNotification("Thành Công!");
+            } else {
+                console.error('Error adding :', response.statusText);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function updateSizeList() {
+    fetch('/kich-thuoc') // Đường dẫn đến API để lấy danh sách kích thước
+        .then(response => response.json())
+        .then(data => {
+            const sizeListContainer = document.querySelector('.size-list');
+            sizeListContainer.innerHTML = ''; // Xóa nội dung cũ
+
+            data.forEach(size => {
+                const button = document.createElement('button');
+                button.textContent = size.tenKichThuoc;
+                button.setAttribute('data-size', size.id);
+                button.onclick = () => selectSize(button);
+                sizeListContainer.appendChild(button);
+            });
+        })
+        .catch(error => console.error('Error fetching sizes:', error));
+}
+
+//Màu sắc
+function addMauSac(event) {
+    event.preventDefault(); // Ngăn chặn hành động gửi mặc định
+
+    const mauSacNew = document.getElementById('mauSacNew').value;
+
+    // Gửi yêu cầu thêm thương hiệu mới
+    fetch('/mau-sac/them-nhanh', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({tenMauSac: mauSacNew}) // Gửi tên thương hiệu mới
+    })
+        .then(response => {
+            if (response.ok) {
+                updateMauSac(); // Cập nhật danh sách thương hiệu trong combobox
+                closeModal('colorPickerModal'); // Đóng modal
+                document.getElementById('mauSacForm').reset();
+                openModal('mauSacModal');
+                showNotification("Thành Công!");
+            } else {
+                console.error('Error adding :', response.statusText);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function updateMauSac() {
+    fetch('/mau-sac') // Đường dẫn đến API để lấy danh sách kích thước
+        .then(response => response.json())
+        .then(data => {
+            const listContainer = document.querySelector('.ms-list');
+            listContainer.innerHTML = ''; // Xóa nội dung cũ
+
+            data.forEach(mauSac => {
+                const button = document.createElement('button');
+                button.textContent = mauSac.tenMauSac;
+                button.setAttribute('data-size', mauSac.id);
+                button.style.backgroundColor = mauSac.tenMauSac;
+                button.onclick = () => selectedColor(button);
+                listContainer.appendChild(button);
+
+            });
+        })
+        .catch(error => console.error('Error fetching sizes:', error));
+}
+//
+function formatPrice(input) {
+    // Xóa " VND" và dấu chấm để xử lý giá
+    let value = input.value.replace(/ VND/g, '').replace(/\./g, '');
+    const numericValue = parseInt(value, 10); // Chuyển đổi thành số nguyên
+
+    if (!isNaN(numericValue)) {
+        // Định dạng giá và thêm " VND" vào cuối
+        input.value = numericValue.toLocaleString('vi-VN', { style: 'decimal', minimumFractionDigits: 0 }) + ' VND';
+    } else {
+        input.value = '0 VND'; // Nếu không phải số, đặt về mặc định
+    }
 }

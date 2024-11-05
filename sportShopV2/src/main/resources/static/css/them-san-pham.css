@@ -124,20 +124,27 @@ th:nth-child(5), td:nth-child(5) {
     width: 10%;
 }
 th:nth-child(6), td:nth-child(6) {
-    width: 10%;
+    width: 5%;
 }
 th:nth-child(7), td:nth-child(7) {
     width: 35%;
 }
-.action-buttons {
+td.action-buttons {
     display: flex;
     align-items: center;
+    justify-content: center;
+    height: 100%; /* Đảm bảo ô này chiếm hết chiều cao của hàng */
 }
-.action-buttons i {
+
+td.action-buttons i {
     color: #d9534f;
     cursor: pointer;
-    margin-right: 10px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
 .upload-button {
     display: flex;
     align-items: center;

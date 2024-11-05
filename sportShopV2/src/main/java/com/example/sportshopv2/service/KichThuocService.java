@@ -24,6 +24,7 @@ public class KichThuocService {
 
     public KichThuoc addKichThuoc(KichThuoc kichThuoc) {
         kichThuoc.setCreateBy("NV1");
+        kichThuoc.setTrangThai("Đang hoạt động");
         return kichThuocRepository.save(kichThuoc);
     }
 

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MauSacRepository extends JpaRepository<MauSac, Integer> {
-    Page<MauSac> findAllByOrderByCreateAtDesc(Pageable pageable);
+    List<MauSac> findAllByOrderByCreateAtDesc( );
     Optional<MauSac> findById(Integer id);
 
 }

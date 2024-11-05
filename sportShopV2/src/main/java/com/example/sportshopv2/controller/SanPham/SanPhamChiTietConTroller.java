@@ -28,6 +28,8 @@ public class SanPhamChiTietConTroller {
         model.addAttribute("dg", deGiayService.getAll());
         model.addAttribute("tl", theLoaiService.getAll());
         model.addAttribute("th", thuongHieuService.getAll());
+        model.addAttribute("kt", kichThuocService.getAllKichThuoc());
+        model.addAttribute("ms", mauSacService.getAllMauSac());
         return "SanPham/them-san-pham";
     }
 }
