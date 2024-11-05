@@ -1,5 +1,6 @@
 package com.example.sportshopv2.Entity;
 
+import com.example.sportshopv2.model.SanPham;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,10 +12,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="product_detail")
+@Table(name="Product_detail")
 public class SanPhamChiTiet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
+    @ManyToOne
+    @JoinColumn(name = "id_product")
+    private SanPham id_product;
+    private Float price;
 }

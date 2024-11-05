@@ -1,0 +1,33 @@
+package com.example.sportshopv2.Entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "Account")
+public class TaiKhoan {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @ManyToOne
+    @JoinColumn(name = "id_user")
+    private NguoiDung id_user;
+    @Column(name ="username")
+    private String username;
+    private String password;
+    private String status;
+    private LocalDateTime create_at;
+    private String create_by;
+    private LocalDateTime update_at;
+    private String update_by;
+    private Boolean deleted;
+}

@@ -10,62 +10,46 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <title>Phiếu Giảm Giá</title>
     <style>
+
+
         body {
             background-color: #f5f5f5;
             height: 100vh;
             width: 100%;
             display: flex;
             flex-direction: column;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 10px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
+            margin-bottom: 20px;
         }
         .header h1 {
             font-size: 24px;
-            margin: 0;
-        }
-        /*.header .breadcrumb {*/
-        /*    font-size: 14px;*/
-        /*    color: #888;*/
-        /*}*/
-        /*.header .breadcrumb a {*/
-        /*    color: #888;*/
-        /*    text-decoration: none;*/
-        /*}*/
-        /*.header .breadcrumb a:hover {*/
-        /*    text-decoration: underline;*/
-        /*}*/
-        .filter-section {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        .filter-section input, .filter-section select {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .filter-section .filter-row {
+            font-weight: bold;
             display: flex;
-            justify-content: space-between;
+            align-items: center;
         }
-        .filter-section .filter-row div {
-            flex: 1;
+        .header h1 i {
             margin-right: 10px;
         }
-        .filter-section .filter-row div:last-child {
-            margin-right: 0;
-        }
+
         .add-button {
             display: flex;
             justify-content: flex-end;
@@ -73,7 +57,7 @@
         }
 
         .add-button button {
-            background-color: #007bff;
+            background-color: #71c664;
             color: #fff;
             padding: 10px 20px;
             border: none;
@@ -84,50 +68,173 @@
             transition: background-color 0.3s, transform 0.2s;
         }
 
-        .add-button button i {
-            margin-right: 8px;
-        }
-
         .add-button button:hover {
             background-color: #727cf5;
-            transform: scale(1.05);
-            text-decoration: none;
+            transform: scale(1.1);
         }
-        .table-section {
-            background-color: #fff;
+
+        .filter-section {
+            margin-top: 20px;
             padding: 20px;
-            border-radius: 5px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
         }
+
+        .filter-section .filter-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .filter-row div {
+            flex: 1;
+            margin-right: 10px; /* Khoảng cách giữa các phần tử */
+        }
+
+        .filter-row div:last-child {
+            margin-right: 0; /* Không có khoảng cách cho phần tử cuối cùng */
+        }
+
+        .filter-row input[type="text"],
+        .filter-row input[type="date"],
+        .filter-row select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .filter-row input[type="text"]:focus,
+        .filter-row input[type="date"]:focus,
+        .filter-row select:focus {
+            border-color: #007bff; /* Màu khi focus */
+            outline: none; /* Bỏ viền mặc định */
+        }
+
+        .filter-row select {
+            background-color: #f9f9f9; /* Màu nền cho select */
+            cursor: pointer; /* Đổi con trỏ khi hover */
+        }
+
+        .filter-row input::placeholder {
+            color: #aaa; /* Màu cho placeholder */
+            font-style: italic; /* Kiểu chữ nghiêng cho placeholder */
+        }
+
+
+
+        /*.discount-list h2 {*/
+        /*    font-size: 18px;*/
+        /*    font-weight: bold;*/
+        /*    display: flex;*/
+        /*    align-items: center;*/
+        /*}*/
+
+        /*.discount-list table {*/
+        /*    width: 100%;*/
+        /*    border-collapse: collapse;*/
+        /*    margin-top: 20px;*/
+        /*}*/
+
+        /*.discount-list table th,*/
+        /*.discount-list table td {*/
+        /*    padding: 10px;*/
+        /*    border: 1px solid #ddd;*/
+        /*    text-align: center;*/
+        /*}*/
+
+        /*.discount-list table th {*/
+        /*    background-color: #00CCFF;*/
+        /*    color: #fff;*/
+        /*}*/
+
+        /*.discount-list table td .btn {*/
+        /*    padding: 5px 10px;*/
+        /*    border: none;*/
+        /*    border-radius: 4px;*/
+        /*    cursor: pointer;*/
+        /*}*/
+
+        /*.discount-list table td .btn.view {*/
+        /*    background-color: #3b7ddd;*/
+        /*    color: #fff;*/
+        /*}*/
+
+        /*.discount-list table td .btn.edit {*/
+        /*    background-color: #28a745;*/
+        /*    color: #fff;*/
+        /*}*/
+
+        .table-section {
+            margin-top: 20px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-section h2 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
         .table-section table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 10px;
         }
-        .table-section table th, .table-section table td {
-            padding: 10px;
+
+        .table-section th,
+        .table-section td {
+            padding: 12px;
+            text-align: center;
             border: 1px solid #ddd;
-            text-align: left;
         }
-        .table-section table th {
-            background-color: #f5f5f5;
+
+        .table-section th {
+            background-color: #74C0FC;
+            color: #fff;
+            font-weight: bold;
         }
+
+        .table-section tbody tr:nth-child(even) {
+            background-color: #f2f2f2; /* Màu nền cho các hàng chẵn */
+        }
+
+        .table-section tbody tr:hover {
+            background-color: #e9ecef; /* Màu nền khi hover */
+        }
+
         .status-label {
             display: inline-block;
             padding: 5px 10px;
-            background-color: #d4a017;
+            border-radius: 4px;
             color: #fff;
-            border-radius: 5px;
-            font-size: 12px;
+            background-color: #dc3545; /* Màu đỏ cho trạng thái */
         }
 
         .icon {
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
+            color: #007bff;
+            transition: color 0.3s;
         }
-        tbody td {
-            padding: 15px;
-            border-bottom: 1px solid #ccc;
+
+        .icon:hover {
+            color: #0056b3; /* Màu khi hover */
+            transform: scale(1.2);
         }
     </style>
 </head>
@@ -157,10 +264,10 @@
                 </select>
             </div>
             <div>
-                <input type="text" placeholder="Từ">
+                <input type="date" placeholder="Từ">
             </div>
             <div>
-                <input type="text" placeholder="Đến">
+                <input type="date" placeholder="Đến">
             </div>
         </div>
     </div>

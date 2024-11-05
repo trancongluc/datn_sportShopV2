@@ -1,4 +1,3 @@
-// Xử lý toggle mở rộng/thu gọn sidebar
 document.getElementById('toggle-btn').addEventListener('click', function() {
     var sidebar = document.getElementById('sidebar');
     var main = document.querySelector('.main');

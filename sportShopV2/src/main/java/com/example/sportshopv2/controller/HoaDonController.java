@@ -1,53 +1,66 @@
 package com.example.sportshopv2.controller;
 
-import com.example.sportshopv2.Entity.HoaDonChiTiet;
-import com.example.sportshopv2.Repository.HoaDonChiTietRepo;
-import com.example.sportshopv2.Repository.HoaDonRepo;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import com.example.sportshopv2.Entity.HoaDon;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+//import org.apache.pdfbox.pdmodel.PDDocument;
+//import org.apache.pdfbox.pdmodel.PDPage;
+//import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.context.WebContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.example.sportshopv2.Entity.HoaDonChiTiet;
+import com.example.sportshopv2.Repository.HoaDonChiTietRepo;
+import com.example.sportshopv2.Repository.HoaDonRepo;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
 @Controller
+//@RequestMapping("/Sport-Shop")
 public class HoaDonController {
     @Autowired
+    private HoaDonChiTietRepo hdctrepo;
+    @Autowired
     private HoaDonRepo hdrepo;
+    @Autowired
+    private TemplateEngine templateEngine;
 
     @Autowired
-    private HoaDonChiTietRepo hdctrepo;
+    private ServletContext servletContext;
+
 
     @RequestMapping("/bill/view")
     public String view(Model model) {
         List<HoaDonChiTiet> hdctList = hdctrepo.findAll();
-        model.addAttribute("hdctList", hdctList); // Đồng nhất tên biến là "hdctList"
-        model.addAttribute("tab", "all"); // Add this line to set the tab
+        model.addAttribute("hdctList", hdctList);
+        model.addAttribute("tab", "all");
         return "HoaDon/HoaDon";
     }
 
     @GetMapping("/bill/tab")
     public String tab(Model model, @RequestParam("status") String status) {
-        System.out.println("Status received: " + status); // In ra log để kiểm tra giá trị
         List<HoaDonChiTiet> hdctList = hdctrepo.findAllByHoaDon_Status(status);
         model.addAttribute("hdctList", hdctList);
-        model.addAttribute("tab", status); // Set the tab to the current status
+        model.addAttribute("tab", status);
         return "HoaDon/HoaDon";
     }
 
@@ -57,10 +70,9 @@ public class HoaDonController {
         return "HoaDon/ThongTinHoaDon";
     }
 
-    @GetMapping("/export/excel")
+    @GetMapping("/bill/export/excel")
     public ResponseEntity<byte[]> exportToExcel() throws IOException {
         List<HoaDonChiTiet> billList = hdctrepo.findAll(); // Lấy toàn bộ dữ liệu từ database
-
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Danh sách hóa đơn");
 
@@ -103,16 +115,65 @@ public class HoaDonController {
                 .body(outputStream.toByteArray());
     }
 
-    @GetMapping("/doitra/view")
-    public String viewDT(Model model) {
-//        model.addAttribute("messager", "Hello");
-        return "DoiTra/DoiTra";
+    @GetMapping("/export/pdf")
+    public void viewInvoice(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam Integer id) {
+
+        List<HoaDonChiTiet> billDetail = hdctrepo.findAllByHoaDon_Id(id);
+        HoaDon bill = hdrepo.findAllById(id);
+        if (bill == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        try {
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=Invoice_" + id + ".pdf");
+
+            // Prepare Thymeleaf context and template
+            Context context = new Context();
+            context.setVariable("hoaDon", bill); // Use HoaDon entity for invoice details
+            context.setVariable("items", billDetail); // Assuming HoaDonChiTiet has a method to get items
+            context.setVariable("productCount", bill); // Total number of products
+            context.setVariable("discount", bill);
+            context.setVariable("shippingFee", bill);
+            context.setVariable("total", billDetail);
+            context.setVariable("totalQuantity", billDetail);
+//            context.setVariable("payment", bill.getQuantity() * bill.getPrice());
+            context.setVariable("totalPayment", bill);
+//            context.setVariable("change", bill.getHoaDon().getChange());
+
+            String htmlContent = templateEngine.process("HoaDon/HinhAnhHoaDon", context);
+
+            // Convert HTML to PDF
+            ITextRenderer renderer = new ITextRenderer();
+            renderer.setDocumentFromString(htmlContent);
+            renderer.layout();
+
+            // Write PDF to response output stream
+            OutputStream outputStream = response.getOutputStream();
+            renderer.createPDF(outputStream);
+            outputStream.flush();
+            outputStream.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @GetMapping("/bill/search")
+    public String search(Model model, @RequestParam("Type") String Type) {
+        List<HoaDonChiTiet> list = hdctrepo.findAllByHoaDon_Type(Type);
+        model.addAttribute("hdctList", list);
+        return "HoaDon/HoaDon";
     }
 
     @GetMapping("/doitra/detail")
     public String viewDTCT(Model model) {
-//        model.addAttribute("messager", "Hello");
         return "DoiTra/DoiTraChiTiet";
     }
-//    @RequestMapping
 }

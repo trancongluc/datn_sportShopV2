@@ -23,38 +23,44 @@
             <i class="fas fa-filter"></i>
             <span>Bộ lọc</span>
         </div>
-        <div class="filter-section">
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="search">Tìm kiếm:</label>
-                    <input type="text" class="form-control" id="search" placeholder="Nhập">
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="order-type">Loại đơn:</label>
-                    <select class="form-control" id="order-type">
-                        <option value="">Loại đơn</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="start-date">Ngày bắt đầu:</label>
-                    <input type="text" class="form-control" id="start-date" placeholder="dd/mm/yyyy">
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="end-date">Ngày kết thúc:</label>
-                    <input type="text" class="form-control" id="end-date" placeholder="dd/mm/yyyy">
-                </div>
-                <div class="form-group col-md-12 filter-buttons">
-                    <button class="btn btn-primary">Tìm kiếm</button>
-                    <button class="btn btn-danger">Làm mới</button>
+        <form action="/bill/search" method="get">
+            <div class="filter-section">
+                <div class="form-row">
+
+                    <div class="form-group col-md-6">
+                        <label for="search">Tìm kiếm:</label>
+                        <input type="text" class="form-control" id="search" placeholder="Nhập">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="order-type">Loại đơn:</label>
+                        <select class="form-control" id="order-type" name="Type">
+                            <option value="">-Loại đơn-</option>
+                            <option value="Online">Online</option>
+                            <option value="Offline">Offline</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="start-date">Ngày bắt đầu:</label>
+                        <input type="text" class="form-control" id="start-date" placeholder="dd/mm/yyyy">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="end-date">Ngày kết thúc:</label>
+                        <input type="text" class="form-control" id="end-date" placeholder="dd/mm/yyyy">
+                    </div>
+                    <div class="form-group col-md-12 filter-buttons">
+                        <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+                        <button class="btn btn-danger">Làm mới</button>
+                    </div>
+
                 </div>
             </div>
-        </div>
+        </form>
         <div class="section-title">
             <i class="fas fa-list"></i>
             <span>Danh sách Hóa đơn</span>
             <div class="button-export">
                 <button class="btn btn-primary">+ Tạo đơn hàng</button>
-                <a th:href="@{/export/excel}">
+                <a th:href="@{/bill/export/excel}">
                     <button class="btn btn-primary">
                         <img th:src="@{/images/img_2.png}" width="25px" height="25px" alt="Icon">
                         Xuất Excel
@@ -118,7 +124,23 @@
                     <a class="nav-link"
                        th:href="@{/bill/tab(status='Hủy')}"
                        th:classappend="${tab == 'cancelled'} ? 'active' : ''">Hủy</a>
+                    <!--                    <a class="nav-link" href="#" onclick="showTab(event, 'pending')">Chờ xác nhận <span class="badge">0</span></a>-->
                 </li>
+                <!--                <li class="nav-item">-->
+                <!--                    <a class="nav-link" href="#" onclick="showTab(event, 'confirmed')">Đã xác nhận <span class="badge">0</span></a>-->
+                <!--                </li>-->
+                <!--                <li class="nav-item">-->
+                <!--                    <a class="nav-link" href="#" onclick="showTab(event, 'shipping')">Chờ vận chuyển <span class="badge">0</span></a>-->
+                <!--                </li>-->
+                <!--                <li class="nav-item">-->
+                <!--                    <a class="nav-link" href="#" onclick="showTab(event, 'payment')">Thanh toán <span class="badge">0</span></a>-->
+                <!--                </li>-->
+                <!--                <li class="nav-item">-->
+                <!--                    <a class="nav-link" href="#" onclick="showTab(event, 'completed')">Hoàn thành <span class="badge">0</span></a>-->
+                <!--                </li>-->
+                <!--                <li class="nav-item">-->
+                <!--                    <a class="nav-link" href="#" onclick="showTab(event, 'cancelled')">Hủy <span class="badge">0</span></a>-->
+                <!--                </li>-->
             </ul>
             <div id="all" class="tab-content active">
                 <table class="table table-bordered invoice-table mt-3">
@@ -150,7 +172,6 @@
                                 <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
                             </a>
                         </td>
-                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -181,7 +202,9 @@
                         <td th:text="${hdct.quantity}"></td>
                         <td th:text="${hdct.price}"></td>
                         <td>
-                            <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
+                            <a th:href="@{/bill/detail(id=${hdct.id})}">
+                                <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
+                            </a>
                         </td>
                     </tr>
                     </tbody>
@@ -215,7 +238,9 @@
                         <td th:text="${hdct.quantity}"></td>
                         <td th:text="${hdct.price}"></td>
                         <td>
-                            <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
+                            <a th:href="@{/bill/detail(id=${hdct.id})}">
+                                <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
+                            </a>
                         </td>
                     </tr>
                     </tbody>
@@ -247,7 +272,9 @@
                         <td th:text="${hdct.quantity}"></td>
                         <td th:text="${hdct.price}"></td>
                         <td>
-                            <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
+                            <a th:href="@{/bill/detail(id=${hdct.id})}">
+                                <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
+                            </a>
                         </td>
                     </tr>
                     </tbody>
@@ -280,7 +307,9 @@
                         <td th:text="${hdct.quantity}"></td>
                         <td th:text="${hdct.price}"></td>
                         <td>
-                            <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
+                            <a th:href="@{/bill/detail(id=${hdct.id})}">
+                                <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
+                            </a>
                         </td>
                     </tr>
                     </tbody>
@@ -312,7 +341,9 @@
                         <td th:text="${hdct.quantity}"></td>
                         <td th:text="${hdct.price}"></td>
                         <td>
-                            <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
+                            <a th:href="@{/bill/detail(id=${hdct.id})}">
+                                <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
+                            </a>
                         </td>
                     </tr>
                     </tbody>

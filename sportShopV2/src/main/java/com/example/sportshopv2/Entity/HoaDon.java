@@ -19,8 +19,12 @@ public class HoaDon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Integer id;
-    @Column(name = "id_account")
-    private String id_account;
+    @ManyToOne
+    @JoinColumn(name = "id_account")
+    private TaiKhoan id_account;
+    @ManyToOne
+    @JoinColumn(name = "id_staff")
+    private TaiKhoan id_staff;
 
     @NotBlank(message = "{message.username}")
     @Column(name = "user_name")
@@ -38,23 +42,18 @@ public class HoaDon {
     @Column(name = "status")
     private String status;
     @Column(name="address")
-
     private String address;
 
     @Column(name = "ship_date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssss")
     private String ship_date;
 
     @Column(name = "receive_date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssss")
     private String receive_date;
 
     @Column(name = "confirmation_date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssss")
     private String confirmation_date;
 
     @Column(name = "desire_date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssss")
     private String desire_date;
     @Column(name = "value_point")
 
@@ -75,7 +74,6 @@ public class HoaDon {
     private String bill_code;
 
     @Column(name = "transaction_date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssss")
     private String transaction_date;
     @Column(name = "email")
     private String email;
@@ -85,19 +83,15 @@ public class HoaDon {
     private String note;
 
     @Column(name = "create_at")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssss")
     private String create_at;
 
     @Column(name = "create_by")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssss")
     private String create_by;
 
     @Column(name = "update_at")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String update_at;
 
     @Column(name = "update_by")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String update_by;
     @Column(name = "deleted")
     private Boolean deleted;
