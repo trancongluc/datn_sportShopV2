@@ -5,6 +5,7 @@ import com.example.sportshopv2.service.SanPhamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,12 @@ public class sanPhamController {
         return "SanPham/san-pham"; // Trả về trang mẫu
     }
 
-
+    @PostMapping("/them-san-pham")
+    @ResponseBody
+    public ResponseEntity<String> themChatLieu(@RequestBody SanPham sanPham) {
+        sanPhamService.addSanPham(sanPham);
+        return ResponseEntity.ok("Thêm thành công");
+    }
 //    @GetMapping("/them-san-pham")
 //    public String themSanPham() {
 //        return "SanPham/them-san-pham";

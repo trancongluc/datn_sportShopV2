@@ -266,7 +266,7 @@ function selectSize(button) {
     const size = button.textContent; // Lấy tên kích cỡ
     const sizeId = button.getAttribute('data-size'); // Lấy ID kích cỡ
 
-    const sizeObj = { id: sizeId, name: size }; // Tạo đối tượng với tên và ID
+    const sizeObj = {id: sizeId, name: size}; // Tạo đối tượng với tên và ID
 
     if (selectedSizes.some(s => s.id === sizeId)) {
         // Nếu kích cỡ đã được chọn, xóa nó khỏi mảng
@@ -277,7 +277,7 @@ function selectSize(button) {
         selectedSizes.push(sizeObj);
         button.classList.add('active');
     }
-
+    updateProductTable();
     console.log('Kích cỡ đã chọn:', selectedSizes); // In ra mảng chứa kích cỡ đã chọn
 }
 
@@ -313,6 +313,7 @@ function confirmSelectedSizes() {
     closeModal('sizeModal');
 
 }
+
 // function updateModalState() {
 //     const sizeButtons = document.querySelectorAll('.size-button');
 //     sizeButtons.forEach(button => {
@@ -344,7 +345,9 @@ function selectedColor(colorButton) {
     }
 
     console.log('Các màu sắc đã chọn:', selectedColors);
+    updateProductTable();
 }
+
 function confirmSelectedColors() {
     updateSelectedColors(); // Cập nhật hiển thị các màu sắc đã chọn
     closeModal('mauSacModal'); // Đóng modal màu sắc
@@ -362,6 +365,7 @@ function updateSelectedColors() {
         selectedColorsElement.appendChild(span);
     });
 }
+
 function updateColorPreview(color) {
     document.getElementById('colorPreview').style.backgroundColor = color;
 }
@@ -465,6 +469,7 @@ function updateMauSac() {
         })
         .catch(error => console.error('Error fetching sizes:', error));
 }
+
 //
 function formatPrice(input) {
     // Xóa " VND" và dấu chấm để xử lý giá
@@ -473,8 +478,176 @@ function formatPrice(input) {
 
     if (!isNaN(numericValue)) {
         // Định dạng giá và thêm " VND" vào cuối
-        input.value = numericValue.toLocaleString('vi-VN', { style: 'decimal', minimumFractionDigits: 0 }) + ' VND';
+        input.value = numericValue.toLocaleString('vi-VN', {style: 'decimal', minimumFractionDigits: 0}) + ' VND';
     } else {
         input.value = '0 VND'; // Nếu không phải số, đặt về mặc định
     }
+}
+
+//Tự động tạo ra row trong table
+function updateProductTable() {
+    const tableBody = document.querySelector('table tbody');
+    tableBody.innerHTML = ''; // Xóa các hàng hiện có
+
+    const productName = document.getElementById('tenSanPham').value || 'Tên sản phẩm'; // Tên mặc định nếu không được nhập
+
+    const productRows = {};
+
+    selectedColors.forEach(color => {
+        selectedSizes.forEach(size => {
+            const rowKey = `${productName} [${size.name} - ${color.code}]`;
+            if (!productRows[rowKey]) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="checkbox" class="selectItem"></td>
+                    <td>${tableBody.rows.length + 1}</td>
+                    <td>
+                        ${productName} [${size.name} - <span style="display:inline-block; width: 20px; height: 20px; background-color: ${color.code}; border: 1px solid #000;"></span>]
+                    </td>
+                    <td><input type="number" value="1" style="width: 50px;"></td>
+                    <td><input type="text" class="price" value="0 VNĐ" style="width: 180px;" onblur="formatPrice(this)"></td>
+                   <td class="action-buttons">
+                        <div class="action-buttons-container">
+                        <i class="fas fa-trash-alt" onclick="removeRow(this)"></i>
+                    </div>
+                        </td>
+                    <td>
+                        <div class="upload-button" onclick="triggerFileInput(this, '${rowKey}')"><i class="fas fa-plus"></i> Tải lên</div>
+                        <input type="file" class="fileInput" style="display:none;" multiple onchange="handleFileSelect(this, '${rowKey}')">
+                        <div class="uploaded-images"></div>
+                    </td>
+                `;
+                productRows[rowKey] = row;
+                tableBody.appendChild(row);
+            }
+        });
+    });
+}
+
+function triggerFileInput(button, rowKey) {
+    const fileInput = button.nextElementSibling;
+    fileInput.click();
+    fileInput.setAttribute('data-row-key', rowKey);
+}
+//Tải aảnh len
+function handleFileSelect(inputElement, rowKey) {
+    const files = inputElement.files;
+    const uploadedImagesDiv = inputElement.closest('tr').querySelector('.uploaded-images');
+    const existingImages = uploadedImagesDiv.querySelectorAll('div.image-container');
+
+    // Kiểm tra nếu đã có 6 ảnh, không cho chọn thêm
+    if (existingImages.length + files.length > 6) {
+        alert('Bạn chỉ có thể chọn tối đa 6 ảnh.');
+        inputElement.value = ''; // Xóa lựa chọn ảnh
+        return;
+    }
+
+    const imageContainers = [];
+
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const imageContainer = document.createElement('div');
+        imageContainer.classList.add('image-container');
+        imageContainer.style.width = '100px';
+        imageContainer.style.height = '100px';
+        imageContainer.style.position = 'relative';
+        imageContainer.style.marginRight = '10px';
+        imageContainer.style.marginBottom = '10px';
+        imageContainer.style.display = 'inline-block';
+
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        img.style.maxWidth = '100%';
+        img.style.maxHeight = '100%';
+        imageContainer.appendChild(img);
+
+        const overlay = document.createElement('div');
+        overlay.classList.add('overlay');
+        overlay.style.position = 'absolute';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        overlay.style.display = 'flex';
+        overlay.style.justifyContent = 'center';
+        overlay.style.alignItems = 'center';
+        overlay.style.opacity = '0';
+        overlay.style.transition = 'opacity 0.3s';
+
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-button');
+        deleteButton.style.backgroundColor = 'red';
+        deleteButton.style.color = 'white';
+        deleteButton.style.border = 'none';
+        deleteButton.style.padding = '5px 10px';
+        deleteButton.style.borderRadius = '5px';
+        deleteButton.style.cursor = 'pointer';
+        deleteButton.innerHTML = '<i class="fas fa-trash"></i>';
+        deleteButton.onclick = () => {
+            imageContainer.remove();
+            const uploadButton = inputElement.closest('td').querySelector('.upload-button');
+            uploadButton.style.display = uploadedImagesDiv.querySelectorAll('div.image-container').length < 6 ? 'inline-block' : 'none';
+        };
+
+        const eyeIcon = document.createElement('i');
+        eyeIcon.classList.add('fas', 'fa-eye');
+        eyeIcon.style.color = 'white';  // Đặt màu icon mắt thành trắng
+        eyeIcon.style.marginRight = '10px';
+
+        // Thêm sự kiện click vào icon mắt để xem ảnh
+        eyeIcon.onclick = () => {
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            modal.style.zIndex = '1000';
+
+            const fullSizeImg = document.createElement('img');
+            fullSizeImg.src = img.src;
+            fullSizeImg.style.maxWidth = '90%';
+            fullSizeImg.style.maxHeight = '90%';
+            modal.appendChild(fullSizeImg);
+
+            // Thêm sự kiện để đóng modal khi nhấn vào
+            modal.onclick = () => {
+                modal.remove();
+            };
+
+            document.body.appendChild(modal);
+        };
+
+        overlay.appendChild(eyeIcon);
+        overlay.appendChild(deleteButton);
+
+        // Thêm sự kiện hover vào image container
+        imageContainer.addEventListener('mouseover', () => {
+            overlay.style.opacity = '1';
+        });
+        imageContainer.addEventListener('mouseout', () => {
+            overlay.style.opacity = '0';
+        });
+
+        imageContainer.appendChild(overlay);
+        imageContainers.push(imageContainer);
+    }
+
+    // Thêm các ảnh mới vào uploadedImagesDiv mà không xóa ảnh cũ
+    imageContainers.forEach(container => {
+        uploadedImagesDiv.appendChild(container);
+    });
+
+    // Ẩn nút tải lên khi đã có 6 ảnh
+    const uploadButton = inputElement.closest('td').querySelector('.upload-button');
+    uploadButton.style.display = existingImages.length + files.length >= 6 ? 'none' : 'inline-block';
+}
+
+function removeRow(button) {
+    button.closest('tr').remove();
 }

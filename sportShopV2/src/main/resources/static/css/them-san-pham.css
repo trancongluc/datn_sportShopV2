@@ -6,8 +6,7 @@ body {
     flex-direction: column;
 }
 .container {
-
-    background-color: white;
+    background-color: white !important;
     padding: 40px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -15,6 +14,7 @@ body {
     max-width: 1200px;
     margin-bottom: 20px;
 }
+
 h1 {
     text-align: center;
     font-size: 24px;
@@ -129,21 +129,17 @@ th:nth-child(6), td:nth-child(6) {
 th:nth-child(7), td:nth-child(7) {
     width: 35%;
 }
-td.action-buttons {
+.action-buttons-container {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%; /* Đảm bảo ô này chiếm hết chiều cao của hàng */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    height: 100%; /* Đảm bảo phần tử chiếm toàn bộ chiều cao của ô */
+}
+td.action-buttons {
+    padding: 0; /* Xóa padding nếu cần thiết */
+    text-align: center; /* Căn giữa nội dung trong ô */
 }
 
-td.action-buttons i {
-    color: #d9534f;
-    cursor: pointer;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
 .upload-button {
     display: flex;

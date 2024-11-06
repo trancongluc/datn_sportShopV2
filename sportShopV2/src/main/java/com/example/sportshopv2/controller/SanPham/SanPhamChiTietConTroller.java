@@ -1,11 +1,13 @@
 package com.example.sportshopv2.controller.SanPham;
 
+import com.example.sportshopv2.model.CoGiay;
+import com.example.sportshopv2.model.SanPhamChiTiet;
 import com.example.sportshopv2.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/san-pham-chi-tiet")
@@ -19,6 +21,7 @@ public class SanPhamChiTietConTroller {
     private final SanPhamService sanPhamService;
     private final TheLoaiService theLoaiService;
     private final ThuongHieuService thuongHieuService;
+    private final SanPhamChiTietService spctService;
 
     @GetMapping("")
     public String sanPhamChiTiet(Model model) {
@@ -31,5 +34,12 @@ public class SanPhamChiTietConTroller {
         model.addAttribute("kt", kichThuocService.getAllKichThuoc());
         model.addAttribute("ms", mauSacService.getAllMauSac());
         return "SanPham/them-san-pham";
+    }
+    @PostMapping("/them-san-pham-chi-tiet")
+    @ResponseBody
+    public ResponseEntity<String> themChatLieu(@RequestBody SanPhamChiTiet spct) {
+        spctService.addSPCT(spct);
+
+        return ResponseEntity.ok("Thêm thành công");
     }
 }
