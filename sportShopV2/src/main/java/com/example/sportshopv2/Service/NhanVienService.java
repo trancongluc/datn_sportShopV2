@@ -21,8 +21,8 @@ public class NhanVienService {
     @Autowired
     private NhanVienRepo nvRepository;
 
-    @Autowired
-    private AddressRepo addressRepository;
+//    @Autowired
+//    private AddressRepo addressRepository;
 
     public Page<User> getAllDesc(Pageable pageable) {
         Pageable sortedByNewest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").descending());
@@ -33,24 +33,21 @@ public class NhanVienService {
         return nvRepository.searchEmp(keyword, pageable);
     }
 
-    //public Page<User> getAllEmp(Pageable pageable) {
-//        return nvRepository.findAllEmp(pageable);
-//
-//    }
+
 
 
     public void deleteEmpById(Integer id) {
         nvRepository.deleteById(id); // Delete the customer by ID
     }
 
-    private final String UPLOAD_DIR = "C:\\Users\\panha\\OneDrive\\Documents\\GitHub\\datn_sportShopV2\\sportShopV2\\src\\main\\resources\\static\\uploads";
+    private final String UPLOAD_DIR = "C:\\Users\\panha\\OneDrive\\Documents\\GitHub\\datn_sportShopV2\\sportShopV2\\src\\main\\resources\\static\\uploads\\";
 
     public User addnv(User NhanVien, MultipartFile imageFile, String role, String username, String password) throws IOException {
         // Lưu tệp hình ảnh
         if (!imageFile.isEmpty()) {
             String fileName = imageFile.getOriginalFilename();
             imageFile.transferTo(new File(UPLOAD_DIR + fileName));
-            NhanVien.setImageFileName(fileName); // Thiết lập tên tệp hình ảnh trong KhachHang
+            NhanVien.setImageFileName(fileName);
         }
         Account account = new Account();
         account.setUser(NhanVien);
@@ -73,11 +70,11 @@ public class NhanVienService {
         nvRepository.save(NhanVien); // Save the updated customer
     }
 
-    public void updateEmpImage(User customer, MultipartFile imageFile) throws IOException {
+    public void updateEmpImage(User NhanVien, MultipartFile imageFile) throws IOException {
         // Save the new image
         String fileName = imageFile.getOriginalFilename();
         imageFile.transferTo(new File(UPLOAD_DIR + fileName));
-        customer.setImageFileName(fileName);
+        NhanVien.setImageFileName(fileName);
     }
 
 }

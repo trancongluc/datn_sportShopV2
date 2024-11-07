@@ -47,7 +47,7 @@ table {
 }
 
 thead {
-    background-color: #000000;
+    background-color: #e64a19;
     color: white;
 }
 
@@ -83,11 +83,11 @@ tbody tr:nth-child(even) {
     margin-top: 20px;        /* Khoảng cách phía trên nếu muốn */
 }
 .txt{
-    background-color: #00CCFF;
     font-weight: bold;
     padding-left: 10px;
-    color: white;
+    color: black;
     border-radius: 5px;
+    margin-bottom: 20px;
 }
 ---------------------------------------------------
 
@@ -143,4 +143,7 @@ form{
 
 .btn-scan-qr:hover {
     background-color: #e64a19; /* Màu cam đậm khi hover */
+}
+#qr-reader {
+    width: 100%;
 }
