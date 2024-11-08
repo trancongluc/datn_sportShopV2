@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,8 +23,8 @@ public class NhanVienService {
     @Autowired
     private NhanVienRepo nvRepository;
 
-//    @Autowired
-//    private AddressRepo addressRepository;
+    @Autowired
+    private JavaMailSender mailSender;
 
     public Page<User> getAllDesc(Pageable pageable) {
         Pageable sortedByNewest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").descending());
@@ -34,7 +36,29 @@ public class NhanVienService {
     }
 
 
+    public void mailSend(String toEmail, String username, String password) {
+        String subject = "Mời em về với đội của anh!";
+        String body = "Chào bạn\n"
+                + "\n"
+                + "Mình là Minh, thuộc bộ phận tuyển dụng của hệ thống bán giày thể thao SportShopV2\n"
+                + "Bạn đã ứng tuyển thành công vào vị trí: Nhân viên\n"
+                + "\n"
+                + "Tài khoản của bạn :\n"
+                + "Username : " + username
+                + "\n"
+                + "Mật khẩu : " + password
+                + "\n"
+                + "Để có thể nắm rõ về chi tiết công việc của bạn, bạn vui lòng đến Phòng P401, FPT Polytechnic cơ sở Kiểu Mai nhé\n"
+                + "Trân trọng!";
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail); // Địa chỉ email người nhận
+        message.setSubject(subject); // Tiêu đề email
+        message.setText(body); // Nội dung email
+        message.setFrom("hellcatsuper053@gmail.com"); // Địa chỉ email người gửi
 
+        mailSender.send(message);
+
+    }
 
     public void deleteEmpById(Integer id) {
         nvRepository.deleteById(id); // Delete the customer by ID
