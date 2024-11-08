@@ -1,105 +1,81 @@
-// Nếu cần thêm các chức năng JavaScript, bạn có thể viết vào đây
-// Ví dụ, xử lý sự kiện cho các nút
+let invoiceCount = 0;
+let maxInvoices = 5;
+let invoiceData = {};
 
-document.querySelectorAll('.invoice-btn').forEach(button => {
-    button.addEventListener('click', () => {
-        document.querySelectorAll('.invoice-btn').forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        // Thêm logic để chuyển đổi giữa các hóa đơn
-    });
-});
-
-
-
-
-let invoices = []; // Mảng chứa các hóa đơn
-let currentInvoiceId = null; // ID của hóa đơn hiện tại
-
-document.getElementById('create-invoice-btn').addEventListener('click', createInvoice);
-document.getElementById('add-product-btn').addEventListener('click', addProduct);
-
-// Hàm tạo hóa đơn mới
-function createInvoice() {
-    const invoiceId = `invoice-${invoices.length + 1}`;
-    invoices.push({ id: invoiceId, products: [] });
-
-    // Tạo nút hóa đơn mới
-    const invoiceBtn = document.createElement('button');
-    invoiceBtn.innerText = `Hóa đơn ${invoices.length}`;
-    invoiceBtn.classList.add('invoice');
-    invoiceBtn.setAttribute('data-id', invoiceId);
-    invoiceBtn.addEventListener('click', () => selectInvoice(invoiceId));
-
-    // Tạo nút xóa hóa đơn
-    // Thay thế tạo button xóa bằng một SVG icon
-    const deleteBtn = document.createElement('button');
-    deleteBtn.classList.add('delete-btn');
-
-// Sử dụng SVG icon trash
-    deleteBtn.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 0 24 24" width="15">
-    <path d="M18.3 5.71L12 12.01 5.7 5.71a1 1 0 0 0-1.42 1.42l6.3 6.3-6.3 6.3a1 1 0 0 0 1.42 1.42l6.3-6.3 6.3 6.3a1 1 0 0 0 1.42-1.42l-6.3-6.3 6.3-6.3a1 1 0 0 0-1.42-1.42z"/>
-</svg>
-`;
-    deleteBtn.addEventListener('click', (event) => {
-        event.stopPropagation(); // Ngăn không kích hoạt chọn hóa đơn khi bấm "Xóa"
-        deleteInvoice(invoiceId);
-    });
-
-    const container = document.createElement('div');
-    container.appendChild(invoiceBtn);
-    container.appendChild(deleteBtn);
-
-    document.getElementById('invoices-container').appendChild(container);
-
-    selectInvoice(invoiceId); // Tự động chọn hóa đơn vừa tạo
-}
-
-// Hàm chọn hóa đơn
-function selectInvoice(invoiceId) {
-    currentInvoiceId = invoiceId;
-    document.querySelectorAll('.invoice').forEach(btn => btn.classList.remove('active'));
-    document.querySelector(`[data-id="${invoiceId}"]`).classList.add('active');
-
-    renderProducts();
-}
-
-// Hàm thêm sản phẩm vào hóa đơn hiện tại
-function addProduct() {
-    if (!currentInvoiceId) {
-        alert('Vui lòng chọn hóa đơn trước!');
+function addTab() {
+    if (invoiceCount >= maxInvoices) {
+        showToast("Số lượng hóa đơn chờ đã đạt tối đa.");
         return;
     }
 
-    const productName = prompt('Nhập tên sản phẩm:');
-    if (productName) {
-        const invoice = invoices.find(inv => inv.id === currentInvoiceId);
-        invoice.products.push(productName);
-        renderProducts();
+    invoiceCount++;
+    const tabContainer = document.getElementById('tabContainer');
+
+    // Tạo dữ liệu cho hóa đơn mới
+    invoiceData[invoiceCount] = {
+        products: `Sản phẩm của Hóa Đơn ${invoiceCount}`,
+        customer: `Khách hàng của Hóa Đơn ${invoiceCount}`
+    };
+
+    // Tạo thẻ mới cho hóa đơn
+    const newTab = document.createElement('div');
+    newTab.classList.add('tab-item', 'active');
+    newTab.innerHTML = `Hóa Đơn ${invoiceCount} <span class="close-btn" onclick="removeTab(this, event)">&times;</span>`;
+    newTab.setAttribute("onclick", `selectTab(${invoiceCount})`);
+
+    // Xóa active của các tab khác
+    const tabs = document.querySelectorAll('.tab-item');
+    tabs.forEach(tab => tab.classList.remove('active'));
+
+    // Thêm thẻ mới vào DOM
+    tabContainer.insertBefore(newTab, tabContainer.lastElementChild);
+
+    // Hiển thị chi tiết hóa đơn
+    selectTab(invoiceCount);
+}
+
+function selectTab(invoiceNumber) {
+    const tabs = document.querySelectorAll('.tab-item');
+    tabs.forEach(tab => tab.classList.remove('active'));
+
+    const selectedTab = document.querySelector(`.tab-item:nth-child(${invoiceNumber})`);
+    if (selectedTab) selectedTab.classList.add('active');
+
+    document.getElementById('productList').textContent = invoiceData[invoiceNumber].products;
+}
+
+function removeTab(element, event) {
+    event.stopPropagation();
+    const tab = element.parentElement;
+    const tabContainer = document.getElementById('tabContainer');
+    const invoiceNumber = Array.from(tabContainer.children).indexOf(tab);
+
+    delete invoiceData[invoiceNumber + 1];
+    tabContainer.removeChild(tab);
+    invoiceCount--;
+
+    const tabs = document.querySelectorAll('.tab-item');
+    if (tabs.length > 0) {
+        const lastTab = tabs[tabs.length - 1];
+        lastTab.classList.add('active');
+        const lastInvoiceNumber = Array.from(tabContainer.children).indexOf(lastTab);
+        selectTab(lastInvoiceNumber + 1);
+    } else {
+        document.getElementById('productList').textContent = "Chưa có dữ liệu.";
     }
 }
 
-// Hàm hiển thị sản phẩm trong hóa đơn hiện tại
-function renderProducts() {
-    const invoice = invoices.find(inv => inv.id === currentInvoiceId);
-    const productList = document.getElementById('product-list');
-    productList.innerHTML = ''; // Xóa danh sách cũ
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
 
-    invoice.products.forEach(product => {
-        const productItem = document.createElement('div');
-        productItem.classList.add('product-item');
-        productItem.innerText = product;
-        productList.appendChild(productItem);
-    });
-}
+    toastMessage.textContent = message;
+    toast.classList.remove('hide');
+    toast.classList.add('show');
 
-// Hàm xóa hóa đơn
-function deleteInvoice(invoiceId) {
-    invoices = invoices.filter(inv => inv.id !== invoiceId);
-    document.querySelector(`[data-id="${invoiceId}"]`).parentElement.remove();
-
-    if (currentInvoiceId === invoiceId) {
-        currentInvoiceId = null;
-        document.getElementById('product-list').innerHTML = ''; // Xóa sản phẩm khi không có hóa đơn nào được chọn
-    }
+    // Ẩn thông báo sau 3 giây
+    setTimeout(() => {
+        toast.classList.remove('show');
+        toast.classList.add('hide');
+    }, 3000);
 }

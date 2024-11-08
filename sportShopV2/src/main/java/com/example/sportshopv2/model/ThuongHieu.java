@@ -19,4 +19,8 @@ public class ThuongHieu extends BaseEntity{
     private String tenThuongHieu;
     @Column(name = "status")
     private String trangThai;
+
+    public ThuongHieu(Integer id) {
+        this.id = id;
+    }
 }

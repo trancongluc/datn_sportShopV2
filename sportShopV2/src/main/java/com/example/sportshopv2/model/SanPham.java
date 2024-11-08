@@ -21,4 +21,8 @@ public class SanPham extends BaseEntity{
     private String tenSanPham;
     @Column(name = "status")
     private String trangThai;
+
+    public SanPham(Integer id) {
+        this.id = id;
+    }
 }

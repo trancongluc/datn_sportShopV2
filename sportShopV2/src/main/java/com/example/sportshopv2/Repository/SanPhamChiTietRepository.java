@@ -6,9 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, Integer> {
 
     Page<SanPhamChiTiet> findAllByDeletedAndIdSanPham(boolean deleted,Integer idSanPham,Pageable pageable);
-
 
 }

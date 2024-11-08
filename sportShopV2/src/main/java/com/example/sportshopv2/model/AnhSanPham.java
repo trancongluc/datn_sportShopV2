@@ -15,6 +15,8 @@ public class AnhSanPham extends BaseEntity {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(name = "id_product_detail")
+    private Integer idSPCT;
     @Column(name = "name")
     private String tenAnh;
     @Column(name = "status")

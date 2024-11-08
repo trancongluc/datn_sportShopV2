@@ -1,67 +1,128 @@
 <!DOCTYPE html>
-<html lang="vi"
-      xmlns:th="http://www.thymeleaf.org"
+<html lang="en"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{Menu}"
 >
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bán Hàng Tại Quầy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="/css/Banhangtaiquay.css">
-    <title>Giao Diện Bán Hàng Tại Quầy</title>
 </head>
 <body>
 <main layout:fragment="main1">
-<div class="container">
-    <div class="header">
-        <div id="invoices-container">
-            <!-- Hóa đơn sẽ được tạo ở đây -->
+    <div class="container mt-4">
+        <h2 class="mb-4">
+            <i class="fas fa-shopping-cart" style="margin-right: 8px;"></i>
+            Bán Hàng Tại Quầy
+        </h2>
+        <!-- Invoice Tabs -->
+        <div class="tab-container d-flex align-items-center" id="tabContainer">
+            <button class="btn btn-outline-primary ms-2" onclick="addTab()">+ Thêm</button>
         </div>
-        <button class="create-invoice-btn" id="create-invoice-btn">Tạo hóa đơn</button>
 
-    </div>
+        <div class="row">
+            <!-- Left Column: Search and Delivery Options -->
+            <div class="col-md-8">
+                <div class="search-bar">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Tìm kiếm hàng hóa">
+                        <span class="input-group-text">Quét Mã</span>
+                    </div>
+                    <p id="productList" class="text-center mt-3 text-muted">Chưa có dữ liệu.</p>
+                    <div class="add-product-btn">+ Thêm Sản Phẩm</div>
+                </div>
 
-    <div class="cart-message">
-    <h2>Danh sách sản phẩm</h2>
-    <div id="product-list">
-        <!-- Danh sách sản phẩm của từng hóa đơn sẽ hiển thị tại đây -->
-    </div>
-</div>
+                <!-- Delivery Options -->
+                <h5>Nhận Hàng:</h5>
+                <div class="delivery-option">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="deliveryOption" id="atStore" checked>
+                        <label class="form-check-label" for="atStore">
+                            Tại Quầy
+                        </label>
+                        <small class="d-block">Có thể nhận hàng từ 7h30 đến 22h30 mọi ngày tại cửa hàng</small>
+                    </div>
+                    <div class="form-check mt-2">
+                        <input class="form-check-input" type="radio" name="deliveryOption" id="delivery">
+                        <label class="form-check-label" for="delivery">
+                            Chuyển Phát
+                        </label>
+                        <small class="d-block">Giao hàng toàn quốc từ 1 đến 2 ngày</small>
+                    </div>
+                </div>
+            </div>
 
-    <div class="actions">
+            <!-- Right Column: Customer Info and Total Calculation -->
+            <div class="col-md-4">
+                <div class="customer-info">
+                    <div class="mb-2 align-items-center">
+                        <label for="customerDropdown" class="form-label mb-0">Khách Hàng:</label>
+                        <button class="btn btn-outline-secondary btn-sm">+</button>
+                    </div>
+                    <select class="form-select" id="customerDropdown">
+                        <option value="guest">Khách Lẻ</option>
+                        <option value="customer1">Nguyễn Văn A</option>
+                        <option value="customer2">Trần Thị B</option>
+                    </select>
+                    <form class="mt-3">
+                        <div class="mb-2">
+                            <label for="customerName">Họ Tên:</label>
+                            <input type="text" class="form-control" id="customerName">
+                        </div>
+                        <div class="mb-2">
+                            <label for="phone">SĐT:</label>
+                            <input type="text" class="form-control" id="phone">
+                        </div>
+                        <div class="mb-2">
+                            <label for="email">Email:</label>
+                            <input type="email" class="form-control" id="email">
+                        </div>
+                        <div class="mb-2">
+                            <label for="customerCode">Mã KH:</label>
+                            <input type="text" class="form-control" id="customerCode">
+                        </div>
+                        <div class="input-group mt-2">
+                            <input type="text" class="form-control" placeholder="Nhập mã">
+                            <button class="btn btn-primary">Áp Dụng</button>
+                        </div>
+                    </form>
+                </div>
 
-        <button class="add-product-btn">Thêm sản phẩm</button>
-    </div>
-
-    <div class="account">
-        <h3>Tài khoản</h3>
-        <p>Thông tin tài khoản của bạn sẽ hiển thị ở đây.</p>
-    </div>
-
-    <div class="payment-info">
-        <h2>Thông tin thanh toán</h2>
-        <div class="customer-info">
-            <label for="customer-name">Khách hàng:</label>
-            <input type="text" id="customer-name" placeholder="Nhập tên khách hàng" />
-            <label for="discount-code">Mã giảm giá:</label>
-            <input type="text" id="discount-code" placeholder="VC/3348308 - HÀN SN116" />
-            <div class="delivery">
-                <label for="delivery">Giao hàng:</label>
-                <input type="checkbox" id="delivery" />
+                <!-- Summary and Total -->
+                <table class="table summary-table">
+                    <tr>
+                        <td>Tổng:</td>
+                        <td class="text-end">0đ</td>
+                    </tr>
+                    <tr>
+                        <td>Phí Ship:</td>
+                        <td class="text-end">Miễn Phí</td>
+                    </tr>
+                    <tr>
+                        <td>Giảm Giá:</td>
+                        <td class="text-end">0đ</td>
+                    </tr>
+                    <tr>
+                        <td>Thực Thu:</td>
+                        <td class="text-end">0đ</td>
+                    </tr>
+                </table>
+                <div class="total-btn">THANH TOÁN</div>
             </div>
         </div>
-
-        <div class="amount-info">
-            <p>Tiền hàng: <span id="item-total">6.500.000 VNĐ</span></p>
-            <p>Giảm giá: <span id="discount">300.000 VNĐ</span></p>
-
-            <h3>Tổng tiền: <span id="total-amount">6.200.000 VNĐ</span></h3>
-        </div>
-        <button class="btn btn-success"> Thanh Toán</button>
     </div>
-</div>
+    <div id="toast" class="toast hide">
+        <span id="toastMessage"></span>
+    </div>
 
-<script src="/js/Banhangtaiquay.js"></script>
+    <script src="/js/Banhangtaiquay.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </main>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package com.example.sportshopv2.controller.SanPham;
 
+import com.example.sportshopv2.dto.SanPhamChiTietDTO;
 import com.example.sportshopv2.model.SanPhamChiTiet;
 import com.example.sportshopv2.service.*;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.print.Pageable;
+import java.util.List;
 
 @Controller
 @RequestMapping("/san-pham-chi-tiet")
@@ -46,7 +48,7 @@ public class SanPhamChiTietConTroller {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
             , Model model) {
-        Page<SanPhamChiTiet> listSPCT = spctService.getSPCTByIdSP(idSP, PageRequest.of(page, size));
+        Page<SanPhamChiTietDTO> listSPCT = spctService.getSPCTByIdSP(idSP, PageRequest.of(page, size));
         model.addAttribute("spct", listSPCT.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", listSPCT.getTotalPages());
