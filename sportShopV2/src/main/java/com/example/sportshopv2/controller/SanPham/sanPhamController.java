@@ -29,9 +29,9 @@ public class sanPhamController {
 
     @PostMapping("/them-san-pham")
     @ResponseBody
-    public ResponseEntity<String> themChatLieu(@RequestBody SanPham sanPham) {
-        sanPhamService.addSanPham(sanPham);
-        return ResponseEntity.ok("Thêm thành công");
+    public ResponseEntity<SanPham> themChatLieu(@RequestBody SanPham sanPham) {
+
+        return ResponseEntity.ok(sanPhamService.addSanPham(sanPham));
     }
 //    @GetMapping("/them-san-pham")
 //    public String themSanPham() {

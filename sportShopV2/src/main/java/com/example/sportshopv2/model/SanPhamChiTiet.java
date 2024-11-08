@@ -15,9 +15,9 @@ public class SanPhamChiTiet extends BaseEntity{
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "id_size)")
+    @Column(name = "id_size")
     private Integer idKichThuoc;
-    @Column(name = "id_product)")
+    @Column(name = "id_product")
     private Integer idSanPham;
     @Column(name = "id_color")
     private Integer idMauSac;
@@ -35,11 +35,11 @@ public class SanPhamChiTiet extends BaseEntity{
     private String moTa;
     @Column(name = "quantity")
     private Integer soLuong;
-    @Column(name = "price)")
+    @Column(name = "price")
     private Float gia;
-    @Column(name = "status)")
+    @Column(name = "status")
     private String trangThai;
-    @Column(name = "gender)")
+    @Column(name = "gender")
     private String gioiTinh;
 
 

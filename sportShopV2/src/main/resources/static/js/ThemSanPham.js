@@ -56,7 +56,7 @@ function updateBrandList() {
     fetch('thuong-hieu/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
         .then(response => response.json())
         .then(data => {
-            const brandSelect = document.getElementById('brand');
+            const brandSelect = document.getElementById('idThuongHieu');
             brandSelect.innerHTML = ''; // Xóa các tùy chọn hiện tại
             brandSelect.innerHTML += '<option value="" disabled selected hidden>Chọn thương hiệu</option>'; // Thêm tùy chọn mặc định
 
@@ -144,7 +144,7 @@ function updateCboChatLieu() {
     fetch('chat-lieu/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
         .then(response => response.json())
         .then(data => {
-            const brandSelect = document.getElementById('material');
+            const brandSelect = document.getElementById('idChatLieu');
             brandSelect.innerHTML = ''; // Xóa các tùy chọn hiện tại
             brandSelect.innerHTML += '<option value="" disabled selected hidden>Chọn Chất Liệu</option>'; // Thêm tùy chọn mặc định
 
@@ -501,7 +501,7 @@ function updateProductTable() {
                 row.innerHTML = `
                     <td><input type="checkbox" class="selectItem"></td>
                     <td>${tableBody.rows.length + 1}</td>
-                    <td>
+                     <td data-size-id="${size.id}" data-color-id="${color.id}">
                         ${productName} [${size.name} - <span style="display:inline-block; width: 20px; height: 20px; background-color: ${color.code}; border: 1px solid #000;"></span>]
                     </td>
                     <td><input type="number" value="1" style="width: 50px;"></td>
@@ -529,6 +529,7 @@ function triggerFileInput(button, rowKey) {
     fileInput.click();
     fileInput.setAttribute('data-row-key', rowKey);
 }
+
 //Tải aảnh len
 function handleFileSelect(inputElement, rowKey) {
     const files = inputElement.files;
@@ -650,4 +651,114 @@ function handleFileSelect(inputElement, rowKey) {
 
 function removeRow(button) {
     button.closest('tr').remove();
+}
+
+async function themSPCT() {
+    const sanPhamNew = document.getElementById('tenSanPham').value;
+    const moTa = document.getElementById('description').value;
+    const gioiTinh = document.getElementById('gender').value;
+    const idThuongHieu = document.getElementById('idThuongHieu').value;
+    const idTheLoai = document.getElementById('category').value;
+    const idChatLieu = document.getElementById('idChatLieu').value;
+    const idDeGiay = document.getElementById('sole').value;
+    const idCoGiay = document.getElementById('collar').value;
+
+    try {
+        // Thêm sản phẩm chính
+        const sanPhamResponse = await fetch('san-pham/them-san-pham', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                tenSanPham: sanPhamNew
+            })
+        });
+
+        if (!sanPhamResponse.ok) {
+            const errorText = await sanPhamResponse.text();
+            throw new Error(`Lỗi khi thêm sản phẩm: ${errorText}`);
+        }
+
+        const sanPhamData = await sanPhamResponse.json();
+        const sanPhamId = sanPhamData.id; // Lấy ID sản phẩm mới tạo
+
+        // Lấy thông tin chi tiết từ bảng
+        const productDetails = getInfoTable();
+        console.log('Thông tin chi tiết sản phẩm:', productDetails);
+        // Tạo mảng các yêu cầu thêm chi tiết sản phẩm
+        const chiTietPromises = productDetails.map(detail => {
+            return fetch('san-pham-chi-tiet/them-san-pham-chi-tiet', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    idSanPham: sanPhamId, // ID sản phẩm đã thêm
+                    idKichThuoc: detail.sizeId, // ID kích cỡ
+                    idMauSac: detail.colorId, // ID màu sắc
+                    idThuongHieu: idThuongHieu,
+                    idDeGiay: idDeGiay,
+                    idTheLoai: idTheLoai,
+                    idCoGiay: idCoGiay,
+                    idChatLieu: idChatLieu,
+                    moTa: moTa,
+                    gioiTinh: gioiTinh,
+                    soLuong: detail.quantity, // Số lượng
+                    gia: detail.price // Giá tiền
+                })
+            });
+        });
+
+        // Chờ tất cả các yêu cầu chi tiết sản phẩm hoàn thành
+        const chiTietResponses = await Promise.all(chiTietPromises);
+
+        // Kiểm tra phản hồi
+        chiTietResponses.forEach(response => {
+            if (!response.ok) {
+                throw new Error('Lỗi khi thêm chi tiết sản phẩm');
+            }
+        });
+
+        console.log('Thêm sản phẩm và chi tiết thành công!');
+        window.location.href = '/san-pham';
+        localStorage.setItem('notification', showNotification("Thêm Thành Công"));
+    } catch (error) {
+        console.log('Có lỗi xảy ra: ' + error.message);
+    }
+}
+
+function getInfoTable() {
+    const details = [];
+    const rows = document.querySelectorAll('table tbody tr');
+
+    console.log('Số hàng trong bảng:', rows.length);
+
+    rows.forEach(row => {
+        // Lấy số lượng và giá tiền
+        const quantity = row.querySelector('input[type="number"]').value;
+        const priceText = row.querySelector('.price').value;
+
+        // Chuyển đổi giá tiền sang số
+        const priceNumber = parseFloat(priceText.replace(/[^\d.-]/g, '')) || 0;
+
+        // Lấy ID từ thuộc tính dữ liệu
+        const sizeId = row.cells[2].getAttribute('data-size-id');
+        const colorId = row.cells[2].getAttribute('data-color-id');
+
+        // Kiểm tra xem ID có hợp lệ không
+        if (sizeId && colorId) {
+            details.push({
+                sizeId: sizeId, // ID kích cỡ
+                colorId: colorId, // ID màu sắc
+                quantity: parseInt(quantity, 10),
+                price: priceNumber
+            });
+        } else {
+            console.log('Không tìm thấy ID kích cỡ hoặc màu sắc.');
+        }
+    });
+
+    console.log('Chi tiết sản phẩm:', details);
+    return details;
 }

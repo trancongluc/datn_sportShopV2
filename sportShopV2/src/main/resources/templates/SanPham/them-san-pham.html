@@ -309,8 +309,8 @@
         </div>
         <div class="form-row">
             <div class="form-group">
-                <label for="brand">* Thương hiệu :</label>
-                <select id="brand">
+                <label for="idThuongHieu">* Thương hiệu :</label>
+                <select id="idThuongHieu">
                     <option value="" disabled selected hidden>Chọn thương hiệu</option>
                     <option th:each="thuongHieu : ${th}"
                             th:value="${thuongHieu.id}"
@@ -333,8 +333,8 @@
         </div>
         <div class="form-row">
             <div class="form-group">
-                <label for="material">* Chất Liệu :</label>
-                <select id="material">
+                <label for="idChatLieu">* Chất Liệu :</label>
+                <select id="idChatLieu">
                     <option value="" disabled selected hidden>Chọn chất liệu</option>
                     <option th:each="chatLieu : ${cl}"
                             th:value="${chatLieu.id}"
@@ -360,9 +360,9 @@
                 <label for="gender">* Giới Tính :</label>
                 <select id="gender">
                     <option value="" disabled selected hidden>Chọn giới tính</option>
-                    <option>Nam</option>
-                    <option>Nữ</option>
-                    <option>Khác</option>
+                    <option value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
+                    <option value="Unisex">Unisex</option>
                 </select>
                 <button class="plus-button" disabled><i class="fas fa-plus"></i></button>
             </div>
@@ -377,7 +377,6 @@
                 </select>
                 <button class="plus-button" onclick="openModal('collarModal')"><i class="fas fa-plus"></i></button>
             </div>
-
         </div>
     </div>
     <div class="container">
@@ -398,7 +397,7 @@
             <h1>Chi tiết sản phẩm</h1>
             <div>
                 <button>Chỉnh sửa số lượng và giá chung</button>
-                <button>Hoàn Tất</button>
+                <button onclick="themSPCT()">Hoàn Tất</button>
             </div>
         </div>
         <table>

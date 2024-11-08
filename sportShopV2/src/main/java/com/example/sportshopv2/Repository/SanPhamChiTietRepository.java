@@ -4,8 +4,11 @@ import com.example.sportshopv2.model.SanPhamChiTiet;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, Integer> {
-    Page<SanPhamChiTiet> findAllByOrderByCreateAtDesc(Pageable pageable);
+
+    Page<SanPhamChiTiet> findAllByDeletedAndIdSanPham(boolean deleted,Integer idSanPham,Pageable pageable);
+
 
 }
