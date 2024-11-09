@@ -26,6 +26,8 @@
         @Autowired
         private AddressRepository addressRepository;
 
+
+
         public Page<User> getAllCustomers(Pageable pageable) {
             Pageable sortedByNewest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").descending());
             return userRepository.findAllCustomers(sortedByNewest);
@@ -35,12 +37,24 @@
             return userRepository.searchCustomers(keyword, pageable);
         }
 
+//        public void deleteCustomerById(Integer id) {
+//            userRepository.deleteById(id); // Delete the customer by ID
+//
+//        }
+
         public void deleteCustomerById(Integer id) {
-            userRepository.deleteById(id); // Delete the customer by ID
+            User user = userRepository.findById(id).orElse(null);
+            if (user != null) {
+                user.setDeleted(true); // Đánh dấu là đã xóa
+                userRepository.save(user); // Lưu thực thể đã cập nhật
+            }
         }
+
 
         private final String UPLOAD_DIR = "C:\\HOCTAP\\DATN\\sportShopV2\\sportShopV2\\src\\main\\resources\\static\\uploads";
         public User addKhachHang(User khachHang, MultipartFile imageFile) throws IOException {
+
+
             // Lưu tệp hình ảnh
             if (!imageFile.isEmpty()) {
                 String fileName = imageFile.getOriginalFilename();
@@ -51,7 +65,11 @@
             account.setUser(khachHang);
             account.setRole("Customer"); // Đặt role là "Customer"
             account.setUsername(khachHang.getEmail()); // Hoặc bạn có thể thiết lập một username khác
-            account.setPassword("defaultPassword"); // Thiết lập mật khẩu mặc định (bạn có thể mã hóa mật khẩu ở đây)
+            account.setPassword("123"); // Thiết lập mật khẩu mặc định (bạn có thể mã hóa mật khẩu ở đây)
+
+//            account.setUsername(username); // Hoặc bạn có thể thiết lập một username khác
+//            account.setPassword(password); // Thiết lập mật khẩu mặc định (bạn có thể mã hóa mật khẩu ở đây)
+            account.setStatus("Active");
 
             khachHang.setAccount(account); // Gán tài khoản cho user
 
@@ -77,34 +95,5 @@
 
 
 
-//
-//
-//
-//        public Page<User> findAll(Pageable pageable) {
-//            return khachHangRepository.findAll(pageable);
-//        }
-//
-//        public Page<User> searchKhachHang(String keyword, Pageable pageable) {
-//            return khachHangRepository.searchByKeyword(keyword, pageable);
-//        }
-//
-//        public void deleteCustomerById(Integer id) {
-//            khachHangRepository.deleteById(id); // Delete the customer by ID
-//        }
-//
-//
-//        private final String UPLOAD_DIR = "C:\\Users\\Dungvt22\\Pictures\\w.ảnh";
-//        public User addKhachHang(User khachHang, MultipartFile imageFile) throws IOException {
-//            // Lưu tệp hình ảnh
-//            if (!imageFile.isEmpty()) {
-//                String fileName = imageFile.getOriginalFilename();
-//                imageFile.transferTo(new File(UPLOAD_DIR + fileName));
-//                khachHang.setImageFileName(fileName); // Thiết lập tên tệp hình ảnh trong KhachHang
-//            }
-//
-//            // Lưu khách hàng cùng với địa chỉ
-//            return khachHangRepository.save(khachHang);
-//        }
-//
 
     }

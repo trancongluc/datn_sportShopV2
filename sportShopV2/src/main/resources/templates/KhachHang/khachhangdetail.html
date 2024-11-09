@@ -1,148 +1,258 @@
-<!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{Menu}"
->
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Thông Tin Khách Hàng</title>
-    <link rel="stylesheet" href="/css/khachHang.css">
-    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+        <!DOCTYPE html>
+        <html lang="en"
+              xmlns:th="http://www.thymeleaf.org"
+              xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+              layout:decorate="~{Menu}"
+        >
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+            <title>Thông Tin Khách Hàng</title>
+            <link rel="stylesheet" href="/css/khachHang.css">
+            <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 
-    <script src="/js/script.js"></script>
-</head>
-<body>
-
-
-
-<main layout:fragment="main1">
-
-    <script src="https://esgoo.net/scripts/jquery.js"></script>
-    <style type="text/css">
-        .css_select_div{ text-align: center;}
-        .css_select{ display: inline-table; width: 25%; padding: 5px; margin: 5px 2%; border: solid 1px #686868; border-radius: 5px;}
-    </style>
-
-
-    <div class="container">
-        <h2 class="mb-4">Thông TIn Khách Hàng</h2>
-        <form  th:action="@{/customer/update/{id}(id=${customer.id})}" method="post" enctype="multipart/form-data"> <!-- Cập nhật action -->
-            <span>
-                    <a class="btn btn-success" href="/khach-hang/list">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5"/>
-                        </svg>
-                        Quay lại
-                    </a>
-                </span>
+            <script src="/js/script.js"></script>
+        </head>
+        <body style="background: white">
 
 
 
-            <div class="row">
-                <!-- Cột bên trái -->
-                <div class="col-md-4 text-center">
-                    <div class="image-upload" style="margin-top: 50px">
-                        <label for="file-input">
-                            <img th:src="@{/uploads/{imageFileName}(imageFileName=${customer.imageFileName})}" alt="placeholder image" id="image-preview">
-                        </label>
-                        <input id="file-input" type="file"  accept="image/*" name="imageFile" onchange="loadImage(event)"> <!-- Thêm name -->
+        <main layout:fragment="main1">
 
-                    </div>
+            <script src="https://esgoo.net/scripts/jquery.js"></script>
+            <style type="text/css">
+                .css_select_div{ text-align: center;}
+                .css_select{ display: inline-table; width: 25%; padding: 5px; margin: 5px 2%; border: solid 1px #686868; border-radius: 5px;}
+            </style>
 
-                </div>
 
-                <!-- Cột bên phải -->
-                <div class="col-md-8">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="hoTen" class="form-label">Họ và tên</label>
-                            <input type="hoTen" class="form-control" id="hoTen" name="fullName" th:value="${customer.fullName}"  required>
+            <div class="container">
+                <h2 class="mb-4">Thông Tin Khách Hàng</h2>
+                <form  th:action="@{/khach-hang/customer/update/{id}(id=${customer.id})}" method="post" enctype="multipart/form-data"> <!-- Cập nhật action -->
+                    <span>
+                            <a class="btn btn-success" href="/khach-hang/list">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5"/>
+                                </svg>
+                                Quay lại
+                            </a>
+                        </span>
+
+
+
+                    <div class="row">
+                        <!-- Cột bên trái -->
+                        <div class="col-md-4 text-center">
+                            <div class="image-upload" style="margin-top: 50px">
+                                <label for="file-input">
+                                    <img th:src="@{/uploads/{imageFileName}(imageFileName=${customer.imageFileName})}" alt="placeholder image" id="image-preview">
+                                </label>
+                                <input id="file-input" type="file"  accept="image/*" name="imageFile" onchange="loadImage(event)"> <!-- Thêm name -->
+
+                            </div>
+
                         </div>
-                        <div class="col-md-6">
-                            <label for="ngaySinh" class="form-label">Ngày sinh</label>
-                            <input type="date" class="form-control" id="ngaySinh" name="date" th:value="${customer.date}" required>
-                        </div>
-                    </div>
 
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="email" class="form-label">E-mail</label>
-                            <input type="email" class="form-control" id="email" name="email"  th:value="${customer.email}"  required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="gioiTinh" class="form-label">Giới tính</label>
-                            <select class="form-select" id="gioiTinh" name="gender" required>
-                                <option th:value="${customer.gender}" th:text="${customer.gender}" hidden>Chọn giới tính</option>
-                                <option value="Nam">Nam</option>
-                                <option value="Nữ">Nữ</option>
-                                <option value="Khác">Khác</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="soDienThoai" class="form-label">Số điện thoại</label>
-                        <input type="text" class="form-control" id="soDienThoai" name="phoneNumber" th:value="${customer.phoneNumber}" required>
-                    </div>
-
-                        <div class="css_select_div">
+                        <!-- Cột bên phải -->
+                        <div class="col-md-8">
                             <div class="row mb-3">
-                                <div class="col-md-4">
-                                    <label for="tinh" class="form-label">Tỉnh</label>
-                                    <select class="form-select" id="tinh" name="tinh" title="Chọn Tỉnh Thành"
-
-                                            onchange="document.getElementsByName('tinh_name')[0].value = this.options[this.selectedIndex].text;" required>
-                                        <option th:value="${customer.addresses[0].tinh}" th:text="${customer.addresses[0].tinh}" hidden>Tỉnh Thành</option>
-                                    </select>
-                                    <input type="hidden" name="tinh_name" th:value="${customer.addresses[0].tinh}">
+                                <div class="col-md-6">
+                                    <label for="hoTen" class="form-label">Họ và tên</label>
+                                    <input type="hoTen" class="form-control" id="hoTen" name="fullName" th:value="${customer.fullName}"  required>
                                 </div>
-                                <div class="col-md-4">
-                                    <label for="quan" class="form-label">Huyện</label>
-                                    <select class="form-select" id="quan" name="quan" title="Chọn Quận Huyện"
-
-                                            onchange="document.getElementsByName('quan_name')[0].value = this.options[this.selectedIndex].text;" required>
-                                        <option th:value="${customer.addresses[0].quan}" th:text="${customer.addresses[0].quan}" hidden>Quận Huyện</option>
-                                    </select>
-                                    <input type="hidden" name="quan_name" th:value="${customer.addresses[0].quan}">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="phuong" class="form-label">Phường</label>
-                                    <select class="form-select" id="phuong" name="phuong" title="Chọn Phường Xã"
-
-                                            onchange="document.getElementsByName('phuong_name')[0].value = this.options[this.selectedIndex].text;" required>
-                                        <option th:value="${customer.addresses[0].phuong}" th:text="${customer.addresses[0].phuong}" hidden>Phường Xã</option>
-                                    </select>
-                                    <input type="hidden" name="phuong_name" th:value="${customer.addresses[0].phuong}">
+                                <div class="col-md-6">
+                                    <label for="ngaySinh" class="form-label">Ngày sinh</label>
+                                    <input type="date" class="form-control" id="ngaySinh" name="date" th:value="${customer.date}" required>
                                 </div>
                             </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">E-mail</label>
+                                    <input type="email" class="form-control" id="email" name="email"  th:value="${customer.email}"  required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="gioiTinh" class="form-label">Giới tính</label>
+                                    <select class="form-select" id="gioiTinh" name="gender" required>
+                                        <option th:value="${customer.gender}" th:text="${customer.gender}" hidden>Chọn giới tính</option>
+                                        <option value="Nam">Nam</option>
+                                        <option value="Nữ">Nữ</option>
+                                        <option value="Khác">Khác</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="soDienThoai" class="form-label">Số điện thoại</label>
+                                <input type="text" class="form-control" id="soDienThoai" name="phoneNumber" th:value="${customer.phoneNumber}" required>
+                            </div>
+
+<!--                            <hr>-->
+                            <div class="css_select_div">
+<!--                                <h2>Danh sách địa chỉ</h2>-->
+<!--                                <button type="button" onclick="addNewAddressForm()">Mới</button>-->
+
+                                <!-- Địa chỉ đầu tiên -->
+<!--                                <div class="address-form">-->
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label for="tinh" class="form-label">Tỉnh</label>
+                                            <select class="form-select" id="tinh" name="tinh" title="Chọn Tỉnh Thành"
+                                                    onchange="document.getElementsByName('tinh_name')[0].value = this.options[this.selectedIndex].text;" required>
+                                                <option th:value="${customer.addresses[0].tinh}" th:text="${customer.addresses[0].tinh}" selected></option>
+                                            </select>
+                                            <input type="hidden" name="tinh_name" th:value="${customer.addresses[0].tinh}">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="quan" class="form-label">Huyện</label>
+                                            <select class="form-select" id="quan" name="quan" title="Chọn Quận Huyện"
+                                                    onchange="document.getElementsByName('quan_name')[0].value = this.options[this.selectedIndex].text;" required>
+                                                <option th:value="${customer.addresses[0].quan}" th:text="${customer.addresses[0].quan}" hidden>Quận Huyện</option>
+                                            </select>
+                                            <input type="hidden" name="quan_name" th:value="${customer.addresses[0].quan}">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="phuong" class="form-label">Phường</label>
+                                            <select class="form-select" id="phuong" name="phuong" title="Chọn Phường Xã"
+                                                    onchange="document.getElementsByName('phuong_name')[0].value = this.options[this.selectedIndex].text;" required>
+                                                <option th:value="${customer.addresses[0].phuong}" th:text="${customer.addresses[0].phuong}" hidden>Phường Xã</option>
+                                            </select>
+                                            <input type="hidden" name="phuong_name" th:value="${customer.addresses[0].phuong}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="line" class="form-label">Số nhà</label>
+                                        <input type="line" class="form-control" id="line" name="line" th:value="${customer.addresses[0].line}" required>
+                                    </div>
+                                </div>
+
+
+
+
+<!--                            </div>-->
+<!--                            <div id="additional-address-forms"></div>-->
                         </div>
-
-                    <div class="mb-3">
-                        <label for="line" class="form-label">Số nhà</label>
-                        <input type="line" class="form-control" id="line" name="line" th:value="${customer.addresses[0].line}" required>
                     </div>
-                </div>
+
+
+
+
+
+                    <button type="submit" class="btn btn-primary">Cập Nhật</button>
+                </form>
             </div>
+            <script>
+                function loadImage(event) {
+                    const image = document.getElementById('image-preview');
+                    image.src = URL.createObjectURL(event.target.files[0]);
+                    image.onload = function () {
+                        URL.revokeObjectURL(image.src) // free memory
+                    }
+                }
 
-            <button type="submit" class="btn btn-primary">Cập Nhật</button>
-        </form>
-    </div>
-    <script>
-        function loadImage(event) {
-            const image = document.getElementById('image-preview');
-            image.src = URL.createObjectURL(event.target.files[0]);
-            image.onload = function () {
-                URL.revokeObjectURL(image.src) // free memory
-            }
-        }
+            </script>
 
-    </script>
+<!--            <script>-->
+<!--                function addNewAddressForm() {-->
+<!--                    // Tạo một div mới chứa form địa chỉ-->
+<!--                    const newAddressDiv = document.createElement("div");-->
+<!--                    newAddressDiv.className = "address-form";-->
+<!--                    newAddressDiv.innerHTML = `-->
+<!--        <div class="row mb-3">-->
+<!--            <div class="col-md-4">-->
+<!--                <label for="tinh" class="form-label">Tỉnh</label>-->
+<!--                <select class="form-select tinh" name="tinh" required>-->
+<!--                    <option value="">Chọn Tỉnh Thành</option>-->
+<!--                </select>-->
+<!--            </div>-->
+<!--            <div class="col-md-4">-->
+<!--                <label for="quan" class="form-label">Huyện</label>-->
+<!--                <select class="form-select quan" name="quan" required>-->
+<!--                    <option value="">Chọn Quận Huyện</option>-->
+<!--                </select>-->
+<!--            </div>-->
+<!--            <div class="col-md-4">-->
+<!--                <label for="phuong" class="form-label">Phường</label>-->
+<!--                <select class="form-select phuong" name="phuong" required>-->
+<!--                    <option value="">Chọn Phường Xã</option>-->
+<!--                </select>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="mb-3">-->
+<!--            <label for="line" class="form-label">Số nhà</label>-->
+<!--            <input type="text" class="form-control" name="line" required>-->
+<!--        </div>-->
+<!--        <button type="button" class="btn btn-danger" onclick="removeAddressForm(this)">Xóa</button>-->
+<!--        <button type="button" class="btn btn-success" ">Thêm địa chỉ</button>-->
+<!--    `;-->
+
+<!--                    // Thêm form mới vào vùng additional-address-forms-->
+<!--                    document.getElementById("additional-address-forms").appendChild(newAddressDiv);-->
+
+<!--                    // Tải dữ liệu tỉnh cho form mới-->
+<!--                    loadProvinces(newAddressDiv);-->
+<!--                }-->
 
 
-    <script src="/js/KhachHang.js   "></script>
-</main>
-</body>
-</html>
+<!--                function loadProvinces(addressDiv) {-->
+<!--                    $.getJSON('https://esgoo.net/api-tinhthanh/1/0.htm', function (data_tinh) {-->
+<!--                        if (data_tinh.error === 0) {-->
+<!--                            const tinhSelect = addressDiv.querySelector('.tinh');-->
+<!--                            $.each(data_tinh.data, function (key_tinh, val_tinh) {-->
+<!--                                tinhSelect.append(new Option(val_tinh.full_name, val_tinh.id));-->
+<!--                            });-->
+
+<!--                            // Kích hoạt sự kiện thay đổi tỉnh để tải quận ban đầu-->
+<!--                            $(tinhSelect).change(function () {-->
+<!--                                var idtinh = $(this).val();-->
+<!--                                loadDistricts(idtinh, addressDiv);-->
+<!--                            }).change(); // Kích hoạt tải quận ban đầu-->
+<!--                        }-->
+<!--                    });-->
+<!--                }-->
+
+<!--                function loadDistricts(provinceId, addressDiv) {-->
+<!--                    $.getJSON(`https://esgoo.net/api-tinhthanh/2/${provinceId}.htm`, function (data_quan) {-->
+<!--                        const quanSelect = addressDiv.querySelector('.quan');-->
+<!--                        quanSelect.innerHTML = '<option value="">Chọn Quận Huyện</option>'; // Reset-->
+<!--                        $.each(data_quan.data, function (key_quan, val_quan) {-->
+<!--                            quanSelect.append(new Option(val_quan.full_name, val_quan.id));-->
+<!--                        });-->
+
+<!--                        // Kích hoạt sự kiện thay đổi quận để tải phường ban đầu-->
+<!--                        $(quanSelect).change(function () {-->
+<!--                            var idquan = $(this).val();-->
+<!--                            loadWards(idquan, addressDiv);-->
+<!--                        }).change(); // Kích hoạt tải phường ban đầu-->
+<!--                    });-->
+<!--                }-->
+
+<!--                function loadWards(districtId, addressDiv) {-->
+<!--                    $.getJSON(`https://esgoo.net/api-tinhthanh/3/${districtId}.htm`, function (data_phuong) {-->
+<!--                        const phuongSelect = addressDiv.querySelector('.phuong');-->
+<!--                        phuongSelect.innerHTML = '<option value="">Chọn Phường Xã</option>'; // Reset-->
+<!--                        $.each(data_phuong.data, function (key_phuong, val_phuong) {-->
+<!--                            phuongSelect.append(new Option(val_phuong.full_name, val_phuong.id));-->
+<!--                        });-->
+<!--                    });-->
+<!--                }-->
+
+
+<!--                function removeAddressForm(button) {-->
+<!--                    // Xóa form địa chỉ-->
+<!--                    const addressForm = button.closest('.address-form');-->
+<!--                    addressForm.remove();-->
+<!--                }-->
+
+
+
+
+
+<!--            </script>-->
+
+            <script src="/js/KhachHang.js   "></script>
+        </main>
+        </body>
+        </html>

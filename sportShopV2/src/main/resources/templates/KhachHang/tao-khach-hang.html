@@ -14,7 +14,7 @@
 
 <script src="/js/script.js"></script>
 </head>
-<body>
+<body style="background: white">
 
 
 
@@ -29,8 +29,9 @@
     <script src="/js/KhachHang.js"></script>
 
     <div class="container">
+        <div >
         <h2 class="mb-4">Tạo Khách Hàng</h2>
-        <form  action="/add-khach-hang" method="post" enctype="multipart/form-data"> <!-- Cập nhật action -->
+        <form  action="/khach-hang/add-khach-hang" method="post" enctype="multipart/form-data"> <!-- Cập nhật action -->
             <span>
                 <a class="btn btn-success" href="/khach-hang/list">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
@@ -132,8 +133,11 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary">Thêm Khách Hàng</button>
+
+
+            <button type="submit" class="btn btn-primary">Lưu</button>
         </form>
+    </div>
     </div>
 
     <script>

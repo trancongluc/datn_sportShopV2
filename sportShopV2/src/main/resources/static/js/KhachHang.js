@@ -2,8 +2,10 @@ $(document).ready(function () {
     // Lấy danh sách tỉnh
     $.getJSON('https://esgoo.net/api-tinhthanh/1/0.htm', function (data_tinh) {
         if (data_tinh.error === 0) {
+
             $.each(data_tinh.data, function (key_tinh, val_tinh) {
                 const selected = val_tinh.id == "${customer.addresses[0].province_id}" ? "selected" : "";
+
                 $("#tinh").append('<option value="' + val_tinh.id + '" ' + selected + '>' + val_tinh.full_name + '</option>');
             });
 

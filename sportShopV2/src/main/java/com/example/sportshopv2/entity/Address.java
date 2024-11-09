@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -34,4 +36,21 @@ public class Address {
     @ManyToOne
     @JoinColumn(name = "id_User")
     private User khachHang;
+
+
+    @Column(name = "created_at", columnDefinition = "DATETIME DEFAULT GETDATE()")
+    private Date createdAt = new Date();
+
+    @Column(name = "created_by", length = 50)
+    private String createdBy;
+
+    @Column(name = "updated_at")
+    private Date updatedAt;
+
+    @Column(name = "updated_by", length = 50)
+    private String updatedBy;
+
+    @Column(name = "deleted", columnDefinition = "BIT DEFAULT 0")
+    private boolean deleted = false;
+
 }

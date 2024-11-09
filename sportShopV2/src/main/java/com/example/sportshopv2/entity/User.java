@@ -1,9 +1,11 @@
 package com.example.sportshopv2.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @NoArgsConstructor
@@ -35,20 +37,48 @@ public class User {
     @Column(name = "image_file_name")  // Thêm trường tên file ảnh
     private String imageFileName;
 
-    @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Address> addresses = new ArrayList<>();
 
 //
 @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 @EqualsAndHashCode.Exclude // Loại bỏ vòng lặp trong hashCode() và equals()
 private Account account;
+
+
+    @Column(name = "created_at", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @Temporal(TemporalType.TIMESTAMP) // Đảm bảo lưu trữ đúng kiểu thời gian
+    private Date createdAt;
+
+    @Column(name = "created_by", length = 50)
+    private String createdBy;
+
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP) // Đảm bảo lưu trữ đúng kiểu thời gian
+    private Date updatedAt;
+
+    @Column(name = "updated_by", length = 50)
+    private String updatedBy;
+
+    @Column(name = "deleted", columnDefinition = "BIT DEFAULT 0")
+    private boolean deleted = false;
+
     // Phương thức tiện ích để thêm địa chỉ
+
+
     public void addAddress(Address address) {
         addresses.add(address);
         address.setKhachHang(this);
     }
+    @PrePersist // Được gọi trước khi thực thể được lưu vào cơ sở dữ liệu
+    private void onCreate() {
+        createdAt = new Date();
+    }
 
-
+    @PreUpdate // Được gọi trước khi thực thể được cập nhật
+    private void onUpdate() {
+        updatedAt = new Date();
+    }
 
 
 

@@ -1,5 +1,8 @@
 package com.example.sportshopv2.controller.KhachHang;
 
+import com.example.sportshopv2.Repository.AddressRepository;
+import com.example.sportshopv2.Repository.KhachHangRepository;
+import com.example.sportshopv2.Service.AddressService;
 import com.example.sportshopv2.Service.KhachhangService;
 import com.example.sportshopv2.entity.Address;
 
@@ -16,65 +19,23 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Controller
+@RequestMapping("/khach-hang")
+
 public class khachhangController {
 
 
 
-    // Hiển thị danh sách khách hàng
-//    @GetMapping("/hien-thi")
-//    public String listKhachHang(Model model) {
-//        List<KhachHang> khachHangs = khachHangService.findAll();
-//        model.addAttribute("khachHangs", khachHangs);
-//        return "KhachHang/khachhang"; // trả về tên view để hiển thị
-//    }
-//
-//    @GetMapping("/hien-thi")
-//    public String getKhachHangs(
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "3") int size,
-//            @RequestParam(required = false) String keyword,  // New search parameter
-//            Model model) {
-//
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<User> khachHangPage;
-//
-//        // Check if a search keyword is provided
-//        if (keyword != null && !keyword.isEmpty()) {
-//            khachHangPage = khachHangService.searchKhachHang(keyword, pageable);
-//        } else {
-//            khachHangPage = khachHangService.findAll(pageable);
-//        }
-//
-//        model.addAttribute("khachHang", new User());
-//        model.addAttribute("khachHangs", khachHangPage.getContent());
-//        model.addAttribute("currentPage", khachHangPage.getNumber());
-//        model.addAttribute("totalPages", khachHangPage.getTotalPages());
-//        model.addAttribute("keyword", keyword);  // Preserve keyword in the search input
-//
-//        return "KhachHang/khachhang";
-//    }
-
     @Autowired
     private KhachhangService userService;
+    @Autowired
+    private KhachHangRepository khachHangRepository;
+    @Autowired
+    private AddressRepository addressRepository;
+    @Autowired
+    private AddressService addressService;
 
-//
-//    @GetMapping("/khach-hang/list")
-//    public String displayCustomers(@RequestParam(defaultValue = "0") int page,
-//                                   @RequestParam(defaultValue = "5") int size,
-//
-//                                   Model model) {
-//        Page<User> customers = userService.getAllCustomers(PageRequest.of(page, size));
-//
-//
-//        model.addAttribute("khachHang", new User());
-//        model.addAttribute("customers", customers.getContent());
-//        model.addAttribute("currentPage", page);
-//        model.addAttribute("totalPages", customers.getTotalPages());
-//
-//        return "KhachHang/khachhang";
-//    }
 
-    @GetMapping("/khach-hang/list")
+    @GetMapping("/list")
     public String displayCustomers(@RequestParam(defaultValue = "0") int page,
                                    @RequestParam(defaultValue = "5") int size,
                                    @RequestParam(value = "keyword", required = false) String keyword,
@@ -96,6 +57,8 @@ public class khachhangController {
 
         return "KhachHang/khachhang";
     }
+
+
     @GetMapping("/add")
     public String addCustomer(Model model) {
         model.addAttribute("user", new User());
@@ -114,6 +77,8 @@ public class khachhangController {
                                @RequestParam("quan_name") String quan,
                                @RequestParam("phuong_name") String phuong,
                                @RequestParam("line") String line,
+//                               @RequestParam("username") String username,
+//                               @RequestParam("password") String password,
                                Model model) {
         User khachHang = new User();
         khachHang.setFullName(fullName);
@@ -152,12 +117,18 @@ public class khachhangController {
         return "redirect:/khach-hang/list"; // Redirect to the display page after deletion
     }
 
-    @GetMapping("/customer/detail/{id}")
+    @GetMapping("/customer/detaill/{id}")
     public String viewCustomerDetails(@PathVariable("id") Integer id, Model model) {
         User customer = userService.getCustomerById(id); // Add this method to UserService
         model.addAttribute("customer", customer);
 
         return "KhachHang/khachhangdetail"; // Create a new Thymeleaf template for details
+    }
+    @PostMapping("/khachhang/detail")
+    public String getKhachHangDetail(@RequestParam Integer id, Model model) {
+        User selectedKhachHang = userService.getCustomerById(id);
+        model.addAttribute("selectedKhachHang", selectedKhachHang);
+        return "KhachHang/khachhang :: detailModal"; // trả về phần modal cụ thể
     }
 
     @PostMapping("/customer/update/{id}")
@@ -172,6 +143,7 @@ public class khachhangController {
                                  @RequestParam("quan_name") String quan,
                                  @RequestParam("phuong_name") String phuong,
                                  @RequestParam("line") String line,
+
                                  Model model) {
         try {
             User customer = userService.getCustomerById(id); // Fetch existing customer
@@ -200,9 +172,6 @@ public class khachhangController {
         }
         return "redirect:/khach-hang/list"; // Redirect back to the customer list
     }
-
-
-
 
 
 
