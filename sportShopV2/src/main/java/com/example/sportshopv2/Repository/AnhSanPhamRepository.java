@@ -11,6 +11,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AnhSanPhamRepository extends JpaRepository<AnhSanPham, Integer> {
-
+    List<AnhSanPham> findByIdSPCT(Integer idSPCT);
 
 }

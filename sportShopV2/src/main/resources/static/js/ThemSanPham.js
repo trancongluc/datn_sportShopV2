@@ -548,6 +548,7 @@ function handleFileSelect(inputElement, rowKey) {
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const imageContainer = document.createElement('div');
+        imageContainer.dataset.fileName = file.name;
         imageContainer.classList.add('image-container');
         imageContainer.style.width = '100px';
         imageContainer.style.height = '100px';
@@ -714,17 +715,54 @@ async function themSPCT() {
         const chiTietResponses = await Promise.all(chiTietPromises);
 
         // Kiểm tra phản hồi
-        chiTietResponses.forEach(response => {
+        const idSPCTs = [];
+        for (let response of chiTietResponses) {
             if (!response.ok) {
                 throw new Error('Lỗi khi thêm chi tiết sản phẩm');
             }
-        });
+            const detailData = await response.json();
+            idSPCTs.push(detailData.id); // Giả sử response trả về id của sản phẩm chi tiết
+        }
 
+        // Lưu ảnh cho sản phẩm chi tiết
+        await saveProductImages(idSPCTs);
         console.log('Thêm sản phẩm và chi tiết thành công!');
         window.location.href = '/san-pham';
         localStorage.setItem('notification', showNotification("Thêm Thành Công"));
     } catch (error) {
         console.log('Có lỗi xảy ra: ' + error.message);
+    }
+}
+
+async function saveProductImages(idSPCTs) {
+    const uploadedImageElements = document.querySelectorAll('.uploaded-images');
+
+    const images = [];
+    uploadedImageElements.forEach((uploadedImagesDiv, index) => {
+        const imageContainers = uploadedImagesDiv.querySelectorAll('.image-container');
+        imageContainers.forEach(container => {
+            const imgTag = container.querySelector('img');
+            const fileName = container.dataset.fileName; // Lấy tên file từ data attribute
+
+            images.push({
+                tenAnh: fileName, // Lưu tên file
+                trangThai: 'Đang hoạt động', // Hoặc trạng thái khác tùy ý
+                idSPCT: idSPCTs[index], // Liên kết đến ID sản phẩm chi tiết
+            });
+        });
+    });
+
+    // Gửi ảnh đến server
+    const response = await fetch('/anh-san-pham/upload', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(images)
+    });
+
+    if (!response.ok) {
+        throw new Error('Lỗi khi lưu ảnh');
     }
 }
 

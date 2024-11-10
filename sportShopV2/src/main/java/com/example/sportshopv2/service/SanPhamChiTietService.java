@@ -21,6 +21,8 @@ public class SanPhamChiTietService {
     private final ThuongHieuRepository thRepo;
     private final MauSacRepository msRepo;
 
+    private final AnhSanPhamRepository anhRepo;
+
     public SanPhamChiTiet addSPCT(SanPhamChiTiet spct) {
         spct.setCreateBy("NV1");
         spct.setTrangThai("Đang hoạt động");
@@ -32,7 +34,7 @@ public class SanPhamChiTietService {
         Page<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndIdSanPham(false, idSP, pageable);
 
         // Ánh xạ từ SanPhamChiTiet sang SanPhamChiTietDTO
-        return listSPCT.map(spct -> SanPhamChiTiet.toDTO(spct, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo));
+        return listSPCT.map(spct -> SanPhamChiTiet.toDTO(spct, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo));
     }
 
 

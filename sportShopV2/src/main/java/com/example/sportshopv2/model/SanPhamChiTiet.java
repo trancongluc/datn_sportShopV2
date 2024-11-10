@@ -5,6 +5,8 @@ import com.example.sportshopv2.dto.SanPhamChiTietDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @Getter
 @Setter
@@ -68,7 +70,9 @@ public class SanPhamChiTiet extends BaseEntity {
     public static SanPhamChiTietDTO toDTO(SanPhamChiTiet spct, KichThuocRepository kichThuocRepository,
                                           SanPhamRepository spRepo, MauSacRepository msRepo, ThuongHieuRepository thRepo,
                                           DeGiayRepository dgRepo, TheLoaiRepository tlRepo, CoGiayRepository cgRepo,
-                                          ChatLieuRepository clRepo) {
+                                          ChatLieuRepository clRepo, AnhSanPhamRepository anhRepo) {
+        List<AnhSanPham> danhSachAnh = anhRepo.findByIdSPCT(spct.getId()); // Giả sử có phương thức này
+
         return SanPhamChiTietDTO.builder()
                 .id(spct.getId())
                 .kichThuoc(kichThuocRepository.findById(spct.idKichThuoc).orElse(null)) // Tạo đối tượng KichThuoc từ ID
@@ -84,6 +88,7 @@ public class SanPhamChiTiet extends BaseEntity {
                 .gia(spct.getGia())
                 .trangThai(spct.getTrangThai())
                 .gioiTinh(spct.getGioiTinh())
+                .anhSanPham(danhSachAnh)
                 .build();
     }
 

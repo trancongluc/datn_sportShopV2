@@ -87,15 +87,16 @@
                 <thead>
                 <tr>
                     <th>STT</th>
+                    <th>Ảnh Sản Phẩm</th>
                     <th>Mã Sản Phẩm</th>
                     <th>Tên Sản Phẩm</th>
                     <th>Kích Thước</th>
                     <th>Màu Sắc</th>
-                    <th>Thương Hiệu</th>
+                    <!--<th>Thương Hiệu</th>
                     <th>Thể Loại</th>
                     <th>Chất Liệu</th>
                     <th>Đế Giày</th>
-                    <th>Cổ Giày</th>
+                    <th>Cổ Giày</th>-->
                     <th>Số Lượng</th>
                     <th>Giá</th>
                     <th>Trạng Thái</th>
@@ -105,15 +106,21 @@
                 <tbody>
                 <tr th:each="spct,iterStat  : ${spct}">
                     <td th:text="${iterStat.index + 1}"></td>
+                    <td>
+                        <div th:if="${spct.anhSanPham != null and !spct.anhSanPham.isEmpty()}">
+                            <img th:src="${spct.anhSanPham.get(0).tenAnh}" alt="Ảnh sản phẩm" style="width: 50px; height: auto;" />
+                        </div>
+                    </td>
+
                     <td th:text="${spct.sanPham.getCode()}"></td>
                     <td th:text="${spct.sanPham.getTenSanPham()}"></td>
                     <td th:text="${spct.kichThuoc.tenKichThuoc}"></td>
                     <td th:text="${spct.mauSac.tenMauSac}"></td>
-                    <td th:text="${spct.thuongHieu.tenThuongHieu}"></td>
+                    <!--<td th:text="${spct.thuongHieu.tenThuongHieu}"></td>
                     <td th:text="${spct.theLoai.tenTheLoai}"></td>
                     <td th:text="${spct.chatLieu.tenChatLieu}"></td>
                     <td th:text="${spct.deGiay.tenDeGiay}"></td>
-                    <td th:text="${spct.coGiay.tenCoGiay}"></td>
+                    <td th:text="${spct.coGiay.tenCoGiay}"></td>-->
                     <td th:text="${spct.soLuong}"></td>
                     <td th:text="${spct.gia}"></td>
                     <td><span class="status active" th:text="${spct.trangThai}"></span></td>
