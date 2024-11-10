@@ -1,12 +1,15 @@
-package com.example.sportshopv2.controller;
+package com.example.sportshopv2.controller.HoaDon;
 
 import com.example.sportshopv2.Entity.HoaDon;
+import com.itextpdf.text.pdf.BaseFont;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 //import org.apache.pdfbox.pdmodel.PDDocument;
 //import org.apache.pdfbox.pdmodel.PDPage;
 //import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,12 +33,14 @@ import com.example.sportshopv2.Repository.HoaDonRepo;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 @Controller
-//@RequestMapping("/Sport-Shop")
+@RequestMapping("/bill")
 public class HoaDonController {
     @Autowired
     private HoaDonChiTietRepo hdctrepo;
@@ -48,7 +53,7 @@ public class HoaDonController {
     private ServletContext servletContext;
 
 
-    @RequestMapping("/bill/view")
+    @RequestMapping("/view")
     public String view(Model model) {
         List<HoaDonChiTiet> hdctList = hdctrepo.findAll();
         model.addAttribute("hdctList", hdctList);
@@ -56,7 +61,7 @@ public class HoaDonController {
         return "HoaDon/HoaDon";
     }
 
-    @GetMapping("/bill/tab")
+    @GetMapping("/tab")
     public String tab(Model model, @RequestParam("status") String status) {
         List<HoaDonChiTiet> hdctList = hdctrepo.findAllByHoaDon_Status(status);
         model.addAttribute("hdctList", hdctList);
@@ -64,13 +69,23 @@ public class HoaDonController {
         return "HoaDon/HoaDon";
     }
 
-    @GetMapping("/bill/detail")
+    @GetMapping("/detail")
     public String detail(Model model, @RequestParam("id") Integer id) {
-        model.addAttribute("list", hdctrepo.findAllById(id));
+        List<HoaDonChiTiet> hoaDonDetail = hdctrepo.findAllByHoaDon_Id(id);
+        HoaDon hoaDon = hdrepo.findAllById(id);
+        model.addAttribute("list", hoaDonDetail);
+        model.addAttribute("hoaDon", hoaDon);
         return "HoaDon/ThongTinHoaDon";
     }
 
-    @GetMapping("/bill/export/excel")
+
+    @GetMapping("/pdf")
+    public String pdf(Model model, @RequestParam("id") Integer id) {
+//        model.addAttribute("list", hdctrepo.findAllById(id));
+        return "HoaDon/HinhAnhHoaDon";
+    }
+
+    @GetMapping("/export/excel")
     public ResponseEntity<byte[]> exportToExcel() throws IOException {
         List<HoaDonChiTiet> billList = hdctrepo.findAll(); // Lấy toàn bộ dữ liệu từ database
         Workbook workbook = new XSSFWorkbook();
@@ -116,11 +131,7 @@ public class HoaDonController {
     }
 
     @GetMapping("/export/pdf")
-    public void viewInvoice(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            @RequestParam Integer id) {
-
+    public void viewInvoice(HttpServletRequest request, HttpServletResponse response, @RequestParam Integer id) {
         List<HoaDonChiTiet> billDetail = hdctrepo.findAllByHoaDon_Id(id);
         HoaDon bill = hdrepo.findAllById(id);
         if (bill == null) {
@@ -134,29 +145,30 @@ public class HoaDonController {
 
             // Prepare Thymeleaf context and template
             Context context = new Context();
-            context.setVariable("hoaDon", bill); // Use HoaDon entity for invoice details
-            context.setVariable("items", billDetail); // Assuming HoaDonChiTiet has a method to get items
-            context.setVariable("productCount", bill); // Total number of products
-            context.setVariable("discount", bill);
-            context.setVariable("shippingFee", bill);
-            context.setVariable("total", billDetail);
-            context.setVariable("totalQuantity", billDetail);
-//            context.setVariable("payment", bill.getQuantity() * bill.getPrice());
-            context.setVariable("totalPayment", bill);
-//            context.setVariable("change", bill.getHoaDon().getChange());
+            context.setVariable("hoaDon", bill);
+            context.setVariable("items", billDetail);
+            context.setVariable("productCount", billDetail.size()); // Total number of products
+            context.setVariable("discount", bill.getMoney_reduced()); // Assuming there is a discount method
+            context.setVariable("total", billDetail.stream().mapToDouble(HoaDonChiTiet::getPrice).sum()); // Replace with appropriate logic
+            context.setVariable("totalQuantity", billDetail.stream().mapToInt(HoaDonChiTiet::getQuantity).sum()); // Assuming you can get quantity from HoaDonChiTiet
+            context.setVariable("totalPayment", bill.getTotal_money()); // Replace with appropriate logic
 
             String htmlContent = templateEngine.process("HoaDon/HinhAnhHoaDon", context);
 
             // Convert HTML to PDF
             ITextRenderer renderer = new ITextRenderer();
+
+            String fontPath = "fonts/Arial.ttf";  // Đường dẫn đến font
+            renderer.getFontResolver().addFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+
             renderer.setDocumentFromString(htmlContent);
             renderer.layout();
 
             // Write PDF to response output stream
-            OutputStream outputStream = response.getOutputStream();
-            renderer.createPDF(outputStream);
-            outputStream.flush();
-            outputStream.close();
+            try (OutputStream outputStream = response.getOutputStream()) {
+                renderer.createPDF(outputStream);
+                outputStream.flush();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -164,8 +176,33 @@ public class HoaDonController {
         }
     }
 
+    @GetMapping("/status/{id}")
+    public String getStatus(@PathVariable Integer id, Model model) {
+        Optional<HoaDon> hoaDon = hdrepo.findById(id);
+        hoaDon.ifPresent(hd -> model.addAttribute("hoaDon", hd));
+        return "HoaDon/ThongTinHoaDon"; // Assuming this is the template name for the bill details
+    }
 
-    @GetMapping("/bill/search")
+    // Cập nhật trạng thái hóa đơn
+    @PostMapping("/status/update")
+    public String updateStatus(@RequestParam Integer id, @RequestParam String status) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        Optional<HoaDon> hoaDonOptional = hdrepo.findById(id);
+        if (hoaDonOptional.isPresent()) {
+            HoaDon hoaDon = hoaDonOptional.get();
+            hoaDon.setStatus(status);
+            hoaDon.setUpdate_at(LocalDateTime.now());
+            hoaDon.setUpdate_by(username);
+            hdrepo.save(hoaDon);
+        }
+        return "redirect:/bill/detail?id=" + id;
+    }
+
+
+
+    @GetMapping("/search")
     public String search(Model model, @RequestParam("Type") String Type) {
         List<HoaDonChiTiet> list = hdctrepo.findAllByHoaDon_Type(Type);
         model.addAttribute("hdctList", list);

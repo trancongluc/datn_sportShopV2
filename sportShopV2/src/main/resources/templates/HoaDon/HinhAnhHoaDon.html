@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{Menu}">
+>
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Hóa Đơn</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: "DejaVu Sans", Arial, sans-serif;
       margin: 20px;
       color: #333;
     }
@@ -55,17 +56,17 @@
   </style>
 </head>
 <body>
-<main layout:fragment="main1" th:object="${hoaDon}">
+<main  th:object="${hoaDon}">
   <div class="header">
-    <h1>SHOE BEE</h1>
+<!--    <img th:src="@{/images/logoSSV2.png}" alt="logo"/>-->
+
+    <h1>Sport Shop</h1>
     <p>Chương trình Phổ thông Cao đẳng FPT Polytechnic, Phường Canh, Từ Liêm, Hà Nội, Việt Nam</p>
-    <p>SĐT: 0388597590</p>
+    <p>SĐT: 0822580083</p>
     <p>Mã hóa đơn: <span th:text="${hoaDon.getBill_code()}"></span></p>
     <p>
       <span th:text="${hoaDon.create_at}"></span>
     </p>
-
-
   </div>
 
   <div class="info">
@@ -94,7 +95,7 @@
         <td th:text="${item.sanPhamChiTiet.price} + ' đ'"></td>
         <td th:text="${item.quantity}"></td>
         <td th:text="${item.hoaDon.status}"></td>
-        <td th:text="${item.hoaDon.getStatus()} + ' đ'"></td>
+        <td th:text="${item.hoaDon.status} + ' đ'"></td>
       </tr>
       </tbody>
     </table>
@@ -106,10 +107,6 @@
         <td>Giảm giá:</td>
         <td th:text="${discount} + ' đ'"></td>
       </tr>
-<!--      <tr>-->
-<!--        <td>Phí ship:</td>-->
-<!--        <td th:text="${shippingFee} + ' đ'"></td>-->
-<!--      </tr>-->
       <tr>
         <td><strong>Tổng hóa đơn:</strong></td>
         <td><strong th:text="${total} + ' đ'"></strong></td>
@@ -118,18 +115,10 @@
         <td>Tổng số lượng sản phẩm:</td>
         <td th:text="${totalQuantity}"></td>
       </tr>
-<!--      <tr>-->
-<!--        <td>Thanh toán:</td>-->
-<!--        <td th:text="${payment} + ' đ'"></td>-->
-<!--      </tr>-->
       <tr>
         <td>Tổng thanh toán:</td>
         <td th:text="${totalPayment} + ' đ'"></td>
       </tr>
-<!--      <tr>-->
-<!--        <td>Tiền thối lại:</td>-->
-<!--        <td th:text="${change} + ' đ'"></td>-->
-<!--      </tr>-->
     </table>
   </div>
 </main>

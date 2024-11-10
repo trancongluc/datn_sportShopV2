@@ -1,387 +1,387 @@
-<!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{Menu}"
->
-<head>
+<!--<!DOCTYPE html>-->
+<!--<html lang="en"-->
+<!--      xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+<!--      layout:decorate="~{Menu}"-->
+<!--&gt;-->
+<!--<head>-->
 
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <title>Phiếu Giảm Giá</title>
-    <style>
+<!--    <meta charset="utf-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">-->
+<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">-->
+<!--    <title>Phiếu Giảm Giá</title>-->
+<!--    <style>-->
 
 
-        body {
-            background-color: #f5f5f5;
-            height: 100vh;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            margin: 0;
-            padding: 0;
-        }
+<!--        body {-->
+<!--            background-color: #f5f5f5;-->
+<!--            height: 100vh;-->
+<!--            width: 100%;-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--        }-->
 
-        .container {
-            max-width: 1200px;
-            margin: 10px auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+<!--        .container {-->
+<!--            max-width: 1200px;-->
+<!--            margin: 10px auto;-->
+<!--            background-color: #fff;-->
+<!--            padding: 20px;-->
+<!--            border-radius: 8px;-->
+<!--            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);-->
+<!--        }-->
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .header h1 {
-            font-size: 24px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-        .header h1 i {
-            margin-right: 10px;
-        }
+<!--        .header {-->
+<!--            display: flex;-->
+<!--            justify-content: space-between;-->
+<!--            align-items: center;-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+<!--        .header h1 {-->
+<!--            font-size: 24px;-->
+<!--            font-weight: bold;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--        }-->
+<!--        .header h1 i {-->
+<!--            margin-right: 10px;-->
+<!--        }-->
 
-        .add-button {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 20px;
-        }
+<!--        .add-button {-->
+<!--            display: flex;-->
+<!--            justify-content: flex-end;-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
 
-        .add-button button {
-            background-color: #71c664;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            transition: background-color 0.3s, transform 0.2s;
-        }
+<!--        .add-button button {-->
+<!--            background-color: #71c664;-->
+<!--            color: #fff;-->
+<!--            padding: 10px 20px;-->
+<!--            border: none;-->
+<!--            border-radius: 5px;-->
+<!--            cursor: pointer;-->
+<!--            display: inline-flex;-->
+<!--            align-items: center;-->
+<!--            transition: background-color 0.3s, transform 0.2s;-->
+<!--        }-->
 
-        .add-button button:hover {
-            background-color: #727cf5;
-            transform: scale(1.1);
-        }
+<!--        .add-button button:hover {-->
+<!--            background-color: #727cf5;-->
+<!--            transform: scale(1.1);-->
+<!--        }-->
 
-        .filter-section {
-            margin-top: 20px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
+<!--        .filter-section {-->
+<!--            margin-top: 20px;-->
+<!--            padding: 20px;-->
+<!--            border: 1px solid #ddd;-->
+<!--            border-radius: 8px;-->
+<!--        }-->
 
-        .filter-section .filter-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
+<!--        .filter-section .filter-row {-->
+<!--            display: flex;-->
+<!--            justify-content: space-between;-->
+<!--            align-items: center;-->
+<!--            padding: 15px;-->
+<!--            background-color: #ffffff;-->
+<!--            border: 1px solid #ddd;-->
+<!--            border-radius: 8px;-->
+<!--            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);-->
+<!--            margin-top: 20px;-->
+<!--        }-->
 
-        .filter-row div {
-            flex: 1;
-            margin-right: 10px; /* Khoảng cách giữa các phần tử */
-        }
+<!--        .filter-row div {-->
+<!--            flex: 1;-->
+<!--            margin-right: 10px; /* Khoảng cách giữa các phần tử */-->
+<!--        }-->
 
-        .filter-row div:last-child {
-            margin-right: 0; /* Không có khoảng cách cho phần tử cuối cùng */
-        }
+<!--        .filter-row div:last-child {-->
+<!--            margin-right: 0; /* Không có khoảng cách cho phần tử cuối cùng */-->
+<!--        }-->
 
-        .filter-row input[type="text"],
-        .filter-row input[type="date"],
-        .filter-row select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
+<!--        .filter-row input[type="text"],-->
+<!--        .filter-row input[type="date"],-->
+<!--        .filter-row select {-->
+<!--            width: 100%;-->
+<!--            padding: 10px;-->
+<!--            border: 1px solid #ddd;-->
+<!--            border-radius: 4px;-->
+<!--            font-size: 16px;-->
+<!--            transition: border-color 0.3s;-->
+<!--        }-->
 
-        .filter-row input[type="text"]:focus,
-        .filter-row input[type="date"]:focus,
-        .filter-row select:focus {
-            border-color: #007bff; /* Màu khi focus */
-            outline: none; /* Bỏ viền mặc định */
-        }
+<!--        .filter-row input[type="text"]:focus,-->
+<!--        .filter-row input[type="date"]:focus,-->
+<!--        .filter-row select:focus {-->
+<!--            border-color: #007bff; /* Màu khi focus */-->
+<!--            outline: none; /* Bỏ viền mặc định */-->
+<!--        }-->
 
-        .filter-row select {
-            background-color: #f9f9f9; /* Màu nền cho select */
-            cursor: pointer; /* Đổi con trỏ khi hover */
-        }
+<!--        .filter-row select {-->
+<!--            background-color: #f9f9f9; /* Màu nền cho select */-->
+<!--            cursor: pointer; /* Đổi con trỏ khi hover */-->
+<!--        }-->
 
-        .filter-row input::placeholder {
-            color: #aaa; /* Màu cho placeholder */
-            font-style: italic; /* Kiểu chữ nghiêng cho placeholder */
-        }
+<!--        .filter-row input::placeholder {-->
+<!--            color: #aaa; /* Màu cho placeholder */-->
+<!--            font-style: italic; /* Kiểu chữ nghiêng cho placeholder */-->
+<!--        }-->
 
 
 
-        /*.discount-list h2 {*/
-        /*    font-size: 18px;*/
-        /*    font-weight: bold;*/
-        /*    display: flex;*/
-        /*    align-items: center;*/
-        /*}*/
+<!--        /*.discount-list h2 {*/-->
+<!--        /*    font-size: 18px;*/-->
+<!--        /*    font-weight: bold;*/-->
+<!--        /*    display: flex;*/-->
+<!--        /*    align-items: center;*/-->
+<!--        /*}*/-->
 
-        /*.discount-list table {*/
-        /*    width: 100%;*/
-        /*    border-collapse: collapse;*/
-        /*    margin-top: 20px;*/
-        /*}*/
+<!--        /*.discount-list table {*/-->
+<!--        /*    width: 100%;*/-->
+<!--        /*    border-collapse: collapse;*/-->
+<!--        /*    margin-top: 20px;*/-->
+<!--        /*}*/-->
 
-        /*.discount-list table th,*/
-        /*.discount-list table td {*/
-        /*    padding: 10px;*/
-        /*    border: 1px solid #ddd;*/
-        /*    text-align: center;*/
-        /*}*/
+<!--        /*.discount-list table th,*/-->
+<!--        /*.discount-list table td {*/-->
+<!--        /*    padding: 10px;*/-->
+<!--        /*    border: 1px solid #ddd;*/-->
+<!--        /*    text-align: center;*/-->
+<!--        /*}*/-->
 
-        /*.discount-list table th {*/
-        /*    background-color: #00CCFF;*/
-        /*    color: #fff;*/
-        /*}*/
+<!--        /*.discount-list table th {*/-->
+<!--        /*    background-color: #00CCFF;*/-->
+<!--        /*    color: #fff;*/-->
+<!--        /*}*/-->
 
-        /*.discount-list table td .btn {*/
-        /*    padding: 5px 10px;*/
-        /*    border: none;*/
-        /*    border-radius: 4px;*/
-        /*    cursor: pointer;*/
-        /*}*/
+<!--        /*.discount-list table td .btn {*/-->
+<!--        /*    padding: 5px 10px;*/-->
+<!--        /*    border: none;*/-->
+<!--        /*    border-radius: 4px;*/-->
+<!--        /*    cursor: pointer;*/-->
+<!--        /*}*/-->
 
-        /*.discount-list table td .btn.view {*/
-        /*    background-color: #3b7ddd;*/
-        /*    color: #fff;*/
-        /*}*/
+<!--        /*.discount-list table td .btn.view {*/-->
+<!--        /*    background-color: #3b7ddd;*/-->
+<!--        /*    color: #fff;*/-->
+<!--        /*}*/-->
 
-        /*.discount-list table td .btn.edit {*/
-        /*    background-color: #28a745;*/
-        /*    color: #fff;*/
-        /*}*/
+<!--        /*.discount-list table td .btn.edit {*/-->
+<!--        /*    background-color: #28a745;*/-->
+<!--        /*    color: #fff;*/-->
+<!--        /*}*/-->
 
-        .table-section {
-            margin-top: 20px;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+<!--        .table-section {-->
+<!--            margin-top: 20px;-->
+<!--            background-color: #ffffff;-->
+<!--            padding: 20px;-->
+<!--            border-radius: 8px;-->
+<!--            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);-->
+<!--        }-->
 
-        .table-section h2 {
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 15px;
-        }
+<!--        .table-section h2 {-->
+<!--            font-size: 24px;-->
+<!--            font-weight: bold;-->
+<!--            color: #333;-->
+<!--            margin-bottom: 15px;-->
+<!--        }-->
 
-        .table-section table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
+<!--        .table-section table {-->
+<!--            width: 100%;-->
+<!--            border-collapse: collapse;-->
+<!--            margin-top: 10px;-->
+<!--        }-->
 
-        .table-section th,
-        .table-section td {
-            padding: 12px;
-            text-align: center;
-            border: 1px solid #ddd;
-        }
+<!--        .table-section th,-->
+<!--        .table-section td {-->
+<!--            padding: 12px;-->
+<!--            text-align: center;-->
+<!--            border: 1px solid #ddd;-->
+<!--        }-->
 
-        .table-section th {
-            background-color: #74C0FC;
-            color: #fff;
-            font-weight: bold;
-        }
+<!--        .table-section th {-->
+<!--            background-color: #74C0FC;-->
+<!--            color: #fff;-->
+<!--            font-weight: bold;-->
+<!--        }-->
 
-        .table-section tbody tr:nth-child(even) {
-            background-color: #f2f2f2; /* Màu nền cho các hàng chẵn */
-        }
+<!--        .table-section tbody tr:nth-child(even) {-->
+<!--            background-color: #f2f2f2; /* Màu nền cho các hàng chẵn */-->
+<!--        }-->
 
-        .table-section tbody tr:hover {
-            background-color: #e9ecef; /* Màu nền khi hover */
-        }
+<!--        .table-section tbody tr:hover {-->
+<!--            background-color: #e9ecef; /* Màu nền khi hover */-->
+<!--        }-->
 
-        .status-label {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 4px;
-            color: #fff;
-            background-color: #dc3545; /* Màu đỏ cho trạng thái */
-        }
+<!--        .status-label {-->
+<!--            display: inline-block;-->
+<!--            padding: 5px 10px;-->
+<!--            border-radius: 4px;-->
+<!--            color: #fff;-->
+<!--            background-color: #dc3545; /* Màu đỏ cho trạng thái */-->
+<!--        }-->
 
-        .icon {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-            color: #007bff;
-            transition: color 0.3s;
-        }
+<!--        .icon {-->
+<!--            background: none;-->
+<!--            border: none;-->
+<!--            cursor: pointer;-->
+<!--            font-size: 18px;-->
+<!--            color: #007bff;-->
+<!--            transition: color 0.3s;-->
+<!--        }-->
 
-        .icon:hover {
-            color: #0056b3; /* Màu khi hover */
-            transform: scale(1.2);
-        }
-    </style>
-</head>
-<body>
-<main layout:fragment="main1">
-<div class="container">
-    <div class="header">
-        <div>
-<!--            <div class="breadcrumb">-->
-<!--                <a href="#">CMS</a> / <a href="#">Phiếu Giảm Giá</a>-->
+<!--        .icon:hover {-->
+<!--            color: #0056b3; /* Màu khi hover */-->
+<!--            transform: scale(1.2);-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<main layout:fragment="main1">-->
+<!--<div class="container">-->
+<!--    <div class="header">-->
+<!--        <div>-->
+<!--&lt;!&ndash;            <div class="breadcrumb">&ndash;&gt;-->
+<!--&lt;!&ndash;                <a href="#">CMS</a> / <a href="#">Phiếu Giảm Giá</a>&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--            <h1>Phiếu Giảm Giá</h1>-->
+<!--        </div>-->
+<!--        <div class="add-button">-->
+<!--            <button ><i class="fas fa-user-plus"></i> <a href="/add-giam-gia" style="text-decoration: none; color: black"> Thêm Mới</a> </button>-->
+<!--        </div>-->
+
+<!--    </div>-->
+<!--    <div class="filter-section">-->
+<!--        <div class="filter-row">-->
+<!--            <div>-->
+<!--                <input type="text" placeholder="Tìm kiếm.">-->
 <!--            </div>-->
-            <h1>Phiếu Giảm Giá</h1>
-        </div>
-        <div class="add-button">
-            <button ><i class="fas fa-user-plus"></i> <a href="/add-giam-gia" style="text-decoration: none; color: black"> Thêm Mới</a> </button>
-        </div>
+<!--            <div>-->
+<!--                <select>-->
+<!--                    <option value="all">Tất Cả</option>-->
+<!--                </select>-->
+<!--            </div>-->
+<!--            <div>-->
+<!--                <input type="date" placeholder="Từ">-->
+<!--            </div>-->
+<!--            <div>-->
+<!--                <input type="date" placeholder="Đến">-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="table-section">-->
+<!--        <h2>Danh Sách Phiếu Giảm Giá</h2>-->
+<!--        <table>-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th>STT</th>-->
+<!--                <th>MÃ</th>-->
+<!--                <th>TÊN PHIẾU</th>-->
+<!--                <th>LOẠI PHIẾU</th>-->
+<!--                <th>SỐ LƯỢNG</th>-->
+<!--                <th>GIÁ TRỊ</th>-->
+<!--                <th>GIÁ TRỊ TỐI ĐA</th>-->
+<!--                <th>GIÁ TRỊ TỐI THIỂU</th>-->
+<!--                <th>NGÀY BẮT ĐẦU</th>-->
+<!--                <th>NGÀY KẾT THÚC</th>-->
+<!--                <th>TRẠNG THÁI</th>-->
+<!--                <th>HÀNH ĐỘNG</th>-->
 
-    </div>
-    <div class="filter-section">
-        <div class="filter-row">
-            <div>
-                <input type="text" placeholder="Tìm kiếm.">
-            </div>
-            <div>
-                <select>
-                    <option value="all">Tất Cả</option>
-                </select>
-            </div>
-            <div>
-                <input type="date" placeholder="Từ">
-            </div>
-            <div>
-                <input type="date" placeholder="Đến">
-            </div>
-        </div>
-    </div>
-    <div class="table-section">
-        <h2>Danh Sách Phiếu Giảm Giá</h2>
-        <table>
-            <thead>
-            <tr>
-                <th>STT</th>
-                <th>MÃ</th>
-                <th>TÊN PHIẾU</th>
-                <th>LOẠI PHIẾU</th>
-                <th>SỐ LƯỢNG</th>
-                <th>GIÁ TRỊ</th>
-                <th>GIÁ TRỊ TỐI ĐA</th>
-                <th>GIÁ TRỊ TỐI THIỂU</th>
-                <th>NGÀY BẮT ĐẦU</th>
-                <th>NGÀY KẾT THÚC</th>
-                <th>TRẠNG THÁI</th>
-                <th>HÀNH ĐỘNG</th>
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            <tr>-->
+<!--                <td>1</td>-->
+<!--                <td>VC00005</td>-->
+<!--                <td>cx5</td>-->
+<!--                <td>Tiền mặt</td>-->
+<!--                <td>92</td>-->
+<!--                <td>1.200.000đ</td>-->
+<!--                <td>1.200.000đ</td>-->
+<!--                <td>10.000.000đ</td>-->
+<!--                <td>2024-03-07 | 22:13</td>-->
+<!--                <td>2024-07-21 | 22:13</td>-->
+<!--                <td><span class="status-label">Đã Kết Thúc</span></td>-->
+<!--                <td>-->
 
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>1</td>
-                <td>VC00005</td>
-                <td>cx5</td>
-                <td>Tiền mặt</td>
-                <td>92</td>
-                <td>1.200.000đ</td>
-                <td>1.200.000đ</td>
-                <td>10.000.000đ</td>
-                <td>2024-03-07 | 22:13</td>
-                <td>2024-07-21 | 22:13</td>
-                <td><span class="status-label">Đã Kết Thúc</span></td>
-                <td>
-
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>VC00018</td>
-                <td>giảm giá 99k</td>
-                <td>Tiền mặt</td>
-                <td>10</td>
-                <td>99.000đ</td>
-                <td>99.000đ</td>
-                <td>200.000đ</td>
-                <td>2024-05-03 | 15:46</td>
-                <td>2024-05-04 | 15:42</td>
-                <td><span class="status-label">Đã Kết Thúc</span></td>
-                <td>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>VC00002</td>
-                <td>Quan Hung Yen</td>
-                <td>Tiền mặt</td>
-                <td>4</td>
-                <td>100.000đ</td>
-                <td>100.000đ</td>
-                <td>1.000.000đ</td>
-                <td>2024-03-05 | 13:11</td>
-                <td>2024-05-05 | 21:14</td>
-                <td><span class="status-label">Đã Kết Thúc</span></td>
-                <td>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td>VC00015</td>
-                <td>Sales 99%</td>
-                <td>Phần trăm</td>
-                <td>0</td>
-                <td>99 %</td>
-                <td>500.000đ</td>
-                <td>1.000.000đ</td>
-                <td>2024-04-14 | 22:41</td>
-                <td>2024-04-26 | 22:41</td>
-                <td><span class="status-label">Đã Kết Thúc</span></td>
-                <td>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
-            <tr>
-                <td>5</td>
-                <td>VC00017</td>
-                <td>vc datn</td>
-                <td>Phần trăm</td>
-                <td>10</td>
-                <td>10 %</td>
-                <td>100.000đ</td>
-                <td>1.000.000đ</td>
-                <td>2024-04-20 | 11:22</td>
-                <td>2024-04-24 | 11:22</td>
-                <td><span class="status-label">Đã Kết Thúc</span></td>
-                <td>
-                    <button class="icon">✏️</button>
-                    <button class="icon">🗑️</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-</main>
-</body>
-</html>
+<!--                    <button class="icon">✏️</button>-->
+<!--                    <button class="icon">🗑️</button>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>2</td>-->
+<!--                <td>VC00018</td>-->
+<!--                <td>giảm giá 99k</td>-->
+<!--                <td>Tiền mặt</td>-->
+<!--                <td>10</td>-->
+<!--                <td>99.000đ</td>-->
+<!--                <td>99.000đ</td>-->
+<!--                <td>200.000đ</td>-->
+<!--                <td>2024-05-03 | 15:46</td>-->
+<!--                <td>2024-05-04 | 15:42</td>-->
+<!--                <td><span class="status-label">Đã Kết Thúc</span></td>-->
+<!--                <td>-->
+<!--                    <button class="icon">✏️</button>-->
+<!--                    <button class="icon">🗑️</button>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>3</td>-->
+<!--                <td>VC00002</td>-->
+<!--                <td>Quan Hung Yen</td>-->
+<!--                <td>Tiền mặt</td>-->
+<!--                <td>4</td>-->
+<!--                <td>100.000đ</td>-->
+<!--                <td>100.000đ</td>-->
+<!--                <td>1.000.000đ</td>-->
+<!--                <td>2024-03-05 | 13:11</td>-->
+<!--                <td>2024-05-05 | 21:14</td>-->
+<!--                <td><span class="status-label">Đã Kết Thúc</span></td>-->
+<!--                <td>-->
+<!--                    <button class="icon">✏️</button>-->
+<!--                    <button class="icon">🗑️</button>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>4</td>-->
+<!--                <td>VC00015</td>-->
+<!--                <td>Sales 99%</td>-->
+<!--                <td>Phần trăm</td>-->
+<!--                <td>0</td>-->
+<!--                <td>99 %</td>-->
+<!--                <td>500.000đ</td>-->
+<!--                <td>1.000.000đ</td>-->
+<!--                <td>2024-04-14 | 22:41</td>-->
+<!--                <td>2024-04-26 | 22:41</td>-->
+<!--                <td><span class="status-label">Đã Kết Thúc</span></td>-->
+<!--                <td>-->
+<!--                    <button class="icon">✏️</button>-->
+<!--                    <button class="icon">🗑️</button>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>5</td>-->
+<!--                <td>VC00017</td>-->
+<!--                <td>vc datn</td>-->
+<!--                <td>Phần trăm</td>-->
+<!--                <td>10</td>-->
+<!--                <td>10 %</td>-->
+<!--                <td>100.000đ</td>-->
+<!--                <td>1.000.000đ</td>-->
+<!--                <td>2024-04-20 | 11:22</td>-->
+<!--                <td>2024-04-24 | 11:22</td>-->
+<!--                <td><span class="status-label">Đã Kết Thúc</span></td>-->
+<!--                <td>-->
+<!--                    <button class="icon">✏️</button>-->
+<!--                    <button class="icon">🗑️</button>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--    </div>-->
+<!--</div>-->
+<!--</main>-->
+<!--</body>-->
+<!--</html>-->

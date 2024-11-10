@@ -31,7 +31,6 @@ public class HoaDonChiTiet {
     @JoinColumn(name = "id_product_detail")
     private SanPhamChiTiet sanPhamChiTiet;
 
-
     private Float price;
 
     private LocalDateTime create_at;

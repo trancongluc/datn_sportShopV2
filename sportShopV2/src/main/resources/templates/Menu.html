@@ -172,7 +172,9 @@
                     <div class="dropdown-divider"></div>
                     <a href="" class="dropdown-item">
                         <i class="lni lni-question-circle"></i>
-                        <span>Help</span>
+                        <form th:action="@{/logout}" method="post">
+                            <button type="submit">Log out</button>
+                        </form>
                     </a>
                 </div>
 

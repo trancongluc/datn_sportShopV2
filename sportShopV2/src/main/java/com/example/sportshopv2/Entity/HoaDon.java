@@ -37,6 +37,9 @@ public class HoaDon {
     @NotNull(message = "{message.totalmoney}")
     @Column(name = "total_money")
     private Float total_money;
+    @NotNull(message = "{message.totalmoney}")
+    @Column(name = "money_reduced")
+    private Float money_reduced;
 
     @NotBlank(message = "{message.status}")
     @Column(name = "status")
@@ -83,16 +86,38 @@ public class HoaDon {
     private String note;
 
     @Column(name = "create_at")
-    private String create_at;
+    private LocalDateTime create_at;
 
     @Column(name = "create_by")
     private String create_by;
 
     @Column(name = "update_at")
-    private String update_at;
+    private LocalDateTime update_at;
 
     @Column(name = "update_by")
     private String update_by;
     @Column(name = "deleted")
     private Boolean deleted;
+    public String getStatusDisplay() {
+        switch (status) {
+            case "ORDERED": return "Chờ xác nhận";
+            case "CONFIRMED": return "Đã xác nhận";
+            case "SHIPPING": return "Chờ giao hàng";
+            case "SHIPPED": return "Đang vận chuyển";
+            case "COMPLETE": return "Hoàn thành";
+            default: return "Chưa rõ";
+        }
+    }
+
+    public int getStatusProgress() {
+        switch (status) {
+            case "ORDERED": return 25;
+            case "CONFIRMED": return 50;
+            case "SHIPPING": return 75;
+            case "SHIPPED": return 90;
+            case "COMPLETE": return 100;
+            default: return 0;
+        }
+    }
+
 }

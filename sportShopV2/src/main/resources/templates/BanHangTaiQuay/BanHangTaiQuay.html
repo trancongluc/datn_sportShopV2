@@ -1,67 +1,67 @@
-<!DOCTYPE html>
-<html lang="vi"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{Menu}"
->
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/Banhangtaiquay.css">
-    <title>Giao Diện Bán Hàng Tại Quầy</title>
-</head>
-<body>
-<main layout:fragment="main1">
-<div class="container">
-    <div class="header">
-        <div id="invoices-container">
-            <!-- Hóa đơn sẽ được tạo ở đây -->
-        </div>
-        <button class="create-invoice-btn" id="create-invoice-btn">Tạo hóa đơn</button>
+<!--<!DOCTYPE html>-->
+<!--<html lang="vi"-->
+<!--      xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+<!--      layout:decorate="~{Menu}"-->
+<!--&gt;-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <link rel="stylesheet" href="/css/Banhangtaiquay.css">-->
+<!--    <title>Giao Diện Bán Hàng Tại Quầy</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<main layout:fragment="main1">-->
+<!--<div class="container">-->
+<!--    <div class="header">-->
+<!--        <div id="invoices-container">-->
+<!--            &lt;!&ndash; Hóa đơn sẽ được tạo ở đây &ndash;&gt;-->
+<!--        </div>-->
+<!--        <button class="create-invoice-btn" id="create-invoice-btn">Tạo hóa đơn</button>-->
 
-    </div>
+<!--    </div>-->
 
-    <div class="cart-message">
-    <h2>Danh sách sản phẩm</h2>
-    <div id="product-list">
-        <!-- Danh sách sản phẩm của từng hóa đơn sẽ hiển thị tại đây -->
-    </div>
-</div>
+<!--    <div class="cart-message">-->
+<!--    <h2>Danh sách sản phẩm</h2>-->
+<!--    <div id="product-list">-->
+<!--        &lt;!&ndash; Danh sách sản phẩm của từng hóa đơn sẽ hiển thị tại đây &ndash;&gt;-->
+<!--    </div>-->
+<!--</div>-->
 
-    <div class="actions">
+<!--    <div class="actions">-->
 
-        <button class="add-product-btn">Thêm sản phẩm</button>
-    </div>
+<!--        <button class="add-product-btn">Thêm sản phẩm</button>-->
+<!--    </div>-->
 
-    <div class="account">
-        <h3>Tài khoản</h3>
-        <p>Thông tin tài khoản của bạn sẽ hiển thị ở đây.</p>
-    </div>
+<!--    <div class="account">-->
+<!--        <h3>Tài khoản</h3>-->
+<!--        <p>Thông tin tài khoản của bạn sẽ hiển thị ở đây.</p>-->
+<!--    </div>-->
 
-    <div class="payment-info">
-        <h2>Thông tin thanh toán</h2>
-        <div class="customer-info">
-            <label for="customer-name">Khách hàng:</label>
-            <input type="text" id="customer-name" placeholder="Nhập tên khách hàng" />
-            <label for="discount-code">Mã giảm giá:</label>
-            <input type="text" id="discount-code" placeholder="VC/3348308 - HÀN SN116" />
-            <div class="delivery">
-                <label for="delivery">Giao hàng:</label>
-                <input type="checkbox" id="delivery" />
-            </div>
-        </div>
+<!--    <div class="payment-info">-->
+<!--        <h2>Thông tin thanh toán</h2>-->
+<!--        <div class="customer-info">-->
+<!--            <label for="customer-name">Khách hàng:</label>-->
+<!--            <input type="text" id="customer-name" placeholder="Nhập tên khách hàng" />-->
+<!--            <label for="discount-code">Mã giảm giá:</label>-->
+<!--            <input type="text" id="discount-code" placeholder="VC/3348308 - HÀN SN116" />-->
+<!--            <div class="delivery">-->
+<!--                <label for="delivery">Giao hàng:</label>-->
+<!--                <input type="checkbox" id="delivery" />-->
+<!--            </div>-->
+<!--        </div>-->
 
-        <div class="amount-info">
-            <p>Tiền hàng: <span id="item-total">6.500.000 VNĐ</span></p>
-            <p>Giảm giá: <span id="discount">300.000 VNĐ</span></p>
+<!--        <div class="amount-info">-->
+<!--            <p>Tiền hàng: <span id="item-total">6.500.000 VNĐ</span></p>-->
+<!--            <p>Giảm giá: <span id="discount">300.000 VNĐ</span></p>-->
 
-            <h3>Tổng tiền: <span id="total-amount">6.200.000 VNĐ</span></h3>
-        </div>
-        <button class="btn btn-success"> Thanh Toán</button>
-    </div>
-</div>
+<!--            <h3>Tổng tiền: <span id="total-amount">6.200.000 VNĐ</span></h3>-->
+<!--        </div>-->
+<!--        <button class="btn btn-success"> Thanh Toán</button>-->
+<!--    </div>-->
+<!--</div>-->
 
-<script src="/js/Banhangtaiquay.js"></script>
-</main>
-</body>
-</html>
+<!--<script src="/js/Banhangtaiquay.js"></script>-->
+<!--</main>-->
+<!--</body>-->
+<!--</html>-->

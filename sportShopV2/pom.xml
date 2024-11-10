@@ -59,12 +59,12 @@
         </dependency>
 
 
-        <!--        <dependency>-->
-        <!--            <groupId>org.springframework.boot</groupId>-->
-        <!--            <artifactId>spring-boot-devtools</artifactId>-->
-        <!--            <scope>runtime</scope>-->
-        <!--            <optional>true</optional>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
         <!--                <dependency>-->
         <!--                    <groupId>com.microsoft.sqlserver</groupId>-->
         <!--                    <artifactId>mssql-jdbc</artifactId>-->
@@ -86,11 +86,14 @@
         <!--                    <groupId>org.springframework.boot</groupId>-->
         <!--                    <artifactId>spring-boot-starter-oauth2-client</artifactId>-->
         <!--                </dependency>-->
-
-        <!--        <dependency>-->
-        <!--            <groupId>org.thymeleaf.extras</groupId>-->
-        <!--            <artifactId>thymeleaf-extras-springsecurity6</artifactId>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity6</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
         <dependency>
             <groupId>nz.net.ultraq.thymeleaf</groupId>
             <artifactId>thymeleaf-layout-dialect</artifactId>
@@ -113,7 +116,7 @@
         <dependency>
             <groupId>org.xhtmlrenderer</groupId>
             <artifactId>flying-saucer-core</artifactId>
-            <version>9.10.2</version>
+            <version>9.7.2</version>
         </dependency>
 
 
@@ -132,7 +135,6 @@
             <artifactId>itextpdf</artifactId>
             <version>5.5.13.2</version> <!-- Adjust to the latest version -->
         </dependency>
-
 
 
     </dependencies>
