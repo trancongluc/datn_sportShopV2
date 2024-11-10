@@ -38,16 +38,16 @@ public class Address {
     private User khachHang;
 
 
-    @Column(name = "created_at", columnDefinition = "DATETIME DEFAULT GETDATE()")
+    @Column(name = "create_at", columnDefinition = "DATETIME DEFAULT GETDATE()")
     private Date createdAt = new Date();
 
-    @Column(name = "created_by", length = 50)
+    @Column(name = "create_by", length = 50)
     private String createdBy;
 
-    @Column(name = "updated_at")
+    @Column(name = "update_at")
     private Date updatedAt;
 
-    @Column(name = "updated_by", length = 50)
+    @Column(name = "update_by", length = 50)
     private String updatedBy;
 
     @Column(name = "deleted", columnDefinition = "BIT DEFAULT 0")

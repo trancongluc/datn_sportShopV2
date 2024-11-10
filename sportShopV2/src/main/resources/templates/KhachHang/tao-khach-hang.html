@@ -67,7 +67,12 @@
 
                 <!-- Cột bên phải -->
                 <div class="col-md-8">
+                    <div class="col-md-12">
+                        <label for="code" class="form-label">Mã khách hàng</label>
+                        <input type="code" class="form-control" id="code" name="code" placeholder="Nhập mã khách hàng" required>
+                    </div>
                     <div class="row mb-3">
+
                         <div class="col-md-6">
                             <label for="hoTen" class="form-label">Họ và tên</label>
                             <input type="hoTen" class="form-control" id="hoTen" name="fullName" placeholder="Nhập họ và tên" required>
@@ -108,6 +113,7 @@
                                     <!-- Các lựa chọn tỉnh thành -->
                                 </select>
                                 <input type="hidden" name="tinh_name" value="">
+
                             </div>
                             <div class="col-md-4">
                                 <label for="quan" class="form-label">Huyện</label>
@@ -115,6 +121,7 @@
                                     <option value="0" hidden>Quận Huyện</option>
                                 </select>
                                 <input type="hidden" name="quan_name" value="">
+
                             </div>
                             <div class="col-md-4">
                                 <label for="phuong" class="form-label">Phường</label>
@@ -122,6 +129,7 @@
                                     <option value="0" hidden>Phường Xã</option>
                                 </select>
                                 <input type="hidden" name="phuong_name" value="">
+
                             </div>
                         </div>
                     </div>

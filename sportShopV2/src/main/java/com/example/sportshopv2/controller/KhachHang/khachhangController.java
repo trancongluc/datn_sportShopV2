@@ -11,12 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/khach-hang")
@@ -67,7 +69,9 @@ public class khachhangController {
 
 
     @PostMapping("/add-khach-hang")
-    public String addKhachHang(@RequestParam("fullName") String fullName,
+    public String addKhachHang(
+                                @RequestParam("code") String code,
+                                @RequestParam("fullName") String fullName,
                                @RequestParam("phoneNumber") String phoneNumber,
                                @RequestParam("email") String email,
                                @RequestParam("gender") String gender,
@@ -81,6 +85,7 @@ public class khachhangController {
 //                               @RequestParam("password") String password,
                                Model model) {
         User khachHang = new User();
+        khachHang.setCode(code);
         khachHang.setFullName(fullName);
         khachHang.setPhoneNumber(phoneNumber);
         khachHang.setEmail(email);
@@ -172,6 +177,8 @@ public class khachhangController {
         }
         return "redirect:/khach-hang/list"; // Redirect back to the customer list
     }
+
+
 
 
 

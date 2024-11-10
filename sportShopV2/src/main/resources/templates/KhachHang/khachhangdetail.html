@@ -88,13 +88,12 @@
                                 <input type="text" class="form-control" id="soDienThoai" name="phoneNumber" th:value="${customer.phoneNumber}" required>
                             </div>
 
-<!--                            <hr>-->
-                            <div class="css_select_div">
-<!--                                <h2>Danh sách địa chỉ</h2>-->
-<!--                                <button type="button" onclick="addNewAddressForm()">Mới</button>-->
 
-                                <!-- Địa chỉ đầu tiên -->
-<!--                                <div class="address-form">-->
+                            <div class="css_select_div">
+
+
+
+
                                     <div class="row mb-3">
                                         <div class="col-md-4">
                                             <label for="tinh" class="form-label">Tỉnh</label>
@@ -126,13 +125,13 @@
                                         <label for="line" class="form-label">Số nhà</label>
                                         <input type="line" class="form-control" id="line" name="line" th:value="${customer.addresses[0].line}" required>
                                     </div>
-                                </div>
 
 
 
 
-<!--                            </div>-->
-<!--                            <div id="additional-address-forms"></div>-->
+
+                            </div>
+
                         </div>
                     </div>
 
@@ -154,103 +153,6 @@
 
             </script>
 
-<!--            <script>-->
-<!--                function addNewAddressForm() {-->
-<!--                    // Tạo một div mới chứa form địa chỉ-->
-<!--                    const newAddressDiv = document.createElement("div");-->
-<!--                    newAddressDiv.className = "address-form";-->
-<!--                    newAddressDiv.innerHTML = `-->
-<!--        <div class="row mb-3">-->
-<!--            <div class="col-md-4">-->
-<!--                <label for="tinh" class="form-label">Tỉnh</label>-->
-<!--                <select class="form-select tinh" name="tinh" required>-->
-<!--                    <option value="">Chọn Tỉnh Thành</option>-->
-<!--                </select>-->
-<!--            </div>-->
-<!--            <div class="col-md-4">-->
-<!--                <label for="quan" class="form-label">Huyện</label>-->
-<!--                <select class="form-select quan" name="quan" required>-->
-<!--                    <option value="">Chọn Quận Huyện</option>-->
-<!--                </select>-->
-<!--            </div>-->
-<!--            <div class="col-md-4">-->
-<!--                <label for="phuong" class="form-label">Phường</label>-->
-<!--                <select class="form-select phuong" name="phuong" required>-->
-<!--                    <option value="">Chọn Phường Xã</option>-->
-<!--                </select>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div class="mb-3">-->
-<!--            <label for="line" class="form-label">Số nhà</label>-->
-<!--            <input type="text" class="form-control" name="line" required>-->
-<!--        </div>-->
-<!--        <button type="button" class="btn btn-danger" onclick="removeAddressForm(this)">Xóa</button>-->
-<!--        <button type="button" class="btn btn-success" ">Thêm địa chỉ</button>-->
-<!--    `;-->
-
-<!--                    // Thêm form mới vào vùng additional-address-forms-->
-<!--                    document.getElementById("additional-address-forms").appendChild(newAddressDiv);-->
-
-<!--                    // Tải dữ liệu tỉnh cho form mới-->
-<!--                    loadProvinces(newAddressDiv);-->
-<!--                }-->
-
-
-<!--                function loadProvinces(addressDiv) {-->
-<!--                    $.getJSON('https://esgoo.net/api-tinhthanh/1/0.htm', function (data_tinh) {-->
-<!--                        if (data_tinh.error === 0) {-->
-<!--                            const tinhSelect = addressDiv.querySelector('.tinh');-->
-<!--                            $.each(data_tinh.data, function (key_tinh, val_tinh) {-->
-<!--                                tinhSelect.append(new Option(val_tinh.full_name, val_tinh.id));-->
-<!--                            });-->
-
-<!--                            // Kích hoạt sự kiện thay đổi tỉnh để tải quận ban đầu-->
-<!--                            $(tinhSelect).change(function () {-->
-<!--                                var idtinh = $(this).val();-->
-<!--                                loadDistricts(idtinh, addressDiv);-->
-<!--                            }).change(); // Kích hoạt tải quận ban đầu-->
-<!--                        }-->
-<!--                    });-->
-<!--                }-->
-
-<!--                function loadDistricts(provinceId, addressDiv) {-->
-<!--                    $.getJSON(`https://esgoo.net/api-tinhthanh/2/${provinceId}.htm`, function (data_quan) {-->
-<!--                        const quanSelect = addressDiv.querySelector('.quan');-->
-<!--                        quanSelect.innerHTML = '<option value="">Chọn Quận Huyện</option>'; // Reset-->
-<!--                        $.each(data_quan.data, function (key_quan, val_quan) {-->
-<!--                            quanSelect.append(new Option(val_quan.full_name, val_quan.id));-->
-<!--                        });-->
-
-<!--                        // Kích hoạt sự kiện thay đổi quận để tải phường ban đầu-->
-<!--                        $(quanSelect).change(function () {-->
-<!--                            var idquan = $(this).val();-->
-<!--                            loadWards(idquan, addressDiv);-->
-<!--                        }).change(); // Kích hoạt tải phường ban đầu-->
-<!--                    });-->
-<!--                }-->
-
-<!--                function loadWards(districtId, addressDiv) {-->
-<!--                    $.getJSON(`https://esgoo.net/api-tinhthanh/3/${districtId}.htm`, function (data_phuong) {-->
-<!--                        const phuongSelect = addressDiv.querySelector('.phuong');-->
-<!--                        phuongSelect.innerHTML = '<option value="">Chọn Phường Xã</option>'; // Reset-->
-<!--                        $.each(data_phuong.data, function (key_phuong, val_phuong) {-->
-<!--                            phuongSelect.append(new Option(val_phuong.full_name, val_phuong.id));-->
-<!--                        });-->
-<!--                    });-->
-<!--                }-->
-
-
-<!--                function removeAddressForm(button) {-->
-<!--                    // Xóa form địa chỉ-->
-<!--                    const addressForm = button.closest('.address-form');-->
-<!--                    addressForm.remove();-->
-<!--                }-->
-
-
-
-
-
-<!--            </script>-->
 
             <script src="/js/KhachHang.js   "></script>
         </main>
