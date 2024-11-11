@@ -107,9 +107,8 @@
                 <tr th:each="spct,iterStat  : ${spct}">
                     <td th:text="${iterStat.index + 1}"></td>
                     <td>
-                        <div th:if="${spct.anhSanPham != null and !spct.anhSanPham.isEmpty()}">
-                            <img th:src="${spct.anhSanPham.get(0).tenAnh}" alt="Ảnh sản phẩm" style="width: 50px; height: auto;" />
-                        </div>
+                        <img th:src="@{/images/{tenAnh}(tenAnh=${spct.anhSanPham.get(0).tenAnh})}
+                        " alt="Ảnh sản phẩm" style="width: 50px; height: auto;" />
                     </td>
 
                     <td th:text="${spct.sanPham.getCode()}"></td>

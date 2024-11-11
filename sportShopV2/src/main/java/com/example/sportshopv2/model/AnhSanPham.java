@@ -3,6 +3,11 @@ package com.example.sportshopv2.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 @Data
 @Getter
 @Setter
@@ -21,4 +26,9 @@ public class AnhSanPham  {
     private String tenAnh;
     @Column(name = "status")
     private String trangThai;
+    public byte[] getImageData() throws IOException {
+        // Xây dựng đường dẫn đầy đủ đến file ảnh
+        Path imagePath = Paths.get("C:\\Users\\Admin\\Pictures\\image", tenAnh);
+        return Files.readAllBytes(imagePath);
+    }
 }
