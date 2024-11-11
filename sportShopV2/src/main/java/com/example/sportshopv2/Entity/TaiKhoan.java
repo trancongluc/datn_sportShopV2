@@ -19,10 +19,10 @@ public class TaiKhoan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne
-    @JoinColumn(name = "id_user")
-    private NguoiDung id_user;
-    @Column(name ="username")
+    @JoinColumn(name = "id_user", nullable = false)
+    private NguoiDung nguoiDung;
     private String username;
+    private String role;
     private String password;
     private String status;
     private LocalDateTime create_at;

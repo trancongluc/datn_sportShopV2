@@ -32,6 +32,7 @@ public class PhanQuyen {
                         .requestMatchers("/buy/**", "/product/**", "/staff/**", "/bill/**").hasAuthority("Admin")
                         .requestMatchers("/bill/**", "/buy/**").hasAuthority("Staff")
                         .requestMatchers("/buy/**").hasAuthority("Employee")
+                        .requestMatchers("/login/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
