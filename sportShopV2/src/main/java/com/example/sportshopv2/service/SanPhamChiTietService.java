@@ -8,6 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class SanPhamChiTietService {
@@ -27,6 +30,13 @@ public class SanPhamChiTietService {
         spct.setCreateBy("NV1");
         spct.setTrangThai("Đang hoạt động");
         return sanPhamChiTietRepository.save(spct);
+    }
+
+    public List<SanPhamChiTietDTO> getAllSPCT() {
+        List<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAll();
+        return listSPCT.stream().map(sanPhamChiTiet ->
+                        SanPhamChiTiet.toDTO(sanPhamChiTiet, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo))
+                .collect(Collectors.toList());
     }
 
     public Page<SanPhamChiTietDTO> getSPCTByIdSP(Integer idSP, Pageable pageable) {

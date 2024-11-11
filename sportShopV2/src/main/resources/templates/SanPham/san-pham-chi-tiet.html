@@ -114,7 +114,11 @@
                     <td th:text="${spct.sanPham.getCode()}"></td>
                     <td th:text="${spct.sanPham.getTenSanPham()}"></td>
                     <td th:text="${spct.kichThuoc.tenKichThuoc}"></td>
-                    <td th:text="${spct.mauSac.tenMauSac}"></td>
+                    <td>
+                        <div  th:style="'background-color: ' + ${spct.mauSac.tenMauSac} + '; width: 30px; height: 30px; text-align: center; vertical-align: middle; padding: 5px;'">
+
+                        </div>
+                    </td>
                     <!--<td th:text="${spct.thuongHieu.tenThuongHieu}"></td>
                     <td th:text="${spct.theLoai.tenTheLoai}"></td>
                     <td th:text="${spct.chatLieu.tenChatLieu}"></td>
