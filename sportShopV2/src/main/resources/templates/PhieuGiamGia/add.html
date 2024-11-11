@@ -209,94 +209,94 @@
 </head>
 <body>
 <main layout:fragment="main1">
-<div class="container">
-    <div class="header">
-        <h1>Thêm Phiếu Giảm Giá</h1>
-        <div class="back-button">
-            <button> <a href="/giam-gia" style="text-decoration: none; color: black"> Trở Về</a></button>
+    <div class="container">
+        <div class="header">
+            <h1>Thêm Phiếu Giảm Giá</h1>
+            <div class="back-button">
+                <button> <a href="/giam-gia" style="text-decoration: none; color: black"> Trở Về</a></button>
+            </div>
         </div>
-        </div>
-    <div class="main-content">
-        <div class="form-section">
-            <div class="form-box">
-                <h2>Thông Tin Phiếu Giảm Giá</h2>
-                <div class="form-columns">
-                    <div class="form-column">
-                        <div class="form-group">
-                            <label for="ten-phieu">Tên Phiếu</label>
-                            <input type="text" id="ten-phieu" placeholder="Giảm 10K" oninput="updatePreview()">
+        <div class="main-content">
+            <div class="form-section">
+                <div class="form-box">
+                    <h2>Thông Tin Phiếu Giảm Giá</h2>
+                    <div class="form-columns">
+                        <div class="form-column">
+                            <div class="form-group">
+                                <label for="ten-phieu">Tên Phiếu</label>
+                                <input type="text" id="ten-phieu" th:field="*{name}" placeholder="Giảm 10K" oninput="updatePreview()">
+                            </div>
+                            <div class="form-group">
+                                <label for="gia-tri-don-hang">Giá Trị Đơn Hàng</label>
+                                <input type="text" id="gia-tri-don-hang" th:field="*{giaTriDonHang}" placeholder="Điều kiện áp dụng..." oninput="updatePreview()">
+                                <span class="currency">VND</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="ngay-bat-dau">Ngày Bắt Đầu</label>
+                                <input type="date" id="ngay-bat-dau" th:field="*{ngayBatDau}" oninput="updatePreview()">
+                            </div>
+                            <div class="form-group">
+                                <label for="so-luong">Số Lượng</label>
+                                <input type="number" id="so-luong" th:field="*{soLuong}" placeholder="Số lượng phiếu..." oninput="updatePreview()">
+                            </div>
+                            <div class="form-group">
+                                <label for="mo-ta">Mô Tả (Optional)</label>
+                                <textarea id="mo-ta" th:field="*{moTa}" placeholder="Giảm tối đa..." oninput="updatePreview()"></textarea>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="gia-tri-don-hang">Giá Trị Đơn Hàng</label>
-                            <input type="text" id="gia-tri-don-hang" placeholder="Điều kiện áp dụng..." oninput="updatePreview()">
-                            <span class="currency">VND</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="ngay-bat-dau">Ngày Bắt Đầu</label>
-                            <input type="date" id="ngay-bat-dau" oninput="updatePreview()">
-                        </div>
-                        <div class="form-group">
-                            <label for="so-luong">Số Lượng</label>
-                            <input type="number" id="so-luong" placeholder="Số lượng phiếu..." oninput="updatePreview()">
-                        </div>
-                        <div class="form-group">
-                            <label for="mo-ta">Mô Tả (Optional)</label>
-                            <textarea id="mo-ta" placeholder="Giảm tối đa..." oninput="updatePreview()"></textarea>
+                        <div class="form-column">
+                            <div class="form-group">
+                                <label for="loai-phieu">Loại Phiếu</label>
+                                <select id="loai-phieu" th:field="*{loaiPhieu}" oninput="updatePreview()">
+                                    <option>Phần Tr phần</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="phan-tram-giam">Số Tiền Giảm</label>
+                                <input type="number" id="phan-tram-giam" th:field="*{phanTramGiam}" placeholder="Phần trăm giảm giá..." oninput="updatePreview()">
+                                <span class="currency">VND</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="ngay-ket-thuc">Ngày Kết Thúc</label>
+                                <input type="date" id="ngay-ket-thuc" th:field="*{ngayKetThuc}" oninput="updatePreview()">
+                            </div>
+                            <div class="form-group">
+                                <label for="giam-toi-da">Giảm Tối Đa</label>
+                                <input type="number" id="giam-toi-da" th:field="*{giamToiDa}" placeholder="Giảm tối đa..." oninput="updatePreview()">
+                                <span class="currency">VND</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-column">
-                        <div class="form-group">
-                            <label for="loai-phieu">Loại Phiếu</label>
-                            <select id="loai-phieu" oninput="updatePreview()">
-                                <option>Phần Trăm</option>
-                            </select>
+                </div>
+            </div>
+            <div class="preview-section">
+                <div class="preview-box">
+                    <h2>Xem Trước Mã</h2>
+                    <div class="preview-card">
+                        <div class="discount preview-discount" th:text="*{tenPhieu}">Tên Phiếu</div>
+                        <div class="details">
+                            <p class="code preview-code" th:text="*{maPhieu}">VCXXXXX</p>
+                            <p class="preview-condition" th:text="'Điều kiện: Áp dụng cho đơn hàng từ ' + ${giaTriDonHang} + 'đ'">Điều kiện: Áp dụng cho đơn hàng từ 0đ</p>
+                            <p class="preview-max" th:text="'Tối Đa: ' + ${giamToiDa} + 'đ/Khách Hàng'">Tối Đa: 0đ/Khách Hàng</p>
+                            <p class="preview-quantity" th:text="'Số Lượng: ' + ${soLuong}">Số Lượng: 0</p>
+                            <p class="preview-expiry" th:text="'Hạn Đến: ' + ${ngayKetThuc}">Hạn Đến: dd/mm/yyyy</p>
                         </div>
-                        <div class="form-group">
-                            <label for="phan-tram-giam">Số Tiền Giảm</label>
-                            <input type="number" id="phan-tram-giam" placeholder="Phần trăm giảm giá..." oninput="updatePreview()">
-                            <span class="currency">VND</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="ngay-ket-thuc">Ngày Kết Thúc</label>
-                            <input type="date" id="ngay-ket-thuc" oninput="updatePreview()">
-                        </div>
-                        <div class="form-group">
-                            <label for="giam-toi-da">Giảm Tối Đa</label>
-                            <input type="number" id="giam-toi-da" placeholder="Giảm tối đa..." oninput="updatePreview()">
-                            <span class="currency">VND</span>
+                    </div>
+                    <div class="preview-card">
+                        <div class="discount preview-discount" th:text="*{tenPhieu}">Tên Phiếu</div>
+                        <div class="details">
+                            <p class="code preview-code" th:text="*{maPhieu}">VCXXXXX</p>
+                            <p class="preview-condition" th:text="'Điều kiện: Áp dụng cho đơn hàng từ ' + ${giaTriDonHang} + 'đ'">Điều kiện: Áp dụng cho đơn hàng từ 0đ</p>
+                            <p class="preview-max" th:text="'Tối Đa: ' + ${giamToiDa} + 'đ/Khách Hàng'">Tối Đa: 0đ/Khách Hàng</p>
+                            <p class="preview-quantity" th:text="'Số Lượng: ' + ${soLuong}">Số Lượng: 0</p>
+                            <p class="preview-expiry" th:text="'Hạn Đến: ' + ${ngayKetThuc}">Hạn Đến: dd/mm/yyyy</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="preview-section">
-            <div class="preview-box">
-                <h2>Xem Trước Mã</h2>
-                <div class="preview-card">
-                    <div class="discount preview-discount">Tên Phiếu</div>
-                    <div class="details">
-                        <p class="code preview-code">VCXXXXX</p>
-                        <p class="preview-condition">Điều kiện: Áp dụng cho đơn hàng từ 0đ</p>
-                        <p class="preview-max">Tối Đa: 0đ/Khách Hàng</p>
-                        <p class="preview-quantity">Số Lượng: 0</p>
-                        <p class="preview-expiry">Hạn Đến: dd/mm/yyyy</p>
-                    </div>
-                </div>
-                <div class="preview-card">
-                    <div class="discount preview-discount">Tên Phiếu</div>
-                    <div class="details">
-                        <p class="code preview-code">VCXXXXX</p>
-                        <p class="preview-condition">Điều kiện: Áp dụng cho đơn hàng từ 0đ</p>
-                        <p class="preview-max">Tối Đa: 0đ/Khách Hàng</p>
-                        <p class="preview-quantity">Số Lượng: 0</p>
-                        <p class="preview-expiry">Hạn Đến: dd/mm/yyyy</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <button class="save-button" th:action="@{/giam-gia/save}" type="submit">Lưu</button>
     </div>
-    <button class="save-button">Lưu</button>
-</div>
 </main>
 </body>
 </html>

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -21,27 +22,36 @@ public class PhieuGiamGia {
     private Integer id;
 
     @Column(name = "voucher_code")
-    private String voucher_code;
+    private String voucherCode;
 
     @Column(name = "name")
     private String name;
 
     @Column(name = "minimum_value")
-    private String minimum_value;
+    private BigDecimal minimumValue;
 
     @Column(name = "form_voucher")
-    private String form_voucher;
+    private String formVoucher;
 
     @Column(name = "quantity")
     private Integer quantity;
 
-    @Column(name = "status")
-    private String status;
-
     @Column(name = "start_date")
-    private LocalDateTime start_date;
+    private LocalDateTime startDate;
 
     @Column(name = "end_date")
-    private LocalDateTime end_date;
+    private LocalDateTime endDate;
 
+    
+
+
+    public boolean isActive() {
+        LocalDateTime now = LocalDateTime.now();
+        return startDate.isBefore(now) && endDate.isAfter(now);
+    }
+
+
+    public String getStatus() {
+        return isActive() ? "Đang diễn ra" : "Kết thúc";
+    }
 }
