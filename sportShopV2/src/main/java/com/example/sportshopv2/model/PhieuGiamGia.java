@@ -42,7 +42,7 @@ public class PhieuGiamGia {
     @Column(name = "end_date")
     private LocalDateTime endDate;
 
-    
+
 
 
     public boolean isActive() {
