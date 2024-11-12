@@ -1,6 +1,6 @@
 package com.example.sportshopv2.controller.SanPham;
 
-import com.example.sportshopv2.model.MauSac;
+import com.example.sportshopv2.entity.MauSac;
 import com.example.sportshopv2.service.MauSacService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

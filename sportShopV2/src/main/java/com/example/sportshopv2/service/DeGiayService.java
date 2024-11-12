@@ -1,9 +1,7 @@
 package com.example.sportshopv2.service;
 
-import com.example.sportshopv2.Repository.ChatLieuRepository;
-import com.example.sportshopv2.Repository.DeGiayRepository;
-import com.example.sportshopv2.model.ChatLieu;
-import com.example.sportshopv2.model.DeGiay;
+import com.example.sportshopv2.repository.DeGiayRepository;
+import com.example.sportshopv2.entity.DeGiay;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

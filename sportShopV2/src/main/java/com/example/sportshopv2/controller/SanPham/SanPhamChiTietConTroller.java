@@ -1,7 +1,7 @@
 package com.example.sportshopv2.controller.SanPham;
 
 import com.example.sportshopv2.dto.SanPhamChiTietDTO;
-import com.example.sportshopv2.model.SanPhamChiTiet;
+import com.example.sportshopv2.entity.SanPhamChiTiet;
 import com.example.sportshopv2.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -10,9 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.awt.print.Pageable;
-import java.util.List;
 
 @Controller
 @RequestMapping("/san-pham-chi-tiet")

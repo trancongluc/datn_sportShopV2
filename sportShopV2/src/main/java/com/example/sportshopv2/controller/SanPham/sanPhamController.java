@@ -1,6 +1,6 @@
 package com.example.sportshopv2.controller.SanPham;
 
-import com.example.sportshopv2.model.SanPham;
+import com.example.sportshopv2.entity.SanPham;
 import com.example.sportshopv2.service.SanPhamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

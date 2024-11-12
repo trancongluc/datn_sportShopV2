@@ -1,4 +1,4 @@
-package com.example.sportshopv2.model;
+package com.example.sportshopv2.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;

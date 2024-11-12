@@ -1,6 +1,6 @@
 package com.example.sportshopv2.dto;
 
-import com.example.sportshopv2.model.*;
+import com.example.sportshopv2.entity.*;
 import lombok.*;
 
 import java.util.List;

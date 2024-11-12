@@ -1,8 +1,6 @@
 package com.example.sportshopv2.controller.SanPham;
 
-import com.example.sportshopv2.model.ChatLieu;
-import com.example.sportshopv2.model.TheLoai;
-import com.example.sportshopv2.model.ThuongHieu;
+import com.example.sportshopv2.entity.ChatLieu;
 import com.example.sportshopv2.service.ChatLieuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

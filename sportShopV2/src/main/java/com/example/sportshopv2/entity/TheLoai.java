@@ -1,4 +1,4 @@
-package com.example.sportshopv2.model;
+package com.example.sportshopv2.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,18 +9,18 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Sole")
-public class DeGiay extends BaseEntity {
+@Table(name = "Category")
+public class TheLoai extends BaseEntity{
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "name")
-    private String tenDeGiay;
+    private String tenTheLoai;
     @Column(name = "status")
     private String trangThai;
 
-    public DeGiay(Integer id) {
+    public TheLoai(Integer id) {
         this.id = id;
     }
 }

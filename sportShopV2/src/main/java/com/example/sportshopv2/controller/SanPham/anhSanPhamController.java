@@ -1,6 +1,6 @@
 package com.example.sportshopv2.controller.SanPham;
 
-import com.example.sportshopv2.model.AnhSanPham;
+import com.example.sportshopv2.entity.AnhSanPham;
 import com.example.sportshopv2.service.AnhService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
