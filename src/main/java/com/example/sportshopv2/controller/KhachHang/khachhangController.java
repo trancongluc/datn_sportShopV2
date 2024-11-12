@@ -2,8 +2,8 @@ package com.example.sportshopv2.controller.KhachHang;
 
 import com.example.sportshopv2.Repository.AddressRepository;
 import com.example.sportshopv2.Repository.KhachHangRepository;
-import com.example.sportshopv2.Service.AddressService;
-import com.example.sportshopv2.Service.KhachhangService;
+import com.example.sportshopv2.service.AddressService;
+import com.example.sportshopv2.service.KhachhangService;
 import com.example.sportshopv2.entity.Address;
 
 import com.example.sportshopv2.entity.User;
@@ -12,14 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/khach-hang")
@@ -205,8 +203,7 @@ public class khachhangController {
             newAddress.setQuan(quan);
             newAddress.setPhuong(phuong);
             newAddress.setLine(line);
-<<<<<<< HEAD:src/main/java/com/example/sportshopv2/controller/KhachHang/khachhangController.java
-=======
+
 
             // Thêm địa chỉ vào khách hàng
             customer.addAddress(newAddress);
@@ -244,42 +241,8 @@ public class khachhangController {
         model.addAttribute("customer", customer);
         return "KhachHang/diachi"; // Return to the page displaying the customer's addresses
     }
->>>>>>> 3b1d92dad2a5829300c455a564e8646f535b512b:sportShopV2/src/main/java/com/example/sportshopv2/controller/KhachHang/khachhangController.java
 
-            // Thêm địa chỉ vào khách hàng
-            customer.addAddress(newAddress);
 
-            // Lưu lại thay đổi
-            userService.save(customer);
-        }
-
-        // Hiển thị lại thông tin khách hàng và danh sách địa chỉ
-        model.addAttribute("customer", customer);
-        return "KhachHang/diachi"; // Tên view để hiển thị lại chi tiết khách hàng
     }
-    @GetMapping("/customer/delete-address/{customerId}/{addressId}")
-    public String deleteAddress(@PathVariable("customerId") Integer customerId,
-                                @PathVariable("addressId") Integer addressId,
-                                Model model) {
 
-        // Find the customer by ID
-        User customer = userService.findById(customerId);
 
-        if (customer != null) {
-            // Find the address to delete by ID
-            Address addressToDelete = addressRepository.findById(addressId).orElse(null);
-
-            if (addressToDelete != null) {
-                // Remove the address from the customer's address list
-                customer.getAddresses().remove(addressToDelete);
-
-                // Save the updated customer
-                userService.save(customer);
-            }
-        }
-
-        // Add the updated customer to the model and return to the customer's address page
-        model.addAttribute("customer", customer);
-        return "KhachHang/diachi"; // Return to the page displaying the customer's addresses
-    }
-}
