@@ -1,11 +1,10 @@
-    package com.example.sportshopv2.Service;
+    package com.example.sportshopv2.service;
 
 
     import com.example.sportshopv2.Repository.AddressRepository;
     import com.example.sportshopv2.Repository.KhachHangRepository;
 
     import com.example.sportshopv2.entity.Account;
-    import com.example.sportshopv2.entity.Address;
     import com.example.sportshopv2.entity.User;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.data.domain.Page;
@@ -17,7 +16,6 @@
 
     import java.io.File;
     import java.io.IOException;
-    import java.util.Optional;
 
     @Service
     public class KhachhangService {
