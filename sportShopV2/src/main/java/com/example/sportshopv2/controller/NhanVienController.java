@@ -30,7 +30,6 @@ public class NhanVienController {
     NhanVienService sv;
 
 
-
     String password = "";
 
     @GetMapping("/quan-ly-nhan-vien")
@@ -94,6 +93,7 @@ public class NhanVienController {
 
         sv.mailSend(email, username, password);
         User nvi = new User();
+        nvi.setCode("NV");
         nvi.setFullName(fullName);
         nvi.setPhoneNumber(phoneNumber);
         nvi.setEmail(email);
@@ -112,13 +112,12 @@ public class NhanVienController {
         // address.setWard_id(...);
 
         nvi.addAddress(address); // Thêm địa chỉ vào khách hàng
-            try {
-                sv.addnv(nvi, imageFile, role, username, password);
-                model.addAttribute("successMessage", "NV đã được thêm thành công!");
-            } catch (IOException e) {
-                model.addAttribute("errorMessage", "Tải lên hình ảnh không thành công.");
-            }
-
+        try {
+            sv.addnv(nvi, imageFile, role, username, password);
+            model.addAttribute("successMessage", "NV đã được thêm thành công!");
+        } catch (IOException e) {
+            model.addAttribute("errorMessage", "Tải lên hình ảnh không thành công.");
+        }
 
 
 // Chuyển hướng đến trang hiển thị sau khi thêm
@@ -138,6 +137,14 @@ public class NhanVienController {
         model.addAttribute("employ", emp);
 
         return "NhanVien/detail"; // Create a new Thymeleaf template for details
+    }
+
+    @GetMapping("/emp/order_history/{id}")
+    public String viewHistory(@PathVariable("id") Integer id, Model model) {
+        User emp = sv.getEmpById(id); // Add this method to UserService
+        model.addAttribute("employ", emp);
+
+        return "NhanVien/order_history"; // Create a new Thymeleaf template for details
     }
 
     //
@@ -181,7 +188,6 @@ public class NhanVienController {
         }
         return "redirect:/quan-ly-nhan-vien"; // Redirect back to the customer list
     }
-
 
 
 }
