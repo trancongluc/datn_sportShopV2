@@ -5,6 +5,7 @@
     import com.example.sportshopv2.Repository.KhachHangRepository;
 
     import com.example.sportshopv2.entity.Account;
+    import com.example.sportshopv2.entity.Address;
     import com.example.sportshopv2.entity.User;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@
 
     import java.io.File;
     import java.io.IOException;
+    import java.util.Optional;
 
     @Service
     public class KhachhangService {
@@ -74,13 +76,19 @@
             khachHang.setAccount(account); // Gán tài khoản cho user
 
 
+
+
             // Lưu khách hàng cùng với địa chỉ
             return userRepository.save(khachHang);
         }
 
+
+
         public User getCustomerById(Integer id) {
             return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found")); // Handle user not found appropriately
         }
+
+
 
         public void updateKhachHang(User khachHang) {
             userRepository.save(khachHang); // Save the updated customer
@@ -93,6 +101,14 @@
             customer.setImageFileName(fileName);
         }
 
+
+        public User findById(Integer id) {
+            return userRepository.findById(id).orElse(null);
+        }
+
+        public void save(User customer) {
+            userRepository.save(customer);
+        }
 
 
 
