@@ -7,6 +7,7 @@ import com.example.sportshopv2.Service.KhachhangService;
 import com.example.sportshopv2.entity.Address;
 
 import com.example.sportshopv2.entity.User;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,6 +52,8 @@ public class khachhangController {
             customers = userService.getAllCustomers(pageable);
         }
 
+
+
         model.addAttribute("khachHang", new User());
         model.addAttribute("customers", customers.getContent());
         model.addAttribute("currentPage", page);
@@ -84,6 +87,8 @@ public class khachhangController {
 //                               @RequestParam("username") String username,
 //                               @RequestParam("password") String password,
                                Model model) {
+
+
         User khachHang = new User();
         khachHang.setCode(code);
         khachHang.setFullName(fullName);
@@ -106,7 +111,6 @@ public class khachhangController {
         khachHang.addAddress(address); // Thêm địa chỉ vào khách hàng
 
 
-
         try {
             userService.addKhachHang(khachHang, imageFile);
             model.addAttribute("successMessage", "Khách hàng đã được thêm thành công!");
@@ -123,18 +127,23 @@ public class khachhangController {
     }
 
     @GetMapping("/customer/detaill/{id}")
-    public String viewCustomerDetails(@PathVariable("id") Integer id, Model model) {
+    public String viewCustomerDetails(@PathVariable("id") Integer id, Model model,HttpSession session) {
         User customer = userService.getCustomerById(id); // Add this method to UserService
         model.addAttribute("customer", customer);
 
+
+
         return "KhachHang/khachhangdetail"; // Create a new Thymeleaf template for details
     }
-    @PostMapping("/khachhang/detail")
-    public String getKhachHangDetail(@RequestParam Integer id, Model model) {
-        User selectedKhachHang = userService.getCustomerById(id);
-        model.addAttribute("selectedKhachHang", selectedKhachHang);
-        return "KhachHang/khachhang :: detailModal"; // trả về phần modal cụ thể
+
+    @GetMapping("/customer/diachi/{id}")
+    public String viewdiachi(@PathVariable("id") Integer id, Model model) {
+        User customer = userService.getCustomerById(id); // Add this method to UserService
+        model.addAttribute("customer", customer);
+
+        return "KhachHang/diachi"; // Create a new Thymeleaf template for details
     }
+
 
     @PostMapping("/customer/update/{id}")
     public String updateCustomer(@PathVariable("id") Integer id,
@@ -178,8 +187,61 @@ public class khachhangController {
         return "redirect:/khach-hang/list"; // Redirect back to the customer list
     }
 
+    @PostMapping("/addAddress/{id}")
+    public String addAddress(@PathVariable("id") Integer id,
+                             @RequestParam("tinh_name") String tinh,
+                             @RequestParam("quan_name") String quan,
+                             @RequestParam("phuong_name") String phuong,
+                             @RequestParam("line") String line,
+                             Model model) {
 
+        // Tìm khách hàng theo id
+        User customer = userService.findById(id);
 
+        if (customer != null) {
+            // Tạo đối tượng Address mới và thêm vào khách hàng
+            Address newAddress = new Address();
+            newAddress.setTinh(tinh);
+            newAddress.setQuan(quan);
+            newAddress.setPhuong(phuong);
+            newAddress.setLine(line);
+
+            // Thêm địa chỉ vào khách hàng
+            customer.addAddress(newAddress);
+
+            // Lưu lại thay đổi
+            userService.save(customer);
+        }
+
+        // Hiển thị lại thông tin khách hàng và danh sách địa chỉ
+        model.addAttribute("customer", customer);
+        return "KhachHang/diachi"; // Tên view để hiển thị lại chi tiết khách hàng
+    }
+    @GetMapping("/customer/delete-address/{customerId}/{addressId}")
+    public String deleteAddress(@PathVariable("customerId") Integer customerId,
+                                @PathVariable("addressId") Integer addressId,
+                                Model model) {
+
+        // Find the customer by ID
+        User customer = userService.findById(customerId);
+
+        if (customer != null) {
+            // Find the address to delete by ID
+            Address addressToDelete = addressRepository.findById(addressId).orElse(null);
+
+            if (addressToDelete != null) {
+                // Remove the address from the customer's address list
+                customer.getAddresses().remove(addressToDelete);
+
+                // Save the updated customer
+                userService.save(customer);
+            }
+        }
+
+        // Add the updated customer to the model and return to the customer's address page
+        model.addAttribute("customer", customer);
+        return "KhachHang/diachi"; // Return to the page displaying the customer's addresses
+    }
 
 
 }

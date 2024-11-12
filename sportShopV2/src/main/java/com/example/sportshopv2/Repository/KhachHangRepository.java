@@ -13,6 +13,8 @@ import java.util.List;
 @Repository
 public interface KhachHangRepository extends JpaRepository<User, Integer> {
 
+
+
     @Query("SELECT u FROM User u JOIN u.account a LEFT JOIN FETCH u.addresses  WHERE  a.role = 'Customer' AND u.deleted = false")
     Page<User> findAllCustomers(Pageable pageable);
 
