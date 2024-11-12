@@ -205,6 +205,46 @@ public class khachhangController {
             newAddress.setQuan(quan);
             newAddress.setPhuong(phuong);
             newAddress.setLine(line);
+<<<<<<< HEAD:src/main/java/com/example/sportshopv2/controller/KhachHang/khachhangController.java
+=======
+
+            // Thêm địa chỉ vào khách hàng
+            customer.addAddress(newAddress);
+
+            // Lưu lại thay đổi
+            userService.save(customer);
+        }
+
+        // Hiển thị lại thông tin khách hàng và danh sách địa chỉ
+        model.addAttribute("customer", customer);
+        return "KhachHang/diachi"; // Tên view để hiển thị lại chi tiết khách hàng
+    }
+    @GetMapping("/customer/delete-address/{customerId}/{addressId}")
+    public String deleteAddress(@PathVariable("customerId") Integer customerId,
+                                @PathVariable("addressId") Integer addressId,
+                                Model model) {
+
+        // Find the customer by ID
+        User customer = userService.findById(customerId);
+
+        if (customer != null) {
+            // Find the address to delete by ID
+            Address addressToDelete = addressRepository.findById(addressId).orElse(null);
+
+            if (addressToDelete != null) {
+                // Remove the address from the customer's address list
+                customer.getAddresses().remove(addressToDelete);
+
+                // Save the updated customer
+                userService.save(customer);
+            }
+        }
+
+        // Add the updated customer to the model and return to the customer's address page
+        model.addAttribute("customer", customer);
+        return "KhachHang/diachi"; // Return to the page displaying the customer's addresses
+    }
+>>>>>>> 3b1d92dad2a5829300c455a564e8646f535b512b:sportShopV2/src/main/java/com/example/sportshopv2/controller/KhachHang/khachhangController.java
 
             // Thêm địa chỉ vào khách hàng
             customer.addAddress(newAddress);
