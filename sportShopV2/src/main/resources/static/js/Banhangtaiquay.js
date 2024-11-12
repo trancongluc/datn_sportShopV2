@@ -159,25 +159,45 @@ function removeTab(element, event) {
         document.getElementById('productList').textContent = "Chưa có dữ liệu.";
     }
 }
-
 function showToast(message) {
     const toast = document.getElementById('toast');
-    const toastMessage = document.getElementById('toastMessage');
+    const toastMessage = document.getElementById('toast-message');
+    const progressBar = document.getElementById('progress-bar');
 
+    // Kiểm tra xem các phần tử có tồn tại không
+    if (!toast || !toastMessage || !progressBar) {
+        console.error("Một trong các phần tử không tồn tại.");
+        return; // Dừng hàm nếu không tìm thấy phần tử
+    }
+
+    // Cập nhật nội dung thông báo
     toastMessage.textContent = message;
+
+    // Hiển thị thông báo
     toast.classList.remove('hide');
     toast.classList.add('show');
 
-    // Ẩn thông báo sau 3 giây
+    // Đặt chiều rộng thanh tiến trình về 100%
+    progressBar.style.width = '100%';
+
+    // Sau 3 giây, thay đổi chiều rộng thanh tiến trình về 0
+    setTimeout(() => {
+        progressBar.style.width = '0'; // Đặt lại chiều rộng thanh tiến trình về 0
+    }, 3000); // Sau 3 giây
+
+    // Ẩn toast sau 3.3 giây
     setTimeout(() => {
         toast.classList.remove('show');
         toast.classList.add('hide');
-    }, 3000);
+    }, 3300); // Thêm chút thời gian cho hiệu ứng ẩn
 }
+
 
 const inputField = document.getElementById('sanPhamChiTiet');
 const productList = document.getElementById('product-list');
 const productRows = productList.getElementsByTagName('tr');
+const selectedProductsTable = document.getElementById('selected-products');
+const searchBar = document.querySelector('.search-bar');
 
 inputField.addEventListener('focus', function () {
     productList.style.display = 'block'; // Hiển thị danh sách sản phẩm
@@ -189,11 +209,161 @@ inputField.addEventListener('focus', function () {
 });
 
 // Giấu danh sách sản phẩm nếu người dùng nhấp ra ngoài ô input
-document.addEventListener('click', function(event) {
+document.addEventListener('click', function (event) {
     if (!inputField.contains(event.target) && !productList.contains(event.target)) {
         productList.style.display = 'none'; // Ẩn danh sách sản phẩm
     }
 });
+
+// Hàm tìm kiếm sản phẩm
+inputField.addEventListener('input', function () {
+    const searchTerm = inputField.value.toLowerCase(); // Lấy giá trị nhập vào và chuyển thành chữ thường
+    for (let i = 0; i < productRows.length; i++) {
+        const row = productRows[i];
+        const productName = row.textContent.toLowerCase(); // Lấy tên sản phẩm từ hàng
+        if (productName.includes(searchTerm)) {
+            row.style.display = 'block'; // Hiện hàng nếu tìm thấy
+        } else {
+            row.style.display = 'none'; // Ẩn hàng nếu không tìm thấy
+        }
+    }
+});
+
+function formatCurrency(value) {
+    return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    }).format(value);
+}
+
+// Thêm sự kiện click cho từng hàng sản phẩm
+for (let i = 0; i < productRows.length; i++) {
+    productRows[i].addEventListener('click', function () {
+        // Lấy ID sản phẩm từ thuộc tính data-id
+        const productId = productRows[i].getAttribute('data-id');
+        console.log("Product ID:", productId); // Kiểm tra xem ID có được lấy không
+
+        // Gọi API để lấy thông tin sản phẩm chi tiết
+        fetch(`ban-hang-tai-quay/spct/${productId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(spctDTO => {
+                // Tạo một hàng mới để thêm vào bảng đã chọn
+                const selectedProduct = document.createElement('tr');
+
+                // Thêm các ô vào hàng mới
+                const imageCell = document.createElement('td');
+                const imagesDiv = document.createElement('div'); // Div để chứa hình ảnh
+
+                // Kiểm tra nếu listAnh tồn tại và không rỗng
+                if (Array.isArray(spctDTO.anhSanPham) && spctDTO.anhSanPham.length > 0) {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = `/images/${spctDTO.anhSanPham[0].tenAnh}`; // Lấy hình ảnh đầu tiên
+                    imgElement.alt = `Hình sản phẩm ${spctDTO.id}`;
+                    imgElement.style.width = '50px';
+                    imgElement.style.height = 'auto';
+                    imagesDiv.appendChild(imgElement);
+                } else {
+                    imagesDiv.textContent = 'Không có hình ảnh';
+                }
+
+                imageCell.appendChild(imagesDiv); // Thêm div chứa hình ảnh vào ô
+                selectedProduct.appendChild(imageCell);
+
+                const nameCell = document.createElement('td');
+
+// Tạo phần tử span cho tên sản phẩm
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = spctDTO.sanPham.tenSanPham; // Thêm tên sản phẩm
+                nameCell.appendChild(nameSpan);
+
+// Tạo phần tử span cho kích thước và thêm vào ngoặc vuông
+                const sizeSpan = document.createElement('span');
+                sizeSpan.textContent = `[ ${spctDTO.kichThuoc.tenKichThuoc} - `; // Thêm kích thước với ngoặc mở
+                nameCell.appendChild(sizeSpan);
+
+// Tạo phần tử span cho màu sắc
+                const colorSpan = document.createElement('span');
+                colorSpan.style.display = 'inline-block'; // Đặt thuộc tính hiển thị
+                colorSpan.style.backgroundColor = spctDTO.mauSac.tenMauSac; // Thêm màu sắc
+                colorSpan.style.width = '20px';
+                colorSpan.style.height = '20px';
+                colorSpan.style.border = '1px solid #000'; // Đặt viền
+
+// Thêm span màu sắc vào nameCell sau sizeSpan
+                nameCell.appendChild(colorSpan); // Thêm span màu vào nameCell
+
+// Thêm phần tử đóng ngoặc vào nameCell
+                const closingBracketSpan = document.createElement('span');
+                closingBracketSpan.textContent = ' ]'; // Thêm ngoặc đóng
+                nameCell.appendChild(closingBracketSpan);
+
+// Thêm ô tên sản phẩm vào hàng
+                selectedProduct.appendChild(nameCell);
+
+                const priceCell = document.createElement('td');
+                priceCell.textContent = formatCurrency(spctDTO.gia); // Định dạng giá
+                selectedProduct.appendChild(priceCell);
+//Số lượng
+                const quantityCell = document.createElement('td');
+                const quantityInput = document.createElement('input');
+                let availableQuantity = spctDTO.soLuong;
+                quantityInput.type = 'number'; // Đặt loại là number để chỉ cho phép nhập số
+                quantityInput.value = 1; // Khởi tạo với giá trị 1
+                quantityInput.min = 1; // Đặt giá trị tối thiểu là 1
+                quantityInput.style.width = '60px'; // Đặt chiều rộng cho input
+                quantityCell.appendChild(quantityInput); // Thêm input vào ô
+                selectedProduct.appendChild(quantityCell);
+                quantityInput.addEventListener('input', function () {
+                    const inputQuantity = parseInt(quantityInput.value, 10);
+                    if (quantityInput.value < 1) {
+                        quantityInput.value = 1; // Đặt lại giá trị về 1 nếu người dùng nhập số âm hoặc 0
+                    } else if (inputQuantity > availableQuantity) {
+                        // Hiển thị thông báo nếu số lượng nhập vào lớn hơn số lượng có sẵn
+                        showToast("Số lượng nhập vào vượt quá số lượng có sẵn!");
+                    }
+                });
+
+                const deleteCell = document.createElement('td');
+                const deleteIcon = document.createElement('i');
+                deleteIcon.className = 'fas fa-trash-alt';
+                deleteIcon.style.cursor = 'pointer'; // Thay đổi con trỏ chuột khi hover vào icon
+                deleteCell.appendChild(deleteIcon);
+                selectedProduct.appendChild(deleteCell);
+
+                // Thêm sự kiện click cho icon xóa
+                deleteIcon.addEventListener('click', function () {
+                    selectedProduct.remove(); // Xóa hàng sản phẩm khỏi bảng
+                    if (selectedProductsTable.querySelector('tbody').children.length === 0) {
+                        searchBar.classList.remove('expanded-search-bar'); // Xóa class mở rộng search-bar
+                    }
+                });
+                // Thêm hàng sản phẩm vào bảng đã chọn
+                selectedProductsTable.querySelector('tbody').appendChild(selectedProduct);
+                productList.style.display = 'none';
+                inputField.value = ''; // Xóa giá trị ô tìm kiếm
+
+                // Thêm class "expanded-search-bar" để mở rộng search-bar
+                searchBar.classList.add('expanded-search-bar');
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    });
+}
+
+// Xóa class "expanded-search-bar" khi không còn sản phẩm nào được chọn
+selectedProductsTable.querySelector('tbody').addEventListener('DOMSubtreeModified', function () {
+    if (selectedProductsTable.querySelector('tbody').children.length === 0) {
+        searchBar.classList.remove('expanded-search-bar');
+    }
+});
+
+
 
 
 

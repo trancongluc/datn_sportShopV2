@@ -41,16 +41,20 @@
                           border: 1px solid #ddd; z-index: 1000; width: calc(100% - 20px);">
                         <table>
                             <tbody>
-                            <tr th:each="spct : ${spctDto}">
+                            <tr th:each="spct : ${spctDto}" th:data-id="${spct.id}">
                                 <td>
                                     <img th:src="@{/images/{tenAnh}(tenAnh=${spct.anhSanPham.get(0).tenAnh})}"
                                          alt="Ảnh sản phẩm" style="width: 50px; height: auto;"/>
                                 </td>
+
                                 <td>
                                     <span th:text="${spct.sanPham.tenSanPham}"></span>
                                     [ <span th:text="${spct.kichThuoc.tenKichThuoc}"></span> -
-                                    <span th:style="'display:inline-block; background-color: ' + ${spct.mauSac.tenMauSac} + '; width: 20px; height: 20px; border: 1px solid #000;'"></span> ]
+                                    <span th:style="'display:inline-block; background-color: ' + ${spct.mauSac.tenMauSac} + '; width: 20px; height: 20px; border: 1px solid #000;'"></span>
+                                    ]
                                 </td>
+                                <td th:text="'SL: ' + ${spct.soLuong}"></td>
+
                             </tr>
                             </tbody>
                         </table>
@@ -176,9 +180,9 @@
         </div>
     </div>
     <div id="toast" class="toast hide">
-        <span id="toastMessage"></span>
+        <span id="toast-message">Thông báo sẽ xuất hiện ở đây!</span>
+        <div class="progress-bar" id="progress-bar"></div>
     </div>
-
     <script src="/js/Banhangtaiquay.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
