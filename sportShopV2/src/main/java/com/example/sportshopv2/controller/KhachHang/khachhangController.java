@@ -242,6 +242,4 @@ public class khachhangController {
         model.addAttribute("customer", customer);
         return "KhachHang/diachi"; // Return to the page displaying the customer's addresses
     }
-
-
 }
