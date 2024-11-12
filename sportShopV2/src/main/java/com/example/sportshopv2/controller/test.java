@@ -33,15 +33,10 @@ public class test {
         return "NhanVien/nhan-vien-add";
     }
 
-    @GetMapping("/giam-gia")
-    public String GiamGia() {
-        return "PhieuGiamGia/giamGia";
-    }
 
-    @GetMapping("/add-giam-gia")
-    public String AddGiamGia() {
-        return "PhieuGiamGia/add.html";
-    }
+
+
+
 
     @GetMapping("/ggkhachhang")
     public String ggkhachhang() {
