@@ -1,6 +1,6 @@
 package com.example.sportshopv2.model;
 
-import com.example.sportshopv2.Repository.*;
+import com.example.sportshopv2.repository.*;
 import com.example.sportshopv2.dto.SanPhamChiTietDTO;
 import jakarta.persistence.*;
 import lombok.*;
