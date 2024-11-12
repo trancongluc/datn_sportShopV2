@@ -38,4 +38,13 @@ public class test {
 
 
 
+    @GetMapping("/ggkhachhang")
+    public String ggkhachhang() {
+        return "PhieuGiamGiaKhachHang/PhieuGiamGiaKhachHang";
+    }
+    @GetMapping("/thongtin")
+    public String thongtin() {
+        return "TaiKhoanKhachHang/TaiKhoanKhachHang";
+    }
+
 }

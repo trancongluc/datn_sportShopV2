@@ -45,6 +45,50 @@ document.querySelectorAll('.sidebar-link').forEach(link => {
     });
 });
 
+
+
+// Hàm tải nội dung từ URL mà không tải lại trang
+function fetchContent(url) {
+    fetch(url)
+        .then(response => response.text())
+        .then(data => {
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(data, 'text/html');
+            let mainContent = doc.querySelector('.main'); // Chỉ lấy nội dung main
+
+            if (mainContent) {
+                document.querySelector('.main').innerHTML = mainContent.innerHTML; // Cập nhật nội dung main
+            }
+
+            // Sau khi cập nhật nội dung, gắn lại sự kiện cho các phần tử
+            reattachToggleSidebarEvent();
+        })
+        .catch(error => console.error('Lỗi khi tải nội dung:', error));
+}
+
+
+
+
+
+// Hàm để gắn lại sự kiện toggle cho sidebar
+function reattachToggleSidebarEvent() {
+    document.getElementById('toggle-btn').addEventListener('click', function () {
+        var sidebar = document.getElementById('sidebar');
+        var main = document.querySelector('.main');
+
+        sidebar.classList.toggle('expand'); // Thêm/xóa lớp 'expand' cho sidebar
+
+        if (sidebar.classList.contains('expand')) {
+            main.classList.add('sidebar-expanded'); // Thêm class để thay đổi layout của main khi sidebar mở rộng
+        } else {
+            main.classList.remove('sidebar-expanded'); // Xóa class khi sidebar thu gọn
+        }
+    });
+}
+
+
+
+
 // Hàm hiển thị nội dung dựa trên ID
 function showContent(itemId) {
     // Ẩn tất cả các phần nội dung
@@ -58,3 +102,4 @@ function showContent(itemId) {
         contentSection.style.display = 'block';
     }
 }
+
