@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.Random;
 
 @Controller
+@RequestMapping("/nhanvien")
 public class NhanVienController {
     @Autowired
     NhanVienRepo nvrp;
@@ -28,7 +29,7 @@ public class NhanVienController {
 
     String password = "";
 
-    @GetMapping("/quan-ly-nhan-vien")
+    @GetMapping("")
     public String GetAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
@@ -103,9 +104,9 @@ public class NhanVienController {
         address.setPhuong(phuong);
         address.setLine(line);
         // Thiết lập các thông tin ID nếu cần
-        // address.setProvince_id(...);
-        // address.setDistrict_id(...);
-        // address.setWard_id(...);
+        address.setProvince_id(1);
+        address.setDistrict_id(2);
+        address.setWard_id(3);
 
         nvi.addAddress(address); // Thêm địa chỉ vào khách hàng
         try {
@@ -127,7 +128,7 @@ public class NhanVienController {
     }
 
     //
-    @GetMapping("/emp/detail/{id}")
+    @GetMapping("/detail/{id}")
     public String viewDetails(@PathVariable("id") Integer id, Model model) {
         User emp = sv.getEmpById(id); // Add this method to UserService
         model.addAttribute("employ", emp);
@@ -135,7 +136,7 @@ public class NhanVienController {
         return "NhanVien/detail"; // Create a new Thymeleaf template for details
     }
 
-    @GetMapping("/emp/order_history/{id}")
+    @GetMapping("/order_history/{id}")
     public String viewHistory(@PathVariable("id") Integer id, Model model) {
         User emp = sv.getEmpById(id); // Add this method to UserService
         model.addAttribute("employ", emp);
@@ -144,7 +145,7 @@ public class NhanVienController {
     }
 
     //
-    @PostMapping("/emp/update/{id}")
+    @PostMapping("/update/{id}")
     public String updateCustomer(@PathVariable("id") Integer id,
                                  @RequestParam("fullName") String fullName,
                                  @RequestParam("phoneNumber") String phoneNumber,
