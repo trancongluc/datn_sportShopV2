@@ -4,9 +4,9 @@ import com.example.sportshopv2.repository.AddressRepository;
 import com.example.sportshopv2.repository.KhachHangRepository;
 import com.example.sportshopv2.Service.AddressService;
 import com.example.sportshopv2.Service.KhachhangService;
-import com.example.sportshopv2.entity.Address;
+import com.example.sportshopv2.model.Address;
 
-import com.example.sportshopv2.entity.User;
+import com.example.sportshopv2.model.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
