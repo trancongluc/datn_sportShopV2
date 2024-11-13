@@ -31,11 +31,7 @@ public class DangKyController {
         nd.setCreate_at(LocalDateTime.now());
         nd.setUpdate_at(LocalDateTime.now());
         nd.setUpdate_by("admin");
-
-        // Lưu NguoiDung trước để lấy ID
         nguoiDungRepo.save(nd);
-
-        // Mã hóa mật khẩu và thiết lập thông tin cho TaiKhoan
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         tk.setPassword("{bcrypt}" + encoder.encode(tk.getPassword()));
         tk.setRole("Employee");
@@ -43,6 +39,8 @@ public class DangKyController {
         tk.setCreate_by("admin");
         tk.setUpdate_at(LocalDateTime.now());
         tk.setUpdate_by("admin");
+        tk.setStatus("Active");
+        tk.setDeleted(false);
         tk.setNguoiDung(nd); // Thiết lập khóa ngoại
         tk.setUsername(nd.getEmail());
         taiKhoanRepo.save(tk);
