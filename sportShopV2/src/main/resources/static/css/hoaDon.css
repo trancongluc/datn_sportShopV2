@@ -20,6 +20,9 @@ body {
 .header i {
     margin-right: 10px;
 }
+.button-export{
+    margin-left: 50%;
+}
 .filter-section {
     background-color: #fff;
     padding: 20px;
