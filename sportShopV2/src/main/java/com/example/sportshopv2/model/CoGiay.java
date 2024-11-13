@@ -19,4 +19,8 @@ public class CoGiay extends BaseEntity{
     private String tenCoGiay;
     @Column(name = "status")
     private String trangThai;
+
+    public CoGiay(Integer id) {
+        this.id = id;
+    }
 }

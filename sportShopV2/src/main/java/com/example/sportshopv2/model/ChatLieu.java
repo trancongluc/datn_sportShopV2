@@ -19,4 +19,8 @@ public class ChatLieu extends BaseEntity{
     private String tenChatLieu;
     @Column(name = "status")
     private String trangThai;
+
+    public ChatLieu(Integer id) {
+        this.id = id;
+    }
 }

@@ -19,4 +19,8 @@ public class MauSac extends BaseEntity{
     private String tenMauSac;
     @Column(name = "status")
     private String trangThai;
+
+    public MauSac(Integer id) {
+        this.id = id;
+    }
 }

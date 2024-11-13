@@ -37,6 +37,8 @@ public class DangKyController {
         tk.setRole("Employee");
         tk.setCreate_at(LocalDateTime.now());
         tk.setCreate_by("admin");
+        tk.setStatus("Active");
+        tk.setDeleted(false);
         tk.setUpdate_at(LocalDateTime.now());
         tk.setUpdate_by("admin");
         tk.setStatus("Active");

@@ -1,0 +1,671 @@
+
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" rel="stylesheet"/>
+    <script crossorigin="anonymous" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+    <title>
+        Mua Sắm
+    </title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .product-header h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        .product-header .rating {
+            color: #f39c12;
+        }
+        .product-header .reviews {
+            color: #999;
+        }
+        .product-price {
+            font-size: 24px;
+            color: #e74c3c;
+            margin: 10px 0;
+        }
+        .product-price del {
+            color: #999;
+            margin-left: 10px;
+        }
+        .product-content {
+            display: flex;
+            margin-top: 20px;
+        }
+        .product-images {
+            width: 50%;
+        }
+        .product-images .main-image img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .product-images .thumbnails {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .product-images .thumbnails img {
+            width: 18%;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: transform 0.2s;
+        }
+        .product-images .thumbnails img:hover {
+            transform: scale(1.05);
+        }
+        .product-details {
+            width: 50%;
+            padding-left: 20px;
+        }
+        .product-details .policy,
+        .product-details .combo,
+        .product-details .insurance,
+        .product-details .shipping {
+            margin-bottom: 20px; /* Thêm khoảng cách giữa các phần tử */
+            display: flex;
+            align-items: center;
+        }
+        .product-details .policy i,
+        .product-details .combo i,
+        .product-details .insurance i,
+        .product-details .shipping i {
+            color: #3498db;
+            margin-right: 10px;
+        }
+        .product-details .combo span {
+            color: #e74c3c;
+        }
+        .product-details .insurance span {
+            color: #e74c3c;
+        }
+        .product-details .shipping span {
+            color: #2ecc71;
+        }
+        .product-options {
+            margin-top: 20px;
+        }
+        .product-options .size,
+        .product-options .color {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .product-options .size span,
+        .product-options .color span {
+            margin-right: 10px;
+            cursor: pointer;
+            position: relative;
+            padding: 5px 10px;
+            transition: background-color 0.2s, color 0.2s, border 0.2s;
+            border: 1px solid transparent;
+            border-radius: 5px;
+        }
+        .product-options .size span.active,
+        .product-options .color span.active {
+            border: 1px solid #e67e22;
+        }
+        .product-options .size span.active::after,
+        .product-options .color span.active::after {
+            content: '✔'; /* Check mark */
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: #e67e22;
+            color: #fff;
+            font-size: 12px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .product-options .size span:hover,
+        .product-options .color span:hover {
+            background-color: #e0e0e0;
+        }
+        .product-quantity {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .product-quantity input {
+            width: 50px;
+            text-align: center;
+            margin: 0 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        .product-quantity button {
+            background: none;
+            color: #333;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .product-quantity button:hover {
+            background-color: #e0e0e0;
+        }
+        .product-actions {
+            margin-top: 20px;
+        }
+        .product-actions button {
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .product-actions .add-to-cart {
+            background-color: #e67e22;
+            color: #fff;
+            margin-right: 10px;
+        }
+        .product-actions .add-to-cart:hover {
+            background-color: #d35400;
+        }
+        .product-actions .buy-now {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+        .product-actions .buy-now:hover {
+            background-color: #c0392b;
+        }
+        .social-share {
+            margin-top: 20px;
+        }
+        .social-share i {
+            font-size: 24px;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .social-share i:hover {
+            color: #3498db;
+        }
+        .product-description,
+        .product-reviews {
+            margin-top: 40px;
+        }
+        .product-description h2,
+        .product-reviews h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .product-description p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .product-reviews .review {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+        .product-reviews .review h3 {
+            font-size: 18px;
+            color: #333;
+        }
+        .product-reviews .review .rating {
+            color: #f39c12;
+        }
+        .product-reviews .review p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+        }
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius: 10px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .modal-content form {
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-content form label {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .modal-content form input {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .modal-content form button {
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .modal-content form button[type="button"] {
+            background-color: #3498db;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        .modal-content form button[type="button"]:hover {
+            background-color: #2980b9;
+        }
+        .modal-content form button[type="submit"] {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+        .modal-content form button[type="submit"]:hover {
+            background-color: #c0392b;
+        }
+        .shipping button {
+            background: none;
+            border: none;
+            color: #3498db;
+            cursor: pointer;
+            padding: 0;
+            font-size: 16px;
+            text-decoration: none; /* Bỏ gạch chân */
+        }
+        .shipping button:hover {
+            color: #2980b9;
+        }
+    </style>
+    <script>
+        function toggleActive(element) {
+            // Remove active class from all siblings
+            var siblings = element.parentNode.children;
+            for (var i = 0; i < siblings.length; i++) {
+                siblings[i].classList.remove('active');
+            }
+            // Add active class to the clicked element
+            element.classList.add('active');
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="product-header">
+        <h1>
+            Giày Thể Thao Nam Nữ - Thiết Kế Thời Trang, Chất Liệu Cao Cấp
+        </h1>
+        <div>
+     <span class="rating">
+      <i class="fas fa-star">
+      </i>
+      <i class="fas fa-star">
+      </i>
+      <i class="fas fa-star">
+      </i>
+      <i class="fas fa-star">
+      </i>
+      <i class="fas fa-star-half-alt">
+      </i>
+     </span>
+            <span class="reviews">
+      324 Đánh Giá
+     </span>
+        </div>
+    </div>
+    <div class="product-price">
+        ₫500.000 - ₫1.200.000
+        <del>
+            ₫1.500.000
+        </del>
+    </div>
+    <div class="product-content">
+        <div class="product-images">
+            <div class="main-image">
+                <img alt="Main product image showing a pair of sports shoes" id="mainImage" src="/images/giayMau.png"/>
+            </div>
+            <div class="thumbnails">
+                <img alt="Thumbnail image 1" onclick="changeImage(this)" src="/images/giayMau.png"/>
+                <img alt="Thumbnail image 3" onclick="changeImage(this)" src="/images/goc1.png"/>
+                <img alt="Thumbnail image 4" onclick="changeImage(this)" src="/images/goc2.png"/>
+                <img alt="Thumbnail image 5" onclick="changeImage(this)" src="/images/goc3.png"/>
+                <img alt="Thumbnail image 6" onclick="changeImage(this)" src="/images/goc4.png"/>
+                <img alt="Thumbnail image 2" onclick="changeImage(this)" src="/images/goc5.png"/>
+            </div>
+        </div>
+        <div class="product-details">
+            <div class="policy">
+                <i class="fas fa-undo">
+                </i>
+                Chính Sách Trả Hàng: Trả hàng 15 ngày Đổi ý miễn phí
+            </div>
+            <div class="combo">
+                <i class="fas fa-tags">
+                </i>
+                Combo Khuyến Mãi:
+                <span>
+       Mua 2 tặng 1 tính tiền 3 &amp; giảm -10%
+      </span>
+            </div>
+            <div class="insurance">
+                <i class="fas fa-shield-alt">
+                </i>
+                Bảo Hiểm:
+                <span>
+       Bảo hiểm Thiệt hại sản phẩm
+      </span>
+                <a href="#">
+                    Tìm hiểu thêm
+                </a>
+            </div>
+            <div class="shipping">
+                <i class="fas fa-truck">
+                </i>
+                Vận Chuyển:
+                <span>
+       Miễn phí vận chuyển
+      </span>
+                <div>
+                    Vận Chuyển Tới:
+                    <button id="openModalBtn">
+                        <span id="currentAddress">Huyện Đan Phượng</span>
+                    </button>
+                    Phí Vận Chuyển: 40₫
+                </div>
+            </div>
+            <div class="product-options">
+                <div class="size">
+       <span>
+        Size:
+       </span>
+                    <span onclick="toggleActive(this)">
+        38
+       </span>
+                    <span onclick="toggleActive(this)">
+        39
+       </span>
+                    <span onclick="toggleActive(this)">
+        40
+       </span>
+                    <span onclick="toggleActive(this)">
+        41
+       </span>
+                    <span onclick="toggleActive(this)">
+        42
+       </span>
+                </div>
+                <div class="color">
+       <span>
+        Màu:
+       </span>
+                    <span onclick="toggleActive(this)">
+        Đen
+       </span>
+                    <span onclick="toggleActive(this)">
+        Trắng
+       </span>
+                    <span onclick="toggleActive(this)">
+        Xanh dương
+       </span>
+                    <span onclick="toggleActive(this)">
+        Đỏ
+       </span>
+                </div>
+            </div>
+            <div class="product-quantity">
+      <span>
+       Số Lượng
+      </span>
+                <button>
+                    -
+                </button>
+                <input type="text" value="1"/>
+                <button>
+                    +
+                </button>
+            </div>
+            <div class="product-actions">
+                <button class="add-to-cart">
+                    Thêm Vào Giỏ Hàng
+                </button>
+                <button class="buy-now">
+                    Mua Ngay
+                </button>
+            </div>
+            <div class="social-share">
+                <i class="fab fa-facebook">
+                </i>
+                <i class="fab fa-twitter">
+                </i>
+                <i class="fab fa-pinterest">
+                </i>
+            </div>
+        </div>
+    </div>
+    <div class="product-description">
+        <h2>
+            Mô Tả Sản Phẩm
+        </h2>
+        <p>
+            Giày thể thao nam nữ với thiết kế thời trang, chất liệu cao cấp, mang lại sự thoải mái và phong cách cho người sử dụng. Đế giày được làm từ cao su chống trơn trượt, giúp bạn tự tin di chuyển trên mọi địa hình. Sản phẩm phù hợp cho cả nam và nữ, với nhiều kích cỡ và màu sắc để lựa chọn.
+        </p>
+    </div>
+    <div class="product-reviews">
+        <h2>
+            Đánh Giá Sản Phẩm
+        </h2>
+        <div class="review">
+            <h3>
+                Tuấn Thuật
+            </h3>
+            <div class="rating">
+                <i class="fas fa-star">
+                </i>
+                <i class="fas fa-star">
+                </i>
+                <i class="fas fa-star">
+                </i>
+                <i class="fas fa-star">
+                </i>
+                <i class="fas fa-star-half-alt">
+                </i>
+            </div>
+            <p>
+                Giày cực kì ok nhân viên dễ mến đáng yêu
+            </p>
+        </div>
+        <div class="review">
+            <h3>
+                Văn Minh
+            </h3>
+            <div class="rating">
+                <i class="fas fa-star">
+                </i>
+                <i class="fas fa-star">
+                </i>
+                <i class="fas fa-star">
+                </i>
+                <i class="fas fa-star">
+                </i>
+                <i class="fas fa-star-half-alt">
+                </i>
+            </div>
+            <p>
+                Mọi thứ cửa hàng đều biết chỉ không biết tăng giá giày tại vì quá rẻ
+            </p>
+        </div>
+        <div class="review">
+            <h3>
+                Viết Long
+            </h3>
+            <div class="rating">
+                <i class="fas fa-star">
+                </i>
+                <i class="fas fa-star">
+                </i>
+                <i class="fas fa-star">
+                </i>
+                <i class="fas fa-star">
+                </i>
+                <i class="fas fa-star-half-alt">
+                </i>
+            </div>
+            <p>
+                Nói thật nếu không có cửa hàng chắc tôi không biết đi giày là gì
+            </p>
+        </div>
+        <div class="review">
+            <h3>
+                Công Lực
+            </h3>
+            <div class="rating">
+                <i class="fas fa-star">
+                </i>
+                <i class="fas fa-star">
+                </i>
+                <i class="fas fa-star">
+                </i>
+                <i class="fas fa-star">
+                </i>
+                <i class="fas fa-star-half-alt">
+                </i>
+            </div>
+            <p>
+                Khi bước vào cửa hàng tôi lại quay ra và nói với em ấy trong này có nhiều đôi còn đẹp hơn đôi ta
+            </p>
+        </div>
+    </div>
+</div>
+<div class="modal" id="addressModal">
+    <div class="modal-content">
+        <span class="close" id="closeModalBtn">
+         &times;
+        </span>
+        <h2>
+            Nhập Địa Chỉ Giao Hàng
+        </h2>
+        <form>
+            <label for="address">
+                Địa chỉ:
+            </label>
+            <input id="address" name="address" type="text"/>
+            <br/>
+            <button id="getCurrentLocationBtn" type="button">
+                Sử dụng vị trí hiện tại
+            </button>
+            <br/>
+            <button type="submit">
+                Xác nhận
+            </button>
+        </form>
+    </div>
+</div>
+<script>
+    // Get the modal
+    var modal = document.getElementById("addressModal");
+
+
+    // Lấy nút mở modal
+    var btn = document.getElementById("openModalBtn");
+
+    // Lấy phần tử <span> để đóng modal
+    var span = document.getElementById("closeModalBtn");
+
+    // Khi người dùng nhấp vào nút, hãy mở phương thức
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // Khi người dùng click vào <span> (x), hãy đóng modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Khi người dùng nhấp vào bất cứ nơi nào bên ngoài phương thức, hãy đóng nó lại
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+
+    // Lấy vị trí hiện tại
+    document.getElementById("getCurrentLocationBtn").onclick = function() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var lat = position.coords.latitude;
+                var lon = position.coords.longitude;
+                // Sử dụng API mã hóa địa lý để chuyển đổi vĩ độ/kinh độ thành địa chỉ
+                // Ví dụ: sử dụng API Nominatim của OpenStreetMap
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById("address").value = data.display_name;
+                    });
+            });
+        } else {
+            alert("Trình duyệt không hỗ trợ");
+        }
+    }
+
+    // chọn ảnh
+    function changeImage(element) {
+        var mainImage = document.getElementById("mainImage");
+        mainImage.src = element.src;
+    }
+    // thay đổi địa chỉ
+    function updateAddress() {
+        var address = document.getElementById("address").value;
+        document.getElementById("currentAddress").innerText = address;
+        modal.style.display = "none";
+    }
+</script>
+</body>
+</html>

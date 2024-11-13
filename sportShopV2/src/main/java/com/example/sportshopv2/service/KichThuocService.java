@@ -3,11 +3,10 @@ package com.example.sportshopv2.service;
 import com.example.sportshopv2.repository.KichThuocRepository;
 import com.example.sportshopv2.model.KichThuoc;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,12 +14,13 @@ import java.util.Optional;
 public class KichThuocService {
     private final KichThuocRepository kichThuocRepository;
 
-    public Page<KichThuoc> getAllKichThuoc(Pageable pageable) {
-        return kichThuocRepository.findAllByOrderByCreateAtDesc(pageable);
+    public List<KichThuoc> getAllKichThuoc() {
+        return kichThuocRepository.findAllByOrderByCreateAtDesc();
     }
 
-    public KichThuoc addChatLieu(KichThuoc kichThuoc) {
+    public KichThuoc addKichThuoc(KichThuoc kichThuoc) {
         kichThuoc.setCreateBy("NV1");
+        kichThuoc.setTrangThai("Đang hoạt động");
         return kichThuocRepository.save(kichThuoc);
     }
 

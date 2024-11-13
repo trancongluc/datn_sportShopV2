@@ -19,4 +19,8 @@ public class DeGiay extends BaseEntity {
     private String tenDeGiay;
     @Column(name = "status")
     private String trangThai;
+
+    public DeGiay(Integer id) {
+        this.id = id;
+    }
 }

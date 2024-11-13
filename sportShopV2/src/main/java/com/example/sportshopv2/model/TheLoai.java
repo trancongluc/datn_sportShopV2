@@ -19,4 +19,8 @@ public class TheLoai extends BaseEntity{
     private String tenTheLoai;
     @Column(name = "status")
     private String trangThai;
+
+    public TheLoai(Integer id) {
+        this.id = id;
+    }
 }

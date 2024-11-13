@@ -1,14 +1,13 @@
 package com.example.sportshopv2.repository;
 
 import com.example.sportshopv2.model.MauSac;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MauSacRepository extends JpaRepository<MauSac, Integer> {
-    Page<MauSac> findAllByOrderByCreateAtDesc(Pageable pageable);
+    List<MauSac> findAllByOrderByCreateAtDesc( );
     Optional<MauSac> findById(Integer id);
 
 }

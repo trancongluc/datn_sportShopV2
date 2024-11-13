@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -18,9 +19,14 @@ public class SanPhamService {
     public Page<SanPham> getAllSanPham(Pageable pageable) {
         return sanPhamRepository.findAllByOrderByCreateAtDesc(pageable);
     }
-
-    public SanPham addChatLieu(SanPham sanPham) {
+    private String generateProductCode() {
+        return "SP-" + UUID.randomUUID().toString();
+    }
+    public SanPham addSanPham(SanPham sanPham) {
+        String codeSP = generateProductCode();
         sanPham.setCreateBy("NV1");
+        sanPham.setCode(codeSP);
+        sanPham.setTrangThai("Đang hoạt động");
         return sanPhamRepository.save(sanPham);
     }
 
