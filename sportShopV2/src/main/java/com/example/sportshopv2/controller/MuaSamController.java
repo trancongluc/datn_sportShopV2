@@ -14,4 +14,8 @@ public class MuaSamController {
     public String MuaNgay(){
         return "MuaHang/mua-ngay";
     }
+    @GetMapping("/san-pham")
+    public String SanPham() {
+        return "MuaHang/san-pham";
+    }
 }

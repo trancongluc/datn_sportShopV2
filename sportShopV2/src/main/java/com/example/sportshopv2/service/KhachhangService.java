@@ -1,4 +1,4 @@
-    package com.example.sportshopv2.Service;
+    package com.example.sportshopv2.service;
 
 
     import com.example.sportshopv2.repository.AddressRepository;

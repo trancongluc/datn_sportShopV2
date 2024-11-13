@@ -1,8 +1,7 @@
-package com.example.sportshopv2.Service;
+package com.example.sportshopv2.service;
 
-import com.example.sportshopv2.entity.Account;
-import com.example.sportshopv2.entity.User;
-import com.example.sportshopv2.repository.AddressRepo;
+import com.example.sportshopv2.model.Account;
+import com.example.sportshopv2.model.User;
 import com.example.sportshopv2.repository.NhanVienRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

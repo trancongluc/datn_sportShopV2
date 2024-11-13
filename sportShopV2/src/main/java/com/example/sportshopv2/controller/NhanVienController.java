@@ -1,34 +1,32 @@
 package com.example.sportshopv2.controller;
 
-import com.example.sportshopv2.Service.NhanVienService;
-import com.example.sportshopv2.entity.Address;
-import com.example.sportshopv2.entity.User;
+import com.example.sportshopv2.service.NhanVienService;
+import com.example.sportshopv2.model.Address;
+import com.example.sportshopv2.model.User;
 import com.example.sportshopv2.repository.NhanVienRepo;
-import org.aspectj.bridge.Message;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-
 import java.util.Random;
 
 @Controller
+
 public class NhanVienController {
     @Autowired
     NhanVienRepo nvrp;
 
     @Autowired
     NhanVienService sv;
-
 
 
     String password = "";
@@ -112,13 +110,12 @@ public class NhanVienController {
         // address.setWard_id(...);
 
         nvi.addAddress(address); // Thêm địa chỉ vào khách hàng
-            try {
-                sv.addnv(nvi, imageFile, role, username, password);
-                model.addAttribute("successMessage", "NV đã được thêm thành công!");
-            } catch (IOException e) {
-                model.addAttribute("errorMessage", "Tải lên hình ảnh không thành công.");
-            }
-
+        try {
+            sv.addnv(nvi, imageFile, role, username, password);
+            model.addAttribute("successMessage", "NV đã được thêm thành công!");
+        } catch (IOException e) {
+            model.addAttribute("errorMessage", "Tải lên hình ảnh không thành công.");
+        }
 
 
 // Chuyển hướng đến trang hiển thị sau khi thêm
@@ -181,7 +178,6 @@ public class NhanVienController {
         }
         return "redirect:/quan-ly-nhan-vien"; // Redirect back to the customer list
     }
-
 
 
 }
