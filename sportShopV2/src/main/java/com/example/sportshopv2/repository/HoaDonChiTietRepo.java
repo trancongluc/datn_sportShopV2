@@ -1,6 +1,6 @@
-package com.example.sportshopv2.Repository;
+package com.example.sportshopv2.repository;
 
-import com.example.sportshopv2.Entity.HoaDonChiTiet;
+import com.example.sportshopv2.model.HoaDonChiTiet;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

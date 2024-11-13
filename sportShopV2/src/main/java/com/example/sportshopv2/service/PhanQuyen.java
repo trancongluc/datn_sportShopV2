@@ -1,4 +1,4 @@
-package com.example.sportshopv2.Security;
+package com.example.sportshopv2.service;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

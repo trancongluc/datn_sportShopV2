@@ -1,4 +1,4 @@
-package com.example.sportshopv2.Entity;
+package com.example.sportshopv2.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,26 +8,33 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Entity
-@Table(name = "Account")
-public class TaiKhoan {
+@Table(name = "Bill_Detail")
+public class HoaDonChiTiet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "Id")
     private Integer id;
+    private Integer quantity;
+
     @ManyToOne
-    @JoinColumn(name = "id_user", nullable = false)
-    private NguoiDung nguoiDung;
-    private String username;
-    private String role;
-    private String password;
-    private String status;
+    @JoinColumn(name = "id_bill")
+    private HoaDon hoaDon;
+
+    @ManyToOne
+    @JoinColumn(name = "id_product_detail")
+    private SanPhamChiTiet sanPhamChiTiet;
+
+    private Float price;
+
     private LocalDateTime create_at;
     private String create_by;
     private LocalDateTime update_at;
     private String update_by;
-    private Boolean deleted;
+
+    // Getters, setters, and other necessary annotations
 }
