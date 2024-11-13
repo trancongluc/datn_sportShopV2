@@ -1,25 +1,23 @@
 package com.example.sportshopv2.controller.KhachHang;
 
-import com.example.sportshopv2.Repository.AddressRepository;
-import com.example.sportshopv2.Repository.KhachHangRepository;
+import com.example.sportshopv2.repository.AddressRepository;
+import com.example.sportshopv2.repository.KhachHangRepository;
 import com.example.sportshopv2.Service.AddressService;
 import com.example.sportshopv2.Service.KhachhangService;
-import com.example.sportshopv2.entity.Address;
+import com.example.sportshopv2.model.Address;
 
-import com.example.sportshopv2.entity.User;
+import com.example.sportshopv2.model.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/khach-hang")

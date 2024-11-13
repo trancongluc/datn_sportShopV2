@@ -1,12 +1,8 @@
 package com.example.sportshopv2.service;
 
-import com.example.sportshopv2.Repository.ChatLieuRepository;
-import com.example.sportshopv2.Repository.MauSacRepository;
-import com.example.sportshopv2.model.ChatLieu;
+import com.example.sportshopv2.repository.MauSacRepository;
 import com.example.sportshopv2.model.MauSac;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
