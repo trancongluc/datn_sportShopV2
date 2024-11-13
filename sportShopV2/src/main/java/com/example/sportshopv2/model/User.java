@@ -1,10 +1,9 @@
-package com.example.sportshopv2.entity;
+package com.example.sportshopv2.model;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Setter

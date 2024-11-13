@@ -1,12 +1,10 @@
-package com.example.sportshopv2.entity;
+package com.example.sportshopv2.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Date;
 
 @Setter
 @Getter

@@ -1,17 +1,13 @@
 package com.example.sportshopv2.controller;
 
-import com.example.sportshopv2.Service.NhanVienService;
-import com.example.sportshopv2.entity.Address;
-import com.example.sportshopv2.entity.User;
+import com.example.sportshopv2.service.NhanVienService;
+import com.example.sportshopv2.model.Address;
+import com.example.sportshopv2.model.User;
 import com.example.sportshopv2.repository.NhanVienRepo;
-import org.aspectj.bridge.Message;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
