@@ -65,7 +65,7 @@
                 <tr>
                     <th>#</th>
                     <th>Ảnh</th>
-<!--                    <th>Mã khách hàng</th>-->
+                    <th>Mã khách hàng</th>
                     <th>Họ và tên</th>
                     <th>Điện thoại</th>
                     <th>E-mail</th>
@@ -84,7 +84,7 @@
 
                             <img th:src="@{/uploads/{imageFileName}(imageFileName=${khachHang.imageFileName})}" alt="Ảnh khách hàng" width="50" height="50" class="rounded-circle me-2">
                         </td>
-<!--                    <td th:text="${khachHang.code}"></td>-->
+                    <td th:text="${khachHang.code}"></td>
                     <td>
                         <div class="d-flex align-items-center">
                             <span th:text="${khachHang.fullName}" style="color: black;"></span>
@@ -109,8 +109,8 @@
                         </div>
                     </td>
                     <td>
-                        <a th:href="@{/khach-hang/customer/detaill/{id}(id=${khachHang.id})}" > <i class="fas fa-edit"></i></i> </a>
-<!--                        <a th:href="@{/khach-hang/delete/{id}(id=${khachHang.id})}" >🗑️</a>-->
+                        <a th:href="@{/khach-hang/customer/detail/{id}(id=${khachHang.id})}" > <i class="fas fa-edit"></i></i> </a>
+                        <a th:href="@{/khach-hang/delete/{id}(id=${khachHang.id})}" >🗑️</a>
 
 <a  th:href="@{/khach-hang/customer/diachi/{id}(id=${khachHang.id})}" >+</a>
 
@@ -149,7 +149,6 @@
             </nav>
         </div>
         </div>
-
 
 
 

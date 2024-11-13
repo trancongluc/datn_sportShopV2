@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -67,6 +68,8 @@ private Account account;
     private boolean deleted = false;
 
     // Phương thức tiện ích để thêm địa chỉ
+    private static final AtomicInteger COUNTER = new AtomicInteger(1);
+
 
 
     public void addAddress(Address address) {
@@ -75,7 +78,14 @@ private Account account;
     }
     @PrePersist // Được gọi trước khi thực thể được lưu vào cơ sở dữ liệu
     private void onCreate() {
+        if (this.getCode() == null || this.getCode().isEmpty()) {
+            this.setCode(generateUniqueCode());
+        }
         createdAt = new Date();
+    }
+
+    public String generateUniqueCode() {
+        return "KH" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
     @PreUpdate // Được gọi trước khi thực thể được cập nhật

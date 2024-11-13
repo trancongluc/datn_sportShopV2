@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/khach-hang")
@@ -71,7 +72,7 @@ public class khachhangController {
 
     @PostMapping("/add-khach-hang")
     public String addKhachHang(
-                                @RequestParam("code") String code,
+//                                @RequestParam("code") String code,
                                 @RequestParam("fullName") String fullName,
                                @RequestParam("phoneNumber") String phoneNumber,
                                @RequestParam("email") String email,
@@ -88,7 +89,7 @@ public class khachhangController {
 
 
         User khachHang = new User();
-        khachHang.setCode(code);
+//        khachHang.setCode(code);
         khachHang.setFullName(fullName);
         khachHang.setPhoneNumber(phoneNumber);
         khachHang.setEmail(email);
@@ -124,7 +125,7 @@ public class khachhangController {
         return "redirect:/khach-hang/list"; // Redirect to the display page after deletion
     }
 
-    @GetMapping("/customer/detaill/{id}")
+    @GetMapping("/customer/detail/{id}")
     public String viewCustomerDetails(@PathVariable("id") Integer id, Model model,HttpSession session) {
         User customer = userService.getCustomerById(id); // Add this method to UserService
         model.addAttribute("customer", customer);
@@ -243,6 +244,7 @@ public class khachhangController {
     }
 
 
-    }
+
+}
 
 

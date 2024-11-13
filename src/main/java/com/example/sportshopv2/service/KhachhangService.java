@@ -5,6 +5,7 @@
     import com.example.sportshopv2.Repository.KhachHangRepository;
 
     import com.example.sportshopv2.entity.Account;
+    import com.example.sportshopv2.entity.Address;
     import com.example.sportshopv2.entity.User;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.data.domain.Page;
@@ -24,7 +25,7 @@
         private KhachHangRepository userRepository;
 
         @Autowired
-        private AddressRepository addressRepository;
+        private AddressService addressService;
 
 
 
@@ -51,7 +52,7 @@
         }
 
 
-        private final String UPLOAD_DIR = "C:\\HOCTAP\\DATN\\sportShopV2\\sportShopV2\\src\\main\\resources\\static\\uploads";
+        private final String UPLOAD_DIR = "C:\\HOCTAP\\DATN\\sportShopV2\\src\\main\\resources\\static\\uploads";
         public User addKhachHang(User khachHang, MultipartFile imageFile) throws IOException {
 
 
