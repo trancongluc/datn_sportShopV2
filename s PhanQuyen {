@@ -1,0 +1,545 @@
+[33mcommit 0b08f83185cdd27c1f3e077981c190ad04a9640c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mtan[m[33m)[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Wed Nov 13 10:59:20 2024 +0700
+
+    commit
+
+[33mcommit 88fd1d5de034c145d93a8bf15443dda22da58635[m
+Merge: d66166f 4839872
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Wed Nov 13 10:54:54 2024 +0700
+
+    commit
+
+[33mcommit 4839872c561661c3962d4e1994e0439aac7b5be6[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Wed Nov 13 10:46:19 2024 +0700
+
+    commit
+
+[33mcommit b24f3062403b1770e57b3139c8f95c5455c39abe[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Wed Nov 13 10:22:10 2024 +0700
+
+    update them
+
+[33mcommit 47dcba98ef6ba9666649337662765a540bf89004[m
+Merge: ef6276e 24b37c7
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Wed Nov 13 10:18:56 2024 +0700
+
+    merge Thuat
+
+[33mcommit ef6276e1774d49d213a3470accad0d890dc9d54d[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Wed Nov 13 10:01:11 2024 +0700
+
+    update name
+
+[33mcommit 24b37c7f92c167bd922cd963bffc292c94c2ef92[m[33m ([m[1;31morigin/NguyenTuanThuat[m[33m, [m[1;32mNguyenTuanThuat[m[33m)[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Wed Nov 13 08:52:15 2024 +0700
+
+    update package
+
+[33mcommit cc5f0835e5f4c5d7144aecf289b643b2e4012a58[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Tue Nov 12 22:49:11 2024 +0700
+
+    update KH
+
+[33mcommit 7d82a3b5030557403dc3ab88c6f6d3753111a561[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Tue Nov 12 16:55:36 2024 +0700
+
+    update
+
+[33mcommit d66166ff3a2e121ecc6ab054c933cb139a811e74[m[33m ([m[1;31morigin/tan[m[33m)[m
+Author: huytan04 <huytanahihi@gmail.com>
+Date:   Tue Nov 12 16:21:53 2024 +0700
+
+    add
+
+[33mcommit 3b1d92dad2a5829300c455a564e8646f535b512b[m
+Merge: 5837725 d84297e
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Tue Nov 12 16:09:22 2024 +0700
+
+    merge long
+
+[33mcommit d84297ed19626d89eca77cd6b1ccbdb62ebecab9[m
+Author: long07122004 <longhvph35733@fpt.edu.vn>
+Date:   Tue Nov 12 15:56:46 2024 +0700
+
+    k có j
+
+[33mcommit 5837725f858108899d44ee72c423e7b5abb0aae7[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Tue Nov 12 15:47:40 2024 +0700
+
+    merge long
+
+[33mcommit 73df734f733d2453e65f07b03c051f3c54d834f4[m
+Author: long07122004 <longhvph35733@fpt.edu.vn>
+Date:   Tue Nov 12 15:42:36 2024 +0700
+
+    ok
+
+[33mcommit d7a788b331126d9db89b3f1d7f07ef671eb9d830[m
+Merge: 1e7bf9f 2b476bd
+Author: long07122004 <longhvph35733@fpt.edu.vn>
+Date:   Tue Nov 12 15:19:33 2024 +0700
+
+    Merge branch 'long' of https://github.com/trancongluc/datn_sportShopV2 into long
+
+[33mcommit 1e7bf9fb0c4285b820ad661adf560a83f7c363c8[m
+Author: long07122004 <longhvph35733@fpt.edu.vn>
+Date:   Tue Nov 12 15:00:37 2024 +0700
+
+    them dia chi
+
+[33mcommit d511ba2bf65f620ce8c0685c0c3e0a973c7f4426[m
+Merge: 34cc39f 2b476bd
+Author: trancongluc <132872925+trancongluc@users.noreply.github.com>
+Date:   Tue Nov 12 14:10:35 2024 +0700
+
+    Merge pull request #1 from trancongluc/long
+    
+    Long
+
+[33mcommit 2b476bdbde3b1e151445d233e633c576450e19aa[m
+Merge: 611f751 d23c0a3
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Tue Nov 12 14:05:50 2024 +0700
+
+    Merge remote-tracking branch 'origin/long' into long
+    
+    # Conflicts:
+    #       sportShopV2/src/main/resources/application.properties
+    #       sportShopV2/src/main/resources/templates/BanHangTaiQuay/BanHangTaiQuay.html
+    #       sportShopV2/src/main/resources/templates/KhachHang/tao-khach-hang.html
+    #       sportShopV2/src/main/resources/templates/Menu.html
+
+[33mcommit 611f7513ee6e18c6060c94680ee99cc99b82e3d2[m
+Merge: 87e147a 34cc39f
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Tue Nov 12 14:01:53 2024 +0700
+
+    pull master
+
+[33mcommit 34cc39f5327802c43fda0096302275ccb2548e0d[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Tue Nov 12 11:49:13 2024 +0700
+
+    update ban hang tai quay
+
+[33mcommit 78c4f64672de355426a11b51eb6655662eae0db2[m
+Author: thuat35729 <149344062+thuat35729@users.noreply.github.com>
+Date:   Mon Nov 11 23:22:39 2024 +0700
+
+    Dang ky
+
+[33mcommit e4756e718bafd75e96adf9c71bf63ef6630d6d52[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Mon Nov 11 17:21:48 2024 +0700
+
+    update
+
+[33mcommit 3015f1eda0cf2cbc0bf1c19f7c7e81ed82b4c957[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Mon Nov 11 17:18:00 2024 +0700
+
+    update
+
+[33mcommit af608bcd445b3f81fb6ccdb2ded7b9e03ad7c384[m
+Author: huytan04 <huytanahihi@gmail.com>
+Date:   Mon Nov 11 11:21:40 2024 +0700
+
+    trang thai
+
+[33mcommit 9854e832dfefa70b476b80ec6e2ba9963df97428[m
+Author: huytan04 <huytanahihi@gmail.com>
+Date:   Mon Nov 11 10:32:31 2024 +0700
+
+    voucher
+
+[33mcommit 2f6d18e81172431ed04275cef2b1939343eacf07[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Mon Nov 11 10:28:27 2024 +0700
+
+    update
+
+[33mcommit 29ea7447478abc6358beba83e9f9e5e724fe556d[m
+Author: thuat35729 <149344062+thuat35729@users.noreply.github.com>
+Date:   Sun Nov 10 22:42:15 2024 +0700
+
+    Chức năng đăng nhập
+
+[33mcommit d23c0a314a3585e31521768df397429feb93457e[m
+Author: long07122004 <longhvph35733@fpt.edu.vn>
+Date:   Sun Nov 10 15:53:50 2024 +0700
+
+    update lại
+
+[33mcommit e9b6b3d45960847f70aa6bab81c4e00e7573a910[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Sun Nov 10 12:45:31 2024 +0700
+
+    update
+
+[33mcommit 3a1f422d2da10e81b3f21e7069fa7abee2ea9c63[m
+Author: long07122004 <longhvph35733@fpt.edu.vn>
+Date:   Sat Nov 9 14:12:25 2024 +0700
+
+    update lại
+
+[33mcommit dae6da159f13e0dfcbeee8285043f3fcbf278476[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Fri Nov 8 16:16:53 2024 +0700
+
+    update them
+
+[33mcommit b83a8e4f19db6ff90aaf9d1b284e96bd6ab4e992[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Fri Nov 8 08:55:51 2024 +0700
+
+    update
+
+[33mcommit fed4d9286035a121550769aadeebc99dd8db45d5[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Wed Nov 6 17:11:28 2024 +0700
+
+    update san pham
+
+[33mcommit 573ecc9882301c927a559337861b959aec219bdc[m
+Merge: b668243 9eb3746
+Author: thuat35729 <149344062+thuat35729@users.noreply.github.com>
+Date:   Tue Nov 5 22:32:45 2024 +0700
+
+    Update
+
+[33mcommit 0eb2c1d9cbd09cea8686189655975554c959141a[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Tue Nov 5 17:32:58 2024 +0700
+
+    update
+
+[33mcommit 0b5c0f790b144e48b94550e179278f844ecae10c[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Mon Nov 4 10:38:33 2024 +0700
+
+    update thêm
+
+[33mcommit 30d96802952bf5f5ea662022a709f975fb8f2c96[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Mon Nov 4 10:12:20 2024 +0700
+
+    Update
+
+[33mcommit b66824363c99b299dd389bc64e5216e83d29623e[m
+Author: thuat35729 <149344062+thuat35729@users.noreply.github.com>
+Date:   Fri Nov 1 21:20:23 2024 +0700
+
+    xuat pdf
+
+[33mcommit 9eb3746e136d608c2b42870a60b3c915f93ab9e3[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Fri Nov 1 17:32:58 2024 +0700
+
+    update them SPCT
+
+[33mcommit c45c7071795734c24b5920bda266949b4911d1b7[m
+Author: thuat35729 <149344062+thuat35729@users.noreply.github.com>
+Date:   Fri Nov 1 12:23:01 2024 +0700
+
+    update
+
+[33mcommit 8280effc33e44e506d8711ff725b447be0036c48[m
+Author: thuat35729 <149344062+thuat35729@users.noreply.github.com>
+Date:   Fri Nov 1 12:22:48 2024 +0700
+
+    view Hdct+ excel
+
+[33mcommit 796c6094d0ea960869c2cdb03ff53999c8a1f701[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Fri Nov 1 11:04:22 2024 +0700
+
+    update thuoc tinh
+
+[33mcommit b1c8f3a596a8e82d685ff64ce67f656e3b6e1b20[m
+Author: long07122004 <longhvph35733@fpt.edu.vn>
+Date:   Thu Oct 31 16:26:45 2024 +0700
+
+    crud khách hàng
+
+[33mcommit 3bb9066e341f3b61ff105b95979e41698d1bc316[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Wed Oct 30 21:50:56 2024 +0700
+
+    demo CRU SanPham
+
+[33mcommit d416286a801916dcce1770a555645cc6b32ca455[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Mon Oct 28 12:54:01 2024 +0700
+
+    Update
+
+[33mcommit 9d59c6c91448d4012518eceafdb67f8d20cdadb8[m
+Author: huytan04 <huytanahihi@gmail.com>
+Date:   Thu Oct 24 11:22:13 2024 +0700
+
+    giao dien khi an mua ngay
+
+[33mcommit a825622007ef4324900eeb98eaae4a3809345d4b[m
+Author: huytan04 <huytanahihi@gmail.com>
+Date:   Tue Oct 22 09:09:39 2024 +0700
+
+    hoan thien theo yeu cau
+
+[33mcommit 5bf02b0dad453339a5084ccb28186d7b8f3f723f[m
+Merge: 8841ebe 70858c8
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Mon Oct 21 16:56:13 2024 +0700
+
+    Merge branch 'tan'
+    
+    # Conflicts:
+    #       sportShopV2/src/main/java/com/example/sportshopv2/controller/test.java
+
+[33mcommit 8841ebe7683193a73dbb871f959a073c29d3e1ae[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Mon Oct 21 10:50:32 2024 +0700
+
+    update
+
+[33mcommit 70858c88594df8b5eb6f20060c71dbb16caf2fce[m
+Author: huytan04 <huytanahihi@gmail.com>
+Date:   Mon Oct 21 10:33:15 2024 +0700
+
+    done mua sam
+
+[33mcommit af6b4001f765789309758c4ba1ff0e716c74ed49[m
+Merge: 5c21bbc 13508ed
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Mon Oct 21 10:17:29 2024 +0700
+
+    Merge branch 'tan'
+    
+    # Conflicts:
+    #       sportShopV2/pom.xml
+    #       sportShopV2/src/main/java/com/example/sportshopv2/controller/test.java
+    #       sportShopV2/src/main/resources/application.properties
+    #       sportShopV2/src/main/resources/static/js/script.js
+    #       sportShopV2/src/main/resources/templates/Menu.html
+    #       sportShopV2/src/main/resources/templates/PhieuGiamGia/giamGia.html
+
+[33mcommit 87e147a94a4893ab58387b351c2e2b827a54ff74[m
+Author: long07122004 <longhvph35733@fpt.edu.vn>
+Date:   Sun Oct 20 23:18:48 2024 +0700
+
+    ban hang tai quay , phieu giam gia , thong tin khach hang
+
+[33mcommit 1683db5605d9a6630612f17095243cd6ceab6105[m
+Author: thuat35729 <149344062+thuat35729@users.noreply.github.com>
+Date:   Sat Oct 19 14:21:59 2024 +0700
+
+    done thong ke, doi tra, tích diem khach hang
+
+[33mcommit 13508edeef0a2d18122e1fa47591c4b69bb5b55e[m
+Author: huytan04 <huytanahihi@gmail.com>
+Date:   Sat Oct 19 10:40:30 2024 +0700
+
+    mua sam
+
+[33mcommit 61eb284623659b3b9db0798f883feb810aea3644[m
+Merge: b05b9d3 5c21bbc
+Author: long07122004 <longhvph35733@fpt.edu.vn>
+Date:   Thu Oct 17 23:08:32 2024 +0700
+
+    Merge branch 'master' of https://github.com/trancongluc/datn_sportShopV2 into long
+    
+    # Conflicts:
+    #       sportShopV2/src/main/resources/static/css/khachHang.css
+    #       sportShopV2/src/main/resources/static/js/script.js
+    #       sportShopV2/src/main/resources/templates/Menu.html
+
+[33mcommit b05b9d3c88c3ea4f9a29df5d2cfcba15ce547097[m
+Merge: 55cf818 4fdf9a4
+Author: long07122004 <longhvph35733@fpt.edu.vn>
+Date:   Thu Oct 17 23:01:01 2024 +0700
+
+    Merge branch 'NguyenTuanThuat' of https://github.com/trancongluc/datn_sportShopV2 into long
+    
+    # Conflicts:
+    #       sportShopV2/src/main/resources/static/js/script.js
+    #       sportShopV2/src/main/resources/templates/Menu.html
+
+[33mcommit b063af189944ec3a5765b407769fc349a0cb3c9c[m
+Merge: 0b2d329 5c21bbc
+Author: thuat35729 <149344062+thuat35729@users.noreply.github.com>
+Date:   Thu Oct 17 18:44:28 2024 +0700
+
+    Merge branch 'master' of https://github.com/trancongluc/datn_sportShopV2 into NguyenTuanThuat
+    
+    * 'master' of https://github.com/trancongluc/datn_sportShopV2:
+      update lại all giao diện
+      update giao dien san pham
+      tai quay
+      done giao dien phieu giam gia
+      done giao dien thuoc tinh Sp
+      sua giao dien nhan vien
+      giao dien nhan vien
+      aaa
+      giao dien giam gia
+
+[33mcommit 0b2d32922795ff678526931a594a4bc73bd17faf[m
+Author: thuat35729 <149344062+thuat35729@users.noreply.github.com>
+Date:   Thu Oct 17 18:43:14 2024 +0700
+
+    doi tra
+
+[33mcommit 5c21bbc7881b316dca63f61033a1e0b9e8ad28ea[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Thu Oct 17 17:01:22 2024 +0700
+
+    update lại all giao diện
+
+[33mcommit e55e8c9e9238ade864f49a06c253abb4f36621ef[m
+Merge: 57307c8 5a48b6a
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Wed Oct 16 17:10:30 2024 +0700
+
+    Merge branch 'minh'
+    
+    # Conflicts:
+    #       sportShopV2/src/main/java/com/example/sportshopv2/controller/test.java
+    #       sportShopV2/src/main/resources/application.properties
+    #       sportShopV2/src/main/resources/templates/Menu.html
+
+[33mcommit 57307c8005a516d607e7de8f0d8934f890e2e79d[m
+Merge: bec20ae 55cf818
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Wed Oct 16 17:07:28 2024 +0700
+
+    Merge branch 'long'
+    
+    # Conflicts:
+    #       sportShopV2/src/main/java/com/example/sportshopv2/controller/test.java
+    #       sportShopV2/src/main/resources/static/js/script.js
+    #       sportShopV2/src/main/resources/templates/Menu.html
+
+[33mcommit bec20ae87cf23a1e5a3fc508cc1cecab0de35958[m
+Merge: 101429a b3a1881
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Wed Oct 16 17:04:22 2024 +0700
+
+    Merge branch 'tan'
+    
+    # Conflicts:
+    #       sportShopV2/src/main/java/com/example/sportshopv2/controller/test.java
+    #       sportShopV2/src/main/resources/application.properties
+    #       sportShopV2/src/main/resources/static/js/script.js
+    #       sportShopV2/src/main/resources/templates/Menu.html
+
+[33mcommit 101429ad76902b4d74391a6b039371ad8e153296[m
+Merge: e75c175 a0ff6dd
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Wed Oct 16 16:59:43 2024 +0700
+
+    Merge branch 'luctcph35904'
+    
+    # Conflicts:
+    #       sportShopV2/src/main/resources/application.properties
+    #       sportShopV2/src/main/resources/static/css/side-bar.css
+    #       sportShopV2/src/main/resources/static/js/script.js
+    #       sportShopV2/src/main/resources/templates/Menu.html
+
+[33mcommit e75c1750e9380b0a440f7d8fd0da2ce6b1f5b3a2[m
+Merge: 09fae8b 4fdf9a4
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Wed Oct 16 16:56:58 2024 +0700
+
+    Merge branch 'NguyenTuanThuat'
+    
+    # Conflicts:
+    #       sportShopV2/src/main/java/com/example/sportshopv2/controller/test.java
+
+[33mcommit 9ae21f2ba80441bfb8eb63b6a43c03a0ae5fbdb1[m
+Author: huytan04 <huytanahihi@gmail.com>
+Date:   Wed Oct 16 13:58:01 2024 +0700
+
+    fix giao dien xong
+
+[33mcommit 7a2a127a8ed5b17383893b166067107a04180963[m
+Merge: 51793d5 4fdf9a4
+Author: huytan04 <huytanahihi@gmail.com>
+Date:   Wed Oct 16 11:09:39 2024 +0700
+
+    new
+
+[33mcommit 51793d5c24ec1ddcd529e43994d885a13dd478ab[m
+Author: huytan04 <huytanahihi@gmail.com>
+Date:   Wed Oct 16 08:30:49 2024 +0700
+
+    giam gia va dot giam gia
+
+[33mcommit a0ff6dd87e853cc98f951afd5db31e5ae69eb799[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Tue Oct 15 23:05:38 2024 +0700
+
+    update giao dien san pham
+
+[33mcommit 55cf8181d36f11b8ca103fe7351906d9ac4ba8b4[m
+Author: long07122004 <longhvph35733@fpt.edu.vn>
+Date:   Tue Oct 15 23:04:31 2024 +0700
+
+    tai quay
+
+[33mcommit 4fdf9a4cef70c4545ce1a292e859d745bc0ee9d3[m
+Author: thuat35729 <149344062+thuat35729@users.noreply.github.com>
+Date:   Tue Oct 15 22:28:51 2024 +0700
+
+    thong ke
+
+[33mcommit 2f5532ab33dcbbf9b5d4cbc1e234cc3b87706582[m
+Author: thuat35729 <149344062+thuat35729@users.noreply.github.com>
+Date:   Mon Oct 14 20:33:41 2024 +0700
+
+    fix Menu
+
+[33mcommit b3a188152d9ff8a20ab14f9ce37519b2e5c8b23f[m
+Author: huytan04 <huytanahihi@gmail.com>
+Date:   Mon Oct 14 10:08:10 2024 +0700
+
+    done giao dien phieu giam gia
+
+[33mcommit c371f9995cfb39623a65fc037b6e8ced72133e42[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Sat Oct 12 23:51:31 2024 +0700
+
+    done giao dien thuoc tinh Sp
+
+[33mcommit 5a48b6a5bbf42cd3e48543cd7f285d355d8456a4[m
+Author: BatChatillon25t <gschwerer03@gmail.com>
+Date:   Sat Oct 12 02:29:34 2024 +0700
+
+    sua giao dien nhan vien
+
+[33mcommit e7c8cb5352ce3b6c44f9a310b881f2c253e6fe9b[m
+Author: BatChatillon25t <gschwerer03@gmail.com>
+Date:   Sat Oct 12 02:26:21 2024 +0700
+
+    giao dien nhan vien
+
+[33mcommit b742c13819818d9fb9e662e2a3f454dd942bf123[m
+Merge: df4ea47 e89ee16
+Author: thuat35729 <149344062+thuat35729@users.noreply.github.com>
+Date:   Sat Oct 12 00:19:25 2024 +0700
+
+    giao dien hoa don
+
+[33mcommit 09fae8b48426281eb8ec209525ab99a9cef995f2[m
+Author: trancongluc <trancongluc9zx@gmail.com>
+Date:   Sat Oct 12 00:06:56 2024 +0700
+
+    aaa
