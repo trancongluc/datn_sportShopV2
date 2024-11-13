@@ -2,7 +2,8 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{Menu}">
+      layout:decorate="~{Menu}"
+>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -215,6 +216,27 @@
                     <th>Hành động</th>
                 </tr>
                 </thead>
+<!--                <tbody>-->
+<!--                <tr th:each="vc, iterStat : ${listVC}">-->
+<!--                    <td th:text="${iterStat.index + 1}"></td> &lt;!&ndash; STT &ndash;&gt;-->
+<!--                    <td th:text="${vc.voucher_code}"></td> &lt;!&ndash; ma &ndash;&gt;-->
+<!--                    <td th:text="${vc.name}"></td> &lt;!&ndash; ten dot giam gia &ndash;&gt;-->
+<!--                    <td th:text="${vc.minimum_value}"></td> &lt;!&ndash; gia tri giam toi thieu &ndash;&gt;-->
+<!--                    <td th:text="${vc.start_date}"></td> &lt;!&ndash; ngay bat dau &ndash;&gt;-->
+<!--                    <td th:text="${vc.end_date}"></td> &lt;!&ndash; ngay ket thuc &ndash;&gt;-->
+<!--                    <td th:text="${vc.end_date}"></td> &lt;!&ndash; ngay cap nhat &ndash;&gt;-->
+<!--                    <td>-->
+<!--                        <span class="status-label" th:text="${vc.status}"></span> &lt;!&ndash; trang thai &ndash;&gt;-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <button class="icon">✏️</button>-->
+<!--                        <button class="icon">🗑️</button>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                </tbody>-->
+
+
+
                 <tbody>
                 <tr>
                     <td>1</td>

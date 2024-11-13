@@ -7,17 +7,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <title>Thêm Giảm Giá</title>
     <style>
         body {
-            background-color: #f5f5f5;
-            height: 100vh;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
         }
         .container {
             max-width: 1200px;
@@ -225,7 +223,7 @@
                     <div class="form-column">
                         <div class="form-group">
                             <label for="ten-phieu">Tên Phiếu</label>
-                            <input type="text" id="ten-phieu" placeholder="Giảm 10K" oninput="updatePreview()">
+                            <input type="text" id="ten-phieu" th:field="*{phieuGiamGia.name}" placeholder="Giảm 10K" oninput="updatePreview()">
                         </div>
                         <div class="form-group">
                             <label for="gia-tri-don-hang">Giá Trị Đơn Hàng</label>
@@ -234,11 +232,11 @@
                         </div>
                         <div class="form-group">
                             <label for="ngay-bat-dau">Ngày Bắt Đầu</label>
-                            <input type="date" id="ngay-bat-dau" oninput="updatePreview()">
+                            <input type="date" id="ngay-bat-dau" th:field="*{phieuGiamGia.startDate}" oninput="updatePreview()">
                         </div>
                         <div class="form-group">
                             <label for="so-luong">Số Lượng</label>
-                            <input type="number" id="so-luong" placeholder="Số lượng phiếu..." oninput="updatePreview()">
+                            <input type="number" id="so-luong" th:field="*{phieuGiamGia.quantity}" placeholder="Số lượng phiếu..." oninput="updatePreview()">
                         </div>
                         <div class="form-group">
                             <label for="mo-ta">Mô Tả (Optional)</label>
@@ -248,8 +246,9 @@
                     <div class="form-column">
                         <div class="form-group">
                             <label for="loai-phieu">Loại Phiếu</label>
-                            <select id="loai-phieu" oninput="updatePreview()">
-                                <option>Phần Trăm</option>
+                            <select id="loai-phieu" th:field="*{phieuGiamGia.formVouucher}" oninput="updatePreview()">
+                                <option>Percentage</option>
+                                <option>Fixed</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -259,7 +258,7 @@
                         </div>
                         <div class="form-group">
                             <label for="ngay-ket-thuc">Ngày Kết Thúc</label>
-                            <input type="date" id="ngay-ket-thuc" oninput="updatePreview()">
+                            <input type="date" id="ngay-ket-thuc" th:field="*{phieuGiamGia.endDate}" oninput="updatePreview()">
                         </div>
                         <div class="form-group">
                             <label for="giam-toi-da">Giảm Tối Đa</label>
@@ -296,7 +295,7 @@
             </div>
         </div>
     </div>
-    <button class="save-button">Lưu</button>
+    <button th:action="@{/giam-gia/save}" type="submit" class="save-button">Lưu</button>
 </div>
 </main>
 </body>

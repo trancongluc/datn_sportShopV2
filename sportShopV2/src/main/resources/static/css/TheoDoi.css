@@ -1,0 +1,23 @@
+
+
+.container {
+    width: 100%;        /* Chiếm 100% không gian màn hình */
+    margin: 0 auto;     /* Căn giữa trang */
+    padding: 0 10px;    /* Giữ khoảng cách 10px từ hai bên để nội dung không sát mép */
+    max-width: none;
+}
+.txt {
+    background-color: #00CCFF;
+    font-weight: bold;
+    padding-left: 10px;
+    color: white;
+    border-radius: 5px;
+}
+
+h1 {
+    text-align: left;
+    margin-bottom: 20px;
+}
+.down{
+    margin-top: 5px;
+}
