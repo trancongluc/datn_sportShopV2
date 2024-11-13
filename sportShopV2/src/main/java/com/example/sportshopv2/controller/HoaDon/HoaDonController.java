@@ -1,6 +1,6 @@
 package com.example.sportshopv2.controller.HoaDon;
 
-import com.example.sportshopv2.Entity.HoaDon;
+import com.example.sportshopv2.model.HoaDon;
 import com.itextpdf.text.pdf.BaseFont;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,7 +15,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.context.WebContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -26,9 +25,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.example.sportshopv2.Entity.HoaDonChiTiet;
-import com.example.sportshopv2.Repository.HoaDonChiTietRepo;
-import com.example.sportshopv2.Repository.HoaDonRepo;
+import com.example.sportshopv2.model.HoaDonChiTiet;
+import com.example.sportshopv2.repository.HoaDonChiTietRepo;
+import com.example.sportshopv2.repository.HoaDonRepo;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

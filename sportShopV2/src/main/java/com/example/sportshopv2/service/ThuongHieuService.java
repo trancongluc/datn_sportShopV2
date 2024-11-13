@@ -1,8 +1,6 @@
 package com.example.sportshopv2.service;
 
-import com.example.sportshopv2.Repository.ChatLieuRepository;
-import com.example.sportshopv2.Repository.ThuongHieuRepository;
-import com.example.sportshopv2.model.ChatLieu;
+import com.example.sportshopv2.repository.ThuongHieuRepository;
 import com.example.sportshopv2.model.ThuongHieu;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

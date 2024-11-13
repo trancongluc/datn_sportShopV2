@@ -1,4 +1,4 @@
-package com.example.sportshopv2.Entity;
+package com.example.sportshopv2.model;
 
 import com.example.sportshopv2.model.SanPham;
 import jakarta.persistence.*;

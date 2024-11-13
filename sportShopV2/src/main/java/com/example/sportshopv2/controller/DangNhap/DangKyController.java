@@ -1,9 +1,9 @@
 package com.example.sportshopv2.controller.DangNhap;
 
-import com.example.sportshopv2.Entity.NguoiDung;
-import com.example.sportshopv2.Entity.TaiKhoan;
-import com.example.sportshopv2.Repository.NguoiDungRepo;
-import com.example.sportshopv2.Repository.TaiKhoanRepo;
+import com.example.sportshopv2.model.NguoiDung;
+import com.example.sportshopv2.model.TaiKhoan;
+import com.example.sportshopv2.repository.NguoiDungRepo;
+import com.example.sportshopv2.repository.TaiKhoanRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
