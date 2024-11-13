@@ -1,7 +1,7 @@
 package com.example.sportshopv2.controller.SanPham;
 
 import com.example.sportshopv2.dto.SanPhamChiTietDTO;
-import com.example.sportshopv2.entity.SanPhamChiTiet;
+import com.example.sportshopv2.model.SanPhamChiTiet;
 import com.example.sportshopv2.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -1,7 +1,7 @@
 package com.example.sportshopv2.service;
 
 import com.example.sportshopv2.repository.ChatLieuRepository;
-import com.example.sportshopv2.entity.ChatLieu;
+import com.example.sportshopv2.model.ChatLieu;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

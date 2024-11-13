@@ -1,7 +1,7 @@
 package com.example.sportshopv2.service;
 
 import com.example.sportshopv2.repository.MauSacRepository;
-import com.example.sportshopv2.entity.MauSac;
+import com.example.sportshopv2.model.MauSac;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

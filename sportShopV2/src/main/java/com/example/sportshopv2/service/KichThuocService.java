@@ -1,7 +1,7 @@
 package com.example.sportshopv2.service;
 
 import com.example.sportshopv2.repository.KichThuocRepository;
-import com.example.sportshopv2.entity.KichThuoc;
+import com.example.sportshopv2.model.KichThuoc;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
