@@ -243,11 +243,9 @@ public class khachhangController {
     }
 
 
-<<<<<<< HEAD:src/main/java/com/example/sportshopv2/controller/KhachHang/khachhangController.java
+
 
 }
 
 
-=======
 }
->>>>>>> 92e16810530bba1d74b97a96da12a6e6c8ed6253:sportShopV2/src/main/java/com/example/sportshopv2/controller/KhachHang/khachhangController.java
