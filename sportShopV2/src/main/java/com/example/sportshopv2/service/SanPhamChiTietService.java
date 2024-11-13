@@ -1,6 +1,6 @@
 package com.example.sportshopv2.service;
 
-import com.example.sportshopv2.repository.*;
+import com.example.sportshopv2.Repository.*;
 import com.example.sportshopv2.dto.SanPhamChiTietDTO;
 import com.example.sportshopv2.model.SanPhamChiTiet;
 import lombok.RequiredArgsConstructor;

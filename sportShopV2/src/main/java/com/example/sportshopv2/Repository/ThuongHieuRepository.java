@@ -1,4 +1,4 @@
-package com.example.sportshopv2.repository;
+package com.example.sportshopv2.Repository;
 
 import com.example.sportshopv2.model.ThuongHieu;
 import org.springframework.data.domain.Page;
