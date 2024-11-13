@@ -71,7 +71,7 @@ public class khachhangController {
 
     @PostMapping("/add-khach-hang")
     public String addKhachHang(
-                                @RequestParam("code") String code,
+
                                 @RequestParam("fullName") String fullName,
                                @RequestParam("phoneNumber") String phoneNumber,
                                @RequestParam("email") String email,
@@ -88,7 +88,6 @@ public class khachhangController {
 
 
         User khachHang = new User();
-        khachHang.setCode(code);
         khachHang.setFullName(fullName);
         khachHang.setPhoneNumber(phoneNumber);
         khachHang.setEmail(email);

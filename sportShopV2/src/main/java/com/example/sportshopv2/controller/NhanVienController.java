@@ -1,13 +1,15 @@
 package com.example.sportshopv2.controller;
 
-import com.example.sportshopv2.service.NhanVienService;
 import com.example.sportshopv2.model.Address;
 import com.example.sportshopv2.model.User;
 import com.example.sportshopv2.repository.NhanVienRepo;
+import com.example.sportshopv2.service.NhanVienService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +30,7 @@ public class NhanVienController {
 
     String password = "";
 
-    @GetMapping("")
+    @GetMapping("/list")
     public String GetAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
@@ -55,7 +57,7 @@ public class NhanVienController {
 
 
     @GetMapping("/them-nhan-vien")
-    public String getinterface(Model model) {
+    public String getinterface(Model model, String matKhau) {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
         int length = 10;
 
@@ -66,7 +68,9 @@ public class NhanVienController {
             char randomChar = characters.charAt(index);
             password += randomChar;
         }
-        model.addAttribute("pass", password);
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        matKhau = ("{bcrypt}" + encoder.encode(password));
+        model.addAttribute("pass", matKhau);
         return "NhanVien/nhan-vien-add";
     }
 
@@ -117,13 +121,13 @@ public class NhanVienController {
 
 
 // Chuyển hướng đến trang hiển thị sau khi thêm
-        return "redirect:/quan-ly-nhan-vien";
+        return "redirect:/nhanvien/list";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteEmp(@PathVariable("id") Integer id) {
         sv.deleteEmpById(id); // Call the service to delete the customer
-        return "redirect:/quan-ly-nhan-vien"; // Redirect to the display page after deletion
+        return "redirect:/NhanVien/QL-nhan-vien"; // Redirect to the display page after deletion
     }
 
     //
