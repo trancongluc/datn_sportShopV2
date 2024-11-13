@@ -1,6 +1,6 @@
 package com.example.sportshopv2.service;
 
-import com.example.sportshopv2.Repository.AnhSanPhamRepository;
+import com.example.sportshopv2.repository.AnhSanPhamRepository;
 import com.example.sportshopv2.model.AnhSanPham;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

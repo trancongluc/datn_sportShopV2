@@ -1,6 +1,6 @@
 package com.example.sportshopv2.service;
 
-import com.example.sportshopv2.Repository.SanPhamRepository;
+import com.example.sportshopv2.repository.SanPhamRepository;
 import com.example.sportshopv2.model.SanPham;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

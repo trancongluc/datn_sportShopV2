@@ -1,12 +1,12 @@
 package com.example.sportshopv2.controller.KhachHang;
 
-import com.example.sportshopv2.Repository.AddressRepository;
-import com.example.sportshopv2.Repository.KhachHangRepository;
+import com.example.sportshopv2.repository.AddressRepository;
+import com.example.sportshopv2.repository.KhachHangRepository;
 import com.example.sportshopv2.service.AddressService;
 import com.example.sportshopv2.service.KhachhangService;
-import com.example.sportshopv2.entity.Address;
+import com.example.sportshopv2.model.Address;
 
-import com.example.sportshopv2.entity.User;
+import com.example.sportshopv2.model.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

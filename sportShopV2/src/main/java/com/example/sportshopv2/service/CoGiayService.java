@@ -1,6 +1,6 @@
 package com.example.sportshopv2.service;
 
-import com.example.sportshopv2.Repository.CoGiayRepository;
+import com.example.sportshopv2.repository.CoGiayRepository;
 import com.example.sportshopv2.model.CoGiay;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
