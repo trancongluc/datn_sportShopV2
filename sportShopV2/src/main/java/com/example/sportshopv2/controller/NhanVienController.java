@@ -89,6 +89,7 @@ public class NhanVienController {
 
         sv.mailSend(email, username, password);
         User nvi = new User();
+        nvi.setCode("NV");
         nvi.setFullName(fullName);
         nvi.setPhoneNumber(phoneNumber);
         nvi.setEmail(email);
@@ -102,9 +103,9 @@ public class NhanVienController {
         address.setPhuong(phuong);
         address.setLine(line);
         // Thiết lập các thông tin ID nếu cần
-        // address.setProvince_id(...);
-        // address.setDistrict_id(...);
-        // address.setWard_id(...);
+        address.setProvince_id(1);
+        address.setDistrict_id(2);
+        address.setWard_id(3);
 
         nvi.addAddress(address); // Thêm địa chỉ vào khách hàng
         try {
@@ -126,7 +127,7 @@ public class NhanVienController {
     }
 
     //
-    @GetMapping("/emp/detail/{id}")
+    @GetMapping("/detail/{id}")
     public String viewDetails(@PathVariable("id") Integer id, Model model) {
         User emp = sv.getEmpById(id); // Add this method to UserService
         model.addAttribute("employ", emp);
@@ -134,8 +135,16 @@ public class NhanVienController {
         return "NhanVien/detail"; // Create a new Thymeleaf template for details
     }
 
+    @GetMapping("/order_history/{id}")
+    public String viewHistory(@PathVariable("id") Integer id, Model model) {
+        User emp = sv.getEmpById(id); // Add this method to UserService
+        model.addAttribute("employ", emp);
+
+        return "NhanVien/order_history"; // Create a new Thymeleaf template for details
+    }
+
     //
-    @PostMapping("/emp/update/{id}")
+    @PostMapping("/update/{id}")
     public String updateCustomer(@PathVariable("id") Integer id,
                                  @RequestParam("fullName") String fullName,
                                  @RequestParam("phoneNumber") String phoneNumber,
