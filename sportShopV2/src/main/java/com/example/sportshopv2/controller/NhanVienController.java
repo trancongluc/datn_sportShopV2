@@ -29,6 +29,7 @@ public class NhanVienController {
 
 
     String password = "";
+    String sendPassword ="";
 
     @GetMapping("/list")
     public String GetAll(
@@ -68,6 +69,7 @@ public class NhanVienController {
             char randomChar = characters.charAt(index);
             password += randomChar;
         }
+        sendPassword = password;
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         matKhau = ("{bcrypt}" + encoder.encode(password));
         model.addAttribute("pass", matKhau);
@@ -91,7 +93,7 @@ public class NhanVienController {
                       @RequestParam("role") String role,
                       Model model) {
 
-        sv.mailSend(email, username, password);
+        sv.mailSend(email, username, sendPassword);
         User nvi = new User();
         nvi.setCode("NV");
         nvi.setFullName(fullName);
