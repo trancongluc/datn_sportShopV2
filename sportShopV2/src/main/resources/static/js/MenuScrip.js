@@ -102,4 +102,19 @@ function showContent(itemId) {
         contentSection.style.display = 'block';
     }
 }
-
+function showTab(event, tabId) {
+    event.preventDefault();
+    var tabContents = document.querySelectorAll('.tab-content');
+    tabContents.forEach(function(content) {
+        content.classList.remove('active');
+    });
+    var tabLinks = document.querySelectorAll('.nav-link');
+    tabLinks.forEach(function(link) {
+        link.classList.remove('active');
+    });
+    var selectedTab = document.getElementById(tabId);
+    if (selectedTab) {
+        selectedTab.classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+}

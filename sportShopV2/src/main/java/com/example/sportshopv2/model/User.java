@@ -6,9 +6,10 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-<<<<<<< HEAD:src/main/java/com/example/sportshopv2/entity/User.java
+
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+
 
 
 @NoArgsConstructor
