@@ -2,7 +2,9 @@ package com.example.sportshopv2.sercurity;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -30,11 +32,12 @@ public class PhanQuyen {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/khach-hang/**", "/san-pham", "/san-pham/**", "/san-pham-chi-tiet/**",
-                                "/san-pham-chi-tiet", "/anh-san-pham/**","/the-loai/**",
+                                "/san-pham-chi-tiet", "/anh-san-pham/**", "/the-loai/**",
                                 "/nhanvien/**", "/bill/**", "/ban-hang-tai-quay/**").hasAuthority("Admin")
                         .requestMatchers("/bill/**", "/buy/**").hasAuthority("Staff")
                         .requestMatchers("/buy/**").hasAuthority("Employee")
-                        .requestMatchers("/login/**","/the-loai/**").permitAll()
+                        .requestMatchers("/login/**").permitAll()
+                        /*.requestMatchers(HttpMethod.POST, "/chat-lieu/**").permitAll()*/
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -46,7 +49,7 @@ public class PhanQuyen {
                             if ("Admin".equals(role) || "Staff".equals(role)) {
                                 targetUrl = "/ban-hang-tai-quay";
                             } else {
-                                targetUrl = "/mua-sam";
+                                targetUrl = "/ban-hang/mua-sam";
                             }
                             response.sendRedirect(targetUrl);
                         })
@@ -56,4 +59,23 @@ public class PhanQuyen {
                 .exceptionHandling(ex -> ex.accessDeniedPage("/login/access"));
         return httpSecurity.build();
     }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers(
+                "/chat-lieu/**",
+                "/the-loai/**",
+                "/san-pham/**",
+                "/san-pham-chi-tiet/**",
+                "/co-giay/**",
+                "/de-giay/**",
+                "/thuong-hieu/**",
+                "/mau-sac/**",
+                "/kich-thuoc/**",
+                "/anh-san-pham/**",
+                "/ban-hang-tai-quay/**"
+                // Thêm các endpoint khác cần bỏ qua
+        );
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.example.sportshopv2.repository;
 
+import com.example.sportshopv2.dto.UserKhachHangDto;
 import com.example.sportshopv2.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,14 +15,21 @@ import java.util.List;
 public interface KhachHangRepository extends JpaRepository<User, Integer> {
 
 
-
     @Query("SELECT u FROM User u JOIN u.account a LEFT JOIN FETCH u.addresses  WHERE  a.role = 'Customer' AND u.deleted = false")
     Page<User> findAllCustomers(Pageable pageable);
+
     @Query("SELECT u FROM User u JOIN u.account a LEFT JOIN FETCH u.addresses  WHERE  a.role = 'Customer' AND u.deleted = false")
     List<User> findAllKhachHang();
+
     @Query("SELECT u FROM User u JOIN u.account a LEFT JOIN FETCH u.addresses WHERE a.role = 'Customer' AND " +
             "(u.fullName LIKE %:keyword% OR u.phoneNumber LIKE %:keyword% OR u.email LIKE %:keyword%)")
     Page<User> searchCustomers(@Param("keyword") String keyword, Pageable pageable);
+
+    @Query("SELECT u "
+            + "FROM User u "
+            + "JOIN u.account a "
+            + "WHERE u.id = :userId AND a.role = 'Customer'")
+    User getKhachHangById(@Param("userId") Integer userId);
 
 
 }

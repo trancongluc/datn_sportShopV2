@@ -140,7 +140,11 @@ public class NhanVienController {
 
         return "NhanVien/detail"; // Create a new Thymeleaf template for details
     }
-
+    @GetMapping("/thong-tin-nv/{idNV}")
+    public User thongTinNV(@PathVariable("idNV") Integer id) {
+        User emp = sv.getEmpById(id); // Add this method to UserService
+        return emp; // Create a new Thymeleaf template for details
+    }
     @GetMapping("/order_history/{id}")
     public String viewHistory(@PathVariable("id") Integer id, Model model) {
         User emp = sv.getEmpById(id); // Add this method to UserService
