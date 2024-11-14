@@ -6,6 +6,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -73,7 +74,14 @@ private Account account;
     }
     @PrePersist // Được gọi trước khi thực thể được lưu vào cơ sở dữ liệu
     private void onCreate() {
+        if (this.getCode() == null || this.getCode().isEmpty()) {
+            this.setCode(generateUniqueCode());
+        }
         createdAt = new Date();
+    }
+
+    public String generateUniqueCode() {
+        return "KH" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
     @PreUpdate // Được gọi trước khi thực thể được cập nhật

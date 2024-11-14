@@ -84,8 +84,8 @@
                     <li class="sidebar-item">
                     <li class="sidebar-item">
 
-                    <a th:href="@{/khach-hang/list}" class="sidebar-link" data-id="10">
-                        Khách Hàng</a>
+                        <a th:href="@{/khach-hang/list}" class="sidebar-link" data-id="10">
+                            Khách Hàng</a>
                     </li>
                     <li class="sidebar-item">
                         <a th:href="@{/nhanvien}" class="sidebar-link" data-id="11">Nhân Viên</a>
@@ -173,6 +173,12 @@
                     <a href="" class="dropdown-item">
                         <i class="lni lni-question-circle"></i>
                         <span>Help</span>
+                    </a>
+                    <a href="" class="dropdown-item">
+                        <i class="lni lni-question-circle"></i>
+                        <form th:action="@{/logout}" method="post">
+                            <button type="submit">Log out</button>
+                        </form>
                     </a>
                 </div>
             </div>

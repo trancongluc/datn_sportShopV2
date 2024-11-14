@@ -1,4 +1,4 @@
-package com.example.sportshopv2.service;
+package com.example.sportshopv2.sercurity;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +29,9 @@ public class PhanQuyen {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/buy/**", "/product/**", "/staff/**", "/bill/**").hasAuthority("Admin")
+                        .requestMatchers("/khach-hang/**", "/san-pham", "/san-pham/**", "/san-pham-chi-tiet/**",
+                                "/san-pham-chi-tiet", "/anh-san-pham/**",
+                                "/nhanvien/**", "/bill/**", "/ban-hang-tai-quay/**").hasAuthority("Admin")
                         .requestMatchers("/bill/**", "/buy/**").hasAuthority("Staff")
                         .requestMatchers("/buy/**").hasAuthority("Employee")
                         .requestMatchers("/login/**").permitAll()
@@ -42,7 +44,7 @@ public class PhanQuyen {
                             String role = authentication.getAuthorities().iterator().next().getAuthority();
                             String targetUrl;
                             if ("Admin".equals(role) || "Staff".equals(role)) {
-                                targetUrl = "/home";
+                                targetUrl = "/ban-hang-tai-quay";
                             } else {
                                 targetUrl = "/buy";
                             }
