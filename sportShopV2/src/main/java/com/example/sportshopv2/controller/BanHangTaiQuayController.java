@@ -1,7 +1,7 @@
 package com.example.sportshopv2.controller;
 
 import com.example.sportshopv2.dto.SanPhamChiTietDTO;
-import com.example.sportshopv2.dto.UserKhachHangDto;
+import com.example.sportshopv2.dto.UserDTO;
 import com.example.sportshopv2.model.HoaDon;
 import com.example.sportshopv2.model.HoaDonChiTiet;
 import com.example.sportshopv2.model.User;
@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/ban-hang-tai-quay")
@@ -47,7 +48,7 @@ public class BanHangTaiQuayController {
 
     @GetMapping("/thong-tin-kh")
     @ResponseBody
-    public UserKhachHangDto getKhachHangById(@RequestParam Integer idKH) {
+    public UserDTO getKhachHangById(@RequestParam Integer idKH) {
         return khachhangService.getKHById(idKH);
     }
 
@@ -66,7 +67,9 @@ public class BanHangTaiQuayController {
 
     @PostMapping("/tao-hoa-don-chi-tiet")
     @ResponseBody
-    public HoaDonChiTiet createBillDetail(@RequestBody HoaDonChiTiet hdct) {
-        return hdctService.createHDCT(hdct);
+    public List<HoaDonChiTiet> createBillDetails(@RequestBody List<HoaDonChiTiet> hdctList) {
+        return hdctList.stream()
+                .map(hdctService::createHDCT) // Gọi dịch vụ để tạo từng chi tiết hóa đơn
+                .collect(Collectors.toList()); // Trả về danh sách các chi tiết hóa đơn đã tạo
     }
 }

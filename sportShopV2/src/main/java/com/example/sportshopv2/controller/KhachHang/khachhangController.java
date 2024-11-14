@@ -1,5 +1,6 @@
 package com.example.sportshopv2.controller.KhachHang;
 
+import com.example.sportshopv2.dto.UserDTO;
 import com.example.sportshopv2.model.Address;
 import com.example.sportshopv2.model.User;
 import com.example.sportshopv2.repository.AddressRepository;
@@ -131,9 +132,11 @@ public class khachhangController {
     }
 
     @GetMapping("/thong-tin-kh/{idKH}")
-    public User thongTinKH(@PathVariable("id") Integer id) {
-        User userKH = userService.getCustomerById(id); // Add this method to UserService
-        return userKH; // Create a new Thymeleaf template for details
+    @ResponseBody
+    public User thongTinKH(@PathVariable("idKH") Integer id) {
+        UserDTO userKHDTO =  userService.getKHById(id);
+        User user = User.of(userKHDTO);
+        return user;
     }
 
     @GetMapping("/customer/diachi/{id}")

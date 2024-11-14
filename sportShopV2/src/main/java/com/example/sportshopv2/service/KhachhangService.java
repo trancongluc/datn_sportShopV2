@@ -1,7 +1,7 @@
 package com.example.sportshopv2.service;
 
 
-import com.example.sportshopv2.dto.UserKhachHangDto;
+import com.example.sportshopv2.dto.UserDTO;
 import com.example.sportshopv2.model.Account;
 import com.example.sportshopv2.model.User;
 import com.example.sportshopv2.repository.AddressRepository;
@@ -83,15 +83,9 @@ public class KhachhangService {
         return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found")); // Handle user not found appropriately
     }
 
-    public UserKhachHangDto getKHById(Integer id) {
+    public UserDTO getKHById(Integer id) {
         User userKH = userRepository.getKhachHangById(id);
-        UserKhachHangDto khDTO = UserKhachHangDto.builder()
-                .code(userKH.getCode())
-                .email(userKH.getEmail())
-                .phoneNumber(userKH.getPhoneNumber())
-                .fullName(userKH.getFullName())
-                .id(userKH.getId())
-                .build();
+        UserDTO khDTO = User.toDTO(userKH);
         return khDTO;
     }
     public User getKHByIdThemHoaDon(Integer id) {

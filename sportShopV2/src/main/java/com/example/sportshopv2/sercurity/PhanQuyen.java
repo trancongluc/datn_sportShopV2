@@ -73,7 +73,13 @@ public class PhanQuyen {
                 "/mau-sac/**",
                 "/kich-thuoc/**",
                 "/anh-san-pham/**",
-                "/ban-hang-tai-quay/**"
+                "/ban-hang-tai-quay/**",
+                "/khach-hang/**",
+                "/nhanvien/**",
+                "/hoa-don/**",
+                "/hoa-don-chi-tiet/**",
+                "khach-hang/thong-tin-khach-hang/**"
+
                 // Thêm các endpoint khác cần bỏ qua
         );
     }

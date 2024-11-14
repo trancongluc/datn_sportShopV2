@@ -1,8 +1,8 @@
 package com.example.sportshopv2.service;
 
-import com.example.sportshopv2.repository.*;
 import com.example.sportshopv2.dto.SanPhamChiTietDTO;
 import com.example.sportshopv2.model.SanPhamChiTiet;
+import com.example.sportshopv2.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +35,11 @@ public class SanPhamChiTietService {
     public SanPhamChiTietDTO getByID(Integer idSPCT) {
         SanPhamChiTiet spct = sanPhamChiTietRepository.findByIdAndDeleted(idSPCT, false);
         return spct.toDTO(spct, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo);
+    }
+
+    public SanPhamChiTiet findSPCTById(Integer idSPCT) {
+        SanPhamChiTiet spct = sanPhamChiTietRepository.findByIdAndDeleted(idSPCT, false);
+        return spct;
     }
 
     public List<SanPhamChiTietDTO> getAllSPCT() {
