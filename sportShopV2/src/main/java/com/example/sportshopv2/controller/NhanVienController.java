@@ -1,5 +1,7 @@
 package com.example.sportshopv2.controller;
 
+import com.example.sportshopv2.dto.UserDTO;
+import com.example.sportshopv2.dto.UserNhanVienDTO;
 import com.example.sportshopv2.model.Address;
 import com.example.sportshopv2.model.User;
 import com.example.sportshopv2.repository.NhanVienRepo;
@@ -140,7 +142,13 @@ public class NhanVienController {
 
         return "NhanVien/detail"; // Create a new Thymeleaf template for details
     }
-
+    @GetMapping("/thong-tin-nv/{idNV}")
+    @ResponseBody
+    public User thongTinNV(@PathVariable("idNV") Integer id) {
+        UserNhanVienDTO userNVDTO =  sv.getNVById(id);
+        User user = User.of(userNVDTO);
+        return user;
+    }
     @GetMapping("/order_history/{id}")
     public String viewHistory(@PathVariable("id") Integer id, Model model) {
         User emp = sv.getEmpById(id); // Add this method to UserService

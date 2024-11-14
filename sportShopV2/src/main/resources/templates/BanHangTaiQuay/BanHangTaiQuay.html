@@ -123,59 +123,61 @@
                         <label for="customerDropdown" class="form-label mb-0">Khách Hàng:</label>
                         <button class="btn btn-outline-secondary btn-sm">+</button>
                     </div>
-                    <select class="form-select" id="customerDropdown" onchange="updateCustomerInfo(invoiceCount)">
-                        <option value="guest">Khách Lẻ</option>
-                        <option value="customer1">Nguyễn Văn A</option>
-                        <option value="customer2">Trần Thị B</option>
+                    <select id="customerDropdown" class="form-control" name="selectedCustomerId">
+                        <option value="all">Tất cả</option>
+                        <!-- Các khách hàng được lấy từ server -->
+                        <option th:each="kh : ${kh}"
+                                th:value="${kh.id}"
+                                th:text="${kh.fullName}">
+                        </option>
                     </select>
-                    <form class="mt-3">
+
+                    <div class="mt-3">
                         <div class="mb-2">
                             <label for="customerName">Họ Tên:</label>
-                            <input type="text" class="form-control" id="customerName"
-                                   onblur="updateCustomerInfo(invoiceCount)">
+                            <input type="text" class="form-control" id="customerName" readonly>
                         </div>
                         <div class="mb-2">
                             <label for="phone">SĐT:</label>
-                            <input type="text" class="form-control" id="phone"
-                                   onblur="updateCustomerInfo(invoiceCount)">
+                            <input type="text" class="form-control" id="phone" readonly>
                         </div>
                         <div class="mb-2">
                             <label for="email">Email:</label>
-                            <input type="email" class="form-control" id="email"
-                                   onblur="updateCustomerInfo(invoiceCount)">
+                            <input type="email" class="form-control" id="email" readonly>
                         </div>
                         <div class="mb-2">
                             <label for="customerCode">Mã KH:</label>
-                            <input type="text" class="form-control" id="customerCode"
-                                   onblur="updateCustomerInfo(invoiceCount)">
+                            <input type="text" class="form-control" id="customerCode" readonly>
                         </div>
-                        <div class="input-group mt-2">
-                            <input type="text" class="form-control" placeholder="Nhập mã">
-                            <button class="btn btn-primary">Áp Dụng</button>
-                        </div>
-                    </form>
+                    </div>
+                    <div class="input-group mt-2">
+                        <input type="text" class="form-control" placeholder="Nhập mã voucher">
+                        <button class="btn btn-primary">Áp Dụng</button>
+                    </div>
                 </div>
+
+
 
                 <!-- Summary and Total -->
                 <table class="table summary-table">
                     <tr>
                         <td>Tổng:</td>
-                        <td class="text-end">0đ</td>
+                        <td class="text-end" id="tongTien">0</td>
                     </tr>
                     <tr>
                         <td>Phí Ship:</td>
-                        <td class="text-end">Miễn Phí</td>
+                        <td class="text-end" id="ship">Miễn Phí</td>
                     </tr>
                     <tr>
                         <td>Giảm Giá:</td>
-                        <td class="text-end">0đ</td>
+                        <td class="text-end" id="giamGia">0</td>
                     </tr>
                     <tr>
                         <td>Thực Thu:</td>
-                        <td class="text-end">0đ</td>
+                        <td class="text-end" id="thucThu">0</td>
                     </tr>
                 </table>
-                <div class="total-btn">THANH TOÁN</div>
+                <div class="total-btn" onclick="addHoaDon()">THANH TOÁN</div>
             </div>
         </div>
     </div>

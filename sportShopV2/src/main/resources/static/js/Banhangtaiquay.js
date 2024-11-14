@@ -66,7 +66,7 @@ function selectTab(invoiceNumber) {
     document.getElementById('customerCode').value = customer.code || '';
 }
 
-function updateCustomerInfo(invoiceNumber) {
+/*function updateCustomerInfo(invoiceNumber) {
     const customerName = document.getElementById('customerName').value;
     const phone = document.getElementById('phone').value;
     const email = document.getElementById('email').value;
@@ -78,7 +78,7 @@ function updateCustomerInfo(invoiceNumber) {
         email: email,
         code: customerCode
     };
-}
+}*/
 
 function updateDeliveryOption(invoiceNumber) {
     const deliveryOptions = document.querySelectorAll('input[name="deliveryOption"]:checked');
@@ -159,6 +159,7 @@ function removeTab(element, event) {
         document.getElementById('productList').textContent = "Chưa có dữ liệu.";
     }
 }
+
 function showToast(message) {
     const toast = document.getElementById('toast');
     const toastMessage = document.getElementById('toast-message');
@@ -229,21 +230,30 @@ inputField.addEventListener('input', function () {
     }
 });
 
-function formatCurrency(value) {
-    return new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND',
-    }).format(value);
+let tongTien = 0;
+let phiShip = 0; // Biến để lưu phí ship
+let giamGia = 0;
+
+// Hàm để cập nhật tổng tiền
+function updateTotal() {
+    const totalCell = document.getElementById('tongTien');
+    totalCell.textContent = formatCurrency(tongTien); // Định dạng và cập nhật tổng tiền
+    updateThucThu();
 }
 
+function updateThucThu() {
+    const thucThuCell = document.getElementById('thucThu');
+
+    thucThuCell.textContent = formatCurrency(tongTien);
+}
+
+let selectedProductIds = [];
 // Thêm sự kiện click cho từng hàng sản phẩm
 for (let i = 0; i < productRows.length; i++) {
     productRows[i].addEventListener('click', function () {
-        // Lấy ID sản phẩm từ thuộc tính data-id
         const productId = productRows[i].getAttribute('data-id');
-        console.log("Product ID:", productId); // Kiểm tra xem ID có được lấy không
+        console.log("Product ID:", productId);
 
-        // Gọi API để lấy thông tin sản phẩm chi tiết
         fetch(`ban-hang-tai-quay/spct/${productId}`)
             .then(response => {
                 if (!response.ok) {
@@ -252,26 +262,20 @@ for (let i = 0; i < productRows.length; i++) {
                 return response.json();
             })
             .then(spctDTO => {
-                // Tạo một hàng mới để thêm vào bảng đã chọn
                 const selectedProduct = document.createElement('tr');
-
-                // Thêm các ô vào hàng mới
+                selectedProduct.setAttribute('data-id', spctDTO.id);
+                // Tạo ô hình ảnh
                 const imageCell = document.createElement('td');
-                const imagesDiv = document.createElement('div'); // Div để chứa hình ảnh
-
-                // Kiểm tra nếu listAnh tồn tại và không rỗng
+                const imagesDiv = document.createElement('div');
                 if (Array.isArray(spctDTO.anhSanPham) && spctDTO.anhSanPham.length > 0) {
                     const imgElement = document.createElement('img');
-                    imgElement.src = `/images/${spctDTO.anhSanPham[0].tenAnh}`; // Lấy hình ảnh đầu tiên
+                    imgElement.src = `/images/${spctDTO.anhSanPham[0].tenAnh}`;
                     imgElement.alt = `Hình sản phẩm ${spctDTO.id}`;
                     imgElement.style.width = '50px';
-                    imgElement.style.height = 'auto';
-                    imagesDiv.appendChild(imgElement);
+                    imageCell.appendChild(imgElement);
                 } else {
                     imagesDiv.textContent = 'Không có hình ảnh';
                 }
-
-                imageCell.appendChild(imagesDiv); // Thêm div chứa hình ảnh vào ô
                 selectedProduct.appendChild(imageCell);
 
                 const nameCell = document.createElement('td');
@@ -305,55 +309,86 @@ for (let i = 0; i < productRows.length; i++) {
 // Thêm ô tên sản phẩm vào hàng
                 selectedProduct.appendChild(nameCell);
 
+                // Tạo ô giá
                 const priceCell = document.createElement('td');
-                priceCell.textContent = formatCurrency(spctDTO.gia); // Định dạng giá
+                const giaSP = spctDTO.gia; // Lưu giá sản phẩm để tính tổng
+                priceCell.textContent = formatCurrency(giaSP);
                 selectedProduct.appendChild(priceCell);
-//Số lượng
+
+                // Tạo ô số lượng
                 const quantityCell = document.createElement('td');
                 const quantityInput = document.createElement('input');
-                let availableQuantity = spctDTO.soLuong;
-                quantityInput.type = 'number'; // Đặt loại là number để chỉ cho phép nhập số
-                quantityInput.value = 1; // Khởi tạo với giá trị 1
-                quantityInput.min = 1; // Đặt giá trị tối thiểu là 1
-                quantityInput.style.width = '60px'; // Đặt chiều rộng cho input
-                quantityCell.appendChild(quantityInput); // Thêm input vào ô
+                quantityInput.type = 'number';
+                quantityInput.value = 1;
+                quantityInput.min = 1;
+                quantityInput.style.width = '60px';
+                quantityCell.appendChild(quantityInput);
                 selectedProduct.appendChild(quantityCell);
+
+                // Cập nhật tổng tiền khi số lượng thay đổi
                 quantityInput.addEventListener('input', function () {
                     const inputQuantity = parseInt(quantityInput.value, 10);
-                    if (quantityInput.value < 1) {
-                        quantityInput.value = 1; // Đặt lại giá trị về 1 nếu người dùng nhập số âm hoặc 0
-                    } else if (inputQuantity > availableQuantity) {
-                        // Hiển thị thông báo nếu số lượng nhập vào lớn hơn số lượng có sẵn
-                        showToast("Số lượng nhập vào vượt quá số lượng có sẵn!");
+                    if (inputQuantity < 1) {
+                        quantityInput.value = 1;
                     }
+                    const currentTotal = giaSP * inputQuantity; // Tính tổng cho sản phẩm hiện tại
+                    tongTien = calculateTotal(); // Tính tổng tiền từ tất cả sản phẩm
+                    updateTotal(); // Cập nhật hiển thị tổng tiền
                 });
 
+                // Tạo ô xóa sản phẩm
                 const deleteCell = document.createElement('td');
                 const deleteIcon = document.createElement('i');
                 deleteIcon.className = 'fas fa-trash-alt';
-                deleteIcon.style.cursor = 'pointer'; // Thay đổi con trỏ chuột khi hover vào icon
+                deleteIcon.style.cursor = 'pointer';
                 deleteCell.appendChild(deleteIcon);
                 selectedProduct.appendChild(deleteCell);
 
-                // Thêm sự kiện click cho icon xóa
+                // Xóa sản phẩm
                 deleteIcon.addEventListener('click', function () {
-                    selectedProduct.remove(); // Xóa hàng sản phẩm khỏi bảng
-                    if (selectedProductsTable.querySelector('tbody').children.length === 0) {
-                        searchBar.classList.remove('expanded-search-bar'); // Xóa class mở rộng search-bar
-                    }
+                    selectedProduct.remove();
+                    tongTien = calculateTotal(); // Tính lại tổng tiền sau khi xóa
+                    updateTotal(); // Cập nhật hiển thị tổng tiền
                 });
+
                 // Thêm hàng sản phẩm vào bảng đã chọn
                 selectedProductsTable.querySelector('tbody').appendChild(selectedProduct);
-                productList.style.display = 'none';
-                inputField.value = ''; // Xóa giá trị ô tìm kiếm
-
-                // Thêm class "expanded-search-bar" để mở rộng search-bar
-                searchBar.classList.add('expanded-search-bar');
+                selectedProductIds.push(spctDTO.id);
+                tongTien += giaSP; // Cập nhật tổng tiền khi thêm sản phẩm
+                updateTotal(); // Cập nhật hiển thị tổng tiền
             })
             .catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
             });
     });
+}
+
+// Hàm tính tổng tiền từ tất cả các sản phẩm trong bảng
+const productQuantities = {};
+function calculateTotal() {
+    let total = 0;
+    const rows = selectedProductsTable.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        const quantityInput = row.querySelector('input[type="number"]');
+        const priceCell = row.querySelector('td:nth-child(3)'); // Giả sử giá là ô thứ 3
+        const price = parseCurrency(priceCell.textContent); // Chuyển đổi giá trị về số
+        const quantity = parseInt(quantityInput.value);
+        const productId = row.dataset.productId; // Giả sử mỗi hàng có thuộc tính data-product-id
+        productQuantities[productId] = quantity;
+        total += price * quantity; // Tính tổng
+    });
+    return total;
+}
+
+// Hàm định dạng giá
+function formatCurrency(value) {
+    return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(value);
+}
+
+// Hàm phân tích giá trị tiền tệ về số
+function parseCurrency(value) {
+    // Bỏ dấu phẩy (,) và chuyển đổi sang số
+    return parseFloat(value.replace(/\./g, '').replace(/[^0-9.-]+/g, ""));
 }
 
 // Xóa class "expanded-search-bar" khi không còn sản phẩm nào được chọn
@@ -362,6 +397,160 @@ selectedProductsTable.querySelector('tbody').addEventListener('DOMSubtreeModifie
         searchBar.classList.remove('expanded-search-bar');
     }
 });
+let idKH;
+//Chon khach hang trong cbo đổ dữ liệu vào các input
+document.getElementById("customerDropdown").addEventListener("change", function () {
+    var selectedCustomerId = this.value;
+    idKH = selectedCustomerId;
+    if (selectedCustomerId !== "all") {
+        fetch("/ban-hang-tai-quay/thong-tin-kh?idKH=" + selectedCustomerId)
+            .then(response => response.json())
+            .then(data => {
+                // Kiểm tra JSON trả về
+                console.log(data); // In ra console để kiểm tra
+                // Cập nhật các trường với thông tin khách hàng
+                document.getElementById("customerName").value = data.fullName || "";
+                document.getElementById("phone").value = data.phoneNumber || "";
+                document.getElementById("email").value = data.email || "";
+                document.getElementById("customerCode").value = data.code || "";
+            })
+            .catch(error => console.error("Error fetching customer data:", error));
+    } else {
+        // Nếu chọn "Tất cả", xóa thông tin khách hàng
+        document.getElementById("customerName").value = "";
+        document.getElementById("phone").value = "";
+        document.getElementById("email").value = "";
+        document.getElementById("customerCode").value = "";
+    }
+});
+
+function addHoaDon() {
+    /*event.preventDefault(); */// Ngăn chặn hành động gửi mặc định
+
+    const idNV = 1; // ID nhân viên (có thể lấy từ một ô input nếu cần)
+    const fullName = document.getElementById('customerName').value;
+    const sdt = document.getElementById('phone').value;
+    const email = document.getElementById('email').value;
+    const phiShip = 0; // Thay đổi theo cách tính phí ship
+    const giamGia = 0; // Thay đổi theo cách tính giảm giá
+    const status = "Hoàn Thành"; // Trạng thái mặc định
+    const date = new Date().toISOString(); // Lấy thời gian hiện tại
+    console.log("khachsachs hang:" +idKH)
+    // Gọi đến endpoint để lấy thông tin khách hàng
+    fetch(`/khach-hang/thong-tin-kh/${idKH}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Không thể lấy thông tin khách hàng: ' + response.statusText);
+            }
+            return response.json(); // Phân tích dữ liệu JSON
+        })
+        .then(userKH => {
+            // Gọi đến endpoint để lấy thông tin nhân viên
+            return fetch(`/nhanvien/thong-tin-nv/${idNV}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Không thể lấy thông tin nhân viên: ' + response.statusText);
+                    }
+                    return response.json(); // Phân tích dữ liệu JSON
+                })
+                .then(emp => {
+                    // Tạo đối tượng hóa đơn
+                    const hoaDon = {
+                        user_name: fullName || userKH.name, // Sử dụng tên khách hàng nếu không có
+                        phone_number: sdt || userKH.phone, // Sử dụng số điện thoại nếu không có
+                        total_money: tongTien,
+                        money_reduced: giamGia,
+                        status: status,
+                        email: email, // Sử dụng email nếu không có
+                        money_ship: phiShip,
+                        bill_code: `HD-${Date.now()}`, // Mã hóa đơn
+                        transaction_date: date,
+                        create_at: date,
+                        create_by: idNV, // ID nhân viên (người tạo hóa đơn)
+                        id_account: userKH, // Đối tượng khách hàng
+                        id_staff: emp // Đối tượng nhân viên
+                    };
+
+                    // Gửi yêu cầu tạo hóa đơn
+                    return fetch('ban-hang-tai-quay/tao-hoa-don', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(hoaDon) // Gửi đối tượng hóa đơn
+                    });
+                });
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json(); // Phân tích JSON nếu thành công
+            } else {
+                throw new Error('Error adding bill: ' + response.statusText);
+            }
+        })
+        .then(data => {
+            const hoaDonChiTietPromises = selectedProductIds.map(productId => {
+                const quantity = productQuantities[productId] || 1;
+                return fetch(`san-pham-chi-tiet/thong-tin-spct/${productId}`)
+                    .then(response => {
+                        // Kiểm tra phản hồi từ server
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok: ' + response.statusText);
+                        }
+                        return response.json();
+                    })
+                    .then(productDetails => {
+                        // Kiểm tra xem productDetails có giá không
+                        if (!productDetails || !productDetails.price) {
+                            console.error(`Không tìm thấy giá cho sản phẩm ID: ${productId}`);
+                            return null; // Có thể trả về null hoặc một đối tượng mặc định
+                        }
+                        console.log("Giá SPCT: " + productDetails.price);
+                        return {
+                            quantity: quantity,
+                            hoaDon: data,
+                            sanPhamChiTiet: productDetails,
+                            price: productDetails.price,
+                            create_at: new Date().toISOString(),
+                            create_by: idNV
+                        };
+                    });
+            });
+
+            // Chờ tất cả các yêu cầu lấy thông tin sản phẩm hoàn tất
+            return Promise.all(hoaDonChiTietPromises);
+        })
+        .then(hoaDonChiTietList => {
+            // Chờ tất cả các yêu cầu lấy thông tin sản phẩm hoàn tất
+            return fetch('ban-hang-tai-quay/tao-hoa-don-chi-tiet', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(hoaDonChiTietList)
+            });
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json(); // Phân tích JSON nếu thành công
+            } else {
+                throw new Error('Error adding bill details: ' + response.statusText);
+            }
+        })
+        .then(data => {
+            console.log('Hóa đơn chi tiết đã được tạo:', data);
+            showNotification("Thêm hóa đơn và hóa đơn chi tiết thành công!"); // Thông báo thành công
+            document.getElementById('hoaDonForm').reset(); // Reset form
+            selectedProductIds = []; // Reset danh sách ID sản phẩm đã chọn
+            window.location.href = '/ban-hang-tai-quay';
+        })
+        .catch(error => {
+            console.error('Có lỗi:', error);
+            showNotification("Thêm hóa đơn thất bại!"); // Thông báo lỗi
+        });
+}
+
+
 
 
 
