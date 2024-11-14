@@ -29,8 +29,8 @@ public class PhanQuyen {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/khach-hang/**","/san-pham", "/san-pham/**","/san-pham-chi-tiet/**",
-                                "/san-pham-chi-tiet",
+                        .requestMatchers("/khach-hang/**", "/san-pham", "/san-pham/**", "/san-pham-chi-tiet/**",
+                                "/san-pham-chi-tiet", "/anh-san-pham/**",
                                 "/nhanvien/**", "/bill/**", "/ban-hang-tai-quay/**").hasAuthority("Admin")
                         .requestMatchers("/bill/**", "/buy/**").hasAuthority("Staff")
                         .requestMatchers("/buy/**").hasAuthority("Employee")
