@@ -11,8 +11,7 @@ function addTab(invoice) {
     // Tạo thẻ mới cho hóa đơn
     const newTab = document.createElement('div');
     newTab.classList.add('tab-item');
-    newTab.innerHTML = `Hóa Đơn ${invoice.id} - ${invoice.status} 
-        <span class="close-btn" onclick="removeTab(this, event)">&times;</span>`;
+    newTab.innerHTML = `Hóa Đơn ${invoice.id}`;
     newTab.setAttribute("onclick", `selectTab(${invoice.id})`);
 
     // Thêm thẻ mới vào DOM
@@ -405,77 +404,93 @@ document.getElementById("customerDropdown").addEventListener("change", function 
     }
 });
 
-function taoHoaDonCho() {
-    const idNV = 1; // ID nhân viên (có thể lấy từ một ô input nếu cần)
+async function taoHoaDonCho() {
+    const idNV = 1; // ID nhân viên
     const fullName = "Đang cập nhật";
     const sdt = null;
     const email = null;
     const tienBatDau = 0;
-    const phiShip = 0; // Thay đổi theo cách tính phí ship
-    const giamGia = 0; // Thay đổi theo cách tính giảm giá
+    const phiShip = 0;
+    const giamGia = 0;
     const status = "Hóa Đơn Chờ"; // Trạng thái mặc định
-    const date = new Date().toISOString(); // Lấy thời gian hiện tại
-    // Gọi đến endpoint để lấy thông tin khách hàng
-    fetch(`/khach-hang/thong-tin-kh/14`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Không thể lấy thông tin khách hàng: ' + response.statusText);
-            }
-            return response.json(); // Phân tích dữ liệu JSON
-        })
-        .then(userKH => {
-            // Gọi đến endpoint để lấy thông tin nhân viên
-            return fetch(`/nhanvien/thong-tin-nv/${idNV}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Không thể lấy thông tin nhân viên: ' + response.statusText);
-                    }
-                    return response.json(); // Phân tích dữ liệu JSON
-                })
-                .then(emp => {
-                    // Tạo đối tượng hóa đơn
-                    const hoaDon = {
-                        user_name: fullName, // Sử dụng tên khách hàng nếu không có
-                        phone_number: sdt, // Sử dụng số điện thoại nếu không có
-                        total_money: tienBatDau,
-                        money_reduced: giamGia,
-                        status: status,
-                        email: email, // Sử dụng email nếu không có
-                        money_ship: phiShip,
-                        bill_code: `HD-${Date.now()}`, // Mã hóa đơn
-                        transaction_date: date,
-                        type: "Tại Quầy",
-                        create_at: date,
-                        create_by: idNV, // ID nhân viên (người tạo hóa đơn)
-                        id_account: userKH, // Đối tượng khách hàng
-                        id_staff: emp // Đối tượng nhân viên
-                    };
+    const date = new Date().toISOString();
 
-                    // Gửi yêu cầu tạo hóa đơn
-                    return fetch('ban-hang-tai-quay/tao-hoa-don', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(hoaDon) // Gửi đối tượng hóa đơn
-                    });
-                });
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json(); // Phân tích JSON nếu thành công
-            } else {
-                throw new Error('Error adding bill: ' + response.statusText);
-            }
-        })
-        .then(data => {
-            // Sau khi tạo hóa đơn thành công, gọi hàm addTab để tạo tab mới cho hóa đơn
-            addTab();  // Gọi hàm addTab để tạo tab mới
-        })
-        .catch(error => {
-            console.error('Error:', error);
+    try {
+        const userKH = await fetch(`/khach-hang/thong-tin-kh/14`).then(res => res.json());
+        const emp = await fetch(`/nhanvien/thong-tin-nv/${idNV}`).then(res => res.json());
+
+        const hoaDon = {
+            user_name: fullName,
+            phone_number: sdt,
+            total_money: tienBatDau,
+            money_reduced: giamGia,
+            status: status,
+            email: email,
+            money_ship: phiShip,
+            bill_code: `HD-${Date.now()}`,
+            transaction_date: date,
+            type: "Tại Quầy",
+            create_at: date,
+            create_by: idNV,
+            id_account: userKH,
+            id_staff: emp
+        };
+
+        const response = await fetch('ban-hang-tai-quay/tao-hoa-don', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(hoaDon)
         });
+
+        if (!response.ok) throw new Error('Error adding bill: ' + response.statusText);
+
+        // Lưu hóa đơn vào localStorage
+        let storedInvoices = JSON.parse(localStorage.getItem('invoices')) || [];
+        storedInvoices.push({id: storedInvoices.length + 1, status});
+        localStorage.setItem('invoices', JSON.stringify(storedInvoices));
+
+        // Gọi hàm addTab để tạo tab mới cho hóa đơn
+        addTab({id: storedInvoices.length, status});
+
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
+
+// Hàm tải hóa đơn từ cơ sở dữ liệu và hiển thị
+async function loadInvoicesFromDatabase() {
+    try {
+        const response = await fetch('/api/hoadon'); // Thay đổi URL phù hợp với API của bạn
+        if (!response.ok) throw new Error('Không thể lấy hóa đơn: ' + response.statusText);
+        const invoices = await response.json();
+
+        // Lọc hóa đơn với trạng thái "Hóa Đơn Chờ" và thêm tab cho mỗi hóa đơn
+        invoices.forEach(invoice => {
+            if (invoice.status === "Hóa Đơn Chờ") {
+                addTab(invoice);
+            }
+        });
+    } catch (error) {
+        console.error('Có lỗi khi tải hóa đơn:', error);
+    }
+}
+
+// Gọi hàm tải hóa đơn khi trang được tải
+window.onload = function () {
+    loadInvoicesFromDatabase();
+};
+
+// Hàm thêm tab khi nhấn nút thêm hóa đơn
+document.getElementById('addInvoiceButton').addEventListener('click', () => {
+    if (invoiceCount < maxInvoices) {
+        invoiceCount++;
+        taoHoaDonCho();
+    } else {
+        showToast("Số lượng hóa đơn chờ đã đạt tối đa.");
+    }
+});
 
 function capNhatHoaDon() {
     /*event.preventDefault(); */// Ngăn chặn hành động gửi mặc định
