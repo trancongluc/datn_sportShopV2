@@ -1,6 +1,8 @@
 package com.example.sportshopv2.controller;
 
 import com.example.sportshopv2.dto.SanPhamChiTietDTO;
+import com.example.sportshopv2.model.User;
+import com.example.sportshopv2.repository.KhachHangRepository;
 import com.example.sportshopv2.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -25,11 +27,14 @@ public class BanHangTaiQuayController {
     private final TheLoaiService theLoaiService;
     private final ThuongHieuService thuongHieuService;
     private final SanPhamChiTietService spctService;
+    private final KhachHangRepository khRepo;
 
     @GetMapping("")
     public String banHangTaiQuay(Model model) {
         List<SanPhamChiTietDTO> listSPCTDto = spctService.getAllSPCT();
+        List<User> listKH = khRepo.findAllKhachHang();
         model.addAttribute("spctDto", listSPCTDto);
+        model.addAttribute("kh", listKH);
         return "BanHangTaiQuay/BanHangTaiQuay";
     }
 

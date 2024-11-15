@@ -2,8 +2,8 @@ package com.example.sportshopv2.controller.KhachHang;
 
 import com.example.sportshopv2.repository.AddressRepository;
 import com.example.sportshopv2.repository.KhachHangRepository;
-import com.example.sportshopv2.Service.AddressService;
-import com.example.sportshopv2.Service.KhachhangService;
+import com.example.sportshopv2.service.AddressService;
+import com.example.sportshopv2.service.KhachhangService;
 import com.example.sportshopv2.model.Address;
 
 import com.example.sportshopv2.model.User;

@@ -25,7 +25,8 @@ public class PhieuGiamGiaServiceImpl implements PhieuGiamGiaService {
             phieuGiamGiaRepo.save(phieuGiamGia);
             return true;
         } catch (Exception e) {
-            return false; // Có thể log lỗi ở đây
+            e.printStackTrace();
+            return false;
         }
     }
 

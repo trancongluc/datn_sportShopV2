@@ -28,7 +28,7 @@ public class PhieuGiamGiaController {
 
     @Autowired
     private PhieuGiamGiaService phieuGiamGiaService;
-    @GetMapping("/giam-gia")
+    @GetMapping("/view")
     public String GiamGia(Model model) {
         model.addAttribute("listVCCT", vcctRepo.findAll());
         model.addAttribute("listVC", vcRepo.findAll());
@@ -56,22 +56,17 @@ public class PhieuGiamGiaController {
         voucherService.create(voucher);
         return "redirect:/giam-gia";
     }
-    @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Integer id, Model model) {
-        PhieuGiamGia voucher = phieuGiamGiaService.findByID(id);
-        if (voucher != null) {
-            model.addAttribute("phieuGiamGia", voucher);
-            return "PhieuGiamGia/edit" ;
-        }
-        return "redirect:/giam-gia";
+    @GetMapping("/detail/{id}")
+    public String showDetail(@PathVariable Long id, Model model) {
+//        PhieuGiamGia giamGia = phieuGiamGiaService.findByID(id);
+//        model.addAttribute("giamGia", giamGia);
+        return "detail"; // Trả về tên của template detail.html
     }
 
     @PostMapping("/update")
-    public String updateVoucher(@ModelAttribute PhieuGiamGia voucher) {
-        if (phieuGiamGiaService.update(voucher)) {
-            return "redirect:/giam-gia";
-        }
-        return "PhieuGiamGia/edit";
+    public String updateGiamGia(@ModelAttribute PhieuGiamGia giamGia) {
+//        phieuGiamGiaService.save(giamGia); // Lưu đối tượng đã cập nhật
+        return "redirect:/giam-gia"; // Chuyển hướng về danh sách
     }
 
     @GetMapping("/delete/{id}")

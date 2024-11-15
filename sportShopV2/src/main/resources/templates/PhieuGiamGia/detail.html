@@ -8,8 +8,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-    <title>Thêm Giảm Giá</title>
+    <title>Chi Tiết Phiếu Giảm Giá</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -170,52 +169,18 @@
         }
 
     </style>
-    <script>
-        function updatePreview() {
-            var tenPhieu = document.getElementById('ten-phieu').value || 'VCXXXXX';
-            var giaTriDonHang = document.getElementById('gia-tri-don-hang').value || '0';
-            var giamToiDa = document.getElementById('giam-toi-da').value || '0';
-            var soLuong = document.getElementById('so-luong').value || '0';
-            var phanTramGiam = document.getElementById('phan-tram-giam').value || '0';
-            var ngayKetThuc = document.getElementById('ngay-ket-thuc').value || 'dd/mm/yyyy';
-
-            var conditionText = 'Điều kiện: Áp dụng cho đơn hàng từ ' + giaTriDonHang + 'đ';
-            var maxText = 'Tối Đa: ' + giamToiDa + 'đ/Khách Hàng';
-            var quantityText = 'Số Lượng: ' + soLuong;
-            var discountText = tenPhieu;
-            var expiryText = 'Hạn Đến: ' + ngayKetThuc;
-
-            document.querySelectorAll('.preview-code').forEach(function(element) {
-                element.innerText = tenPhieu;
-            });
-            document.querySelectorAll('.preview-condition').forEach(function(element) {
-                element.innerText = conditionText;
-            });
-            document.querySelectorAll('.preview-max').forEach(function(element) {
-                element.innerText = maxText;
-            });
-            document.querySelectorAll('.preview-quantity').forEach(function(element) {
-                element.innerText = quantityText;
-            });
-            document.querySelectorAll('.preview-discount').forEach(function(element) {
-                element.innerText = discountText;
-            });
-            document.querySelectorAll('.preview-expiry').forEach(function(element) {
-                element.innerText = expiryText;
-            });
-        }
-    </script>
 </head>
 <body>
 <main layout:fragment="main1">
     <div class="container">
         <div class="header">
-            <h1>Thêm Phiếu Giảm Giá</h1>
+            <h1>Chi Tiết Phiếu Giảm Giá</h1>
             <div class="back-button">
                 <button><a href="/giam-gia" style="text-decoration: none; color: black">Trở Về</a></button>
             </div>
         </div>
-        <form th:action="@{/giam-gia/save}" method="post">
+        <form th:action="@{/giam-gia/update}" method="post">
+            <input type="hidden" th:field="*{id}"/> <!-- Thêm trường ID để gửi về server -->
             <div class="main-content">
                 <div class="form-section">
                     <div class="form-box">
@@ -240,7 +205,7 @@
                                     <input type="number" id="so-luong" th:field="*{quantity}" placeholder="Số lượng phiếu..." oninput="updatePreview()">
                                 </div>
                                 <div class="form-group">
-                                    <label for="mo-ta">Mô Tả (Optional)</label>
+                                    <label for ="mo-ta">Mô Tả (Optional)</label>
                                     <textarea id="mo-ta" th:field="*{description}" placeholder="Giảm tối đa..." oninput="updatePreview()"></textarea>
                                 </div>
                             </div>
@@ -248,8 +213,8 @@
                                 <div class="form-group">
                                     <label for="loai-phieu">Loại Phiếu</label>
                                     <select id="loai-phieu" th:field="*{formVoucher}" oninput="updatePreview()">
-                                        <option value="Percentage">Phần Trăm</option>
-                                        <option value="Fixed">Cố Định</option>
+                                        <option value="Percentage" th:selected="${giamGia.formVoucher == 'Percentage'}">Phần Trăm</option>
+                                        <option value="Fixed" th:selected="${giamGia.formVoucher == 'Fixed'}">Cố Định</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -274,29 +239,19 @@
                     <div class="preview-box">
                         <h2>Xem Trước Mã</h2>
                         <div class="preview-card">
-                            <div class="discount preview-discount">Tên Phiếu</div>
+                            <div class="discount preview-discount" th:text="${giamGia.name}">Tên Phiếu</div>
                             <div class="details">
-                                <p class="code preview-code">VCXXXXX</p>
-                                <p class="preview-condition">Điều kiện: Áp dụng cho đơn hàng từ 0đ</p>
-                                <p class="preview-max">Tối Đa: 0đ/Khách Hàng</p>
-                                <p class="preview-quantity">Số Lượng: 0</p>
-                                <p class="preview-expiry">Hạn Đến: dd/mm/yyyy</p>
-                            </div>
-                        </div>
-                        <div class="preview-card">
-                            <div class="discount preview-discount">Tên Phiếu</div>
-                            <div class="details">
-                                <p class="code preview-code">VCXXXXX</p>
-                                <p class="preview-condition">Điều kiện: Áp dụng cho đơn hàng từ 0đ</p>
-                                <p class="preview-max">Tối Đa: 0đ/Khách Hàng</p>
-                                <p class="preview-quantity">Số Lượng: 0</p>
-                                <p class="preview-expiry">Hạn Đến: dd/mm/yyyy</p>
+                                <p class="code preview-code" th:text="${giamGia.code}">VCXXXXX</p>
+                                <p class="preview-condition" th:text="'Điều kiện: Áp dụng cho đơn hàng từ ' + ${giamGia.minimumOrderValue} + 'đ'">Điều kiện: Áp dụng cho đơn hàng từ 0đ</p>
+                                <p class="preview-max" th:text="'Tối Đa: ' + ${giamGia.maxDiscount} + 'đ/Khách Hàng'">Tối Đa: 0đ/Khách Hàng</p>
+                                <p class="preview-quantity" th:text="'Số Lượng: ' + ${giamGia.quantity}">Số Lượng: 0</p>
+                                <p class="preview-expiry" th:text="'Hạn Đến: ' + ${giamGia.endDate}">Hạn Đến: dd/mm/yyyy</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <button type="submit" class="save-button">Lưu</button>
+            <button type="submit" class="save-button">Cập Nhật</button>
         </form>
     </div>
 </main>

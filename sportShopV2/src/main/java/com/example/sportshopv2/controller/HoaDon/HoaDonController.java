@@ -39,7 +39,7 @@ import java.util.Optional;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 @Controller
-@RequestMapping("/bill")
+@RequestMapping("/khach-hang")
 public class HoaDonController {
     @Autowired
     private HoaDonChiTietRepo hdctrepo;

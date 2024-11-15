@@ -29,7 +29,7 @@ public class PhanQuyen {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/buy/**", "/product/**", "/staff/**", "/bill/**").hasAuthority("Admin")
+                        .requestMatchers("khach-hang/view", "/khach-hang", "/nhanvien", "/giam-gia").hasAuthority("Admin")
                         .requestMatchers("/bill/**", "/buy/**").hasAuthority("Staff")
                         .requestMatchers("/buy/**").hasAuthority("Employee")
                         .requestMatchers("/login/**").permitAll()

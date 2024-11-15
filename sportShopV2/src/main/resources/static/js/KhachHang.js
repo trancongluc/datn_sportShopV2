@@ -19,8 +19,7 @@
                         // $("#phuong").html('<option value="0">Phường Xã</option>'); // Xóa danh sách phường
 
                         $.each(data_quan.data, function (key_quan, val_quan) {
-                            const selected = val_quan.id == "${customer.addresses[0].district_id}" ? "selected" : "";
-                            $("#quan").append('<option value="' + val_quan.id + '" ' + selected + '>' + val_quan.full_name + '</option>');
+                            $("#quan").append('<option value="' + val_quan.id + '">' + val_quan.full_name + '</option>');
                         });
 
                         // Kích hoạt sự kiện thay đổi quận để tải phường ban đầu
@@ -44,3 +43,7 @@
             }
         });
     });
+
+
+
+
