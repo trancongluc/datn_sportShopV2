@@ -74,6 +74,7 @@ public class PhanQuyen {
                 "/kich-thuoc/**",
                 "/anh-san-pham/**",
                 "/ban-hang-tai-quay/**",
+                "/ban-hang-tai-quay/update-hoa-don/**",
                 "/khach-hang/**",
                 "/nhanvien/**",
                 "/hoa-don/**",

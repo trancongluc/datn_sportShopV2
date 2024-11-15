@@ -10,10 +10,13 @@ import com.example.sportshopv2.service.HoaDonChiTietService;
 import com.example.sportshopv2.service.HoaDonService;
 import com.example.sportshopv2.service.KhachhangService;
 import com.example.sportshopv2.service.SanPhamChiTietService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,6 +66,18 @@ public class BanHangTaiQuayController {
     @ResponseBody
     public HoaDon createBill(@RequestBody HoaDon hoaDon) {
         return hoaDonService.createHoaDon(hoaDon);
+    }
+
+    @PutMapping("/update-hoa-don/{idHD}")
+    @ResponseBody
+    public HoaDon updateBill(@PathVariable("idHD") Integer idHD,
+                             @RequestBody @Valid HoaDon hoaDon) {
+        try {
+            return hoaDonService.updateHoaDon(idHD, hoaDon);
+        } catch (Exception e) {
+            // Xử lý lỗi (có thể log lỗi và trả về thông báo lỗi)
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cập nhật hóa đơn không thành công", e);
+        }
     }
 
     @PostMapping("/tao-hoa-don-chi-tiet")
