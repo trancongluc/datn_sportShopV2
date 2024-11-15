@@ -31,7 +31,7 @@
     <div class="container">
         <div >
             <h2 class="mb-4">Tạo Khách Hàng</h2>
-            <form  action="/khach-hang/add-khach-hang" method="post" enctype="multipart/form-data"> <!-- Cập nhật action -->
+            <form  th:action="@{/khach-hang/add-khach-hang}" method="post" enctype="multipart/form-data"> <!-- Cập nhật action -->
                 <span>
                 <a class="btn btn-success" href="/khach-hang/list">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
@@ -67,10 +67,7 @@
 
                     <!-- Cột bên phải -->
                     <div class="col-md-8">
-                        <div class="col-md-12">
-                            <label for="code" class="form-label">Mã khách hàng</label>
-                            <input type="text" class="form-control" id="code" name="code" >
-                        </div>
+
                         <div class="row mb-3">
 
                             <div class="col-md-6">

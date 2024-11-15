@@ -1,11 +1,15 @@
 package com.example.sportshopv2.model;
 
+import com.example.sportshopv2.dto.UserDTO;
+import com.example.sportshopv2.dto.UserNhanVienDTO;
+import com.example.sportshopv2.repository.NhanVienRepo;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -41,10 +45,10 @@ public class User {
     @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Address> addresses = new ArrayList<>();
 
-//
-@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-@EqualsAndHashCode.Exclude // Loại bỏ vòng lặp trong hashCode() và equals()
-private Account account;
+    //
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude // Loại bỏ vòng lặp trong hashCode() và equals()
+    private Account account;
 
 
     @Column(name = "create_at", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
@@ -71,9 +75,17 @@ private Account account;
         addresses.add(address);
         address.setKhachHang(this);
     }
+
     @PrePersist // Được gọi trước khi thực thể được lưu vào cơ sở dữ liệu
     private void onCreate() {
+        if (this.getCode() == null || this.getCode().isEmpty()) {
+            this.setCode(generateUniqueCode());
+        }
         createdAt = new Date();
+    }
+
+    public String generateUniqueCode() {
+        return "KH" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
     @PreUpdate // Được gọi trước khi thực thể được cập nhật
@@ -81,8 +93,60 @@ private Account account;
         updatedAt = new Date();
     }
 
-
-
-
+    public static User of(UserDTO dto) {
+        User user = new User();
+        user.setId(dto.getId());
+        user.setCode(dto.getCode());
+        user.setFullName(dto.getFullName());
+        user.setPhoneNumber(dto.getPhoneNumber());
+        user.setEmail(dto.getEmail());
+        user.setGender(dto.getGender());
+        user.setDate(dto.getDate());
+        user.setPoints(dto.getPoints());
+        user.setImageFileName(dto.getImageFileName());
+        // Nếu cần, bạn có thể thêm các trường khác ở đây
+        return user;
+    }
+    public static UserDTO toDTO(User user) {
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setCode(user.getCode());
+        dto.setFullName(user.getFullName());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setEmail(user.getEmail());
+        dto.setGender(user.getGender());
+        dto.setDate(user.getDate());
+        dto.setPoints(user.getPoints());
+        dto.setImageFileName(user.getImageFileName());
+        return dto;
+    }
+    public static UserNhanVienDTO toNVDTO(User user,NhanVienRepo nvRepo) {
+        user=nvRepo.findById(9).orElse(null);
+        UserNhanVienDTO dto = new UserNhanVienDTO();
+        dto.setId(user.getId());
+        dto.setCode(user.getCode());
+        dto.setFullName(user.getFullName());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setEmail(user.getEmail());
+        dto.setGender(user.getGender());
+        dto.setDate(user.getDate());
+        dto.setPoints(user.getPoints());
+        dto.setImageFileName(user.getImageFileName());
+        return dto;
+    }
+    public static User of(UserNhanVienDTO dto) {
+        User user = new User();
+        user.setId(dto.getId());
+        user.setCode(dto.getCode());
+        user.setFullName(dto.getFullName());
+        user.setPhoneNumber(dto.getPhoneNumber());
+        user.setEmail(dto.getEmail());
+        user.setGender(dto.getGender());
+        user.setDate(dto.getDate());
+        user.setPoints(dto.getPoints());
+        user.setImageFileName(dto.getImageFileName());
+        // Nếu cần, bạn có thể thêm các trường khác ở đây
+        return user;
+    }
 
 }
