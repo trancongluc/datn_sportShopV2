@@ -29,14 +29,14 @@ public class HoaDon {
     @Column(name = "user_name")
     private String user_name;
 
-    @NotBlank(message = "{message.phonenumber}")
+
     @Column(name = "phone_number")
     private String phone_number;
 
     @NotNull(message = "{message.totalmoney}")
     @Column(name = "total_money")
     private Float total_money;
-    @NotNull(message = "{message.totalmoney}")
+
     @Column(name = "money_reduced")
     private Float money_reduced;
 

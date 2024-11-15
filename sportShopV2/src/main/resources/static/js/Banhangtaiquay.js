@@ -2,83 +2,49 @@ let invoiceCount = 0;
 let maxInvoices = 5;
 let invoiceData = {};
 
-function addTab() {
-    if (invoiceCount >= maxInvoices) {
-        showToast("Số lượng hóa đơn chờ đã đạt tối đa.");
-        return;
-    }
+// Hàm để thêm một tab mới
 
-    invoiceCount++;
+// Hàm thêm tab cho hóa đơn
+function addTab(invoice) {
     const tabContainer = document.getElementById('tabContainer');
-
-    // Tạo dữ liệu cho hóa đơn mới
-    invoiceData[invoiceCount] = {
-        products: `Sản phẩm của Hóa Đơn ${invoiceCount}`,
-        customer: `Khách hàng của Hóa Đơn ${invoiceCount}`,
-        deliveryOption: 'Tại Quầy', // Mặc định là Tại Quầy
-        customerInfo: {
-            name: '',
-            phone: '',
-            email: '',
-            code: ''
-        }
-    };
 
     // Tạo thẻ mới cho hóa đơn
     const newTab = document.createElement('div');
-    newTab.classList.add('tab-item', 'active');
-    newTab.innerHTML = `Hóa Đơn ${invoiceCount} <span class="close-btn" onclick="removeTab(this, event)">&times;</span>`;
-    newTab.setAttribute("onclick", `selectTab(${invoiceCount})`);
-
-    // Xóa active của các tab khác
-    const tabs = document.querySelectorAll('.tab-item');
-    tabs.forEach(tab => tab.classList.remove('active'));
+    newTab.classList.add('tab-item');
+    newTab.innerHTML = `Hóa Đơn ${invoice.id} - ${invoice.status} 
+        <span class="close-btn" onclick="removeTab(this, event)">&times;</span>`;
+    newTab.setAttribute("onclick", `selectTab(${invoice.id})`);
 
     // Thêm thẻ mới vào DOM
     tabContainer.insertBefore(newTab, tabContainer.lastElementChild);
-
-    // Hiển thị chi tiết hóa đơn
-    selectTab(invoiceCount);
 }
 
-function selectTab(invoiceNumber) {
+function selectTab(invoiceId) {
     const tabs = document.querySelectorAll('.tab-item');
-    tabs.forEach(tab => tab.classList.remove('active'));
+    tabs.forEach(tab => tab.classList.remove('active'));  // Bỏ active khỏi các tab khác
 
-    const selectedTab = document.querySelector(`.tab-item:nth-child(${invoiceNumber})`);
-    if (selectedTab) selectedTab.classList.add('active');
-
-    // Cập nhật danh sách sản phẩm
-    document.getElementById('productList').textContent = invoiceData[invoiceNumber].products;
-
-    // Cập nhật thông tin khách hàng
-    const customer = invoiceData[invoiceNumber].customerInfo;
-    document.getElementById('customerInfo').textContent = `Khách hàng: ${customer.name || 'Chưa có dữ liệu'}`;
-
-    // Cập nhật phương thức giao hàng
-    document.querySelector('input[name="deliveryOption"][id="atStore"]').checked = (invoiceData[invoiceNumber].deliveryOption === 'Tại Quầy');
-    document.querySelector('input[name="deliveryOption"][id="delivery"]').checked = (invoiceData[invoiceNumber].deliveryOption === 'Chuyển Phát');
-
-    // Cập nhật thông tin khách hàng trong các trường nhập liệu
-    document.getElementById('customerName').value = customer.name || '';
-    document.getElementById('phone').value = customer.phone || '';
-    document.getElementById('email').value = customer.email || '';
-    document.getElementById('customerCode').value = customer.code || '';
+    const selectedTab = document.querySelector(`.tab-item:nth-child(${invoiceId})`);
+    selectedTab.classList.add('active');  // Thêm active vào tab được chọn
 }
 
-/*function updateCustomerInfo(invoiceNumber) {
-    const customerName = document.getElementById('customerName').value;
-    const phone = document.getElementById('phone').value;
-    const email = document.getElementById('email').value;
-    const customerCode = document.getElementById('customerCode').value;
 
-    invoiceData[invoiceNumber].customerInfo = {
-        name: customerName,
-        phone: phone,
-        email: email,
-        code: customerCode
-    };
-}*/
+// Hàm để phục hồi các tab từ localStorage khi tải lại trang
+window.onload = function () {
+    const storedInvoices = JSON.parse(localStorage.getItem('invoices'));
+    if (storedInvoices && storedInvoices.length > 0) {
+        const tabContainer = document.getElementById('tabContainer');
+        storedInvoices.forEach(invoice => {
+            const newTab = document.createElement('div');
+            newTab.classList.add('tab-item');
+            newTab.innerHTML = invoice.name;
+            newTab.setAttribute("onclick", `selectTab(${invoice.id})`);
+            tabContainer.insertBefore(newTab, tabContainer.lastElementChild);
+        });
+
+        // Cập nhật lại số lượng hóa đơn
+        invoiceCount = storedInvoices.length;
+    }
+}
 
 function updateDeliveryOption(invoiceNumber) {
     const deliveryOptions = document.querySelectorAll('input[name="deliveryOption"]:checked');
@@ -158,6 +124,20 @@ function removeTab(element, event) {
     } else {
         document.getElementById('productList').textContent = "Chưa có dữ liệu.";
     }
+}
+
+function closeTab(invoiceId) {
+    const tabs = document.querySelectorAll('.tab-item');
+    tabs.forEach(tab => {
+        if (tab.innerHTML === `Hóa Đơn ${invoiceId}`) {
+            tab.remove();  // Xóa tab khỏi DOM
+        }
+    });
+
+    // Cập nhật lại dữ liệu trong localStorage
+    let storedInvoices = JSON.parse(localStorage.getItem('invoices')) || [];
+    storedInvoices = storedInvoices.filter(invoice => invoice.id !== invoiceId);  // Xóa hóa đơn khỏi danh sách
+    localStorage.setItem('invoices', JSON.stringify(storedInvoices));
 }
 
 function showToast(message) {
@@ -365,6 +345,7 @@ for (let i = 0; i < productRows.length; i++) {
 
 // Hàm tính tổng tiền từ tất cả các sản phẩm trong bảng
 const productQuantities = {};
+
 function calculateTotal() {
     let total = 0;
     const rows = selectedProductsTable.querySelectorAll('tbody tr');
@@ -424,7 +405,79 @@ document.getElementById("customerDropdown").addEventListener("change", function 
     }
 });
 
-function addHoaDon() {
+function taoHoaDonCho() {
+    const idNV = 1; // ID nhân viên (có thể lấy từ một ô input nếu cần)
+    const fullName = "Đang cập nhật";
+    const sdt = null;
+    const email = null;
+    const tienBatDau = 0;
+    const phiShip = 0; // Thay đổi theo cách tính phí ship
+    const giamGia = 0; // Thay đổi theo cách tính giảm giá
+    const status = "Hóa Đơn Chờ"; // Trạng thái mặc định
+    const date = new Date().toISOString(); // Lấy thời gian hiện tại
+    // Gọi đến endpoint để lấy thông tin khách hàng
+    fetch(`/khach-hang/thong-tin-kh/14`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Không thể lấy thông tin khách hàng: ' + response.statusText);
+            }
+            return response.json(); // Phân tích dữ liệu JSON
+        })
+        .then(userKH => {
+            // Gọi đến endpoint để lấy thông tin nhân viên
+            return fetch(`/nhanvien/thong-tin-nv/${idNV}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Không thể lấy thông tin nhân viên: ' + response.statusText);
+                    }
+                    return response.json(); // Phân tích dữ liệu JSON
+                })
+                .then(emp => {
+                    // Tạo đối tượng hóa đơn
+                    const hoaDon = {
+                        user_name: fullName, // Sử dụng tên khách hàng nếu không có
+                        phone_number: sdt, // Sử dụng số điện thoại nếu không có
+                        total_money: tienBatDau,
+                        money_reduced: giamGia,
+                        status: status,
+                        email: email, // Sử dụng email nếu không có
+                        money_ship: phiShip,
+                        bill_code: `HD-${Date.now()}`, // Mã hóa đơn
+                        transaction_date: date,
+                        type: "Tại Quầy",
+                        create_at: date,
+                        create_by: idNV, // ID nhân viên (người tạo hóa đơn)
+                        id_account: userKH, // Đối tượng khách hàng
+                        id_staff: emp // Đối tượng nhân viên
+                    };
+
+                    // Gửi yêu cầu tạo hóa đơn
+                    return fetch('ban-hang-tai-quay/tao-hoa-don', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(hoaDon) // Gửi đối tượng hóa đơn
+                    });
+                });
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json(); // Phân tích JSON nếu thành công
+            } else {
+                throw new Error('Error adding bill: ' + response.statusText);
+            }
+        })
+        .then(data => {
+            // Sau khi tạo hóa đơn thành công, gọi hàm addTab để tạo tab mới cho hóa đơn
+            addTab();  // Gọi hàm addTab để tạo tab mới
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+function capNhatHoaDon() {
     /*event.preventDefault(); */// Ngăn chặn hành động gửi mặc định
 
     const idNV = 1; // ID nhân viên (có thể lấy từ một ô input nếu cần)
@@ -435,7 +488,7 @@ function addHoaDon() {
     const giamGia = 0; // Thay đổi theo cách tính giảm giá
     const status = "Hoàn Thành"; // Trạng thái mặc định
     const date = new Date().toISOString(); // Lấy thời gian hiện tại
-    console.log("khachsachs hang:" +idKH)
+    console.log("khachsachs hang:" + idKH)
     // Gọi đến endpoint để lấy thông tin khách hàng
     fetch(`/khach-hang/thong-tin-kh/${idKH}`)
         .then(response => {
@@ -465,7 +518,7 @@ function addHoaDon() {
                         money_ship: phiShip,
                         bill_code: `HD-${Date.now()}`, // Mã hóa đơn
                         transaction_date: date,
-                        create_at: date,
+                        update_at: date,
                         create_by: idNV, // ID nhân viên (người tạo hóa đơn)
                         id_account: userKH, // Đối tượng khách hàng
                         id_staff: emp // Đối tượng nhân viên
