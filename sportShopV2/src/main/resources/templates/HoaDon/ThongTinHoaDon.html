@@ -52,6 +52,30 @@
 </style>
 <body class="bg-gray-100 p-4">
 <main layout:fragment="main1" th:object="${list}">
+    <div class="container mt-5">
+        <h2>Trạng thái hóa đơn</h2>
+        <div class="progress">
+            <div class="progress-bar" role="progressbar"
+                 th:style="'width:' + ${hoaDon.statusProgress} + '%;'"
+                 th:text="${hoaDon.statusDisplay}">Trạng thái tiến trình</div>
+        </div>
+    </div>
+
+    <!-- Status Update Form -->
+    <form th:action="@{/bill/status/update}" method="post" class="mt-3">
+        <input type="hidden" name="id" th:value="${hoaDon.id}"/>
+        <div class="form-group">
+            <label for="status">Cập nhật trạng thái</label>
+            <select id="status" name="status" class="form-control">
+                <option value="Chờ xác nhận" th:selected="${hoaDon.status == 'Chờ xác nhận'}">Chờ xác nhận</option>
+                <option value="Đã xác nhận" th:selected="${hoaDon.status == 'Đã xác nhận'}">Đã xác nhận</option>
+                <option value="Chờ vận chuyển" th:selected="${hoaDon.status == 'Chờ vận chuyển'}">Chờ vận chuyển</option>
+                <option value="Đang vận chuyển" th:selected="${hoaDon.status == 'Đang vận chuyển'}">Đang vận chuyển</option>
+                <option value="Hoàn thành" th:selected="${hoaDon.status == 'Hoàn thành'}">Hoàn thành</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Cập nhật</button>
+    </form>
     <div class="bg-white p-6 rounded-lg shadow-md">
         <h2 class="text-xl font-bold mb-4" th:text="${hoaDon.bill_code}">Mã Hóa Đơn</h2>
         <div class="grid grid-cols-2 gap-4 mb-4">
@@ -76,7 +100,7 @@
             <div>
                 <p class="mb-2">
                     <span class="font-semibold">Tên khách hàng:</span>
-                <p th:text="${hoaDon.user_name}">Tên Khách Hàng</p>
+                <p th:text="${hoaDon.id_account.nguoiDung.full_name}">Tên Khách Hàng</p>
                 </p>
                 <p class="mb-2">
                     <span class="font-semibold">Số điện thoại:</span>
@@ -89,33 +113,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Progress Bar -->
-    <div class="container mt-5">
-        <h2>Trạng thái hóa đơn</h2>
-        <div class="progress">
-            <div class="progress-bar" role="progressbar"
-                 th:style="'width:' + ${hoaDon.statusProgress} + '%;'"
-                 th:text="${hoaDon.statusDisplay}">Trạng thái tiến trình</div>
-        </div>
-    </div>
-
-    <!-- Status Update Form -->
-    <form th:action="@{/bill/status/update}" method="post" class="mt-3">
-        <input type="hidden" name="id" th:value="${hoaDon.id}"/>
-        <div class="form-group">
-            <label for="status">Cập nhật trạng thái</label>
-            <select id="status" name="status" class="form-control">
-                <option value="Chờ xác nhận" th:selected="${hoaDon.status == 'ORDERED'}">Chờ xác nhận</option>
-                <option value="Đã xác nhận" th:selected="${hoaDon.status == 'CONFIRMED'}">Đã xác nhận</option>
-                <option value="Chờ vận chuyển" th:selected="${hoaDon.status == 'SHIPPING'}">Chờ vận chuyển</option>
-                <option value="Đang vận chuyển" th:selected="${hoaDon.status == 'SHIPPED'}">Đang vận chuyển</option>
-                <option value="Hoàn thành" th:selected="${hoaDon.status == 'COMPLETE'}">Hoàn thành</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary mt-2">Cập nhật</button>
-    </form>
-
 
     <!-- Modal Confirmation -->
     <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
@@ -136,40 +133,6 @@
                     <a class="btn btn-success" th:href="@{/bill/export/pdf}">Xuất PDF</a>
                     <button class="btn btn-danger" onclick="hideModal()">Đóng</button>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-xl font-bold mb-4" th:text="${hoaDon.getBill_code()}"></h2>
-        <div class="grid grid-cols-2 gap-4 mb-4">
-            <div>
-                <p class="mb-2">
-                    <span class="font-semibold">Trạng thái:</span>
-                    <button class="bg-blue-500 text-white px-4 py-2 rounded-full"
-                            th:text="${hoaDon.status}"></button>
-                </p>
-                <p class="mb-2">
-                    <span class="font-semibold">Loại:</span>
-                    <button class="bg-purple-500 text-white px-4 py-2 rounded-full"
-                            th:text="${hoaDon.type}"></button>
-                </p>
-                <p class="mb-2">
-                    <span class="font-semibold">Địa chỉ:</span>
-                <p th:text="${hoaDon.address}"></p>
-                </p>
-            </div>
-            <div>
-                <p class="mb-2">
-                    <span class="font-semibold">Tên khách hàng:</span>
-                <p th:text="${hoaDon.user_name}"></p>
-                </p>
-                <p class="mb-2">
-                    <span class="font-semibold">Số điện thoại:</span>
-                <p th:text="${hoaDon.phone_number}"></p>
-                </p>
-                <p class="mb-2">
-                    <span class="font-semibold">Ghi chú:</span>
-                </p>
             </div>
         </div>
     </div>
@@ -196,10 +159,10 @@
                          width="50"/>
                 </td>
                 <td class="border px-4 py-2">
-                    <p th:text="${listHdct.sanPhamChiTiet.id_product.tenSanPham}"></p>
-                    <p class="text-red-500" th:text="${listHdct.sanPhamChiTiet.id_product.code}"></p>
+                    <p th:text="${listHdct.sanPhamChiTiet}"></p>
+                    <p class="text-red-500" th:text="${listHdct.sanPhamChiTiet.idSanPham}"></p>
                     <p>Kích cỡ:
-                    <p th:text="${listHdct.sanPhamChiTiet.price}"></p></p>
+                    <p th:text="${listHdct.sanPhamChiTiet.gia}"></p></p>
                 </td>
                 <td class="border px-4 py-2 text-center">
                     <div class="w-6 h-6 bg-black mx-auto"></div>

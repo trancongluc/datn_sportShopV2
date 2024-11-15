@@ -182,7 +182,6 @@ public class HoaDonController {
         return "HoaDon/ThongTinHoaDon";
     }
 
-    // Cập nhật trạng thái hóa đơn
     @PostMapping("/status/update")
     public String updateStatus(@RequestParam Integer id, @RequestParam String status) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

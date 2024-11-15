@@ -70,7 +70,7 @@
   </div>
 
   <div class="info">
-    <p>Khách hàng: <span th:text="${hoaDon.getId_account().getId_user().getFull_name()}"></span></p>
+    <p>Khách hàng: <span th:text="${hoaDon.getId_account().nguoiDung.full_name}"></span></p>
     <p>Số điện thoại: <span th:text="${hoaDon.phone_number}"></span></p>
     <p>Địa chỉ: <span th:text="${hoaDon.address}"></span></p>
   </div>
@@ -91,11 +91,11 @@
       <tbody>
       <tr th:each="item, iterStat : ${items}">
         <td th:text="${iterStat.index + 1}"></td>
-        <td th:text="${item.sanPhamChiTiet.id_product.tenSanPham}"></td>
-        <td th:text="${item.sanPhamChiTiet.price} + ' đ'"></td>
+        <td th:text="${item.sanPhamChiTiet.idSanPham}"></td>
+        <td th:text="${item.sanPhamChiTiet.gia} + ' đ'"></td>
         <td th:text="${item.quantity}"></td>
         <td th:text="${item.hoaDon.status}"></td>
-        <td th:text="${item.hoaDon.status} + ' đ'"></td>
+        <td th:text="${item.hoaDon.money_reduced} + ' đ'"></td>
       </tr>
       </tbody>
     </table>
