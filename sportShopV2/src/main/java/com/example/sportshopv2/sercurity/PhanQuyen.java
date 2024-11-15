@@ -33,7 +33,7 @@ public class PhanQuyen {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/khach-hang/**", "/san-pham", "/san-pham/**", "/san-pham-chi-tiet/**",
                                 "/san-pham-chi-tiet", "/anh-san-pham/**", "/the-loai/**",
-                                "/nhanvien/**", "/bill/**", "/ban-hang-tai-quay/**").hasAuthority("Admin")
+                                "/nhanvien/**", "/bill/**", "/ban-hang-tai-quay/**", "/giam-gia/**").hasAuthority("Admin")
                         .requestMatchers("/bill/**", "/buy/**").hasAuthority("Staff")
                         .requestMatchers("/buy/**").hasAuthority("Employee")
                         .requestMatchers("/login/**").permitAll()
@@ -46,9 +46,9 @@ public class PhanQuyen {
                             String role = authentication.getAuthorities().iterator().next().getAuthority();
                             String targetUrl;
                             if ("Admin".equals(role) || "Staff".equals(role)) {
-                                targetUrl = "/ban-hang-tai-quay";
+                                targetUrl = "/giam-gia/view";
                             } else {
-                                targetUrl = "/ban-hang/mua-sam";
+                                targetUrl = "/giam-gia/view";
                             }
                             response.sendRedirect(targetUrl);
                         })

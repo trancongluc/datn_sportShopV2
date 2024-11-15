@@ -215,7 +215,7 @@
                 <button><a href="/giam-gia" style="text-decoration: none; color: black">Trở Về</a></button>
             </div>
         </div>
-        <form th:action="@{/giam-gia/save}" method="post">
+        <form th:action="@{/giam-gia/save}" th:object="${phieuGiamGia}" method="post">
             <div class="main-content">
                 <div class="form-section">
                     <div class="form-box">
@@ -228,12 +228,12 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="gia-tri-don-hang">Giá Trị Đơn Hàng</label>
-                                    <input type="text" id="gia-tri-don-hang" th:field="*{minimumOrderValue}" placeholder="Điều kiện áp dụng..." oninput="updatePreview()">
+                                    <input type="text" id="gia-tri-don-hang"  placeholder="Điều kiện áp dụng..." oninput="updatePreview()">
                                     <span class="currency">VND</span>
                                 </div>
                                 <div class="form-group">
                                     <label for="ngay-bat-dau">Ngày Bắt Đầu</label>
-                                    <input type="date" id="ngay-bat-dau" th:field="*{startDate}" oninput="updatePreview()">
+                                    <input type="datetime-local" id="ngay-bat-dau" th:field="*{startDate}" oninput="updatePreview()">
                                 </div>
                                 <div class="form-group">
                                     <label for="so-luong">Số Lượng</label>
@@ -241,7 +241,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="mo-ta">Mô Tả (Optional)</label>
-                                    <textarea id="mo-ta" th:field="*{description}" placeholder="Giảm tối đa..." oninput="updatePreview()"></textarea>
+                                    <textarea id="mo-ta"  placeholder="Giảm tối đa..." oninput="updatePreview()"></textarea>
                                 </div>
                             </div>
                             <div class="form-column">
@@ -254,16 +254,16 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="phan-tram-giam">Số Tiền Giảm</label>
-                                    <input type="number" id="phan-tram-giam" th:field="*{discountAmount}" placeholder="Phần trăm giảm giá..." oninput="updatePreview()">
+                                    <input type="number" id="phan-tram-giam"  placeholder="Phần trăm giảm giá..." oninput="updatePreview()">
                                     <span class="currency">VND</span>
                                 </div>
                                 <div class="form-group">
                                     <label for="ngay-ket-thuc">Ngày Kết Thúc</label>
-                                    <input type="date" id="ngay-ket-thuc" th:field="*{endDate}" oninput="updatePreview()">
+                                    <input type="datetime-local" id="ngay-ket-thuc" th:field="*{endDate}" oninput="updatePreview()">
                                 </div>
                                 <div class="form-group">
                                     <label for="giam-toi-da">Giảm Tối Đa</label>
-                                    <input type="number" id="giam-toi-da" th:field="*{maxDiscount}" placeholder="Giảm tối đa..." oninput="updatePreview()">
+                                    <input type="number" id="giam-toi-da" th:field="*{minimumValue}" placeholder="Giảm tối đa..." oninput="updatePreview()">
                                     <span class="currency">VND</span>
                                 </div>
                             </div>

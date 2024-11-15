@@ -54,7 +54,7 @@ public class PhieuGiamGiaController {
     @PostMapping("/save")
     public String saveVoucher(@ModelAttribute PhieuGiamGia voucher) {
         voucherService.create(voucher);
-        return "redirect:/giam-gia";
+        return "redirect:/view";
     }
     @GetMapping("/detail/{id}")
     public String showDetail(@PathVariable Long id, Model model) {
