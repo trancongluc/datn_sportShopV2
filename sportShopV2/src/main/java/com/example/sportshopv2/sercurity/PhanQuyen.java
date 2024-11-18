@@ -34,7 +34,7 @@ public class PhanQuyen {
                                 "/nhanvien/**", "/bill/**", "/ban-hang-tai-quay/**").hasAuthority("Admin")
                         .requestMatchers("/bill/**", "/buy/**").hasAuthority("Staff")
                         .requestMatchers("/buy/**").hasAuthority("Employee")
-                        .requestMatchers("/login/**").permitAll()
+                        .requestMatchers("/login/**", "/mua-sam-SportShopV2/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -46,7 +46,7 @@ public class PhanQuyen {
                             if ("Admin".equals(role) || "Staff".equals(role)) {
                                 targetUrl = "/ban-hang-tai-quay";
                             } else {
-                                targetUrl = "/buy";
+                                targetUrl = "/mua-sam-SportShopV2/trang-chu";
                             }
                             response.sendRedirect(targetUrl);
                         })
