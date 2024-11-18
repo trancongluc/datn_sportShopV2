@@ -42,10 +42,10 @@ public class User {
     @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Address> addresses = new ArrayList<>();
 
-//
-@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-@EqualsAndHashCode.Exclude // Loại bỏ vòng lặp trong hashCode() và equals()
-private Account account;
+    //
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude // Loại bỏ vòng lặp trong hashCode() và equals()
+    private Account account;
 
 
     @Column(name = "create_at", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
@@ -72,6 +72,7 @@ private Account account;
         addresses.add(address);
         address.setKhachHang(this);
     }
+
     @PrePersist // Được gọi trước khi thực thể được lưu vào cơ sở dữ liệu
     private void onCreate() {
         if (this.getCode() == null || this.getCode().isEmpty()) {
@@ -88,9 +89,6 @@ private Account account;
     private void onUpdate() {
         updatedAt = new Date();
     }
-
-
-
 
 
 }

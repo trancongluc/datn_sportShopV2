@@ -1,13 +1,18 @@
 package com.example.sportshopv2.controller;
 
-import com.example.sportshopv2.model.Address;
-import com.example.sportshopv2.model.User;
+import com.example.sportshopv2.dto.HistoryDTO;
+import com.example.sportshopv2.model.*;
+import com.example.sportshopv2.repository.HoaDonRepo;
 import com.example.sportshopv2.repository.NhanVienRepo;
+import com.example.sportshopv2.repository.SanPhamChiTietRepository;
+import com.example.sportshopv2.repository.SanPhamRepository;
 import com.example.sportshopv2.service.NhanVienService;
+import groovy.lang.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -16,6 +21,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 @Controller
@@ -27,9 +36,11 @@ public class NhanVienController {
     @Autowired
     NhanVienService sv;
 
+    @Autowired
+    HoaDonRepo hd;
 
     String password = "";
-    String sendPassword ="";
+    String sendPassword = "";
 
     @GetMapping("/list")
     public String GetAll(
@@ -143,11 +154,27 @@ public class NhanVienController {
 
     @GetMapping("/order_history/{id}")
     public String viewHistory(@PathVariable("id") Integer id, Model model) {
-        User emp = sv.getEmpById(id); // Add this method to UserService
-        model.addAttribute("employ", emp);
+        List<Object[]> results = hd.getHistory(id);
+        List<HistoryDTO> historyList = new ArrayList<>();
 
-        return "NhanVien/order_history"; // Create a new Thymeleaf template for details
+        for (Object[] result : results) {
+            HistoryDTO dto = new HistoryDTO(
+                    (Integer) result[0], // id
+                    (String) result[1], // user_name
+                    (Date) result[2], // create_at
+                    (String) result[3], // status
+                    ((BigDecimal) result[4]).floatValue(), // total_money
+                    (String) result[5], // address
+                    (String) result[6]  // tenSanPham
+            );
+            historyList.add(dto);
+        }
+
+        model.addAttribute("his", historyList);
+        return "NhanVien/order_history";
     }
+
+
 
     //
     @PostMapping("/update/{id}")
