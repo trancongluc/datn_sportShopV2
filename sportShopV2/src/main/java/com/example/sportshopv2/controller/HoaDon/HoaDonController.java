@@ -1,13 +1,22 @@
 package com.example.sportshopv2.controller.HoaDon;
 
 import com.example.sportshopv2.model.HoaDon;
+import com.example.sportshopv2.model.HoaDonChiTiet;
+import com.example.sportshopv2.repository.HoaDonChiTietRepo;
+import com.example.sportshopv2.repository.HoaDonRepo;
+import com.example.sportshopv2.service.HoaDonService;
 import com.itextpdf.text.pdf.BaseFont;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-//import org.apache.pdfbox.pdmodel.PDDocument;
-//import org.apache.pdfbox.pdmodel.PDPage;
-//import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -15,19 +24,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import com.example.sportshopv2.model.HoaDonChiTiet;
-import com.example.sportshopv2.repository.HoaDonChiTietRepo;
-import com.example.sportshopv2.repository.HoaDonRepo;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -35,8 +32,6 @@ import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
-import org.xhtmlrenderer.pdf.ITextRenderer;
 
 @Controller
 @RequestMapping("/bill")
@@ -51,6 +46,8 @@ public class HoaDonController {
     @Autowired
     private ServletContext servletContext;
 
+    @Autowired
+    private HoaDonService hdService;
 
     @RequestMapping("/view")
     public String view(Model model) {
@@ -200,7 +197,6 @@ public class HoaDonController {
     }
 
 
-
     @GetMapping("/search")
     public String search(Model model, @RequestParam("Type") String Type) {
         List<HoaDonChiTiet> list = hdctrepo.findAllByHoaDon_Type(Type);
@@ -211,5 +207,11 @@ public class HoaDonController {
     @GetMapping("/doitra/detail")
     public String viewDTCT(Model model) {
         return "DoiTra/DoiTraChiTiet";
+    }
+
+    @GetMapping("/list-hd-cho")
+    @ResponseBody
+    public List<HoaDon> listHoaDonCho() {
+        return hdService.getHoaDonTaiQuay();
     }
 }

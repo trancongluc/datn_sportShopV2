@@ -1,5 +1,4 @@
-let invoiceCount = 0;
-let maxInvoices = 5;
+
 let invoiceData = {};
 
 // Hàm để thêm một tab mới
@@ -19,32 +18,30 @@ function addTab(invoice) {
 }
 
 function selectTab(invoiceId) {
+    // Lấy tất cả các tab hóa đơn
     const tabs = document.querySelectorAll('.tab-item');
-    tabs.forEach(tab => tab.classList.remove('active'));  // Bỏ active khỏi các tab khác
 
-    const selectedTab = document.querySelector(`.tab-item:nth-child(${invoiceId})`);
-    selectedTab.classList.add('active');  // Thêm active vào tab được chọn
-}
+    // Duyệt qua từng tab và loại bỏ lớp "active"
+    tabs.forEach(tab => {
+        tab.classList.remove('active');
+    });
 
-
-// Hàm để phục hồi các tab từ localStorage khi tải lại trang
-window.onload = function () {
-    const storedInvoices = JSON.parse(localStorage.getItem('invoices'));
-    if (storedInvoices && storedInvoices.length > 0) {
-        const tabContainer = document.getElementById('tabContainer');
-        storedInvoices.forEach(invoice => {
-            const newTab = document.createElement('div');
-            newTab.classList.add('tab-item');
-            newTab.innerHTML = invoice.name;
-            newTab.setAttribute("onclick", `selectTab(${invoice.id})`);
-            tabContainer.insertBefore(newTab, tabContainer.lastElementChild);
-        });
-
-        // Cập nhật lại số lượng hóa đơn
-        invoiceCount = storedInvoices.length;
+    // Tìm tab tương ứng với invoiceId và thêm lớp "active"
+    const selectedTab = Array.from(tabs).find(tab => tab.innerHTML.includes(`Hóa Đơn ${invoiceId}`));
+    if (selectedTab) {
+        selectedTab.classList.add('active');
     }
+
+    // Thực hiện thêm các hành động cần thiết khi tab được chọn
+    // Ví dụ: Hiển thị thông tin hóa đơn tương ứng
+    displayInvoiceDetails(invoiceId);
 }
 
+// Hàm giả lập để hiển thị thông tin hóa đơn
+function displayInvoiceDetails(invoiceId) {
+    // Thay thế phần này bằng logic của bạn để hiển thị thông tin hóa đơn
+    console.log(`Hiển thị thông tin cho hóa đơn ID: ${invoiceId}`);
+}
 function updateDeliveryOption(invoiceNumber) {
     const deliveryOptions = document.querySelectorAll('input[name="deliveryOption"]:checked');
     const selectedOption = deliveryOptions[0].id;
@@ -104,40 +101,6 @@ function updateDeliveryOption(invoiceNumber) {
     });
 }
 
-function removeTab(element, event) {
-    event.stopPropagation();
-    const tab = element.parentElement;
-    const tabContainer = document.getElementById('tabContainer');
-    const invoiceNumber = Array.from(tabContainer.children).indexOf(tab);
-
-    delete invoiceData[invoiceNumber + 1];
-    tabContainer.removeChild(tab);
-    invoiceCount--;
-
-    const tabs = document.querySelectorAll('.tab-item');
-    if (tabs.length > 0) {
-        const lastTab = tabs[tabs.length - 1];
-        lastTab.classList.add('active');
-        const lastInvoiceNumber = Array.from(tabContainer.children).indexOf(lastTab);
-        selectTab(lastInvoiceNumber + 1);
-    } else {
-        document.getElementById('productList').textContent = "Chưa có dữ liệu.";
-    }
-}
-
-function closeTab(invoiceId) {
-    const tabs = document.querySelectorAll('.tab-item');
-    tabs.forEach(tab => {
-        if (tab.innerHTML === `Hóa Đơn ${invoiceId}`) {
-            tab.remove();  // Xóa tab khỏi DOM
-        }
-    });
-
-    // Cập nhật lại dữ liệu trong localStorage
-    let storedInvoices = JSON.parse(localStorage.getItem('invoices')) || [];
-    storedInvoices = storedInvoices.filter(invoice => invoice.id !== invoiceId);  // Xóa hóa đơn khỏi danh sách
-    localStorage.setItem('invoices', JSON.stringify(storedInvoices));
-}
 
 function showToast(message) {
     const toast = document.getElementById('toast');
@@ -378,33 +341,80 @@ selectedProductsTable.querySelector('tbody').addEventListener('DOMSubtreeModifie
     }
 });
 let idKH;
-//Chon khach hang trong cbo đổ dữ liệu vào các input
+let customerSelections = {};
+
 document.getElementById("customerDropdown").addEventListener("change", function () {
     var selectedCustomerId = this.value;
-    idKH = selectedCustomerId;
+    var currentInvoiceId = getCurrentInvoiceId(); // Lấy id của hóa đơn hiện tại
+
+    // Lưu thông tin lựa chọn khách hàng tương ứng với hóa đơn
+    customerSelections[currentInvoiceId] = selectedCustomerId;
+
     if (selectedCustomerId !== "all") {
         fetch("/ban-hang-tai-quay/thong-tin-kh?idKH=" + selectedCustomerId)
             .then(response => response.json())
             .then(data => {
-                // Kiểm tra JSON trả về
-                console.log(data); // In ra console để kiểm tra
                 // Cập nhật các trường với thông tin khách hàng
-                document.getElementById("customerName").value = data.fullName || "";
-                document.getElementById("phone").value = data.phoneNumber || "";
-                document.getElementById("email").value = data.email || "";
-                document.getElementById("customerCode").value = data.code || "";
+                updateCustomerInfo(data);
             })
             .catch(error => console.error("Error fetching customer data:", error));
     } else {
         // Nếu chọn "Tất cả", xóa thông tin khách hàng
-        document.getElementById("customerName").value = "";
-        document.getElementById("phone").value = "";
-        document.getElementById("email").value = "";
-        document.getElementById("customerCode").value = "";
+        clearCustomerInfo();
     }
 });
 
+function updateCustomerInfo(data) {
+    document.getElementById("customerName").value = data.fullName || "";
+    document.getElementById("phone").value = data.phoneNumber || "";
+    document.getElementById("email").value = data.email || "";
+    document.getElementById("customerCode").value = data.code || "";
+}
+
+function clearCustomerInfo() {
+    document.getElementById("customerName").value = "";
+    document.getElementById("phone").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("customerCode").value = "";
+}
+
+function getCurrentInvoiceId() {
+    // Lấy id của hóa đơn hiện tại, ví dụ:
+    return "1027";
+}
+
+// Khi người dùng chọn một hóa đơn khác
+document.getElementById("invoiceList").addEventListener("change", function () {
+    var newInvoiceId = this.value;
+
+    // Kiểm tra xem có thông tin lựa chọn khách hàng tương ứng với hóa đơn mới không
+    if (customerSelections[newInvoiceId]) {
+        // Cập nhật trường dropdown với lựa chọn của khách hàng
+        document.getElementById("customerDropdown").value = customerSelections[newInvoiceId];
+
+        // Cập nhật thông tin khách hàng
+        fetch("/ban-hang-tai-quay/thong-tin-kh?idKH=" + customerSelections[newInvoiceId])
+            .then(response => response.json())
+            .then(data => {
+                updateCustomerInfo(data);
+            })
+            .catch(error => console.error("Error fetching customer data:", error));
+    } else {
+        // Nếu không có thông tin lựa chọn, xóa thông tin khách hàng
+        clearCustomerInfo();
+    }
+});
+
+let soLuongHoaDonCho = 0; // Số lượng hóa đơn chờ
+const maxInvoices = 5; // Giới hạn số lượng hóa đơn chờ
+
 async function taoHoaDonCho() {
+    // Kiểm tra số lượng hóa đơn chờ trước khi tạo hóa đơn mới
+    if (soLuongHoaDonCho >= maxInvoices) {
+        showToast("Số lượng hóa đơn chờ đã đạt tối đa.");
+        return; // Ngừng thực hiện hàm nếu đã đủ
+    }
+
     const idNV = 1; // ID nhân viên
     const fullName = "Đang cập nhật";
     const sdt = null;
@@ -432,6 +442,7 @@ async function taoHoaDonCho() {
             type: "Tại Quầy",
             create_at: date,
             create_by: idNV,
+            deleted: false,
             id_account: userKH,
             id_staff: emp
         };
@@ -446,13 +457,19 @@ async function taoHoaDonCho() {
 
         if (!response.ok) throw new Error('Error adding bill: ' + response.statusText);
 
+        const newHD = await response.json(); // Lấy thông tin hóa đơn mới
+        const newIdHD = newHD.id; // Giả sử API trả về ID hóa đơn mới tạo
+
         // Lưu hóa đơn vào localStorage
         let storedInvoices = JSON.parse(localStorage.getItem('invoices')) || [];
-        storedInvoices.push({id: storedInvoices.length + 1, status});
+        storedInvoices.push({ id: newIdHD }); // Sử dụng ID vừa tạo
         localStorage.setItem('invoices', JSON.stringify(storedInvoices));
+        soLuongHoaDonCho++; // Tăng số lượng hóa đơn chờ
 
         // Gọi hàm addTab để tạo tab mới cho hóa đơn
-        addTab({id: storedInvoices.length, status});
+        addTab({ id: newIdHD }); // Truyền ID hóa đơn vào addTab
+
+        console.log('ID Hóa Đơn Vừa Tạo:', newIdHD);
 
     } catch (error) {
         console.error('Error:', error);
@@ -462,15 +479,22 @@ async function taoHoaDonCho() {
 // Hàm tải hóa đơn từ cơ sở dữ liệu và hiển thị
 async function loadInvoicesFromDatabase() {
     try {
-        const response = await fetch('/api/hoadon'); // Thay đổi URL phù hợp với API của bạn
+        const response = await fetch('/bill/list-hd-cho'); // Thay đổi URL phù hợp với API của bạn
         if (!response.ok) throw new Error('Không thể lấy hóa đơn: ' + response.statusText);
+
         const invoices = await response.json();
 
-        // Lọc hóa đơn với trạng thái "Hóa Đơn Chờ" và thêm tab cho mỗi hóa đơn
+        // Cập nhật số lượng hóa đơn chờ
+        soLuongHoaDonCho = invoices.length; // Cập nhật số lượng hóa đơn chờ từ phản hồi
+
+        // Kiểm tra số lượng hóa đơn chờ
+       /* if (soLuongHoaDonCho >= maxInvoices) {
+            return; // Dừng thực hiện hàm nếu đã đủ
+        }
+*/
+        // Thêm tab cho mỗi hóa đơn
         invoices.forEach(invoice => {
-            if (invoice.status === "Hóa Đơn Chờ") {
-                addTab(invoice);
-            }
+            addTab(invoice);
         });
     } catch (error) {
         console.error('Có lỗi khi tải hóa đơn:', error);
@@ -484,17 +508,15 @@ window.onload = function () {
 
 // Hàm thêm tab khi nhấn nút thêm hóa đơn
 document.getElementById('addInvoiceButton').addEventListener('click', () => {
-    if (invoiceCount < maxInvoices) {
-        invoiceCount++;
+    if (soLuongHoaDonCho < maxInvoices) {
         taoHoaDonCho();
     } else {
-        showToast("Số lượng hóa đơn chờ đã đạt tối đa.");
+        showToast("Bạn chỉ có thể tạo tối đa 5 hóa đơn chờ!");
     }
 });
 
 function capNhatHoaDon() {
     /*event.preventDefault(); */// Ngăn chặn hành động gửi mặc định
-
     const idNV = 1; // ID nhân viên (có thể lấy từ một ô input nếu cần)
     const fullName = document.getElementById('customerName').value;
     const sdt = document.getElementById('phone').value;

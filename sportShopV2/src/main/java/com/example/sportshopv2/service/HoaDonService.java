@@ -6,6 +6,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class HoaDonService {
@@ -22,5 +24,9 @@ public class HoaDonService {
         }
         hoaDon.setId(idHD);
         return hdRepo.save(hoaDon);
+    }
+    public List<HoaDon> getHoaDonTaiQuay(){
+        List<HoaDon> listHD = hdRepo.findAllByStatus("Hóa Đơn Chờ");
+        return listHD;
     }
 }
