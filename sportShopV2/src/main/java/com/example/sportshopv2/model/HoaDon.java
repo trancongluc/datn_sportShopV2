@@ -73,7 +73,7 @@ public class HoaDon {
     private String pay_status;
 
     @Column(name = "bill_code")
-    private String bill_code;
+    private String billCode;
 
     @Column(name = "transaction_date")
     private String transaction_date;
@@ -85,13 +85,13 @@ public class HoaDon {
     private String note;
 
     @Column(name = "create_at")
-    private LocalDateTime create_at;
+    private LocalDateTime createAt;
 
     @Column(name = "create_by")
     private String create_by;
 
     @Column(name = "update_at")
-    private LocalDateTime update_at;
+    private LocalDateTime updateAt;
 
     @Column(name = "update_by")
     private String update_by;
