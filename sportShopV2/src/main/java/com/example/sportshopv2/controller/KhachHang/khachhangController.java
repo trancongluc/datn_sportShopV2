@@ -16,8 +16,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.Optional;
 
 
 @Controller
@@ -72,7 +74,7 @@ public class khachhangController {
 
     @PostMapping("/add-khach-hang")
     public String addKhachHang(
-//                                @RequestParam("code") String code,
+
                                 @RequestParam("fullName") String fullName,
                                @RequestParam("phoneNumber") String phoneNumber,
                                @RequestParam("email") String email,
@@ -89,7 +91,9 @@ public class khachhangController {
 
 
         User khachHang = new User();
+
 //        khachHang.setCode(code);
+
         khachHang.setFullName(fullName);
         khachHang.setPhoneNumber(phoneNumber);
         khachHang.setEmail(email);
@@ -152,10 +156,10 @@ public class khachhangController {
                                  @RequestParam("gender") String gender,
                                  @RequestParam("date") String date,
                                  @RequestParam("imageFile") MultipartFile imageFile,
-                                 @RequestParam("tinh_name") String tinh,
-                                 @RequestParam("quan_name") String quan,
-                                 @RequestParam("phuong_name") String phuong,
-                                 @RequestParam("line") String line,
+//                                 @RequestParam("tinh_name") String tinh,
+//                                 @RequestParam("quan_name") String quan,
+//                                 @RequestParam("phuong_name") String phuong,
+//                                 @RequestParam("line") String line,
 
                                  Model model) {
         try {
@@ -166,12 +170,12 @@ public class khachhangController {
             customer.setGender(gender);
             customer.setDate(date);
 
-            // Update address
-            Address address = customer.getAddresses().get(0); // Assuming only one address
-            address.setTinh(tinh);
-            address.setQuan(quan);
-            address.setPhuong(phuong);
-            address.setLine(line);
+//            // Update address
+//            Address address = customer.getAddresses().get(0); // Assuming only one address
+//            address.setTinh(tinh);
+//            address.setQuan(quan);
+//            address.setPhuong(phuong);
+//            address.setLine(line);
 
             // Update image if new file is uploaded
             if (!imageFile.isEmpty()) {
@@ -242,7 +246,36 @@ public class khachhangController {
         return "KhachHang/diachi"; // Return to the page displaying the customer's addresses
     }
 
+    @PostMapping("/customer/update-address/{customerId}/{addressId}")
 
+    public String updateAddress(@PathVariable("customerId") Integer customerId,
+                                @PathVariable("addressId") Integer addressId,
+                                @RequestParam("tinh") String tinh,
+                                @RequestParam("tinhName") String tinhName,
+                                @RequestParam("quan") String quan,
+                                @RequestParam("quanName") String quanName,
+                                @RequestParam("phuong") String phuong,
+                                @RequestParam("phuongName") String phuongName,
+                                @RequestParam("line") String line) {
+        // Update the address in the database with the provided details
+        addressService.updateAddress(customerId, addressId, tinhName, quanName, phuongName, line);
+
+        // Redirect back to the address view page
+        return "redirect:/khach-hang/customer/diachi/" + customerId;
+    }
+
+    @GetMapping("/customer/select-address/{customerId}/{addressId}")
+    public String selectAddress(@PathVariable("customerId") Integer customerId, @PathVariable("addressId") Integer addressId, HttpSession session) {
+        // Lấy khách hàng và địa chỉ theo ID
+        User customer = userService.findCustomerById(customerId);
+        Address selectedAddress = userService.findAddressById(addressId);
+
+        // Lưu địa chỉ đã chọn vào session
+        session.setAttribute("selectedAddress_" + customerId, selectedAddress);
+
+        // Chuyển hướng đến trang danh sách khách hàng
+        return "redirect:/khach-hang/list";
+    }
 
 
 }

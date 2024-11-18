@@ -1,6 +1,7 @@
     package com.example.sportshopv2.service;
 
 
+    import com.example.sportshopv2.model.Address;
     import com.example.sportshopv2.repository.AddressRepository;
     import com.example.sportshopv2.repository.KhachHangRepository;
 
@@ -108,6 +109,13 @@
             userRepository.save(customer);
         }
 
+        public User findCustomerById(Integer customerId) {
+            return userRepository.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
+        }
+
+        public Address findAddressById(Integer addressId) {
+            return addressRepository.findById(addressId).orElseThrow(() -> new RuntimeException("Address not found"));
+        }
 
 
     }

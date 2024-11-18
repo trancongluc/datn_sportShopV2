@@ -68,7 +68,7 @@
                     </div>
                 </div>
             </div>
-            <form action="/nhanvien/add" method="post" enctype="multipart/form-data">
+            <form th:action="@{/nhanvien/add}" method="post" enctype="multipart/form-data">
                 <div class="row">
                     <!-- Cột bên trái -->
                     <div class="col-md-4 text-center">
@@ -202,7 +202,7 @@
                             </svg>
                             Lưu
                         </button>
-                        <span> <a href="/nhanvien" class="btn btn-success">
+                        <span> <a href="/nhanvien/list" class="btn btn-success">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-arrow-return-left" viewBox="0 0 16 16">
   <path fill-rule="evenodd"

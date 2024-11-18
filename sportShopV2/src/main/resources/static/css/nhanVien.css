@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-=======
+
 
 
 .container {
@@ -91,7 +90,7 @@ tbody tr:nth-child(even) {
     border-radius: 5px;
     margin-bottom: 20px;
 }
----------------------------------------------------
+
 
 .container {
     width: 100%;        /* Chiếm 100% không gian màn hình */
@@ -149,4 +148,4 @@ form{
 #qr-reader {
     width: 100%;
 }
->>>>>>> 0ba59c439f7d616d289cb3938b58200467044561
+

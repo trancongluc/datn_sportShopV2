@@ -89,49 +89,50 @@
                             </div>
 
 
-                            <div class="css_select_div">
+<!--                            <div class="css_select_div">-->
 
 
 
 
-                                    <div class="row mb-3">
-                                        <div class="col-md-4">
-                                            <label for="tinh" class="form-label">Tỉnh</label>
-                                            <select class="form-select" id="tinh" name="tinh" title="Chọn Tỉnh Thành"
-                                                    onchange="document.getElementsByName('tinh_name')[0].value = this.options[this.selectedIndex].text;" required>
-                                                <option th:value="${customer.addresses[0].tinh}" th:text="${customer.addresses[0].tinh}" selected></option>
-                                            </select>
-                                            <input type="hidden" name="tinh_name" th:value="${customer.addresses[0].tinh}">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label for="quan" class="form-label">Huyện</label>
-                                            <select class="form-select" id="quan" name="quan" title="Chọn Quận Huyện"
-                                                    onchange="document.getElementsByName('quan_name')[0].value = this.options[this.selectedIndex].text;" required>
-                                                <option th:value="${customer.addresses[0].quan}" th:text="${customer.addresses[0].quan}" hidden>Quận Huyện</option>
-                                            </select>
-                                            <input type="hidden" name="quan_name" th:value="${customer.addresses[0].quan}">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label for="phuong" class="form-label">Phường</label>
-                                            <select class="form-select" id="phuong" name="phuong" title="Chọn Phường Xã"
-                                                    onchange="document.getElementsByName('phuong_name')[0].value = this.options[this.selectedIndex].text;" required>
-                                                <option th:value="${customer.addresses[0].phuong}" th:text="${customer.addresses[0].phuong}" hidden>Phường Xã</option>
-                                            </select>
-                                            <input type="hidden" name="phuong_name" th:value="${customer.addresses[0].phuong}">
-                                        </div>
-                                    </div>
+<!--                                    <div class="row mb-3">-->
+<!--                                        <div class="col-md-4">-->
+<!--                                            <label for="tinh" class="form-label">Tỉnh</label>-->
+<!--                                            <select class="form-select" id="tinh" name="tinh" title="Chọn Tỉnh Thành"-->
+<!--                                                    onchange="document.getElementsByName('tinh_name')[0].value = this.options[this.selectedIndex].text;" required>-->
+<!--                                                <option th:value="${customer.addresses[0].tinh}" th:text="${customer.addresses[0].tinh}" selected></option>-->
 
-                                    <div class="mb-3">
-                                        <label for="line" class="form-label">Số nhà</label>
-                                        <input type="line" class="form-control" id="line" name="line" th:value="${customer.addresses[0].line}" required>
-                                    </div>
+<!--                                            </select>-->
+<!--                                            <input type="hidden" name="tinh_name" th:value="${customer.addresses[0].tinh}">-->
+<!--                                        </div>-->
+<!--                                        <div class="col-md-4">-->
+<!--                                            <label for="quan" class="form-label">Huyện</label>-->
+<!--                                            <select class="form-select" id="quan" name="quan" title="Chọn Quận Huyện"-->
+<!--                                                    onchange="document.getElementsByName('quan_name')[0].value = this.options[this.selectedIndex].text;" required>-->
+<!--                                                <option th:value="${customer.addresses[0].quan}" th:text="${customer.addresses[0].quan}" hidden>Quận Huyện</option>-->
+<!--                                            </select>-->
+<!--                                            <input type="hidden" name="quan_name" th:value="${customer.addresses[0].quan}">-->
+<!--                                        </div>-->
+<!--                                        <div class="col-md-4">-->
+<!--                                            <label for="phuong" class="form-label">Phường</label>-->
+<!--                                            <select class="form-select" id="phuong" name="phuong" title="Chọn Phường Xã"-->
+<!--                                                    onchange="document.getElementsByName('phuong_name')[0].value = this.options[this.selectedIndex].text;" required>-->
+<!--                                                <option th:value="${customer.addresses[0].phuong}" th:text="${customer.addresses[0].phuong}" hidden>Phường Xã</option>-->
+<!--                                            </select>-->
+<!--                                            <input type="hidden" name="phuong_name" th:value="${customer.addresses[0].phuong}">-->
+<!--                                        </div>-->
+<!--                                    </div>-->
 
-
-
+<!--                                    <div class="mb-3">-->
+<!--                                        <label for="line" class="form-label">Số nhà</label>-->
+<!--                                        <input type="line" class="form-control" id="line" name="line" th:value="${customer.addresses[0].line}" required>-->
+<!--                                    </div>-->
 
 
 
-                            </div>
+
+
+
+<!--                            </div>-->
 
                         </div>
                     </div>

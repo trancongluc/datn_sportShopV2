@@ -1,11 +1,15 @@
 package com.example.sportshopv2.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,11 +30,17 @@ public class User {
     private Integer id;
     @Column(name = "code")
     private String code;
+
     @Column(name = "full_name")
+    @Size(min = 2, max = 100)
     private String fullName;
+
     @Column(name = "phone_number")
+    @Pattern(regexp = "\\d{10,15}", message = "Phone number must be 10-15 digits.")
     private String phoneNumber;
+
     @Column(name = "email")
+    @Email
     private String email;
     @Column(name = "gender")
     private String gender;
@@ -87,7 +97,7 @@ private Account account;
     }
 
     public String generateUniqueCode() {
-        return "KH" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        return "KH-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
     @PreUpdate // Được gọi trước khi thực thể được cập nhật
