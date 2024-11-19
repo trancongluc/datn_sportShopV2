@@ -84,10 +84,11 @@
                     <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal" style="margin-bottom: 15px">Thêm Địa Chỉ</a>
                     <div th:each="address : ${customer.addresses}">
                         <div class="address-card">
-                            <a style="margin-left:720px" href="#" th:href="@{/khach-hang/customer/select-address/{customerId}/{addressId}(customerId=${customer.id}, addressId=${address.id})}"
-                               class="star-icon"
-                            >
-                                <i class="far fa-star" id="star-[[${address.id}]]"></i>
+                            <a style="margin-left:720px" href="#" th:href="@{/khach-hang/customer/select-address/{customerId}/{addressId}(customerId=${customer.id}, addressId=${address.id})}">
+<!--                               class="star-icon"-->
+
+<!--                                <i class="far fa-star" id="star-[[${address.id}]]"></i>-->
+                            chon
                             </a>
                             <p>Địa chỉ: <span th:text="${address.tinh}">Tỉnh</span>,
                                 <span th:text="${address.quan}">Quận</span>,
@@ -163,55 +164,55 @@
             </div>
 
 
-            <!-- Modal để cập nhật địa chỉ -->
-            <div class="modal fade" id="updateAddressModal" tabindex="-1" role="dialog" aria-labelledby="updateAddressModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="updateAddressModalLabel">Cập Nhật Địa Chỉ</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <!-- Modal để cập nhật địa chỉ -->
+                        <div class="modal fade" id="updateAddressModal" tabindex="-1" role="dialog" aria-labelledby="updateAddressModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="updateAddressModalLabel">Cập Nhật Địa Chỉ</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 
-                        </div>
-                        <div class="modal-body">
-                            <form th:action="@{/khach-hang/customer/update-address/{customerId}/{addressId}(customerId=${customer.id}, addressId=${address.id})}" method="post">
+                                    </div>
+                                    <div class="modal-body">
+                                        <form th:action="@{/khach-hang/customer/update-address/{customerId}/{addressId}(customerId=${customer.id}, addressId=${address.id})}" method="post">
 
-                            <div class="form-group">
-                                    <label for="tinha" class="form-label">Tỉnh</label>
-                                    <select class="form-select" id="tinha" name="tinh"
-                                            onchange="document.getElementsByName('tinhName')[0].value = this.options[this.selectedIndex].text;"
-                                    >
-                                        <option th:value="${address.tinh}" th:text="${address.tinh}" selected></option>
-                                    </select>
-                                    <input type="hidden" name="tinhName" th:value="${address.tinh}">
+                                            <div class="form-group">
+                                                <label for="tinha" class="form-label">Tỉnh</label>
+                                                <select class="form-select" id="tinha" name="tinh"
+                                                        onchange="document.getElementsByName('tinhName')[0].value = this.options[this.selectedIndex].text;"
+                                                >
+                                                    <option th:value="${address.tinh}" th:text="${address.tinh}" selected></option>
+                                                </select>
+                                                <input type="hidden" name="tinhName" th:value="${address.tinh}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="quana" class="form-label">Huyện</label>
+                                                <select class="form-select" id="quana" name="quan"
+                                                        onchange="document.getElementsByName('quanName')[0].value = this.options[this.selectedIndex].text;"
+                                                >
+                                                    <option th:value="${address.quan}" th:text="${address.quan}" hidden>Quận Huyện</option>
+                                                </select>
+                                                <input type="hidden" name="quanName" th:value="${address.quan}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="phuonga" class="form-label">Phường</label>
+                                                <select class="form-select" id="phuonga" name="phuong"
+                                                        onchange="document.getElementsByName('phuongName')[0].value = this.options[this.selectedIndex].text;"
+                                                >
+                                                    <option th:value="${address.phuong}" th:text="${address.phuong}" hidden>Phường Xã</option>
+                                                </select>
+                                                <input type="hidden" name="phuongName" th:value="${address.phuong}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="linea">Số nhà</label>
+                                                <input type="text" class="form-control" id="linea" name="line" th:value="${address.line}">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary" style="margin-top: 15px">Cập nhật</button>
+                                        </form>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="quana" class="form-label">Huyện</label>
-                                    <select class="form-select" id="quana" name="quan"
-                                            onchange="document.getElementsByName('quanName')[0].value = this.options[this.selectedIndex].text;"
-                                    >
-                                        <option th:value="${address.quan}" th:text="${address.quan}" hidden>Quận Huyện</option>
-                                    </select>
-                                    <input type="hidden" name="quanName" th:value="${address.quan}">
-                                </div>
-                                <div class="form-group">
-                                    <label for="phuonga" class="form-label">Phường</label>
-                                    <select class="form-select" id="phuonga" name="phuong"
-                                            onchange="document.getElementsByName('phuongName')[0].value = this.options[this.selectedIndex].text;"
-                                    >
-                                        <option th:value="${address.phuong}" th:text="${address.phuong}" hidden>Phường Xã</option>
-                                    </select>
-                                    <input type="hidden" name="phuongName" th:value="${address.phuong}">
-                                </div>
-                                <div class="form-group">
-                                    <label for="linea">Số nhà</label>
-                                    <input type="text" class="form-control" id="linea" name="line" th:value="${address.line}">
-                                </div>
-                                <button type="submit" class="btn btn-primary" style="margin-top: 15px">Cập nhật</button>
-                            </form>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
 
 
 

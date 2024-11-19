@@ -1,5 +1,7 @@
 package com.example.sportshopv2.service;
 
+import com.example.sportshopv2.dto.UserDTO;
+import com.example.sportshopv2.dto.UserNhanVienDTO;
 import com.example.sportshopv2.model.Account;
 import com.example.sportshopv2.model.User;
 import com.example.sportshopv2.repository.NhanVienRepo;
@@ -98,6 +100,11 @@ public class NhanVienService {
         String fileName = imageFile.getOriginalFilename();
         imageFile.transferTo(new File(UPLOAD_DIR + fileName));
         NhanVien.setImageFileName(fileName);
+    }
+    public UserNhanVienDTO getNVById(Integer id) {
+        User user = nvRepository.getNhanVienById(id);
+        UserNhanVienDTO nvDTO = User.toNVDTO(user,nvRepository);
+        return nvDTO;
     }
 
 }
