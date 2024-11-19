@@ -3,6 +3,8 @@ package com.example.sportshopv2.sercurity;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -56,4 +58,10 @@ public class PhanQuyen {
                 .exceptionHandling(ex -> ex.accessDeniedPage("/login/access"));
         return httpSecurity.build();
     }
+//    public boolean isLoggedIn() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        return authentication != null && authentication.isAuthenticated()
+//                && !(authentication.getPrincipal() instanceof String
+//                && authentication.getPrincipal().equals("anonymousUser"));
+//    }
 }
