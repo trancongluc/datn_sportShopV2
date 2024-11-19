@@ -4,22 +4,19 @@ import com.example.sportshopv2.dto.SanPhamChiTietDTO;
 import com.example.sportshopv2.dto.UserDTO;
 import com.example.sportshopv2.model.HoaDon;
 import com.example.sportshopv2.model.HoaDonChiTiet;
+import com.example.sportshopv2.model.TaiKhoan;
 import com.example.sportshopv2.model.User;
 import com.example.sportshopv2.repository.KhachHangRepository;
-import com.example.sportshopv2.service.HoaDonChiTietService;
-import com.example.sportshopv2.service.HoaDonService;
-import com.example.sportshopv2.service.KhachhangService;
-import com.example.sportshopv2.service.SanPhamChiTietService;
-import jakarta.validation.Valid;
+import com.example.sportshopv2.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/ban-hang-tai-quay")
@@ -31,6 +28,7 @@ public class BanHangTaiQuayController {
     private final HoaDonService hoaDonService;
     private final KhachhangService khachhangService;
     private final HoaDonChiTietService hdctService;
+    private final TaiKhoanService tkService;
 
     @GetMapping("")
     public String banHangTaiQuay(Model model) {
@@ -62,6 +60,18 @@ public class BanHangTaiQuayController {
         return spctService.getByID(id);
     }
 
+    @GetMapping("/tk/{id}")
+    @ResponseBody
+    public TaiKhoan getTaiKhoan(@PathVariable("id") Integer id) {
+        return tkService.getTKByUser(id);
+    }
+
+    @GetMapping("/hd/{id}")
+    @ResponseBody
+    public HoaDon getHDById(@PathVariable("id") Integer id) {
+        return hoaDonService.hoaDonById(id);
+    }
+
     @PostMapping("/tao-hoa-don")
     @ResponseBody
     public HoaDon createBill(@RequestBody HoaDon hoaDon) {
@@ -71,7 +81,7 @@ public class BanHangTaiQuayController {
     @PutMapping("/update-hoa-don/{idHD}")
     @ResponseBody
     public HoaDon updateBill(@PathVariable("idHD") Integer idHD,
-                             @RequestBody @Valid HoaDon hoaDon) {
+                             @RequestBody HoaDon hoaDon) {
         try {
             return hoaDonService.updateHoaDon(idHD, hoaDon);
         } catch (Exception e) {
@@ -82,9 +92,9 @@ public class BanHangTaiQuayController {
 
     @PostMapping("/tao-hoa-don-chi-tiet")
     @ResponseBody
-    public List<HoaDonChiTiet> createBillDetails(@RequestBody List<HoaDonChiTiet> hdctList) {
-        return hdctList.stream()
-                .map(hdctService::createHDCT) // Gọi dịch vụ để tạo từng chi tiết hóa đơn
-                .collect(Collectors.toList()); // Trả về danh sách các chi tiết hóa đơn đã tạo
+    public ResponseEntity<Void> createBillDetails(@RequestBody List<HoaDonChiTiet> hoaDonChiTietList) {
+        hdctService.createBillDetails(hoaDonChiTietList);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
 }

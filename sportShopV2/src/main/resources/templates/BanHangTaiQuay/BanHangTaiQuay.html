@@ -73,13 +73,13 @@
                 <div class="delivery-option">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="deliveryOption" id="atStore" checked
-                               onchange="updateDeliveryOption(invoiceCount)">
+                               onchange="updateDeliveryOption()">
                         <label class="form-check-label" for="atStore">Tại Quầy</label>
                         <small class="d-block">Có thể nhận hàng từ 7h30 đến 22h30 mọi ngày tại cửa hàng</small>
                     </div>
                     <div class="form-check mt-2">
                         <input class="form-check-input" type="radio" name="deliveryOption" id="delivery"
-                               onchange="updateDeliveryOption(invoiceCount)">
+                               onchange="updateDeliveryOption()">
                         <label class="form-check-label" for="delivery">Chuyển Phát</label>
                         <small class="d-block">Giao hàng toàn quốc từ 1 đến 2 ngày</small>
                     </div>
@@ -91,19 +91,19 @@
                         <div class="col-md-4">
                             <label for="tinh" class="form-label">Tỉnh</label>
                             <select class="form-select" id="tinh" name="tinh" title="Chọn Tỉnh Thành">
-                                <option value="0">Tỉnh Thành</option>
+                                <option value="">Tỉnh Thành</option>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label for="quan" class="form-label">Huyện</label>
                             <select class="form-select" id="quan" name="quan" title="Chọn Quận Huyện">
-                                <option value="0">Quận Huyện</option>
+                                <option value="">Quận Huyện</option>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label for="phuong" class="form-label">Phường</label>
                             <select class="form-select" id="phuong" name="phuong" title="Chọn Phường Xã">
-                                <option value="0">Phường Xã</option>
+                                <option value="">Phường Xã</option>
                             </select>
                         </div>
                     </div>
@@ -135,15 +135,15 @@
                     <div class="mt-3">
                         <div class="mb-2">
                             <label for="customerName">Họ Tên:</label>
-                            <input type="text" class="form-control" id="customerName" readonly>
+                            <input type="text" class="form-control" id="customerName" >
                         </div>
                         <div class="mb-2">
                             <label for="phone">SĐT:</label>
-                            <input type="text" class="form-control" id="phone" readonly>
+                            <input type="text" class="form-control" id="phone" >
                         </div>
                         <div class="mb-2">
                             <label for="email">Email:</label>
-                            <input type="email" class="form-control" id="email" readonly>
+                            <input type="email" class="form-control" id="email" >
                         </div>
                         <div class="mb-2">
                             <label for="customerCode">Mã KH:</label>

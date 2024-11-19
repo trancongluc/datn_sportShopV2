@@ -1,9 +1,16 @@
-
 let invoiceData = {};
-
 // Hàm để thêm một tab mới
+let customerInfoByInvoice = {}; // Đối tượng lưu thông tin khách hàng cho từng hóa đơn
+let productDetailByInvoice = {};
+let tongTien = 0;
+let phiShip = 0; // Biến để lưu phí ship
+let giamGia = 0;
+let selectedProductIds = [];
+const tabDeliveryData = {};
+let idHD;
+let idKH;
+let address;
 
-// Hàm thêm tab cho hóa đơn
 function addTab(invoice) {
     const tabContainer = document.getElementById('tabContainer');
 
@@ -11,96 +18,278 @@ function addTab(invoice) {
     const newTab = document.createElement('div');
     newTab.classList.add('tab-item');
     newTab.innerHTML = `Hóa Đơn ${invoice.id}`;
+    newTab.dataset.invoiceId = invoice.id; // Lưu ID hóa đơn
+
     newTab.setAttribute("onclick", `selectTab(${invoice.id})`);
 
     // Thêm thẻ mới vào DOM
     tabContainer.insertBefore(newTab, tabContainer.lastElementChild);
 }
 
+let tabSelection = {};
+let nhanHang;
+
+// Hàm cập nhật phương thức giao hàng
+function updateDeliveryOption(invoiceId) {
+    const deliveryOptions = document.querySelectorAll('input[name="deliveryOption"]:checked');
+    const selectedOption = deliveryOptions[0]?.id;
+
+    if (!selectedOption) {
+        console.error('No delivery option selected');
+        return;
+    }
+
+    // Lưu phương thức giao hàng và địa chỉ (nếu có) cho mỗi tab
+    tabSelection[invoiceId] = tabSelection[invoiceId] || {};
+    tabSelection[invoiceId].deliveryOption = selectedOption === 'atStore' ? 'Tại Quầy' : 'Chuyển Phát';
+
+    if (selectedOption === 'delivery') {
+        const address = {
+            tinh: document.getElementById('tinh').value,
+            quan: document.getElementById('quan').value,
+            phuong: document.getElementById('phuong').value,
+            soNha: document.getElementById('soNha').value
+        };
+        tabSelection[invoiceId].address = address;
+    }
+
+    // Lưu vào localStorage
+    localStorage.setItem('tabSelection', JSON.stringify(tabSelection));
+
+    // Hiển thị/ẩn phần địa chỉ
+    const deliveryAddressDiv = document.getElementById('deliveryAddress');
+    deliveryAddressDiv.style.display = selectedOption === 'delivery' ? 'block' : 'none';
+}
+
 function selectTab(invoiceId) {
-    // Lấy tất cả các tab hóa đơn
     const tabs = document.querySelectorAll('.tab-item');
-
-    // Duyệt qua từng tab và loại bỏ lớp "active"
-    tabs.forEach(tab => {
-        tab.classList.remove('active');
-    });
-
-    // Tìm tab tương ứng với invoiceId và thêm lớp "active"
-    const selectedTab = Array.from(tabs).find(tab => tab.innerHTML.includes(`Hóa Đơn ${invoiceId}`));
+    tabs.forEach(tab => tab.classList.remove('active'));
+    const selectedTab = Array.from(tabs).find(tab => tab.dataset.invoiceId == invoiceId);
     if (selectedTab) {
         selectedTab.classList.add('active');
     }
+    idHD = invoiceId;
+    console.log("idHD là:" + idHD);
+    // Hiển thị thông tin khách hàng cho tab được chọn
+    displayCustomerInfoForTab(invoiceId);
+    updateCustomerDropdown(invoiceId); // Cập nhật dropdown
+    updateSelectedProductsTable(invoiceId);
+// Cập nhật phương thức giao hàng và địa chỉ từ tabSelection
+}
+function updateDeliveryOption() {
+    // Lấy tất cả các radio button với name là "deliveryOption"
+    const deliveryOptions = document.getElementsByName('deliveryOption');
 
-    // Thực hiện thêm các hành động cần thiết khi tab được chọn
-    // Ví dụ: Hiển thị thông tin hóa đơn tương ứng
-    displayInvoiceDetails(invoiceId);
+    // Khởi tạo biến để lưu lựa chọn được chọn
+    let selectedOption = '';
+
+    // Duyệt qua từng radio button để tìm ra cái được chọn
+    for (const option of deliveryOptions) {
+        if (option.checked) {
+            selectedOption = option.id; // Lưu id của tùy chọn được chọn
+            break; // Thoát vòng lặp khi tìm thấy
+        }
+    }
+    nhanHang = selectedOption === 'atStore' ? 'Tại Quầy' : 'Chuyển Phát';
+    // Hiển thị tùy chọn được chọn (hoặc thực hiện các hành động khác)
+    console.log('Tùy chọn nhận hàng đang được chọn:', selectedOption);
 }
 
-// Hàm giả lập để hiển thị thông tin hóa đơn
-function displayInvoiceDetails(invoiceId) {
-    // Thay thế phần này bằng logic của bạn để hiển thị thông tin hóa đơn
-    console.log(`Hiển thị thông tin cho hóa đơn ID: ${invoiceId}`);
+// Gọi hàm khi trang được tải để lấy giá trị mặc định
+document.addEventListener('DOMContentLoaded', updateDeliveryOption);
+function displayCustomerInfoForTab(invoiceId) {
+    const customerData = customerInfoByInvoice[invoiceId];
+    if (customerData) {
+        document.getElementById("customerName").value = customerData.fullName || "";
+        document.getElementById("phone").value = customerData.phoneNumber || "";
+        document.getElementById("email").value = customerData.email || "";
+        document.getElementById("customerCode").value = customerData.code || "";
+    } else {
+        // Xóa thông tin nếu không có dữ liệu cho tab
+        clearCustomerInfo();
+    }
 }
-function updateDeliveryOption(invoiceNumber) {
-    const deliveryOptions = document.querySelectorAll('input[name="deliveryOption"]:checked');
-    const selectedOption = deliveryOptions[0].id;
 
-    // Cập nhật phương thức giao hàng
-    if (invoiceData[invoiceNumber]) {
-        invoiceData[invoiceNumber].deliveryOption = selectedOption === 'atStore' ? 'Tại Quầy' : 'Chuyển Phát';
+function clearCustomerInfo() {
+    document.getElementById("customerName").value = "";
+    document.getElementById("phone").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("customerCode").value = "";
+}
+
+document.getElementById("customerDropdown").addEventListener("change", function () {
+    const selectedCustomerId = this.value;
+    const activeTab = document.querySelector('.tab-item.active');
+    const invoiceId = activeTab ? activeTab.dataset.invoiceId : null; // Lấy ID hóa đơn từ tab đang hoạt động
+    idKH = selectedCustomerId;
+    console.log("khachsachs hang:" + idKH)
+    if (selectedCustomerId !== "all" && invoiceId) {
+        fetch("/ban-hang-tai-quay/thong-tin-kh?idKH=" + idKH)
+            .then(response => response.json())
+            .then(data => {
+                // Hiển thị và lưu thông tin
+                document.getElementById("customerName").value = data.fullName || "";
+                document.getElementById("phone").value = data.phoneNumber || "";
+                document.getElementById("email").value = data.email || "";
+                document.getElementById("customerCode").value = data.code || "";
+
+                // Lưu vào đối tượng
+                saveCustomerInfoForTab(invoiceId, data);
+            })
+            .catch(error => console.error("Error fetching customer data:", error));
     } else {
-        console.error(`invoiceData[${invoiceNumber}] is undefined`);
+        // Nếu chọn "Tất cả" hoặc không có tab nào, xóa thông tin
+        clearCustomerInfo();
+        if (invoiceId) {
+            saveCustomerInfoForTab(invoiceId, null);
+        }
     }
+});
 
-    // Hiển thị hoặc ẩn phần địa chỉ
-    const deliveryAddressDiv = document.getElementById('deliveryAddress');
-    if (selectedOption === 'delivery') {
-        deliveryAddressDiv.style.display = 'block'; // Hiển thị phần địa chỉ
-    } else {
-        deliveryAddressDiv.style.display = 'none'; // Ẩn phần địa chỉ
+function saveCustomerInfoForTab(invoiceId, customerData) {
+    customerInfoByInvoice[invoiceId] = customerData;
+}
+
+function saveProductDetailsForTab(invoiceId, productData) {
+    if (!productDetailByInvoice[invoiceId]) {
+        productDetailByInvoice[invoiceId] = []; // Tạo danh sách nếu chưa có
     }
-    $(document).ready(function () {
-        //Lấy tỉnh thành
-        $.getJSON('https://esgoo.net/api-tinhthanh/1/0.htm', function (data_tinh) {
-            if (data_tinh.error == 0) {
-                $.each(data_tinh.data, function (key_tinh, val_tinh) {
-                    $("#tinh").append('<option value="' + val_tinh.id + '">' + val_tinh.full_name + '</option>');
-                });
-                $("#tinh").change(function (e) {
-                    var idtinh = $(this).val();
-                    //Lấy quận huyện
-                    $.getJSON('https://esgoo.net/api-tinhthanh/2/' + idtinh + '.htm', function (data_quan) {
-                        if (data_quan.error == 0) {
-                            $("#quan").html('<option value="0">Quận Huyện</option>');
-                            $("#phuong").html('<option value="0">Phường Xã</option>');
-                            $.each(data_quan.data, function (key_quan, val_quan) {
-                                $("#quan").append('<option value="' + val_quan.id + '">' + val_quan.full_name + '</option>');
-                            });
-                            //Lấy phường xã
-                            $("#quan").change(function (e) {
-                                var idquan = $(this).val();
-                                $.getJSON('https://esgoo.net/api-tinhthanh/3/' + idquan + '.htm', function (data_phuong) {
-                                    if (data_phuong.error == 0) {
-                                        $("#phuong").html('<option value="0">Phường Xã</option>');
-                                        $.each(data_phuong.data, function (key_phuong, val_phuong) {
-                                            $("#phuong").append('<option value="' + val_phuong.id + '">' + val_phuong.full_name + '</option>');
+    productDetailByInvoice[invoiceId].push(productData); // Lưu sản phẩm vào danh sách của hóa đơn
+}
 
-                                        });
-                                    }
-                                });
-                            });
+function updateCustomerDropdown(invoiceId) {
+    const activeCustomerId = customerInfoByInvoice[invoiceId]
+        ? customerInfoByInvoice[invoiceId].id // Giả định bạn có ID khách hàng trong dữ liệu
+        : "all"; // Hoặc "all" nếu không có dữ liệu
 
-                        }
-                    });
-                });
+    document.getElementById("customerDropdown").value = activeCustomerId; // Cập nhật dropdown
+}
 
-            }
+function updateSelectedProductsTable(invoiceId) {
+    const tbody = selectedProductsTable.querySelector('tbody');
+    tbody.innerHTML = ""; // Xóa bảng hiện tại
+
+    // Lấy danh sách sản phẩm từ `productDetailByInvoice`
+    const products = productDetailByInvoice[invoiceId] || [];
+    selectedProductIds = []; // Cập nhật danh sách sản phẩm đã chọn
+
+    products.forEach(product => {
+        const selectedProduct = document.createElement('tr');
+        selectedProduct.setAttribute('data-id', product.id);
+
+        // Tạo ô hình ảnh
+        const imageCell = document.createElement('td');
+        const imgElement = document.createElement('img');
+        imgElement.src = `/images/${product.anhSanPham[0]?.tenAnh || 'default.jpg'}`;
+        imgElement.alt = `Hình sản phẩm ${product.id}`;
+        imgElement.style.width = '50px';
+        imageCell.appendChild(imgElement);
+        selectedProduct.appendChild(imageCell);
+
+        // Tạo ô tên sản phẩm
+        const nameCell = document.createElement('td');
+        nameCell.innerHTML = `
+            <span>${product.sanPham.tenSanPham}</span>
+            [ ${product.kichThuoc.tenKichThuoc} - 
+            <span style="display: inline-block; background-color: ${product.mauSac.tenMauSac}; width: 20px; height: 20px; border: 1px solid #000;"></span> ]`;
+        selectedProduct.appendChild(nameCell);
+
+        // Tạo ô giá
+        const priceCell = document.createElement('td');
+        priceCell.textContent = formatCurrency(product.gia);
+        selectedProduct.appendChild(priceCell);
+
+        // Tạo ô số lượng
+        const quantityCell = document.createElement('td');
+        const quantityInput = document.createElement('input');
+        quantityInput.type = 'number';
+        quantityInput.value = 1;
+        quantityInput.min = 1;
+        quantityInput.style.width = '60px';
+        quantityCell.appendChild(quantityInput);
+        selectedProduct.appendChild(quantityCell);
+
+        // Tạo ô xóa
+        const deleteCell = document.createElement('td');
+        const deleteIcon = document.createElement('i');
+        deleteIcon.className = 'fas fa-trash-alt';
+        deleteIcon.style.cursor = 'pointer';
+        deleteCell.appendChild(deleteIcon);
+        selectedProduct.appendChild(deleteCell);
+
+        // Xử lý sự kiện xóa sản phẩm
+        deleteIcon.addEventListener('click', function () {
+            selectedProduct.remove();
+            productDetailByInvoice[invoiceId] = productDetailByInvoice[invoiceId].filter(p => p.id !== product.id);
+            tongTien = calculateTotal();
+            updateTotal();
         });
 
+        tbody.appendChild(selectedProduct);
+        selectedProductIds.push(product.id); // Cập nhật danh sách sản phẩm đã chọn
+        console.log("SPCT" + selectedProductIds);
     });
+
+    tongTien = calculateTotal(); // Tính tổng tiền
+    updateTotal(); // Cập nhật hiển thị tổng tiền
 }
 
+function getCurrentInvoiceId() {
+    const activeTab = document.querySelector('.tab-item.active');
+    return activeTab ? activeTab.dataset.invoiceId : null;
+}
+
+// Hàm cập nhật phương thức nhận hàng
+
+
+$(document).ready(function () {
+    // Lấy danh sách tỉnh
+    $.getJSON('https://esgoo.net/api-tinhthanh/1/0.htm', function (data_tinh) {
+        if (data_tinh.error === 0) {
+            // Thêm tỉnh vào dropdown
+            $.each(data_tinh.data, function (key_tinh, val_tinh) {
+                const selected = val_tinh.id == "${customer.addresses[0].province_id}" ? "selected" : "";
+                $("#tinh").append('<option value="' + val_tinh.id + '" ' + selected + '>' + val_tinh.full_name + '</option>');
+            });
+
+            // Kích hoạt sự kiện thay đổi tỉnh để tải quận
+            $("#tinh").change(function () {
+                var idtinh = $(this).val();
+                // Lấy danh sách quận
+                $.getJSON('https://esgoo.net/api-tinhthanh/2/' + idtinh + '.htm', function (data_quan) {
+                    $("#quan").empty(); // Xóa danh sách quận trước
+                    $.each(data_quan.data, function (key_quan, val_quan) {
+                        $("#quan").append('<option value="' + val_quan.id + '">' + val_quan.full_name + '</option>');
+                    });
+                    $("#quan").change(); // Kích hoạt tải phường
+                });
+            }).change(); // Kích hoạt tải quận ban đầu
+
+            // Kích hoạt sự kiện thay đổi quận để tải phường
+            $("#quan").change(function () {
+                var idquan = $(this).val();
+                // Lấy danh sách phường
+                $.getJSON('https://esgoo.net/api-tinhthanh/3/' + idquan + '.htm', function (data_phuong) {
+                    $("#phuong").empty(); // Xóa danh sách phường trước
+                    $.each(data_phuong.data, function (key_phuong, val_phuong) {
+                        const selected = val_phuong.id == "${customer.addresses[0].ward_id}" ? "selected" : "";
+                        $("#phuong").append('<option value="' + val_phuong.id + '" ' + selected + '>' + val_phuong.full_name + '</option>');
+                    });
+                });
+            }).change(); // Kích hoạt tải phường ban đầu
+        }
+    });
+
+    // Tạo địa chỉ từ các lựa chọn
+    $("#tinh, #quan, #phuong").change(function () {
+        const soNha = $("#soNha").val() || ""; // Giả sử bạn có một input cho số nhà
+        const xa = $("#phuong").find("option:selected").text(); // Lấy tên phường
+        const quan = $("#quan").find("option:selected").text(); // Lấy tên quận
+        const tinh = $("#tinh").find("option:selected").text(); // Lấy tên tỉnh
+        address = `${xa}, ${quan}, ${tinh}`;
+        console.log(address); // Hiển thị địa chỉ trong console
+    });
+});
 
 function showToast(message) {
     const toast = document.getElementById('toast');
@@ -172,9 +361,6 @@ inputField.addEventListener('input', function () {
     }
 });
 
-let tongTien = 0;
-let phiShip = 0; // Biến để lưu phí ship
-let giamGia = 0;
 
 // Hàm để cập nhật tổng tiền
 function updateTotal() {
@@ -189,7 +375,7 @@ function updateThucThu() {
     thucThuCell.textContent = formatCurrency(tongTien);
 }
 
-let selectedProductIds = [];
+
 // Thêm sự kiện click cho từng hàng sản phẩm
 for (let i = 0; i < productRows.length; i++) {
     productRows[i].addEventListener('click', function () {
@@ -204,11 +390,24 @@ for (let i = 0; i < productRows.length; i++) {
                 return response.json();
             })
             .then(spctDTO => {
+                // Kiểm tra xem sản phẩm đã tồn tại trong bảng chưa
+                const existingRow = selectedProductsTable.querySelector(`tr[data-id='${spctDTO.id}']`);
+                if (existingRow) {
+                    // Nếu sản phẩm đã tồn tại, cập nhật số lượng
+                    const quantityInput = existingRow.querySelector('input[type="number"]');
+                    quantityInput.value = parseInt(quantityInput.value, 10) + 1; // Tăng số lượng
+                    const giaSP = spctDTO.gia;
+                    tongTien = calculateTotal(); // Tính tổng tiền
+                    updateTotal();// Cập nhật hiển thị tổng tiền
+                    return; // Thoát hàm để không thêm hàng mới
+                }
+
+                // Nếu sản phẩm chưa tồn tại, tạo hàng mới
                 const selectedProduct = document.createElement('tr');
                 selectedProduct.setAttribute('data-id', spctDTO.id);
+
                 // Tạo ô hình ảnh
                 const imageCell = document.createElement('td');
-                const imagesDiv = document.createElement('div');
                 if (Array.isArray(spctDTO.anhSanPham) && spctDTO.anhSanPham.length > 0) {
                     const imgElement = document.createElement('img');
                     imgElement.src = `/images/${spctDTO.anhSanPham[0].tenAnh}`;
@@ -216,44 +415,36 @@ for (let i = 0; i < productRows.length; i++) {
                     imgElement.style.width = '50px';
                     imageCell.appendChild(imgElement);
                 } else {
-                    imagesDiv.textContent = 'Không có hình ảnh';
+                    imageCell.textContent = 'Không có hình ảnh';
                 }
                 selectedProduct.appendChild(imageCell);
 
+                // Tạo ô tên sản phẩm
                 const nameCell = document.createElement('td');
-
-// Tạo phần tử span cho tên sản phẩm
                 const nameSpan = document.createElement('span');
-                nameSpan.textContent = spctDTO.sanPham.tenSanPham; // Thêm tên sản phẩm
+                nameSpan.textContent = spctDTO.sanPham.tenSanPham;
                 nameCell.appendChild(nameSpan);
 
-// Tạo phần tử span cho kích thước và thêm vào ngoặc vuông
                 const sizeSpan = document.createElement('span');
-                sizeSpan.textContent = `[ ${spctDTO.kichThuoc.tenKichThuoc} - `; // Thêm kích thước với ngoặc mở
+                sizeSpan.textContent = `[ ${spctDTO.kichThuoc.tenKichThuoc} - `;
                 nameCell.appendChild(sizeSpan);
 
-// Tạo phần tử span cho màu sắc
                 const colorSpan = document.createElement('span');
-                colorSpan.style.display = 'inline-block'; // Đặt thuộc tính hiển thị
-                colorSpan.style.backgroundColor = spctDTO.mauSac.tenMauSac; // Thêm màu sắc
+                colorSpan.style.display = 'inline-block';
+                colorSpan.style.backgroundColor = spctDTO.mauSac.tenMauSac;
                 colorSpan.style.width = '20px';
                 colorSpan.style.height = '20px';
-                colorSpan.style.border = '1px solid #000'; // Đặt viền
+                colorSpan.style.border = '1px solid #000';
+                nameCell.appendChild(colorSpan);
 
-// Thêm span màu sắc vào nameCell sau sizeSpan
-                nameCell.appendChild(colorSpan); // Thêm span màu vào nameCell
-
-// Thêm phần tử đóng ngoặc vào nameCell
                 const closingBracketSpan = document.createElement('span');
-                closingBracketSpan.textContent = ' ]'; // Thêm ngoặc đóng
+                closingBracketSpan.textContent = ' ]';
                 nameCell.appendChild(closingBracketSpan);
-
-// Thêm ô tên sản phẩm vào hàng
                 selectedProduct.appendChild(nameCell);
 
                 // Tạo ô giá
                 const priceCell = document.createElement('td');
-                const giaSP = spctDTO.gia; // Lưu giá sản phẩm để tính tổng
+                const giaSP = spctDTO.gia;
                 priceCell.textContent = formatCurrency(giaSP);
                 selectedProduct.appendChild(priceCell);
 
@@ -261,7 +452,7 @@ for (let i = 0; i < productRows.length; i++) {
                 const quantityCell = document.createElement('td');
                 const quantityInput = document.createElement('input');
                 quantityInput.type = 'number';
-                quantityInput.value = 1;
+                quantityInput.value = 1; // Khởi tạo số lượng là 1
                 quantityInput.min = 1;
                 quantityInput.style.width = '60px';
                 quantityCell.appendChild(quantityInput);
@@ -269,12 +460,16 @@ for (let i = 0; i < productRows.length; i++) {
 
                 // Cập nhật tổng tiền khi số lượng thay đổi
                 quantityInput.addEventListener('input', function () {
+                    console.log('Số lượng thay đổi:', quantityInput.value); // Kiểm tra sự kiện có hoạt động
                     const inputQuantity = parseInt(quantityInput.value, 10);
-                    if (inputQuantity < 1) {
+
+                    // Đảm bảo số lượng không nhỏ hơn 1
+                    if (inputQuantity < 1 || isNaN(inputQuantity)) {
                         quantityInput.value = 1;
                     }
-                    const currentTotal = giaSP * inputQuantity; // Tính tổng cho sản phẩm hiện tại
-                    tongTien = calculateTotal(); // Tính tổng tiền từ tất cả sản phẩm
+
+                    // Cập nhật tổng tiền
+                    tongTien = calculateTotal(); // Gọi hàm tính tổng
                     updateTotal(); // Cập nhật hiển thị tổng tiền
                 });
 
@@ -289,15 +484,20 @@ for (let i = 0; i < productRows.length; i++) {
                 // Xóa sản phẩm
                 deleteIcon.addEventListener('click', function () {
                     selectedProduct.remove();
-                    tongTien = calculateTotal(); // Tính lại tổng tiền sau khi xóa
-                    updateTotal(); // Cập nhật hiển thị tổng tiền
+                    tongTien = calculateTotal();
+                    updateTotal();
                 });
 
                 // Thêm hàng sản phẩm vào bảng đã chọn
                 selectedProductsTable.querySelector('tbody').appendChild(selectedProduct);
-                selectedProductIds.push(spctDTO.id);
-                tongTien += giaSP; // Cập nhật tổng tiền khi thêm sản phẩm
-                updateTotal(); // Cập nhật hiển thị tổng tiền
+                const currentInvoiceId = getCurrentInvoiceId();
+                saveProductDetailsForTab(currentInvoiceId, spctDTO);
+                updateSelectedProductsTable(currentInvoiceId);
+                //tongTien += giaSP; // Cập nhật tổng tiền khi thêm sản phẩm
+                console.log("Giá:"+ giaSP);
+                console.log("tongTien:"+ tongTien);
+                tongTien = calculateTotal();
+                updateTotal();// Cập nhật hiển thị tổng tiền
             })
             .catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
@@ -312,12 +512,13 @@ function calculateTotal() {
     let total = 0;
     const rows = selectedProductsTable.querySelectorAll('tbody tr');
     rows.forEach(row => {
-        const quantityInput = row.querySelector('input[type="number"]');
+        let quantityInput = row.querySelector('input[type="number"]');
         const priceCell = row.querySelector('td:nth-child(3)'); // Giả sử giá là ô thứ 3
         const price = parseCurrency(priceCell.textContent); // Chuyển đổi giá trị về số
         const quantity = parseInt(quantityInput.value);
-        const productId = row.dataset.productId; // Giả sử mỗi hàng có thuộc tính data-product-id
+        let productId = row.dataset.productId; // Giả sử mỗi hàng có thuộc tính data-product-id
         productQuantities[productId] = quantity;
+        console.log("soLuong", productQuantities);
         total += price * quantity; // Tính tổng
     });
     return total;
@@ -340,70 +541,7 @@ selectedProductsTable.querySelector('tbody').addEventListener('DOMSubtreeModifie
         searchBar.classList.remove('expanded-search-bar');
     }
 });
-let idKH;
-let customerSelections = {};
 
-document.getElementById("customerDropdown").addEventListener("change", function () {
-    var selectedCustomerId = this.value;
-    var currentInvoiceId = getCurrentInvoiceId(); // Lấy id của hóa đơn hiện tại
-
-    // Lưu thông tin lựa chọn khách hàng tương ứng với hóa đơn
-    customerSelections[currentInvoiceId] = selectedCustomerId;
-
-    if (selectedCustomerId !== "all") {
-        fetch("/ban-hang-tai-quay/thong-tin-kh?idKH=" + selectedCustomerId)
-            .then(response => response.json())
-            .then(data => {
-                // Cập nhật các trường với thông tin khách hàng
-                updateCustomerInfo(data);
-            })
-            .catch(error => console.error("Error fetching customer data:", error));
-    } else {
-        // Nếu chọn "Tất cả", xóa thông tin khách hàng
-        clearCustomerInfo();
-    }
-});
-
-function updateCustomerInfo(data) {
-    document.getElementById("customerName").value = data.fullName || "";
-    document.getElementById("phone").value = data.phoneNumber || "";
-    document.getElementById("email").value = data.email || "";
-    document.getElementById("customerCode").value = data.code || "";
-}
-
-function clearCustomerInfo() {
-    document.getElementById("customerName").value = "";
-    document.getElementById("phone").value = "";
-    document.getElementById("email").value = "";
-    document.getElementById("customerCode").value = "";
-}
-
-function getCurrentInvoiceId() {
-    // Lấy id của hóa đơn hiện tại, ví dụ:
-    return "1027";
-}
-
-// Khi người dùng chọn một hóa đơn khác
-document.getElementById("invoiceList").addEventListener("change", function () {
-    var newInvoiceId = this.value;
-
-    // Kiểm tra xem có thông tin lựa chọn khách hàng tương ứng với hóa đơn mới không
-    if (customerSelections[newInvoiceId]) {
-        // Cập nhật trường dropdown với lựa chọn của khách hàng
-        document.getElementById("customerDropdown").value = customerSelections[newInvoiceId];
-
-        // Cập nhật thông tin khách hàng
-        fetch("/ban-hang-tai-quay/thong-tin-kh?idKH=" + customerSelections[newInvoiceId])
-            .then(response => response.json())
-            .then(data => {
-                updateCustomerInfo(data);
-            })
-            .catch(error => console.error("Error fetching customer data:", error));
-    } else {
-        // Nếu không có thông tin lựa chọn, xóa thông tin khách hàng
-        clearCustomerInfo();
-    }
-});
 
 let soLuongHoaDonCho = 0; // Số lượng hóa đơn chờ
 const maxInvoices = 5; // Giới hạn số lượng hóa đơn chờ
@@ -462,13 +600,13 @@ async function taoHoaDonCho() {
 
         // Lưu hóa đơn vào localStorage
         let storedInvoices = JSON.parse(localStorage.getItem('invoices')) || [];
-        storedInvoices.push({ id: newIdHD }); // Sử dụng ID vừa tạo
+        storedInvoices.push({id: newIdHD}); // Sử dụng ID vừa tạo
         localStorage.setItem('invoices', JSON.stringify(storedInvoices));
         soLuongHoaDonCho++; // Tăng số lượng hóa đơn chờ
 
         // Gọi hàm addTab để tạo tab mới cho hóa đơn
-        addTab({ id: newIdHD }); // Truyền ID hóa đơn vào addTab
-
+        addTab({id: newIdHD}); // Truyền ID hóa đơn vào addTab
+        showToast("Tạo hóa đơn chờ thành công!");
         console.log('ID Hóa Đơn Vừa Tạo:', newIdHD);
 
     } catch (error) {
@@ -488,10 +626,10 @@ async function loadInvoicesFromDatabase() {
         soLuongHoaDonCho = invoices.length; // Cập nhật số lượng hóa đơn chờ từ phản hồi
 
         // Kiểm tra số lượng hóa đơn chờ
-       /* if (soLuongHoaDonCho >= maxInvoices) {
-            return; // Dừng thực hiện hàm nếu đã đủ
-        }
-*/
+        /* if (soLuongHoaDonCho >= maxInvoices) {
+             return; // Dừng thực hiện hàm nếu đã đủ
+         }
+ */
         // Thêm tab cho mỗi hóa đơn
         invoices.forEach(invoice => {
             addTab(invoice);
@@ -515,130 +653,105 @@ document.getElementById('addInvoiceButton').addEventListener('click', () => {
     }
 });
 
-function capNhatHoaDon() {
-    /*event.preventDefault(); */// Ngăn chặn hành động gửi mặc định
-    const idNV = 1; // ID nhân viên (có thể lấy từ một ô input nếu cần)
-    const fullName = document.getElementById('customerName').value;
-    const sdt = document.getElementById('phone').value;
-    const email = document.getElementById('email').value;
-    const phiShip = 0; // Thay đổi theo cách tính phí ship
-    const giamGia = 0; // Thay đổi theo cách tính giảm giá
-    const status = "Hoàn Thành"; // Trạng thái mặc định
-    const date = new Date().toISOString(); // Lấy thời gian hiện tại
-    console.log("khachsachs hang:" + idKH)
-    // Gọi đến endpoint để lấy thông tin khách hàng
-    fetch(`/khach-hang/thong-tin-kh/${idKH}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Không thể lấy thông tin khách hàng: ' + response.statusText);
-            }
-            return response.json(); // Phân tích dữ liệu JSON
-        })
-        .then(userKH => {
-            // Gọi đến endpoint để lấy thông tin nhân viên
-            return fetch(`/nhanvien/thong-tin-nv/${idNV}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Không thể lấy thông tin nhân viên: ' + response.statusText);
-                    }
-                    return response.json(); // Phân tích dữ liệu JSON
-                })
-                .then(emp => {
-                    // Tạo đối tượng hóa đơn
-                    const hoaDon = {
-                        user_name: fullName || userKH.name, // Sử dụng tên khách hàng nếu không có
-                        phone_number: sdt || userKH.phone, // Sử dụng số điện thoại nếu không có
-                        total_money: tongTien,
-                        money_reduced: giamGia,
-                        status: status,
-                        email: email, // Sử dụng email nếu không có
-                        money_ship: phiShip,
-                        bill_code: `HD-${Date.now()}`, // Mã hóa đơn
-                        transaction_date: date,
-                        update_at: date,
-                        create_by: idNV, // ID nhân viên (người tạo hóa đơn)
-                        id_account: userKH, // Đối tượng khách hàng
-                        id_staff: emp // Đối tượng nhân viên
-                    };
+async function capNhatHoaDon() {
+    try {
+        const idNV = 1; // ID nhân viên (có thể lấy từ một ô input nếu cần)
+        const fullName = document.getElementById('customerName').value;
+        const sdt = document.getElementById('phone').value;
+        const email = document.getElementById('email').value;
+        const phiShip = 0; // Thay đổi theo cách tính phí ship
+        const giamGia = 0; // Thay đổi theo cách tính giảm giá
+        const status = "Hoàn Thành"; // Trạng thái mặc định
+        const date = new Date().toISOString(); // Lấy thời gian hiện tại
+        const soNha = document.getElementById('soNha').value;
+        console.log(nhanHang);
+        if(nhanHang == 'Tại Quầy'){
+            address = null;
+        }
+        var diaChiChiTiet = (nhanHang === 'Tại Quầy') ? null : `${soNha}, ${address}`;
+        const currentInvoice = await fetch(`ban-hang-tai-quay/hd/${idHD}`).then(handleResponse)
+        // Lấy thông tin khách hàng
+        const userKH = await fetch(`/ban-hang-tai-quay/tk/${idKH}`).then(handleResponse);
 
-                    // Gửi yêu cầu tạo hóa đơn
-                    return fetch('ban-hang-tai-quay/tao-hoa-don', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(hoaDon) // Gửi đối tượng hóa đơn
-                    });
-                });
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json(); // Phân tích JSON nếu thành công
-            } else {
-                throw new Error('Error adding bill: ' + response.statusText);
-            }
-        })
-        .then(data => {
-            const hoaDonChiTietPromises = selectedProductIds.map(productId => {
-                const quantity = productQuantities[productId] || 1;
-                return fetch(`san-pham-chi-tiet/thong-tin-spct/${productId}`)
-                    .then(response => {
-                        // Kiểm tra phản hồi từ server
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok: ' + response.statusText);
-                        }
-                        return response.json();
-                    })
-                    .then(productDetails => {
-                        // Kiểm tra xem productDetails có giá không
-                        if (!productDetails || !productDetails.price) {
-                            console.error(`Không tìm thấy giá cho sản phẩm ID: ${productId}`);
-                            return null; // Có thể trả về null hoặc một đối tượng mặc định
-                        }
-                        console.log("Giá SPCT: " + productDetails.price);
-                        return {
-                            quantity: quantity,
-                            hoaDon: data,
-                            sanPhamChiTiet: productDetails,
-                            price: productDetails.price,
-                            create_at: new Date().toISOString(),
-                            create_by: idNV
-                        };
-                    });
-            });
+        // Lấy thông tin nhân viên
+        const emp = await fetch(`/ban-hang-tai-quay/tk/${idNV}`).then(handleResponse);
+        console.log("HoaDOn:", currentInvoice);
+        console.log("KH:", userKH);
+        console.log("NV:", emp);
+        // Tạo đối tượng hóa đơn
+        const hoaDon = {
+            user_name: fullName || userKH.name,
+            phone_number: sdt || userKH.phone_number,
+            total_money: tongTien,
+            money_reduced: giamGia,
+            status: status,
+            email: email,
+            money_ship: phiShip,
+            bill_code: currentInvoice.bill_code,
+            transaction_date: date,
+            type: nhanHang,
+            address: diaChiChiTiet,
+            update_at: date,
+            create_by: idNV,
+            id_account: userKH,
+            id_staff: emp,
+        };
+        // Cập nhật hóa đơn
+        const updatedHoaDon = await fetch(`ban-hang-tai-quay/update-hoa-don/${idHD}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(hoaDon),
+        }).then(handleResponse);
+        // Lấy thông tin chi tiết sản phẩm và tạo hóa đơn chi tiết
+        const hoaDonChiTietList = await Promise.all(
+            selectedProductIds.map(async (productId) => {
+                var quantity = productQuantities[productId] || 1;
+                console.log("soLuongKhiThem:",productQuantities);
+                const productDetails = await fetch(`san-pham-chi-tiet/thong-tin-spct/${productId}`).then(handleResponse);
+                if (!productDetails || !productDetails.gia) {
+                    console.warn(`Không tìm thấy giá cho sản phẩm ID: ${productId}`);
+                    return null;
+                }
 
-            // Chờ tất cả các yêu cầu lấy thông tin sản phẩm hoàn tất
-            return Promise.all(hoaDonChiTietPromises);
-        })
-        .then(hoaDonChiTietList => {
-            // Chờ tất cả các yêu cầu lấy thông tin sản phẩm hoàn tất
-            return fetch('ban-hang-tai-quay/tao-hoa-don-chi-tiet', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(hoaDonChiTietList)
-            });
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json(); // Phân tích JSON nếu thành công
-            } else {
-                throw new Error('Error adding bill details: ' + response.statusText);
-            }
-        })
-        .then(data => {
-            console.log('Hóa đơn chi tiết đã được tạo:', data);
-            showNotification("Thêm hóa đơn và hóa đơn chi tiết thành công!"); // Thông báo thành công
-            document.getElementById('hoaDonForm').reset(); // Reset form
-            selectedProductIds = []; // Reset danh sách ID sản phẩm đã chọn
-            window.location.href = '/ban-hang-tai-quay';
-        })
-        .catch(error => {
-            console.error('Có lỗi:', error);
-            showNotification("Thêm hóa đơn thất bại!"); // Thông báo lỗi
+                return {
+                    quantity: quantity,
+                    hoaDon: updatedHoaDon,
+                    sanPhamChiTiet: productDetails,
+                    price: productDetails.gia,
+                    create_at: date,
+                    create_by: idNV,
+                };
+            })
+        );
+
+        // Loại bỏ các phần tử null nếu có lỗi trong danh sách sản phẩm
+        const validHoaDonChiTietList = hoaDonChiTietList.filter(item => item !== null);
+
+        // Gửi yêu cầu tạo hóa đơn chi tiết
+        await fetch('ban-hang-tai-quay/tao-hoa-don-chi-tiet', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(validHoaDonChiTietList),
         });
+        showToast("Tạo Hóa Đơn Thành Công!");
+        selectedProductIds = [];
+        window.location.href = '/ban-hang-tai-quay';
+        // Thông báo thành công và reset form
+
+    } catch (error) {
+        console.error('Có lỗi xảy ra:', error);
+        showToast("Thêm hóa đơn thất bại!");
+    }
 }
+
+// Hàm xử lý phản hồi từ API
+function handleResponse(response) {
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
+    }
+    return response.json();
+}
+
 
 
 
