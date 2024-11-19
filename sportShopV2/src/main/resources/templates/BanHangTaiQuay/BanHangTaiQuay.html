@@ -72,15 +72,15 @@
                 <h5>Nhận Hàng:</h5>
                 <div class="delivery-option">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="deliveryOption" id="atStore" checked
+                        <input class="form-check-input" type="radio" name="deliveryOption" id="Tại Quầy" checked
                                onchange="updateDeliveryOption()">
-                        <label class="form-check-label" for="atStore">Tại Quầy</label>
+                        <label class="form-check-label" for="Tại Quầy">Tại Quầy</label>
                         <small class="d-block">Có thể nhận hàng từ 7h30 đến 22h30 mọi ngày tại cửa hàng</small>
                     </div>
                     <div class="form-check mt-2">
-                        <input class="form-check-input" type="radio" name="deliveryOption" id="delivery"
+                        <input class="form-check-input" type="radio" name="deliveryOption" id="Chuyển Phát"
                                onchange="updateDeliveryOption()">
-                        <label class="form-check-label" for="delivery">Chuyển Phát</label>
+                        <label class="form-check-label" for="Chuyển Phát">Chuyển Phát</label>
                         <small class="d-block">Giao hàng toàn quốc từ 1 đến 2 ngày</small>
                     </div>
 
@@ -177,13 +177,23 @@
                         <td class="text-end" id="thucThu">0</td>
                     </tr>
                 </table>
-                <div class="total-btn" onclick="capNhatHoaDon()">THANH TOÁN</div>
+                <div class="total-btn" onclick="showConfirmation()">THANH TOÁN</div>
             </div>
         </div>
     </div>
     <div id="toast" class="toast hide">
         <span id="toast-message">Thông báo sẽ xuất hiện ở đây!</span>
         <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('#confirmationModal')">&times;</span>
+            <p id="modalMessage"></p>
+            <div class="button-group">
+                <button class="modal-button" onclick="capNhatHoaDon()">OK</button>
+                <button class="cancel-button" onclick="closeModal('#confirmationModal')">Hủy</button>
+            </div>
+        </div>
     </div>
     <script src="/js/Banhangtaiquay.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

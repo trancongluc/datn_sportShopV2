@@ -79,7 +79,8 @@ public class PhanQuyen {
                 "/nhanvien/**",
                 "/hoa-don/**",
                 "/hoa-don-chi-tiet/**",
-                "/bill/**"
+                "/bill/**",
+                "/api/proxy/**"
 
                 // Thêm các endpoint khác cần bỏ qua
         );
