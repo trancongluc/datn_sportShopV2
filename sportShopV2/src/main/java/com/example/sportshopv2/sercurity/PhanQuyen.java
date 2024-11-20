@@ -36,7 +36,7 @@ public class PhanQuyen {
                                 "/nhanvien/**", "/bill/**", "/ban-hang-tai-quay/**").hasAuthority("Admin")
                         .requestMatchers("/bill/**", "/buy/**").hasAuthority("Staff")
                         .requestMatchers("/buy/**").hasAuthority("Employee")
-                        .requestMatchers("/login/**", "/mua-sam-SportShopV2/**").permitAll()
+                        .requestMatchers("/login/**", "/mua-sam-SportShopV2/**", "/api/payment/**" , "/VNPAY-demo/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
