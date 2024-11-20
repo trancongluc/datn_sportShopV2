@@ -232,15 +232,15 @@ public class HoaDonController {
 
     @PostMapping("/status/update")
     public String updateStatus(@RequestParam Integer id, @RequestParam String status) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+        /*Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();*/
 
         Optional<HoaDon> hoaDonOptional = hdrepo.findById(id);
         if (hoaDonOptional.isPresent()) {
             HoaDon hoaDon = hoaDonOptional.get();
             hoaDon.setStatus(status);
             hoaDon.setUpdateAt(LocalDateTime.now());
-            hoaDon.setUpdate_by(username);
+            hoaDon.setUpdate_by("username");
             hdrepo.save(hoaDon);
         }
         return "redirect:/bill/detail?id=" + id;

@@ -573,10 +573,10 @@ async function taoHoaDonCho() {
             status: status,
             email: email,
             money_ship: phiShip,
-            bill_code: `HD-${Date.now()}`,
+            billCode: `HD-${Date.now()}`,
             transaction_date: date,
             type: "Tại Quầy",
-            create_at: date,
+            createAt: date,
             create_by: idNV,
             deleted: false,
             id_account: userKH,
@@ -688,11 +688,12 @@ async function capNhatHoaDon() {
             transaction_date: date,
             type: nhanHang,
             address: diaChiChiTiet,
-            update_at: date,
+            updateAt: date,
             create_at: currentInvoice.create_at,
             create_by: idNV,
             id_account: userKH,
             id_staff: emp,
+            deleted: 0
         };
         // Cập nhật hóa đơn
         const updatedHoaDon = await fetch(`ban-hang-tai-quay/update-hoa-don/${idHD}`, {

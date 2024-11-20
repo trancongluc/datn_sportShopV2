@@ -82,6 +82,7 @@ public class PhanQuyen {
                 "/bill/**",
                 "/api/proxy/**"
 
+
                 // Thêm các endpoint khác cần bỏ qua
         );
     }
