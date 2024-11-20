@@ -689,6 +689,7 @@ async function capNhatHoaDon() {
             type: nhanHang,
             address: diaChiChiTiet,
             update_at: date,
+            create_at: currentInvoice.create_at,
             create_by: idNV,
             id_account: userKH,
             id_staff: emp,
