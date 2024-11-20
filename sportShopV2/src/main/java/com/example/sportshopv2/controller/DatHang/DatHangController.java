@@ -23,8 +23,11 @@ public class DatHangController {
     private ChatLieuService chatLieuService;
     private CoGiayService coGiayService;
     private DeGiayService deGiayService;
+    @Autowired
     private KichThuocService kichThuocService;
+    @Autowired
     private MauSacService mauSacService;
+    @Autowired
     private SanPhamService sanPhamService;
     private TheLoaiService theLoaiService;
     private ThuongHieuService thuongHieuService;
@@ -39,15 +42,26 @@ public class DatHangController {
 
     @RequestMapping("/trang-chu")
     public String trangChu(Model model) {
-        List<SanPhamChiTietDTO> AllProductDetail = sanPhamChiTietService.getAllSPCT();
+        List<SanPham> AllProduct = sanPhamService.findAllSanPham();
+        List<SanPhamChiTietDTO> AllProductDetail = AllProduct.stream()
+                .map(sp -> sanPhamChiTietService.findAllSPCTByIdSP(sp.getId())) // Lấy id từ SanPhamChiTiet
+                .flatMap(List::stream) // Gộp danh sách ảnh từ từng sản phẩm thành một danh sách duy nhất
+                .collect(Collectors.toList());
         List<AnhSanPham> anhSanPhams = AllProductDetail.stream()
                 .map(spct -> anhSanPhamRepository.findByIdSPCT(spct.getId())) // Lấy id từ SanPhamChiTiet
+
                 .flatMap(List::stream) // Gộp danh sách ảnh từ từng sản phẩm thành một danh sách duy nhất
                 .collect(Collectors.toList());
 
         if (anhSanPhams.isEmpty()) {
             System.out.println("Danh sách hình ảnh rỗng.");
         }
+        List<String> imageUrls = anhSanPhams.stream()
+                .map(anh -> anh.getTenAnh() != null ? "/images/" + anh.getTenAnh() : "/images/giayMau.png")
+                .collect(Collectors.toList());
+
+        model.addAttribute("imageUrls", imageUrls);
+        model.addAttribute("listsp", AllProduct);
         model.addAttribute("listspct", AllProductDetail);
         model.addAttribute("listImage", anhSanPhams);
         return "MuaHang/TrangChu";
@@ -72,6 +86,7 @@ public class DatHangController {
         gioHangChiTiet.setGiaTien(productDetail.getGia());
         gioHangChiTiet.setIdGioHang(gioHang);
         gioHangChiTiet.setTrangThai("Active");
+        gioHangChiTiet.setSoLuong(1);
         gioHangChiTietRepo.save(gioHangChiTiet);
         List<GioHangChiTiet> AllCart = gioHangChiTietRepo.findAll();
         model.addAttribute("danhSachGioHang", AllCart);
@@ -102,9 +117,13 @@ public class DatHangController {
 
     @RequestMapping("/mua-ngay")
     public String muaNgay(Model model, @RequestParam("id") Integer id) {
-        SanPhamChiTietDTO listProduct = sanPhamChiTietService.getByID(id);
-        List<AnhSanPham> anhSanPhams = listProduct.getAnhSanPham();
-        model.addAttribute("listProduct", listProduct);
+        SanPham listSP =  sanPhamService.findAllSanPhamById(id);
+        SanPhamChiTietDTO listProductDetail = sanPhamChiTietService.getByID(id);
+        List<AnhSanPham> anhSanPhams = listProductDetail.getAnhSanPham();
+        List<SanPhamChiTietDTO> listSizeAndColor = sanPhamChiTietService
+                .findAllSPCTByIdSP(listProductDetail.getSanPham().getId());
+        model.addAttribute("listSizeAndColor", listSizeAndColor);
+        model.addAttribute("listProduct", listProductDetail);
         model.addAttribute("listImage", anhSanPhams);
         return "MuaHang/mua-ngay";
     }

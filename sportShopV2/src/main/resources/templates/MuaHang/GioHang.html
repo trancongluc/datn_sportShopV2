@@ -118,48 +118,52 @@
     </style>
 </head>
 <body>
-<nav><a th:href="@{/mua-sam-SportShopV2/trang-chu}"><button class="btn btn-info" >Trở lại</button></a></nav>
-<table class="w-full table-auto">
-    <thead>
-    <tr class="bg-orange-500 text-white">
-        <th class="px-4 py-2">STT</th>
-        <th class="px-4 py-2">Ảnh Sản Phẩm</th>
-        <th class="px-4 py-2">Thông tin sản phẩm</th>
-        <th class="px-4 py-2">Màu sắc</th>
-        <th class="px-4 py-2">Số lượng</th>
-        <th class="px-4 py-2">Tổng tiền</th>
-        <th class="px-4 py-2">Trạng Thái</th>
-    </tr>
-    </thead>
-    <tbody th:each="list, index: ${listCart}">
-    <tr class="bg-gray-100">
-        <td class="border px-4 py-2 text-center" th:text="${index.index + 1}"></td>
-        <td class="border px-4 py-2 text-center">
-            <img alt="Sản phẩm" height="50"
-                 th:src="${listImage[index.index]?.tenAnh != null ? '/images/' + listImage[index.index].tenAnh : '/images/giayMau.png'}"
-                 width="50"/>
+<nav><a th:href="@{/mua-sam-SportShopV2/trang-chu}">
+    <button class="btn btn-info">Trở lại</button>
+</a></nav>
+<div>
+    <table class="w-full table-auto">
+        <thead>
+        <tr class="bg-orange-500 text-black">
+            <th class="px-4 py-2">STT</th>
+            <th class="px-4 py-2">Ảnh Sản Phẩm</th>
+            <th class="px-4 py-2">Thông tin sản phẩm</th>
+            <th class="px-4 py-2">Màu sắc</th>
+            <th class="px-4 py-2">Số lượng</th>
+            <th class="px-4 py-2">Tổng tiền</th>
+            <th class="px-4 py-2">Trạng Thái</th>
+        </tr>
+        </thead>
+        <tbody >
+        <tr class="bg-gray-100" th:each="list, index: ${listCart}">
+            <td class="border px-4 py-2 text-center" th:text="${index.index + 1}"></td>
+            <td class="border px-4 py-2 text-center">
+                <img alt="Sản phẩm" height="50"
+                     th:src="${listImage[index.index]?.tenAnh != null ? '/images/' + listImage[index.index].tenAnh : '/images/giayMau.png'}"
+                     width="50"/>
 
-        </td>
-        <td class="border px-4 py-2">
-            <p th:text="${list[index.index].idSanPhamChiTiet.idSanPham.tenSanPham}"></p>
-            <p>Kích cỡ:
-                <span th:text="${list[index.index].idSanPhamChiTiet.idKichThuoc.tenKichThuoc}"></span>
-            </p>
-        </td>
-        <td class="border px-4 py-2 text-center">
-            <div
-                    th:style="'width: 40px; height: 40px;background-color: ' + ${list.idSanPhamChiTiet.idMauSac.tenMauSac}">
-            </div>
-            <span th:if="${list.idSanPhamChiTiet.idMauSac == null}">Không có màu</span>
-        </td>
+            </td>
+            <td class="border px-4 py-2">
+                <p th:text="${list[index.index].idSanPhamChiTiet.idSanPham.tenSanPham}"></p>
+                <p>Kích cỡ:
+                    <span th:text="${list[index.index].idSanPhamChiTiet.idKichThuoc.tenKichThuoc}"></span>
+                </p>
+            </td>
+            <td class="border px-4 py-2 text-center">
+                <div
+                        th:style="'width: 40px; height: 40px;background-color: ' + ${list.idSanPhamChiTiet.idMauSac.tenMauSac}">
+                </div>
+                <span th:if="${list.idSanPhamChiTiet.idMauSac == null}">Không có màu</span>
+            </td>
 
-        <td class="border px-4 py-2 text-center" th:text="${list[index.index].quantity}"></td>
-        <td class="border px-4 py-2 text-center"
-            th:text="${list[index.index].soLuong * list[index.index].giaTien}"></td>
-        </td>
-    </tr>
-    </tbody>
-</table>
+            <td class="border px-4 py-2 text-center" th:text="${list[index.index].quantity}"></td>
+            <td class="border px-4 py-2 text-center"
+                th:text="${list[index.index].soLuong * list[index.index].giaTien}"></td>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 <div class="container">
     <div class="left">
         <h2>Khách hàng</h2>

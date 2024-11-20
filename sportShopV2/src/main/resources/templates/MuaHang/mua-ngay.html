@@ -478,42 +478,25 @@
                     Phí Vận Chuyển: 40₫
                 </div>
             </div>
-            <div class="product-options">
-                <div class="size">
-       <span>
+            <span>
         Size:
        </span>
-                    <span onclick="toggleActive(this)">
-        38
+            <div class="product-options">
+                <div class="size">
+
+                    <span th:each="size : ${listSizeAndColor}" onclick="toggleActive(this)"
+                          th:text="${size.kichThuoc.tenKichThuoc}">
+
        </span>
-                    <span onclick="toggleActive(this)">
-        39
-       </span>
-                    <span onclick="toggleActive(this)">
-        40
-       </span>
-                    <span onclick="toggleActive(this)">
-        41
-       </span>
-                    <span onclick="toggleActive(this)">
-        42
-       </span>
+
                 </div>
-                <div class="color">
-       <span>
+                <span>
         Màu:
        </span>
-                    <span onclick="toggleActive(this)">
-        Đen
-       </span>
-                    <span onclick="toggleActive(this)">
-        Trắng
-       </span>
-                    <span onclick="toggleActive(this)">
-        Xanh dương
-       </span>
-                    <span onclick="toggleActive(this)">
-        Đỏ
+                <div class="color">
+
+                    <span th:each="color: ${listSizeAndColor}" onclick="toggleActive(this)"
+                          th:style="'width: 40px; height: 40px;background-color: ' + ${color.mauSac.tenMauSac}">
        </span>
                 </div>
             </div>
@@ -521,16 +504,31 @@
       <span>
        Số Lượng
       </span>
-                <button>
-                    -
-                </button>
-                <input type="text" value="1"/>
-                <button>
-                    +
-                </button>
+                <div>
+                    <button onclick="decreaseValue()">-</button>
+                    <input type="text" id="quantity" value="1" readonly />
+                    <button onclick="increaseValue()">+</button>
+                </div>
+
+                <script>
+                    function increaseValue() {
+                        const input = document.getElementById("quantity");
+                        let currentValue = parseInt(input.value);
+                        input.value = currentValue + 1;
+                    }
+
+                    function decreaseValue() {
+                        const input = document.getElementById("quantity");
+                        let currentValue = parseInt(input.value);
+                        if (currentValue > 1) { // Giới hạn giá trị tối thiểu là 1
+                            input.value = currentValue - 1;
+                        }
+                    }
+                </script>
+
             </div>
             <div class="product-actions">
-                <a th:href="@{/mua-sam-SportShopV2/gio-hang-khach-hang}">
+                <a th:href="@{/mua-sam-SportShopV2/gio-hang(id=${listProduct.id})}">
                     <button class="add-to-cart">
                         Thêm Vào Giỏ Hàng
                     </button>

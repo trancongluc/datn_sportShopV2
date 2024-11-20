@@ -43,7 +43,12 @@ public class SanPhamChiTietService {
                         SanPhamChiTiet.toDTO(sanPhamChiTiet, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo))
                 .collect(Collectors.toList());
     }
-
+    public List<SanPhamChiTietDTO> findAllSPCTByIdSP(Integer idSP) {
+        List<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndIdSanPham(false, idSP );
+        return listSPCT.stream().map(sanPhamChiTiet ->
+                        SanPhamChiTiet.toDTO(sanPhamChiTiet, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo))
+                .collect(Collectors.toList());
+    }
     public Page<SanPhamChiTietDTO> getSPCTByIdSP(Integer idSP, Pageable pageable) {
         // Lấy trang danh sách SanPhamChiTiet từ repository
         Page<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndIdSanPham(false, idSP, pageable);
