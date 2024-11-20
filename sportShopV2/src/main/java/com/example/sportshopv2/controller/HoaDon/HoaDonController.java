@@ -2,11 +2,23 @@ package com.example.sportshopv2.controller.HoaDon;
 
 import com.example.sportshopv2.model.AnhSanPham;
 import com.example.sportshopv2.model.HoaDon;
+import com.example.sportshopv2.model.HoaDonChiTiet;
+import com.example.sportshopv2.repository.HoaDonChiTietRepo;
+import com.example.sportshopv2.repository.HoaDonRepo;
+import com.example.sportshopv2.service.HoaDonService;
 import com.example.sportshopv2.repository.AnhSanPhamRepository;
 import com.itextpdf.text.pdf.BaseFont;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -14,19 +26,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import com.example.sportshopv2.model.HoaDonChiTiet;
-import com.example.sportshopv2.repository.HoaDonChiTietRepo;
-import com.example.sportshopv2.repository.HoaDonRepo;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -55,7 +55,8 @@ public class HoaDonController {
 
     @Autowired
     private ServletContext servletContext;
-
+    @Autowired
+    private HoaDonService hdService;
     private Map<Integer, String> tongTienHD;
 
 
@@ -269,4 +270,14 @@ public class HoaDonController {
     }
 
 
+    @GetMapping("/doitra/detail")
+    public String viewDTCT(Model model) {
+        return "DoiTra/DoiTraChiTiet";
+    }
+
+    @GetMapping("/list-hd-cho")
+    @ResponseBody
+    public List<HoaDon> listHoaDonCho() {
+        return hdService.getHoaDonTaiQuay();
+    }
 }

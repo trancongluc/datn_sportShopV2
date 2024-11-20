@@ -9,6 +9,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import java.util.List;
+
 public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
 
     HoaDon findAllById(Integer id);
@@ -31,4 +33,5 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
 
 
 //    Optional<HoaDon> findById(Integer id);
+    List<HoaDon> findAllByStatus( String status);
 }
