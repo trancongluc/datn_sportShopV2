@@ -130,7 +130,11 @@
             <artifactId>flying-saucer-pdf-itext5</artifactId>
             <version>9.7.2</version>
         </dependency>
-
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- iText Core -->
         <dependency>
@@ -138,9 +142,8 @@
             <artifactId>itextpdf</artifactId>
             <version>5.5.13.2</version> <!-- Adjust to the latest version -->
         </dependency>
-
-
     </dependencies>
+
 
     <build>
         <plugins>

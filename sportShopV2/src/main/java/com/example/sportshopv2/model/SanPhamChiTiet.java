@@ -72,7 +72,6 @@ public class SanPhamChiTiet extends BaseEntity {
                                           DeGiayRepository dgRepo, TheLoaiRepository tlRepo, CoGiayRepository cgRepo,
                                           ChatLieuRepository clRepo, AnhSanPhamRepository anhRepo) {
         List<AnhSanPham> danhSachAnh = anhRepo.findByIdSPCT(spct.getId()); // Giả sử có phương thức này
-
         return SanPhamChiTietDTO.builder()
                 .id(spct.getId())
                 .kichThuoc(kichThuocRepository.findById(spct.idKichThuoc).orElse(null)) // Tạo đối tượng KichThuoc từ ID
@@ -90,6 +89,10 @@ public class SanPhamChiTiet extends BaseEntity {
                 .gioiTinh(spct.getGioiTinh())
                 .anhSanPham(danhSachAnh)
                 .build();
+    }
+    public static SanPhamChiTietDTO toDTI(SanPhamChiTiet spct, HoaDonChiTietRepo hoaDonChiTietRepo){
+        List<HoaDonChiTiet> danhSachHoaDonChiTiet = hoaDonChiTietRepo.findAllBySanPhamChiTiet_Id(spct.id);
+        return SanPhamChiTietDTO.builder().id(spct.id).hoaDonChiTiet(danhSachHoaDonChiTiet).build();
     }
 
 

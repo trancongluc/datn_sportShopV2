@@ -24,19 +24,14 @@ public class SanPhamChiTietDTO extends BaseEntity {
     private ThuongHieu thuongHieu;
 
     private DeGiay deGiay;
-
     private TheLoai theLoai;
-
     private CoGiay coGiay;
     private ChatLieu chatLieu;
-
     private String moTa;
-
     private Integer soLuong;
-
     private Float gia;
-
     private String trangThai;
     private String gioiTinh;
     private List<AnhSanPham> anhSanPham;
+    private List<HoaDonChiTiet> hoaDonChiTiet;
 }
