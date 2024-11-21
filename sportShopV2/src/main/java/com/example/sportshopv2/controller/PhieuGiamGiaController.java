@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/giam-gia")
@@ -41,37 +44,58 @@ public class PhieuGiamGiaController {
         return "PhieuGiamGia/add";
     }
 
-    @GetMapping("/dot-giam-gia")
-    public String DotGiamGia() {
-        return "PhieuGiamGia/dotGiamGia";
-    }
-
-    @GetMapping("/add-dot-giam-gia")
-    public String AddDotGiamGia() {
-        return "PhieuGiamGia/addDotGiamGia";
-    }
 
     @PostMapping("/save")
     public String saveVoucher(@ModelAttribute PhieuGiamGia voucher) {
+        String uniqueVoucherCode = generateUniqueVoucherCode();
+        voucher.setVoucherCode(uniqueVoucherCode); // Gán mã voucher vào đối tượng
+
         voucherService.create(voucher);
-        return "redirect:/view";
+        return "redirect:/giam-gia/view";
     }
     @GetMapping("/detail/{id}")
-    public String showDetail(@PathVariable Long id, Model model) {
-//        PhieuGiamGia giamGia = phieuGiamGiaService.findByID(id);
-//        model.addAttribute("giamGia", giamGia);
-        return "detail"; // Trả về tên của template detail.html
+    public String showDetail(@PathVariable Integer id, Model model, RedirectAttributes redirectAttributes) {
+        if (id == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "ID không hợp lệ!");
+            return "redirect:/giam-gia/view";
+        }
+
+        PhieuGiamGia giamGia = phieuGiamGiaService.findByID(id);
+        if (giamGia == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy voucher!");
+            return "redirect:/giam-gia/view";
+        }
+        model.addAttribute("giamGia", giamGia);
+        return "PhieuGiamGia/detail";
     }
 
     @PostMapping("/update")
-    public String updateGiamGia(@ModelAttribute PhieuGiamGia giamGia) {
-//        phieuGiamGiaService.save(giamGia); // Lưu đối tượng đã cập nhật
-        return "redirect:/giam-gia"; // Chuyển hướng về danh sách
+    public String updateGiamGia(@ModelAttribute PhieuGiamGia phieuGiamGia, RedirectAttributes redirectAttributes) {
+        if (phieuGiamGia.getId() == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "ID không hợp lệ!");
+            return "redirect:/giam-gia/view";
+        }
+        phieuGiamGiaService.update(phieuGiamGia);
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");
+        return "redirect:/giam-gia/view";
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteVoucher(@PathVariable Integer id) {
-        phieuGiamGiaService.delete(id);
-        return "redirect:/giam-gia";
+    @PostMapping("/delete/{id}")
+    public String deleteVoucher(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        if (phieuGiamGiaService.delete(id)) {
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa voucher thành công!");
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy voucher để xóa!");
+        }
+        return "redirect:/giam-gia/view";
+    }
+    private String generateUniqueVoucherCode() {
+        // Logic để tạo mã voucher duy nhất
+        // Có thể kiểm tra trong cơ sở dữ liệu để đảm bảo không trùng lặp
+        String code;
+        do {
+            code = "VC" + UUID.randomUUID().toString().substring(0, 5).toUpperCase(); // Tạo mã ngẫu nhiên
+        } while (vcRepo.existsByVoucherCode(code)); // Kiểm tra xem mã đã tồn tại chưa
+        return code;
     }
 }

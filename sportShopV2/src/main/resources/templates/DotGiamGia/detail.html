@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Menu}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Thêm Đợt Giảm Giá</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+
+        .form-section, .product-section {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-section {
+            flex: 1 1 30%;
+            margin-right: 20px;
+        }
+
+        .product-section {
+            flex: 1 1 65%;
+        }
+
+        h2 {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #343a40;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .form-group input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 8px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .form-group input[type="submit"]:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .table-container {
+            margin-top: 20px;
+        }
+
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-container th, .table-container td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table-container th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .table-container td {
+            background-color: white;
+        }
+
+        .table-container .status {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 12px;
+            text-align: center;
+            white-space: nowrap; /* Prevent text from wrapping */
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            padding: 10px 15px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            color: #007bff;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .pagination a:hover {
+            background-color: #e9ecef;
+        }
+
+        .pagination a.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .add-button {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .add-button button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .add-button button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .form-section, .product-section {
+                flex: 1 1 100%;
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+<main layout:fragment="main1">
+    <div class="container">
+        <div class="form-section">
+            <h2>Thêm đợt giảm giá</h2>
+            <form th:action="@{/dot-giam-gia/update}" th:object="${dotGiamGia}" method="post">
+                <div class="form-group">
+                    <label for="ma-phieu">Mã</label>
+                    <input type="hidden" id="ma-phieu" th:field="*{saleCode}">
+                </div>
+                <div class="form-group">
+                    <label for="promotion-name">Tên khuyến mại</label>
+                    <input type="text" id="promotion-name" name="promotionName" placeholder="Tên khuyến mãi" th:field="*{name}" required class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="discount-value">Giá trị giảm</label>
+                    <input type="number" id="discount-value" name="discountValue" placeholder="Giá trị giảm" th:field="*{discountValue}" required class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="start-date">Ngày bắt đầu</label>
+                    <input type="date" id="start-date" name="startDate" th:field="*{startDate}" required class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="end-date">Ngày kết thúc</label>
+                    <input type="date" id="end-date" name="endDate" th:field="*{endDate}" required class="form-control">
+                </div>
+                <div class="add-button">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-user-plus"></i> Chỉnh Sửa</button>
+                </div>
+            </form>
+        </div>
+        <div class="product-section">
+            <h2>Sản phẩm</h2>
+            <label for="search-product" class="mr-2">Tìm Kiếm</label>
+            <input type="text" id="search-product" placeholder="Mã hoặc tên sản phẩm" class="form-control mr-2">
+            <div class="table-container mt-3">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox" id="select-all" onclick="toggleAll(this)"></th>
+                        <th>STT</th>
+                        <th>Mã sản phẩm</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Trạng Thái</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="sp, iterStat : ${listSanPham}">
+                        <td><input type="checkbox" class="product-checkbox" data-id="${sp.id}" onclick="showProductDetails(this)"></td>
+                        <td th:text="${iterStat.index + 1}"></td>
+                        <td th:text="${sp.code}"></td>
+                        <td th:text="${sp.tenSanPham}"></td>
+                        <td th:text="${sp.trangThai}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!--            <div class="pagination">-->
+            <!--                <a href="#">&#60;</a>-->
+            <!--                <a href="#" class="active">1</a>-->
+            <!--                <a href="#">2</a>-->
+            <!--                <a href="#">3</a>-->
+            <!--                <a href="#">&#62;</a>-->
+            <!--            </div>-->
+            <!--            <h2>Chi tiết sản phẩm</h2>-->
+            <!--            <div id="product-details" class="table-container">-->
+            <!--                <table id="details-table" class="table table-bordered">-->
+            <!--                    <thead>-->
+            <!--                    <tr>-->
+            <!--                        <th>Tên sản phẩm</th>-->
+            <!--                        <th>Giới tính</th>-->
+            <!--                        <th>Kích thước</th>-->
+            <!--                        <th>Màu</th>-->
+            <!--                        <th>Trạng thái</th>-->
+            <!--                        <th>Tình trạng</th>-->
+            <!--                    </tr>-->
+            <!--                    </thead>-->
+            <!--                    <tbody>-->
+
+            <!--                    </tbody>-->
+            <!--                </table>-->
+            <!--            </div>-->
+        </div>
+    </div>
+</main>
+
+<script>
+
+    // function showProductDetails(checkbox) {
+    //     const productId = checkbox.getAttribute('data-id');
+    //     const productDetailsTable = document.getElementById('details-table').getElementsByTagName('tbody')[0];
+    //
+    //     productDetailsTable.innerHTML = ''; // Xóa nội dung cũ
+    //
+    //     if (checkbox.checked) {
+    //         fetch(`/api/products/${productId}`)
+    //             .then(response => response.json())
+    //             .then(product => {
+    //                 if (product) {
+    //                     const newRow = productDetailsTable.insertRow();
+    //                     newRow.innerHTML = `
+    //                         <td>${product.name}</td>
+    //                         <td>${product.gender}</td>
+    //                         <td>${product.size}</td>
+    //                         <td>${product.color}</td>
+    //                         <td>${product.status}</td>
+    //                         <td>${product.condition}</td>
+    //                     `;
+    //                 }
+    //             })
+    //             .catch(error => console.error('Không tìm thấy chi tiết sản phẩm:', error));
+    //     }
+    // }
+    //
+    // // Hàm chọn hoặc bỏ chọn tất cả các checkbox
+    // function toggleAll(selectAllCheckbox) {
+    //     const checkboxes = document.querySelectorAll('.product-checkbox');
+    //     checkboxes.forEach(checkbox => {
+    //         checkbox.checked = selectAllCheckbox.checked;
+    //         showProductDetails(checkbox); // Hiển thị chi tiết cho từng sản phẩm
+    //     });
+    // }
+
+    // Tính năng tìm kiếm sản phẩm
+    document.getElementById('search-product').addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const rows = document.querySelectorAll('tbody tr');
+
+        rows.forEach(row => {
+            const productCode = row.cells[2].textContent.toLowerCase(); // Mã sản phẩm
+            const productName = row.cells[3].textContent.toLowerCase(); // Tên sản phẩm
+
+            if (productCode.includes(searchTerm) || productName.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
+</body>
+</html>

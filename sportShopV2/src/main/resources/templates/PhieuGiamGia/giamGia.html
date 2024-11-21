@@ -68,7 +68,7 @@
                         <span class="status-label" th:text="${vc.getStatus()}"></span> <!-- Trạng thái -->
                     </td>
                     <td>
-                        <a th:href="@{/giam-gia/edit/{id}(id=${vc.id})}" class="btn btn-warning btn-sm" title="Chỉnh sửa">
+                        <a th:href="@{/giam-gia/detail/{id}(id=${vc.id})}" title="Chỉnh sửa">
                             <i class="fas fa-pencil-alt"></i> <!-- Biểu tượng bút chì -->
                         </a>
                         <form th:action="@{/giam-gia/delete/{id}(id=${vc.id})}" method="post" style="display:inline;">

@@ -15,30 +15,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Voucher")
-public class PhieuGiamGia {
+@Table(name = "Sale")
+public class DotGiamGia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Integer id;
 
-    @Column(name = "voucher_code")
-    private String voucherCode;
-
-    @Column(name = "name")
+    @Column(name = "sale_name")
     private String name;
-
+    @Column(name = "sale_code")
+    private String saleCode;
     @Column(name = "discount_value")
     private BigDecimal discountValue;
-
-    @Column(name = "minimum_value")
-    private BigDecimal minimumValue;
-
-    @Column(name = "form_voucher")
-    private String formVoucher;
-
-    @Column(name = "quantity")
-    private Integer quantity;
 
     @Column(name = "start_date")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -48,8 +37,21 @@ public class PhieuGiamGia {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime endDate;
 
+    @Column(name = "update_at")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime updateAt;
 
+    @ManyToOne
+    @JoinColumn(name = "voucher_id")
+    private PhieuGiamGia phieu;
 
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private SanPham sanPham;
+
+    @ManyToOne
+    @JoinColumn(name = "detail_id")
+    private SanPhamChiTiet spct;
 
     public boolean isActive() {
         LocalDateTime now = LocalDateTime.now();
@@ -61,4 +63,6 @@ public class PhieuGiamGia {
     public String getStatus() {
         return isActive() ? "Đang diễn ra" : "Kết thúc";
     }
+
+
 }
