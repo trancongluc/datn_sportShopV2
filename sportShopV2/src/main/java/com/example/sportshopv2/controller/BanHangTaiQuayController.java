@@ -2,11 +2,9 @@ package com.example.sportshopv2.controller;
 
 import com.example.sportshopv2.dto.SanPhamChiTietDTO;
 import com.example.sportshopv2.dto.UserDTO;
-import com.example.sportshopv2.model.HoaDon;
-import com.example.sportshopv2.model.HoaDonChiTiet;
-import com.example.sportshopv2.model.TaiKhoan;
-import com.example.sportshopv2.model.User;
+import com.example.sportshopv2.model.*;
 import com.example.sportshopv2.repository.KhachHangRepository;
+import com.example.sportshopv2.repository.NguoiDungRepo;
 import com.example.sportshopv2.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,6 +27,7 @@ public class BanHangTaiQuayController {
     private final KhachhangService khachhangService;
     private final HoaDonChiTietService hdctService;
     private final TaiKhoanService tkService;
+    private final NguoiDungRepo ndRepo;
 
     @GetMapping("")
     public String banHangTaiQuay(Model model) {
@@ -97,4 +96,9 @@ public class BanHangTaiQuayController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PostMapping("/tao-tai-khoan")
+    @ResponseBody
+    public TaiKhoan createTaiKhoan(@RequestBody TaiKhoan taiKhoan) {
+        return tkService.createTK(taiKhoan);
+    }
 }
