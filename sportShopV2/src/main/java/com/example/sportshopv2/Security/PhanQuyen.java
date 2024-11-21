@@ -10,7 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import javax.sql.DataSource;
 
 @Configuration
@@ -46,8 +47,7 @@ public class PhanQuyen {
 
                         .requestMatchers("/bill/**", "/buy/**").hasAuthority("Staff")
                         .requestMatchers("/buy/**").hasAuthority("Employee")
-                        .requestMatchers("/login/**").permitAll()
-                        /*.requestMatchers(HttpMethod.POST, "/chat-lieu/**").permitAll()*/
+                        .requestMatchers("/login/**", "/mua-sam-SportShopV2/**", "/api/payment/**" , "/VNPAY-demo/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -59,7 +59,7 @@ public class PhanQuyen {
                             if ("Admin".equals(role) || "Staff".equals(role)) {
                                 targetUrl = "/ban-hang-tai-quay";
                             } else {
-                                targetUrl = "/ban-hang/mua-sam";
+                                targetUrl = "/mua-sam-SportShopV2/trang-chu";
                             }
                             response.sendRedirect(targetUrl);
                         })
@@ -89,7 +89,9 @@ public class PhanQuyen {
                 "/nhanvien/**",
                 "/hoa-don/**",
                 "/hoa-don-chi-tiet/**",
-                "khach-hang/thong-tin-khach-hang/**"
+                "/bill/**",
+                "/api/proxy/**"
+
 
                 // Thêm các endpoint khác cần bỏ qua
         );
