@@ -6,19 +6,22 @@ import com.example.sportshopv2.repository.AnhSanPhamRepository;
 import com.example.sportshopv2.repository.GioHangChiTietRepo;
 import com.example.sportshopv2.repository.GioHangRepo;
 import com.example.sportshopv2.service.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import com.example.sportshopv2.config.VNPAYService;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -43,6 +46,9 @@ public class DatHangController {
     private GioHangRepo gioHangRepo;
     @Autowired
     private GioHangChiTietRepo gioHangChiTietRepo;
+    private Map<Integer, String> tongTienGioHang;
+    @Autowired
+    private VNPAYService vnPayService;
 
     @RequestMapping("/trang-chu")
     public String trangChu(Model model) {
@@ -93,7 +99,7 @@ public class DatHangController {
         }
 
         // Kiểm tra sản phẩm đã có trong giỏ hàng chưa
-        GioHangChiTiet existingCartItem = gioHangChiTietRepo.findByGioHang_IdAndSanPhamChiTiet_Id(gioHang.getId(), id);
+        GioHangChiTiet existingCartItem = gioHangChiTietRepo.findByGioHang_IdAndSanPhamChiTiet_Id(gioHang.getId(), productDetail.getId());
         if (existingCartItem != null) {
             existingCartItem.setSoLuong(existingCartItem.getSoLuong() + 1);
             gioHangChiTietRepo.save(existingCartItem);
@@ -114,21 +120,48 @@ public class DatHangController {
         List<GioHangChiTiet> allCart = gioHangChiTietRepo.findAllByGioHang_Id(gioHang.getId());
         model.addAttribute("danhSachGioHang", allCart);
 
-        return "MuaHang/GioHang";
+        return "redirect:/mua-sam-SportShopV2/trang-chu";
     }
 
 
     @RequestMapping("/gio-hang-khach-hang")
     public String gioHang(Model model) {
         List<GioHangChiTiet> listCart = gioHangChiTietRepo.findAll();
+
+// Use a merge function to handle duplicate keys
+        Map<Integer, String> tongTienHoaDon = listCart.stream().collect(Collectors.toMap(
+                gioHangChiTiet -> gioHangChiTiet.getGioHang().getId(), // Key is the GioHang ID
+                ghct -> {
+                    // Tính tổng tiền của hóa đơn từ GioHangChiTiet
+                    BigDecimal total = gioHangChiTietRepo.findAllByGioHang_Id(ghct.getGioHang().getId()).stream()
+                            .map(hdct -> new BigDecimal(hdct.getGiaTien()).multiply(BigDecimal.valueOf(hdct.getSoLuong()))) // Calculate price for each item
+                            .reduce(BigDecimal.ZERO, BigDecimal::add); // Sum up all the prices
+
+                    // Làm tròn tổng tiền đến 2 chữ số thập phân
+                    total = total.setScale(2, RoundingMode.HALF_UP); // Round to 2 decimal places
+
+                    // Định dạng tổng tiền
+                    return NumberFormat.getCurrencyInstance(new Locale("vi", "VN")).format(total); // Format total as currency in VND
+                },
+                (existingValue, newValue) -> existingValue // Handle duplicates by keeping the existing value
+        ));
+
+// Print the size of the cart for debugging
         System.out.println("ListCart size: " + listCart.size());
+
+// Retrieve images for each product (SanPhamChiTiet) in the cart
         List<AnhSanPham> anhSanPhams = listCart.stream()
                 .map(gioHangChiTiet -> anhSanPhamRepository.findByIdSPCT(gioHangChiTiet.getSanPhamChiTiet().getId())) // Lấy id từ SanPhamChiTiet
-                .flatMap(List::stream) // Gộp danh sách ảnh từ từng sản phẩm thành một danh sách duy nhất
+                .flatMap(List::stream) // Merge image lists for each product into one list
                 .collect(Collectors.toList());
+
+// Add the cart and images to the model for rendering the view
         model.addAttribute("listCart", listCart);
         model.addAttribute("listImage", anhSanPhams);
+        model.addAttribute("tongTienGioHang", tongTienGioHang);
+
         return "MuaHang/GioHang";
+
     }
 
     @RequestMapping("/mua-ngay")
@@ -156,6 +189,15 @@ public class DatHangController {
         response.put("gia", productDetail.getGia());
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/VNPAY/submitOrder")
+    public String submidOrder(@RequestParam("amount") int orderTotal,
+                              @RequestParam("orderInfo") String orderInfo,
+                              HttpServletRequest request) {
+        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        String vnpayUrl = vnPayService.createOrder(request, orderTotal, orderInfo, baseUrl);
+        return "redirect:" + vnpayUrl;
     }
 }
 
