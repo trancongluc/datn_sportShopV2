@@ -7,6 +7,8 @@ import com.example.sportshopv2.repository.TaiKhoanRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class TaiKhoanService {
@@ -17,4 +19,9 @@ public class TaiKhoanService {
         NguoiDung user = nguoiDungRepo.findById(idUser).orElse(null);
         return tkRepo.findByNguoiDung(user);
     }
+    public TaiKhoan createTK(TaiKhoan taiKhoan) {
+
+       return tkRepo.save(taiKhoan);
+    }
+
 }

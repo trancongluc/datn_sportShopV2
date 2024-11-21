@@ -134,7 +134,8 @@
                 <div class="customer-info">
                     <div class="mb-2 align-items-center">
                         <label for="customerDropdown" class="form-label mb-0">Khách Hàng:</label>
-                        <button class="btn btn-outline-secondary btn-sm">+</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="openAddCustomerModal()"
+                                 >+</button>
                     </div>
                     <select id="customerDropdown" class="form-control" name="selectedCustomerId">
                         <option value="all">Tất cả</option>
@@ -218,6 +219,39 @@
             </div>
         </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCustomerModalLabel">Thêm Khách Hàng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form Thêm Khách Hàng -->
+                    <form id="addCustomerForm">
+                        <div class="mb-3">
+                            <label for="customerName" class="form-label">Tên Khách Hàng</label>
+                            <input type="text" class="form-control" id="customerName2" name="customerName" required placeholder="Nhập tên khách hàng">
+                        </div>
+                        <div class="mb-3">
+                            <label for="customerPhone" class="form-label">Số Điện Thoại</label>
+                            <input type="tel" class="form-control" id="customerPhone" name="customerPhone" required placeholder="Nhập số điện thoại">
+                        </div>
+                        <div class="mb-3">
+                            <label for="customerEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="customerEmail" name="customerEmail" required placeholder="Nhập email">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary"  onclick="addCustomer()">Lưu Khách Hàng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="/js/Banhangtaiquay.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

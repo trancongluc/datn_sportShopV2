@@ -17,8 +17,13 @@ public interface KhachHangRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u FROM User u JOIN u.account a LEFT JOIN FETCH u.addresses  WHERE  a.role = 'Customer' AND u.deleted = false")
     Page<User> findAllCustomers(Pageable pageable);
 
-    @Query("SELECT u FROM User u JOIN u.account a LEFT JOIN FETCH u.addresses  WHERE  a.role = 'Customer' AND u.deleted = false")
+    @Query("SELECT u FROM User u " +
+            "JOIN u.account a " +
+            "LEFT JOIN FETCH u.addresses " +
+            "WHERE a.role = 'Customer' AND u.deleted = false " +
+            "ORDER BY u.createdAt DESC")
     List<User> findAllKhachHang();
+
 
     @Query("SELECT u FROM User u JOIN u.account a LEFT JOIN FETCH u.addresses WHERE a.role = 'Customer' AND " +
             "(u.fullName LIKE %:keyword% OR u.phoneNumber LIKE %:keyword% OR u.email LIKE %:keyword%)")

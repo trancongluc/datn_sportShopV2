@@ -2,6 +2,7 @@ package com.example.sportshopv2.controller.KhachHang;
 
 import com.example.sportshopv2.dto.UserDTO;
 import com.example.sportshopv2.model.Address;
+import com.example.sportshopv2.model.NguoiDung;
 import com.example.sportshopv2.model.User;
 import com.example.sportshopv2.repository.AddressRepository;
 import com.example.sportshopv2.repository.KhachHangRepository;
@@ -12,12 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequestMapping("/khach-hang")
@@ -102,7 +106,6 @@ public class khachhangController {
         // address.setProvince_id(...);
         // address.setDistrict_id(...);
         // address.setWard_id(...);
-
         khachHang.addAddress(address); // Thêm địa chỉ vào khách hàng
 
 
@@ -134,7 +137,7 @@ public class khachhangController {
     @GetMapping("/thong-tin-kh/{idKH}")
     @ResponseBody
     public User thongTinKH(@PathVariable("idKH") Integer id) {
-        UserDTO userKHDTO =  userService.getKHById(id);
+        UserDTO userKHDTO = userService.getKHById(id);
         User user = User.of(userKHDTO);
         return user;
     }
@@ -247,5 +250,14 @@ public class khachhangController {
         return "KhachHang/diachi"; // Return to the page displaying the customer's addresses
     }
 
-
+    @PostMapping("/them")
+    @ResponseBody
+    public NguoiDung createTaiKhoan(@RequestBody NguoiDung khachHang) {
+        return userService.saveKH(khachHang);
+    }
+    @GetMapping("/kh-cbo")
+    @ResponseBody
+    public List<NguoiDung> loadKHCombobox() {
+        return userService.getKHCbo();
+    }
 }
