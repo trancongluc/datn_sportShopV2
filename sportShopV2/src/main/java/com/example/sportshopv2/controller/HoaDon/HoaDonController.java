@@ -226,7 +226,7 @@ public class HoaDonController {
     public String getStatus(@PathVariable Integer id, Model model) {
         Optional<HoaDon> hoaDon = hdrepo.findById(id);
         hoaDon.ifPresent(hd -> model.addAttribute("hoaDon", hd));
-        return "HoaDon/ThongTinHoaDon";
+        return "HoaDon/ThongTinHoaDon"; // Assuming this is the template name for the bill details
     }
 
     @PostMapping("/status/update")

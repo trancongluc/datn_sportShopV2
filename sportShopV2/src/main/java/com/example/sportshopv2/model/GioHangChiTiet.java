@@ -23,10 +23,10 @@ public class GioHangChiTiet {
     private Integer id;
     @ManyToOne
     @JoinColumn(name = "id_cart")
-    private GioHang idGioHang;
+    private GioHang gioHang;
     @ManyToOne
     @JoinColumn(name = "id_product_detail")
-    private SPCT idSanPhamChiTiet;
+    private SPCT sanPhamChiTiet;
     @Column(name = "quantity")
     private Integer soLuong;
     @Column(name = "price")

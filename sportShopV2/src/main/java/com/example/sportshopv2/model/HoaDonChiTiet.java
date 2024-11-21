@@ -31,7 +31,7 @@ public class HoaDonChiTiet {
     private SPCT sanPhamChiTiet;
 
     private Float price;
-    private String description;
+
     private LocalDateTime create_at;
     private String create_by;
     private LocalDateTime update_at;

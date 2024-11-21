@@ -1,8 +1,8 @@
 package com.example.sportshopv2.service;
 
-import com.example.sportshopv2.repository.*;
 import com.example.sportshopv2.dto.SanPhamChiTietDTO;
 import com.example.sportshopv2.model.SanPhamChiTiet;
+import com.example.sportshopv2.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,18 +37,37 @@ public class SanPhamChiTietService {
         return spct.toDTO(spct, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo);
     }
 
+    public List<SanPhamChiTietDTO> getAllDISTINCTSPCT() {
+        List<SanPhamChiTiet> spct = sanPhamChiTietRepository.findDistinctByIdProduct();
+        return spct.stream().map(sanPhamChiTiet ->
+                        SanPhamChiTiet.toDTO(sanPhamChiTiet, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo))
+                .collect(Collectors.toList());
+    }
+
+    public SanPhamChiTietDTO getSPCTByIDSPIDSIZEIDCOLOR(Integer idSP, Integer idSize, Integer idColor) {
+        SanPhamChiTiet spct = sanPhamChiTietRepository.findAllByDeletedAndIdSanPhamAndIdKichThuocAndIdMauSac(false, idSP, idSize, idColor);
+        return spct.toDTO(spct, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo);
+    }
+
+    public SanPhamChiTiet findSPCTById(Integer idSPCT) {
+        SanPhamChiTiet spct = sanPhamChiTietRepository.findByIdAndDeleted(idSPCT, false);
+        return spct;
+    }
+
     public List<SanPhamChiTietDTO> getAllSPCT() {
         List<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeleted(false);
         return listSPCT.stream().map(sanPhamChiTiet ->
                         SanPhamChiTiet.toDTO(sanPhamChiTiet, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo))
                 .collect(Collectors.toList());
     }
+
     public List<SanPhamChiTietDTO> findAllSPCTByIdSP(Integer idSP) {
-        List<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndIdSanPham(false, idSP );
+        List<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndIdSanPham(false, idSP);
         return listSPCT.stream().map(sanPhamChiTiet ->
                         SanPhamChiTiet.toDTO(sanPhamChiTiet, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo))
                 .collect(Collectors.toList());
     }
+
     public Page<SanPhamChiTietDTO> getSPCTByIdSP(Integer idSP, Pageable pageable) {
         // Lấy trang danh sách SanPhamChiTiet từ repository
         Page<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndIdSanPham(false, idSP, pageable);

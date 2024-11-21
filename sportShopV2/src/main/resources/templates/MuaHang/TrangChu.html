@@ -743,11 +743,11 @@
         <a href="javascript:void(0)" onclick="filterProducts('style3')">Giảm Giá Sốc</a>
     </div>
     <div class="product-list" >
-        <div class="product-item style1" th:each="sp, index: ${listsp}">
+        <div class="product-item style1" th:each="spct, index: ${listspct}">
             <img alt="Sneaker" height="300"
                   th:src="${imageUrls[index.index]}"
                   width="300"/>
-            <h3 th:text="${sp.tenSanPham}"></h3>
+            <h3 th:text="${spct.sanPham.tenSanPham}"></h3>
             <p th:text="${listspct[index.index].moTa}"><br>
             <div class="price" th:text="${listspct[index.index].gia}"></div>
             <div class="rating">
