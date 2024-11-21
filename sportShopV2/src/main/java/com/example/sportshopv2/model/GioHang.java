@@ -19,5 +19,6 @@ public class GioHang {
     @ManyToOne
     @JoinColumn(name = "id_account")
     private TaiKhoan idTaiKhoan;
+    @Column(name="created_at")
     private LocalDateTime createAt;
 }
