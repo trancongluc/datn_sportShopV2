@@ -5,6 +5,7 @@ import com.example.sportshopv2.dto.UserNhanVienDTO;
 import com.example.sportshopv2.repository.NhanVienRepo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -35,11 +36,12 @@ public class User {
     private String code;
 
     @Column(name = "full_name")
-    @Size(min = 2, max = 100)
+
     private String fullName;
 
     @Column(name = "phone_number")
-    @Pattern(regexp = "\\d{10,15}", message = "Phone number must be 10-15 digits.")
+    @NotNull(message = "Số điện thoại không được để trống")
+    @Pattern(regexp = "^[0-9]{10,15}$", message = "Số điện thoại phải có từ 10 đến 15 chữ số")
     private String phoneNumber;
 
     @Column(name = "email")

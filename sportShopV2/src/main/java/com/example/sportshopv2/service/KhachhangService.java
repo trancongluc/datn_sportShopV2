@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+    import java.util.Optional;
 
 @Service
 public class KhachhangService {
@@ -127,6 +128,18 @@ public class KhachhangService {
     public void save(User customer) {
         userRepository.save(customer);
     }
+
+
+    public Optional<User> findByPhoneNumber(String phoneNumber) {
+        return userRepository.findByPhoneNumber(phoneNumber); // Cần phải có phương thức này trong repository
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email); // Cần phải có phương thức này trong repository
+    }
+
+
+
 
 
 }

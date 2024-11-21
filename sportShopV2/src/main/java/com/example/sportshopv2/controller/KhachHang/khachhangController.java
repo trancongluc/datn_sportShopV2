@@ -72,7 +72,7 @@ public class khachhangController {
 
     @PostMapping("/add-khach-hang")
     public String addKhachHang(
-
+            @ModelAttribute("customer")  User customer,
             @RequestParam("fullName") String fullName,
             @RequestParam("phoneNumber") String phoneNumber,
             @RequestParam("email") String email,
@@ -111,7 +111,23 @@ public class khachhangController {
 
         khachHang.addAddress(address); // Thêm địa chỉ vào khách hàng
 
+        // Kiểm tra trùng số điện thoại và email
+        Optional<User> existingKhachHangByPhone = userService.findByPhoneNumber(khachHang.getPhoneNumber());
+        Optional<User> existingKhachHangByEmail = userService.findByEmail(khachHang.getEmail());
 
+        if (existingKhachHangByPhone.isPresent() || existingKhachHangByEmail.isPresent()) {
+            if (existingKhachHangByPhone.isPresent()) {
+                model.addAttribute("phoneError", "Số điện thoại đã tồn tại.");
+            }
+            if (existingKhachHangByEmail.isPresent()) {
+                model.addAttribute("emailError", "Email đã tồn tại.");
+            }
+            return "KhachHang/tao-khach-hang"; // Trả lại trang form với thông báo lỗi
+        }
+        if (!phoneNumber.matches("^[0-9]{10,15}$")) {
+            model.addAttribute("errorMessage", "Số điện thoại phải có từ 10 đến 15 chữ số.");
+            return "KhachHang/tao-khach-hang";
+        }
         try {
             userService.addKhachHang(khachHang, imageFile);
             model.addAttribute("successMessage", "Khách hàng đã được thêm thành công!");
@@ -151,6 +167,8 @@ public class khachhangController {
         User customer = userService.getCustomerById(id); // Add this method to UserService
         model.addAttribute("customer", customer);
 
+
+
         return "KhachHang/diachi"; // Create a new Thymeleaf template for details
     }
 
@@ -171,6 +189,24 @@ public class khachhangController {
                                  Model model) {
         try {
             User customer = userService.getCustomerById(id); // Fetch existing customer
+
+            // Kiểm tra trùng số điện thoại và email
+            Optional<User> existingCustomerByPhone = userService.findByPhoneNumber(phoneNumber);
+            Optional<User> existingCustomerByEmail = userService.findByEmail(email);
+
+            if (existingCustomerByPhone.isPresent() && !existingCustomerByPhone.get().getId().equals(id)) {
+                model.addAttribute("phoneError", "Số điện thoại đã tồn tại.");
+            }
+            if (existingCustomerByEmail.isPresent() && !existingCustomerByEmail.get().getId().equals(id)) {
+                model.addAttribute("emailError", "Email đã tồn tại.");
+            }
+
+            // Nếu có lỗi, trả về trang chỉnh sửa
+            if (model.containsAttribute("phoneError") || model.containsAttribute("emailError")) {
+                model.addAttribute("customer", customer); // Truyền dữ liệu khách hàng hiện tại vào form
+                return "KhachHang/khachhangdetail"; // Tên trang chỉnh sửa khách hàng
+            }
+
             customer.setFullName(fullName);
             customer.setPhoneNumber(phoneNumber);
             customer.setEmail(email);
@@ -183,6 +219,7 @@ public class khachhangController {
 //            address.setQuan(quan);
 //            address.setPhuong(phuong);
 //            address.setLine(line);
+
 
             // Update image if new file is uploaded
             if (!imageFile.isEmpty()) {

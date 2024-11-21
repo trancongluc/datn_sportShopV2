@@ -29,6 +29,8 @@
 
     <div class="container">
         <h2 class="mb-4"> Chỉnh Sửa Thông Tin Khách Hàng</h2>
+        <!-- Hiển thị thông báo -->
+
         <form  th:action="@{/khach-hang/customer/update/{id}(id=${customer.id})}" method="post" enctype="multipart/form-data"> <!-- Cập nhật action -->
             <span>
                             <a class="btn btn-success" href="/khach-hang/list">
@@ -63,7 +65,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for="ngaySinh" class="form-label">Ngày sinh</label>
-                            <input type="date" class="form-control" id="ngaySinh" name="date" th:value="${customer.date}" required>
+                            <input type="date" class="form-control" id="ngaySinh" name="date" th:value="${customer.date}" required max="" onchange="validateBirthDate()">
                         </div>
                     </div>
 
@@ -71,6 +73,10 @@
                         <div class="col-md-6">
                             <label for="email" class="form-label">E-mail</label>
                             <input type="email" class="form-control" id="email" name="email"  th:value="${customer.email}"  required>
+                            <div th:if="${emailError != null}" class="text-danger">
+                                <span th:text="${emailError}"></span>
+                            </div>
+
                         </div>
                         <div class="col-md-6">
                             <label for="gioiTinh" class="form-label">Giới tính</label>
@@ -85,7 +91,14 @@
 
                     <div class="mb-3">
                         <label for="soDienThoai" class="form-label">Số điện thoại</label>
-                        <input type="text" class="form-control" id="soDienThoai" name="phoneNumber" th:value="${customer.phoneNumber}" required>
+                        <input type="text" class="form-control" id="soDienThoai" name="phoneNumber" th:value="${customer.phoneNumber}" required
+                               pattern="^[0-9]{10,15}$"
+                               title="Số điện thoại phải có từ 10 đến 15 chữ số"
+                        >
+
+                        <div th:if="${phoneError != null}" class="text-danger">
+                            <span th:text="${phoneError}"></span>
+                        </div>
                     </div>
 
 
@@ -155,6 +168,49 @@
             }
         }
 
+        document.addEventListener("DOMContentLoaded", function () {
+            const ngaySinhInput = document.getElementById('ngaySinh');
+
+            // Đặt giá trị tối đa cho ngày sinh là ngày hiện tại
+            const today = new Date().toISOString().split("T")[0];
+            ngaySinhInput.max = today;
+
+            // Kiểm tra ngày sinh khi người dùng thay đổi
+            ngaySinhInput.addEventListener("change", validateBirthDate);
+        });
+
+        function validateBirthDate() {
+            const ngaySinhInput = document.getElementById('ngaySinh');
+            const selectedDate = new Date(ngaySinhInput.value);
+            const today = new Date();
+
+            if (selectedDate > today) {
+                ngaySinhInput.setCustomValidity("Ngày sinh không được lớn hơn ngày hiện tại.");
+            } else {
+                ngaySinhInput.setCustomValidity("");
+            }
+        }
+
+
+
+        document.getElementById('soDienThoai').addEventListener('input', function() {
+            const phoneNumber = this.value;
+
+            const regex = /^[0-9]{10,15}$/;
+
+            if (!regex.test(phoneNumber)) {
+                this.setCustomValidity('Số điện thoại phải có từ 10 đến 15 chữ số và chỉ chứa số.');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        document.querySelector("form").addEventListener("submit", function(event) {
+            const phoneInput = document.getElementById('soDienThoai');
+            if (!phoneInput.checkValidity()) {
+                event.preventDefault(); // Ngăn chặn submit nếu không hợp lệ
+            }
+        });
     </script>
 
 

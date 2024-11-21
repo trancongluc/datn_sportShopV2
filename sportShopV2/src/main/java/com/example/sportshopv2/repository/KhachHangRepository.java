@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface KhachHangRepository extends JpaRepository<User, Integer> {
@@ -29,6 +30,14 @@ public interface KhachHangRepository extends JpaRepository<User, Integer> {
             + "JOIN u.account a "
             + "WHERE u.id = :userId AND a.role = 'Customer'")
     User getKhachHangById(@Param("userId") Integer userId);
+
+    // Tìm kiếm người dùng theo số điện thoại
+    Optional<User> findByPhoneNumber(String phoneNumber);
+
+    // Tìm kiếm người dùng theo email
+    Optional<User> findByEmail(String email);
+
+
 
 
 }
