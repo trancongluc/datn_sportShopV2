@@ -10,7 +10,7 @@ import java.util.List;
 public interface NguoiDungRepo extends JpaRepository<NguoiDung, Integer> {
     @Query("SELECT nd FROM TaiKhoan tk " +
             "JOIN tk.nguoiDung nd " +
-            "WHERE tk.role = 'Customer' AND nd.deleted = false " +
+            "WHERE tk.role = 'Employee' AND nd.deleted = false " +
             "ORDER BY nd.create_at DESC")
     List<NguoiDung> findAllKhachHang();
 

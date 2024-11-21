@@ -38,7 +38,6 @@ public class BanHangTaiQuayController {
         return "BanHangTaiQuay/BanHangTaiQuay";
     }
 
-
     @GetMapping("/spct")
     public String getAllSPCT(@RequestParam(required = false) Integer idKH, Model model) {
         List<SanPhamChiTietDTO> listSPCTDto = spctService.getAllSPCT();
@@ -46,9 +45,9 @@ public class BanHangTaiQuayController {
         return "BanHangTaiQuay/BanHangTaiQuay";
     }
 
-    @GetMapping("/thong-tin-kh")
+    @GetMapping("/thong-tin-kh/{idKH}")
     @ResponseBody
-    public UserDTO getKhachHangById(@RequestParam Integer idKH) {
+    public UserDTO getKhachHangById(@PathVariable("idKH") Integer idKH) {
         return khachhangService.getKHById(idKH);
     }
 

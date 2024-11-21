@@ -105,7 +105,7 @@ document.getElementById("customerDropdown").addEventListener("change", function 
     idKH = selectedCustomerId;
     console.log("khachsachs hang:" + idKH)
     if (selectedCustomerId !== "all" && invoiceId) {
-        fetch("/ban-hang-tai-quay/thong-tin-kh?idKH=" + idKH)
+        fetch(`/ban-hang-tai-quay/thong-tin-kh/${idKH}`)
             .then(response => response.json())
             .then(data => {
                 // Hiển thị và lưu thông tin
@@ -739,7 +739,7 @@ async function capNhatHoaDon() {
         }
         const paymentStatus = await checkPaymentStatusFromVNPay();
         // Nếu không phải thanh toán qua VNPay, tiếp tục cập nhật hóa đơn
-        if (paymentStatus.success) {
+      /*  if (paymentStatus.success) {*/
             // Tiến hành cập nhật hóa đơn khi thanh toán thành công
             const hoaDon = {
                 user_name: fullName || userKH.name,
@@ -807,9 +807,9 @@ async function capNhatHoaDon() {
             showToast("Tạo Hóa Đơn Thành Công!");
             selectedProductIds = [];
             window.location.href = '/ban-hang-tai-quay';
-        } else {
+        /*} else {
             showToast("Thanh toán không thành công!");
-        }
+        }*/
     } catch (error) {
         console.error('Có lỗi xảy ra:', error);
         showToast("Thêm hóa đơn thất bại!");
@@ -978,7 +978,7 @@ async function addCustomer() {
             const userKH = await fetch(`/ban-hang-tai-quay/thong-tin-kh/${customerId}`).then(handleResponse);
             const accountData = {
                 username: customerEmail,
-                role: "Customer",
+                role: "Employee",
                 create_at: date,
                 create_by: "Admin",
                 email: customerEmail,  // Dùng email của khách hàng làm tài khoản
