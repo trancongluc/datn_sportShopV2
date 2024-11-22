@@ -191,13 +191,13 @@ public class DatHangController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/VNPAY/submitOrder")
-    public String submidOrder(@RequestParam("amount") int orderTotal,
-                              @RequestParam("orderInfo") String orderInfo,
-                              HttpServletRequest request) {
-        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        String vnpayUrl = vnPayService.createOrder(request, orderTotal, orderInfo, baseUrl);
-        return "redirect:" + vnpayUrl;
-    }
+//    @PostMapping("/VNPAY/submitOrder")
+//    public String submidOrder(@RequestParam("amount") int orderTotal,
+//                              @RequestParam("orderInfo") String orderInfo,
+//                              HttpServletRequest request) {
+//        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+//        String vnpayUrl = vnPayService.createOrder(request, orderTotal, orderInfo, baseUrl);
+//        return "redirect:" + vnpayUrl;
+//    }
 }
 
