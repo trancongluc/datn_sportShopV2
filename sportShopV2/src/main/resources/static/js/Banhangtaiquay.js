@@ -197,6 +197,10 @@ function updateSelectedProductsTable(invoiceId) {
             if (inputQuantity < 1 || isNaN(inputQuantity)) {
                 quantityInput.value = 1;
             }
+            if (inputQuantity > product.soLuong) {
+                showToast("Số lượng đã vượt quá!")
+                quantityInput.value = product.soLuong;
+            }
             let quantity = quantityInput.value;
             productQuantities[product.id] = quantity;
             console.log("--SoLuong" + productQuantities[product.id], "idSPCT: " + product.id);
@@ -204,6 +208,7 @@ function updateSelectedProductsTable(invoiceId) {
             tongTien = calculateTotal(); // Gọi hàm tính tổng
             updateTotal(); // Cập nhật hiển thị tổng tiền
         });
+
         // Tạo ô xóa
         const deleteCell = document.createElement('td');
         const deleteIcon = document.createElement('i');
@@ -328,13 +333,13 @@ function showToast(message) {
     // Sau 3 giây, thay đổi chiều rộng thanh tiến trình về 0
     setTimeout(() => {
         progressBar.style.width = '0'; // Đặt lại chiều rộng thanh tiến trình về 0
-    }, 3000); // Sau 3 giây
+    }, 2000); // Sau 3 giây
 
     // Ẩn toast sau 3.3 giây
     setTimeout(() => {
         toast.classList.remove('show');
         toast.classList.add('hide');
-    }, 3300); // Thêm chút thời gian cho hiệu ứng ẩn
+    }, 2000); // Thêm chút thời gian cho hiệu ứng ẩn
 }
 
 
@@ -413,7 +418,13 @@ for (let i = 0; i < productRows.length; i++) {
                 if (existingRow) {
                     // Nếu sản phẩm đã tồn tại, cập nhật số lượng
                     const quantityInput = existingRow.querySelector('input[type="number"]');
-                    quantityInput.value = parseInt(quantityInput.value, 10) + 1; // Tăng số lượng
+
+                    if (quantityInput.value < spctDTO.soLuong) {
+                        quantityInput.value = parseInt(quantityInput.value, 10) + 1; // Tăng số lượng
+                    } else {
+                        showToast("Số lượng đã vượt quá!")
+                        quantityInput.value = spctDTO.soLuong;
+                    }
                     const giaSP = spctDTO.gia;
                     tongTien = calculateTotal(); // Tính tổng tiền
                     updateTotal();// Cập nhật hiển thị tổng tiền
@@ -475,6 +486,11 @@ for (let i = 0; i < productRows.length; i++) {
                 quantityInput.style.width = '60px';
                 quantityCell.appendChild(quantityInput);
                 selectedProduct.appendChild(quantityCell);
+                if (quantityInput.value > spctDTO.soLuong) {
+                    showToast("Số lượng đã vượt quá!")
+                    quantityInput.value = spctDTO.soLuong;
+                }
+
                 // Tạo ô xóa sản phẩm
                 const deleteCell = document.createElement('td');
                 const deleteIcon = document.createElement('i');
@@ -702,6 +718,7 @@ async function capNhatHoaDon() {
         const date = new Date().toISOString(); // Lấy thời gian hiện tại
         const soNha = document.getElementById('soNha').value;
         var payStatus = null;
+        var soLuongNew;
         const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').id === 'tienMat'
             ? 'Tiền Mặt'
             : 'Chuyển Khoản';
@@ -739,85 +756,103 @@ async function capNhatHoaDon() {
         }
         const paymentStatus = await checkPaymentStatusFromVNPay();
         // Nếu không phải thanh toán qua VNPay, tiếp tục cập nhật hóa đơn
-      /*  if (paymentStatus.success) {*/
-            // Tiến hành cập nhật hóa đơn khi thanh toán thành công
-            const hoaDon = {
-                user_name: fullName || userKH.name,
-                phone_number: sdt || userKH.phone_number,
-                total_money: thucThu,
-                money_reduced: giamGia,
-                status: status,
-                email: email,
-                money_ship: phiShip,
-                billCode: currentInvoice.billCode,
-                transaction_date: date,
-                type: nhanHang,
-                address: diaChiChiTiet,
-                updateAt: date,
-                createAt: currentInvoice.createAt,
-                create_by: idNV,
-                id_account: userKH,
-                id_staff: emp,
-                pay_method: paymentMethod,
-                pay_status: payStatus,
-                deleted: 0
-            };
+        /*  if (paymentStatus.success) {*/
+        // Tiến hành cập nhật hóa đơn khi thanh toán thành công
+        const hoaDon = {
+            user_name: fullName || userKH.name,
+            phone_number: sdt || userKH.phone_number,
+            total_money: thucThu,
+            money_reduced: giamGia,
+            status: status,
+            email: email,
+            money_ship: phiShip,
+            billCode: currentInvoice.billCode,
+            transaction_date: date,
+            type: nhanHang,
+            address: diaChiChiTiet,
+            updateAt: date,
+            createAt: currentInvoice.createAt,
+            create_by: idNV,
+            id_account: userKH,
+            id_staff: emp,
+            pay_method: paymentMethod,
+            pay_status: payStatus,
+            deleted: 0
+        };
 
-            // Cập nhật hóa đơn
-            const updatedHoaDon = await fetch(`ban-hang-tai-quay/update-hoa-don/${idHD}`, {
-                method: 'PUT',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(hoaDon),
-            }).then(handleResponse);
+        // Cập nhật hóa đơn
+        const updatedHoaDon = await fetch(`ban-hang-tai-quay/update-hoa-don/${idHD}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(hoaDon),
+        }).then(handleResponse);
 
-            // Lấy thông tin chi tiết sản phẩm và tạo hóa đơn chi tiết
-            const hoaDonChiTietList = await Promise.all(
-                selectedProductIds.map(async (productId) => {
-                    const productDetails = await fetch(`san-pham-chi-tiet/thong-tin-spct/${productId}`).then(handleResponse);
-                    if (!productDetails || !productDetails.gia) {
-                        console.warn(`Không tìm thấy giá cho sản phẩm ID: ${productId}`);
-                        return null;
-                    }
-                    const quantity = productQuantities[productId]; // Lấy số lượng từ productQuantities
-                    if (!quantity || quantity <= 0) {
-                        console.warn(`Số lượng không hợp lệ cho sản phẩm ID: ${productId}`);
-                        return null;
-                    }
-                    return {
-                        quantity: quantity,
-                        hoaDon: updatedHoaDon,
-                        sanPhamChiTiet: productDetails,
-                        price: productDetails.gia,
-                        create_at: date,
-                        create_by: idNV,
-                    };
+        // Lấy thông tin chi tiết sản phẩm và tạo hóa đơn chi tiết
+        const hoaDonChiTietList = await Promise.all(
+            selectedProductIds.map(async (productId) => {
+                const productDetails = await fetch(`san-pham-chi-tiet/thong-tin-spct/${productId}`).then(handleResponse);
+                if (!productDetails || !productDetails.gia) {
+                    console.warn(`Không tìm thấy giá cho sản phẩm ID: ${productId}`);
+                    return null;
+                }
+                const quantity = productQuantities[productId]; // Lấy số lượng từ productQuantities
+                if (!quantity || quantity <= 0) {
+                    console.warn(`Số lượng không hợp lệ cho sản phẩm ID: ${productId}`);
+                    return null;
+                }
+                // if (nhanHang == 'Tại Quầy') {
+                soLuongNew = productDetails.soLuong - quantity;
+                fetch(`/san-pham-chi-tiet/cap-nhat-so-luong/${productId}?soLuongNew=${soLuongNew}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
                 })
-            );
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Cập nhật thất bại');
+                        }
+                        return response.text(); // Lấy thông báo từ server
+                    })
+                    .then(message => {
+                        console.log("Cập nhật số lượng thành công!");
+                    })
+                    .catch(error => {
+                        console.error("Cập nhật thất bại. Vui lòng thử lại!");
+                    });
+                // }
+                return {
+                    quantity: quantity,
+                    hoaDon: updatedHoaDon,
+                    sanPhamChiTiet: productDetails,
+                    price: productDetails.gia,
+                    create_at: date,
+                    create_by: idNV,
+                };
+            })
+        );
 
-            // Loại bỏ các phần tử null nếu có lỗi trong danh sách sản phẩm
-            const validHoaDonChiTietList = hoaDonChiTietList.filter(item => item !== null);
+        // Loại bỏ các phần tử null nếu có lỗi trong danh sách sản phẩm
+        const validHoaDonChiTietList = hoaDonChiTietList.filter(item => item !== null);
 
-            // Gửi yêu cầu tạo hóa đơn chi tiết
-            await fetch('ban-hang-tai-quay/tao-hoa-don-chi-tiet', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(validHoaDonChiTietList),
-            });
+        // Gửi yêu cầu tạo hóa đơn chi tiết
+        await fetch('ban-hang-tai-quay/tao-hoa-don-chi-tiet', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(validHoaDonChiTietList),
+        });
 
-            showToast("Tạo Hóa Đơn Thành Công!");
-            selectedProductIds = [];
-            window.location.href = '/ban-hang-tai-quay';
-        /*} else {
-            showToast("Thanh toán không thành công!");
-        }*/
+        showToast("Tạo Hóa Đơn Thành Công!");
+        selectedProductIds = [];
+        window.location.href = '/ban-hang-tai-quay';
     } catch (error) {
         console.error('Có lỗi xảy ra:', error);
         showToast("Thêm hóa đơn thất bại!");
     }
 }
+
 async function checkPaymentStatusFromVNPay() {
     const orderInfo = localStorage.getItem('orderInfo');  // Hoặc lấy từ URL nếu có
-
     try {
         // Gửi yêu cầu kiểm tra thanh toán từ VNPay
         const response = await fetch(`/vnpay-payment-return?vnp_OrderInfo=${orderInfo}`, {
@@ -845,6 +880,7 @@ async function checkPaymentStatusFromVNPay() {
         showToast("Lỗi khi kết nối với server!");
     }
 }
+
 // Hàm xử lý phản hồi từ API
 function handleResponse(response) {
     if (!response.ok) {
@@ -1022,6 +1058,7 @@ async function addCustomer() {
         alert("Lỗi hệ thống, vui lòng thử lại!");
     }
 }
+
 //Load combobox KH
 async function reloadCustomerComboBox() {
     try {

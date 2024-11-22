@@ -8,7 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,7 +57,7 @@ public class SanPhamChiTietService {
     }
 
     public List<SanPhamChiTietDTO> getAllSPCT() {
-        List<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeleted(false);
+        List<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndTrangThaiOrderByCreateAtDesc(false,"Đang hoạt động");
         return listSPCT.stream().map(sanPhamChiTiet ->
                         SanPhamChiTiet.toDTO(sanPhamChiTiet, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo))
                 .collect(Collectors.toList());
@@ -75,6 +77,17 @@ public class SanPhamChiTietService {
         // Ánh xạ từ SanPhamChiTiet sang SanPhamChiTietDTO
         return listSPCT.map(spct -> SanPhamChiTiet.toDTO(spct, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo));
     }
-
+    public boolean capNhatSoLuongSPCT(Integer idSPCT, Integer soLuongNew){
+        SanPhamChiTiet spct = sanPhamChiTietRepository.findByIdAndDeleted(idSPCT,false);
+        if(spct == null){
+            return false;
+        }
+        spct.setSoLuong(soLuongNew);
+        if(spct.getSoLuong() == 0){
+            spct.setTrangThai("Ngừng hoạt động");
+        }
+        sanPhamChiTietRepository.save(spct);
+        return true;
+    }
 
 }

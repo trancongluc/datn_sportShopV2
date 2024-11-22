@@ -54,7 +54,6 @@ public class BanHangTaiQuayController {
     @GetMapping("/spct/{id}")
     @ResponseBody
     public SanPhamChiTietDTO getSPCTById(@PathVariable("id") Integer id) {
-
         return spctService.getByID(id);
     }
 

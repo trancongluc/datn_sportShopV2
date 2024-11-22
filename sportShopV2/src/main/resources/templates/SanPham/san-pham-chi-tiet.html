@@ -125,7 +125,7 @@
                     <td th:text="${spct.deGiay.tenDeGiay}"></td>
                     <td th:text="${spct.coGiay.tenCoGiay}"></td>-->
                     <td th:text="${spct.soLuong}"></td>
-                    <td th:text="${spct.gia}"></td>
+                    <td class="price" th:text="${spct.gia}"></td>
                     <td><span class="status active" th:text="${spct.trangThai}"></span></td>
                     <td class="actions">
                         <i class="fas fa-eye" th:data-row-id="${spct.id}"
@@ -167,7 +167,15 @@
     <a href="/san-pham" class="btn btn-secondary ml-2">Quay về</a> <!-- Nút Quay về -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+        }
 
+        document.querySelectorAll('.price').forEach(function (el) {
+            el.textContent = formatCurrency(el.textContent);
+        });
+    </script>
 </main>
 </body>
 </html>

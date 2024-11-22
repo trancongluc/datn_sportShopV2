@@ -13,7 +13,7 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
 
     Page<SanPhamChiTiet> findAllByDeletedAndIdSanPham(boolean deleted, Integer idSanPham, Pageable pageable);
 
-    List<SanPhamChiTiet> findAllByDeleted(boolean deleted);
+    List<SanPhamChiTiet> findAllByDeletedAndTrangThaiOrderByCreateAtDesc(boolean deleted, String trangThai);
 
     List<SanPhamChiTiet> findAllByDeletedAndIdSanPham(boolean deleted, Integer idSP);
 
