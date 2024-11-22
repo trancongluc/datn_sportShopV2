@@ -51,6 +51,7 @@
                                     <span th:text="${spct.sanPham.tenSanPham}"></span>
                                     [ <span th:text="${spct.kichThuoc.tenKichThuoc}"></span> -
                                     <span th:style="'display:inline-block; background-color: ' + ${spct.mauSac.tenMauSac} + '; width: 20px; height: 20px; border: 1px solid #000;'"></span>
+                                    <span class="color-name" id="color-name-${spct.id}" th:text="${spct.mauSac.tenMauSac}"></span>
                                     ]
                                 </td>
                                 <td th:text="'SL: ' + ${spct.soLuong}"></td>

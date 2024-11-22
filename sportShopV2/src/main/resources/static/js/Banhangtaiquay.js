@@ -76,6 +76,14 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log('Sự kiện DOMContentLoaded đã được gọi.');
     loadInvoicesFromDatabase();
     updateDeliveryOption();
+    document.querySelectorAll('.color-name').forEach(function (el) {
+        const colorHex = el.innerText.trim(); // Lấy mã hex từ nội dung của phần tử span
+        if (colorHex.startsWith('#')) { // Kiểm tra mã có hợp lệ không
+            getColorName(colorHex, el); // Gọi hàm để lấy tên màu từ API
+        } else {
+            el.textContent = "Tên màu không hợp lệ"; // Nếu mã không hợp lệ, hiển thị thông báo lỗi
+        }
+    });
 });
 
 function displayCustomerInfoForTab(invoiceId) {
@@ -169,12 +177,19 @@ function updateSelectedProductsTable(invoiceId) {
 
         // Tạo ô tên sản phẩm
         const nameCell = document.createElement('td');
+        const colorHex = product.mauSac.tenMauSac;
         nameCell.innerHTML = `
             <span>${product.sanPham.tenSanPham}</span>
             [ ${product.kichThuoc.tenKichThuoc} - 
-            <span style="display: inline-block; background-color: ${product.mauSac.tenMauSac}; width: 20px; height: 20px; border: 1px solid #000;"></span> ]`;
+            <span style="display: inline-block; background-color: ${colorHex}; width: 20px; height: 20px; border: 1px solid #000;"></span>
+            - <span class="color-name" data-color="${colorHex}"></span>]`;
         selectedProduct.appendChild(nameCell);
-
+        const colorNameSpan = nameCell.querySelector('.color-name');
+        if (colorHex.startsWith('#')) {
+            getColorName(colorHex, colorNameSpan);
+        } else {
+            colorNameSpan.textContent = "Tên màu không hợp lệ";
+        }
         // Tạo ô giá
         const priceCell = document.createElement('td');
         priceCell.textContent = formatCurrency(product.gia);
@@ -436,75 +451,85 @@ for (let i = 0; i < productRows.length; i++) {
                 selectedProduct.setAttribute('data-id', spctDTO.id);
 
                 // Tạo ô hình ảnh
-                const imageCell = document.createElement('td');
-                if (Array.isArray(spctDTO.anhSanPham) && spctDTO.anhSanPham.length > 0) {
-                    const imgElement = document.createElement('img');
-                    imgElement.src = `/images/${spctDTO.anhSanPham[0].tenAnh}`;
-                    imgElement.alt = `Hình sản phẩm ${spctDTO.id}`;
-                    imgElement.style.width = '50px';
-                    imageCell.appendChild(imgElement);
-                } else {
-                    imageCell.textContent = 'Không có hình ảnh';
-                }
-                selectedProduct.appendChild(imageCell);
+                /* const imageCell = document.createElement('td');
+                 if (Array.isArray(spctDTO.anhSanPham) && spctDTO.anhSanPham.length > 0) {
+                     const imgElement = document.createElement('img');
+                     imgElement.src = `/images/${spctDTO.anhSanPham[0].tenAnh}`;
+                     imgElement.alt = `Hình sản phẩm ${spctDTO.id}`;
+                     imgElement.style.width = '50px';
+                     imageCell.appendChild(imgElement);
+                 } else {
+                     imageCell.textContent = 'Không có hình ảnh';
+                 }
+                 selectedProduct.appendChild(imageCell);
 
-                // Tạo ô tên sản phẩm
-                const nameCell = document.createElement('td');
-                const nameSpan = document.createElement('span');
-                nameSpan.textContent = spctDTO.sanPham.tenSanPham;
-                nameCell.appendChild(nameSpan);
+                 // Tạo ô tên sản phẩm
+                 const nameCell = document.createElement('td');
+                 const nameSpan = document.createElement('span');
+                 nameSpan.textContent = spctDTO.sanPham.tenSanPham;
+                 nameCell.appendChild(nameSpan);
 
-                const sizeSpan = document.createElement('span');
-                sizeSpan.textContent = `[ ${spctDTO.kichThuoc.tenKichThuoc} - `;
-                nameCell.appendChild(sizeSpan);
+                 const sizeSpan = document.createElement('span');
+                 sizeSpan.textContent = `[ ${spctDTO.kichThuoc.tenKichThuoc} - `;
+                 nameCell.appendChild(sizeSpan);
 
-                const colorSpan = document.createElement('span');
-                colorSpan.style.display = 'inline-block';
-                colorSpan.style.backgroundColor = spctDTO.mauSac.tenMauSac;
-                colorSpan.style.width = '20px';
-                colorSpan.style.height = '20px';
-                colorSpan.style.border = '1px solid #000';
-                nameCell.appendChild(colorSpan);
+                 const colorSpan = document.createElement('span');
+                 colorSpan.style.display = 'inline-block';
+                 colorSpan.style.backgroundColor = spctDTO.mauSac.tenMauSac;
+                 colorSpan.style.width = '20px';
+                 colorSpan.style.height = '20px';
+                 colorSpan.style.border = '1px solid #000';
+                 nameCell.appendChild(colorSpan);
 
-                const closingBracketSpan = document.createElement('span');
-                closingBracketSpan.textContent = ' ]';
-                nameCell.appendChild(closingBracketSpan);
-                selectedProduct.appendChild(nameCell);
+                 const colarNameSpan = document.createElement('span');
+                 colarNameSpan.textContent = spctDTO.mauSac.tenMauSac; // Tạm thời đặt mã màu
+                 colarNameSpan.className = "color-name";
+                 nameCell.appendChild(colarNameSpan);
 
-                // Tạo ô giá
-                const priceCell = document.createElement('td');
-                const giaSP = spctDTO.gia;
-                priceCell.textContent = formatCurrency(giaSP);
-                selectedProduct.appendChild(priceCell);
+                 const closingBracketSpan = document.createElement('span');
+                 closingBracketSpan.textContent = ' ]';
+                 nameCell.appendChild(closingBracketSpan);
+                 selectedProduct.appendChild(nameCell);
+ // Gọi hàm getColorName cho phần tử vừa được thêm
+                 if (spctDTO.mauSac.tenMauSac.startsWith('#')) {
+                     getColorName(spctDTO.mauSac.tenMauSac, colarNameSpan);
+                 } else {
+                     colarNameSpan.textContent = "Tên màu không hợp lệ";
+                 }
+                 // Tạo ô giá
+                 const priceCell = document.createElement('td');
+                 const giaSP = spctDTO.gia;
+                 priceCell.textContent = formatCurrency(giaSP);
+                 selectedProduct.appendChild(priceCell);
 
-                // Tạo ô số lượng
-                const quantityCell = document.createElement('td');
-                const quantityInput = document.createElement('input');
-                quantityInput.type = 'number';
-                quantityInput.value = 1; // Khởi tạo số lượng là 1
-                quantityInput.min = 1;
-                quantityInput.style.width = '60px';
-                quantityCell.appendChild(quantityInput);
-                selectedProduct.appendChild(quantityCell);
-                if (quantityInput.value > spctDTO.soLuong) {
-                    showToast("Số lượng đã vượt quá!")
-                    quantityInput.value = spctDTO.soLuong;
-                }
+                 // Tạo ô số lượng
+                 const quantityCell = document.createElement('td');
+                 const quantityInput = document.createElement('input');
+                 quantityInput.type = 'number';
+                 quantityInput.value = 1; // Khởi tạo số lượng là 1
+                 quantityInput.min = 1;
+                 quantityInput.style.width = '60px';
+                 quantityCell.appendChild(quantityInput);
+                 selectedProduct.appendChild(quantityCell);
+                 if (quantityInput.value > spctDTO.soLuong) {
+                     showToast("Số lượng đã vượt quá!")
+                     quantityInput.value = spctDTO.soLuong;
+                 }
 
-                // Tạo ô xóa sản phẩm
-                const deleteCell = document.createElement('td');
-                const deleteIcon = document.createElement('i');
-                deleteIcon.className = 'fas fa-trash-alt';
-                deleteIcon.style.cursor = 'pointer';
-                deleteCell.appendChild(deleteIcon);
-                selectedProduct.appendChild(deleteCell);
+                 // Tạo ô xóa sản phẩm
+                 const deleteCell = document.createElement('td');
+                 const deleteIcon = document.createElement('i');
+                 deleteIcon.className = 'fas fa-trash-alt';
+                 deleteIcon.style.cursor = 'pointer';
+                 deleteCell.appendChild(deleteIcon);
+                 selectedProduct.appendChild(deleteCell);
 
-                // Xóa sản phẩm
-                deleteIcon.addEventListener('click', function () {
-                    selectedProduct.remove();
-                    tongTien = calculateTotal();
-                    updateTotal();
-                });
+                 // Xóa sản phẩm
+                 deleteIcon.addEventListener('click', function () {
+                     selectedProduct.remove();
+                     tongTien = calculateTotal();
+                     updateTotal();
+                 });*/
 
                 // Thêm hàng sản phẩm vào bảng đã chọn
                 selectedProductsTable.querySelector('tbody').appendChild(selectedProduct);
@@ -512,9 +537,9 @@ for (let i = 0; i < productRows.length; i++) {
                 saveProductDetailsForTab(currentInvoiceId, spctDTO);
                 updateSelectedProductsTable(currentInvoiceId);
                 //tongTien += giaSP; // Cập nhật tổng tiền khi thêm sản phẩm
-                let quantity = quantityInput.value;
-                productQuantities[productId] = quantity;
-                console.log("SoLuong" + productQuantities[productId], "idSPCT: " + productId); // Kiểm tra giá trị
+                /* let quantity = quantityInput.value;
+                 productQuantities[productId] = quantity;
+                 console.log("SoLuong" + productQuantities[productId], "idSPCT: " + productId);*/ // Kiểm tra giá trị
                 tongTien = calculateTotal();
                 updateTotal();// Cập nhật hiển thị tổng tiền
             })
@@ -1092,6 +1117,22 @@ async function reloadCustomerComboBox() {
     } catch (error) {
         console.error("Lỗi khi tải lại danh sách khách hàng:", error);
     }
+}
+
+//Đổ tên màu:
+
+
+// Hàm gọi API để lấy tên màu
+function getColorName(colorCode, el) {
+    fetch(`https://www.thecolorapi.com/id?hex=${colorCode.substring(1)}`) // Loại bỏ ký tự '#' trước khi gửi API
+        .then(response => response.json())
+        .then(data => {
+            el.textContent = data.name.value; // Cập nhật tên màu vào phần tử span
+        })
+        .catch(error => {
+            console.error("Error fetching color name:", error);
+            el.textContent = "Không tìm thấy tên màu"; // Hiển thị lỗi nếu không lấy được tên màu
+        });
 }
 
 
