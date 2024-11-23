@@ -21,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+    import java.util.ArrayList;
+    import java.util.List;
     import java.util.Optional;
 
 @Service
@@ -137,7 +139,6 @@ public class KhachhangService {
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email); // Cần phải có phương thức này trong repository
     }
-
 
 
 

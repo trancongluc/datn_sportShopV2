@@ -89,7 +89,7 @@
                         </td>
                     <td th:text="${khachHang.code}"></td>
                     <td>
-                        <div class="d-flex align-items-center">
+                        <div >
                             <span th:text="${khachHang.fullName}" style="color: black;"></span>
                         </div>
                     </td>
@@ -113,6 +113,8 @@
                             <span th:text="${khachHang.addresses[0].phuong}"></span>
                             <br/>
                         </div>
+
+
                     </td>
 
 
@@ -124,7 +126,7 @@
                     </td>
                     <td>
                         <a th:href="@{/khach-hang/customer/detail/{id}(id=${khachHang.id})}" > <i class="fas fa-edit"></i></i> </a>
-                        <a th:href="@{/khach-hang/delete/{id}(id=${khachHang.id})}" >🗑️</a>
+<!--                        <a th:href="@{/khach-hang/delete/{id}(id=${khachHang.id})}" >🗑️</a>-->
 
                         <a  th:href="@{/khach-hang/customer/diachi/{id}(id=${khachHang.id})}" ><i class="bi bi-map"></i></a>
 

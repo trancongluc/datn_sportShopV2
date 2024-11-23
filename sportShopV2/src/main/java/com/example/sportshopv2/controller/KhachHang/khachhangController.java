@@ -291,10 +291,9 @@ public class khachhangController {
         return "KhachHang/diachi"; // Return to the page displaying the customer's addresses
     }
 
-    @PostMapping("/customer/update-address/{customerId}/{addressId}")
-
+    @PostMapping("/customer/update-address/{customerId}")
     public String updateAddress(@PathVariable("customerId") Integer customerId,
-                                @PathVariable("addressId") Integer addressId,
+                                @RequestParam("addressId") Integer addressId,
                                 @RequestParam("tinh") String tinh,
                                 @RequestParam("tinhName") String tinhName,
                                 @RequestParam("quan") String quan,
@@ -308,6 +307,7 @@ public class khachhangController {
         // Redirect back to the address view page
         return "redirect:/khach-hang/customer/diachi/" + customerId;
     }
+
 
     @GetMapping("/customer/select-address/{customerId}/{addressId}")
     public String selectAddress(@PathVariable("customerId") Integer customerId, @PathVariable("addressId") Integer addressId, HttpSession session) {

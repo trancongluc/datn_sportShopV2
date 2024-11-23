@@ -98,6 +98,8 @@
                                 <a href="#" th:href="@{/khach-hang/customer/delete-address/{customerId}/{addressId}(customerId=${customer.id}, addressId=${address.id})}"> <i class="fas fa-trash-can"></i></a>
 
 
+
+
                                 <a href="#" data-bs-toggle="modal"
                                    data-bs-target="#updateAddressModal"
                                    th:data-id="${address.id}"
@@ -105,9 +107,9 @@
                                    th:data-quan="${address.quan}"
                                    th:data-phuong="${address.phuong}"
                                    th:data-line="${address.line}"
-                                   class=" update-address-btn"><i class="fas fa-pen-to-square"></i> </a>
-
-
+                                   class="update-address-btn">
+                                    <i class="fas fa-pen-to-square"></i>
+                                </a>
 
 
 
@@ -174,9 +176,11 @@
 
                                         </div>
                                         <div class="modal-body">
-                                            <form th:action="@{/khach-hang/customer/update-address/{customerId}/{addressId}(customerId=${customer.id}, addressId=${address.id})}"
+                                            <form th:action="@{/khach-hang/customer/update-address/{customerId}(customerId=${customer.id})}"
+
                                                   method="post">
-                                                <input type="hidden" id="addressId" name="id">
+                                                <input type="hidden" id="addressId" name="addressId" th:value="${address.id}">
+
                                                 <div class="form-group">
                                                     <label for="tinha" class="form-label">Tỉnh</label>
                                                     <select class="form-select" id="tinha" name="tinh"
@@ -214,6 +218,8 @@
                                     </div>
                                 </div>
                             </div>
+
+
 
 
 
@@ -264,6 +270,9 @@
                 }
             </script>
 
+
+
+
             <script>
                 $(document).on('click', '.update-address-btn', function () {
                     var addressId = this.getAttribute('data-id');
@@ -279,6 +288,7 @@
                     $('#phuonga').empty();
 
                     // Đặt giá trị cho ô địa chỉ (line)
+                    $('#addressId').val(addressId);
                     $('#linea').val(line);
 
                     // Lấy danh sách tỉnh và đặt tỉnh đã chọn
