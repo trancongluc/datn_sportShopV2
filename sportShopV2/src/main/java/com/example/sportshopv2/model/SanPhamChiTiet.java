@@ -48,17 +48,6 @@ public class SanPhamChiTiet extends BaseEntity {
     @Column(name = "gender")
     private String gioiTinh;
 
-//    @ManyToOne
-//    @JoinColumn(name = "id_size", referencedColumnName = "id", insertable = false, updatable = false)
-//    private KichThuoc kichThuoc;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "id_product", referencedColumnName = "id", insertable = false, updatable = false)
-//    private SanPham sanPham;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "id_color", referencedColumnName = "id", insertable = false, updatable = false)
-//    private MauSac mauSac;
 
 
     public static SanPhamChiTiet of(SanPhamChiTietDTO spctDTO) {

@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.Query;
 public interface DotGiamGiaRepo extends JpaRepository<DotGiamGia, Integer> {
 
 
-    boolean existsBySaleCode(String code);
+//    boolean existsBySaleCode(String code);
 }

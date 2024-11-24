@@ -1,5 +1,6 @@
 package com.example.sportshopv2.repository;
 
+import com.example.sportshopv2.model.AnhSanPham;
 import com.example.sportshopv2.model.SanPhamChiTiet;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,4 +23,6 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
 
     List<SanPhamChiTiet> findAllByDeleted(boolean deleted);
     SanPhamChiTiet findByIdAndDeleted(Integer id, boolean delete);
+    Optional<SanPhamChiTiet> findById(Integer id);
+
 }

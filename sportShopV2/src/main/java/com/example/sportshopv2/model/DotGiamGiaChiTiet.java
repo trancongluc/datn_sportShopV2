@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -15,8 +14,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Promotion")
-public class DotGiamGia {
+@Table(name = "product_detail_promotion")
+public class DotGiamGiaChiTiet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
@@ -25,19 +24,11 @@ public class DotGiamGia {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "discount")
-    private BigDecimal discount;
+    @Column(name = "code")
+    private String code;
 
-    @Column(name = "description")
-    private BigDecimal description;
-
-    @Column(name = "start_date")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime startDate;
-
-    @Column(name = "end_date")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime endDate;
+    @Column(name = "status")
+    private String status;
 
     @Column(name = "update_at")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -56,16 +47,12 @@ public class DotGiamGia {
     @Column(name = "deleted")
     private Boolean deleted;
 
-    public boolean isActive() {
-        LocalDateTime now = LocalDateTime.now();
-        System.out.println("Thời gian hiện tại: " + now); // In ra thời gian hiện tại
-        return startDate != null && endDate != null && startDate.isBefore(now) && endDate.isAfter(now);
-    }
+    @ManyToOne
+    @JoinColumn(name = "product_detail_id")
+    private SanPhamChiTiet spct;
 
-
-    public String getStatus() {
-        return isActive() ? "Đang diễn ra" : "Kết thúc";
-    }
-
+    @ManyToOne
+    @JoinColumn(name = "promotion_id")
+    private DotGiamGia dotGiamGia;
 
 }

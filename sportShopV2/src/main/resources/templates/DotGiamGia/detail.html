@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <title>Thêm Đợt Giảm Giá</title>
+    <title>Chỉnh Sửa Đợt Giảm Giá</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -110,15 +110,6 @@
             background-color: white;
         }
 
-        .table-container .status {
-            background-color: #28a745;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 12px;
-            text-align: center;
-            white-space: nowrap; /* Prevent text from wrapping */
-        }
-
         .pagination {
             display: flex;
             justify-content: center;
@@ -157,7 +148,7 @@
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
+            transition: background-color 0.3s, transform 0 .2s;
         }
 
         .add-button button:hover {
@@ -179,27 +170,23 @@
 <main layout:fragment="main1">
     <div class="container">
         <div class="form-section">
-            <h2>Thêm đợt giảm giá</h2>
+            <h2>Thêm Đợt Giảm Giá</h2>
             <form th:action="@{/dot-giam-gia/update}" th:object="${dotGiamGia}" method="post">
-                <div class="form-group">
-                    <label for="ma-phieu">Mã</label>
-                    <input type="hidden" id="ma-phieu" th:field="*{saleCode}">
-                </div>
                 <div class="form-group">
                     <label for="promotion-name">Tên khuyến mại</label>
                     <input type="text" id="promotion-name" name="promotionName" placeholder="Tên khuyến mãi" th:field="*{name}" required class="form-control">
                 </div>
                 <div class="form-group">
                     <label for="discount-value">Giá trị giảm</label>
-                    <input type="number" id="discount-value" name="discountValue" placeholder="Giá trị giảm" th:field="*{discountValue}" required class="form-control">
+                    <input type="number" id="discount-value" name="discountValue" placeholder="Giá trị giảm" th:field="*{discount}" required class="form-control">
                 </div>
                 <div class="form-group">
                     <label for="start-date">Ngày bắt đầu</label>
-                    <input type="date" id="start-date" name="startDate" th:field="*{startDate}" required class="form-control">
+                    <input type="datetime-local" id="start-date" name="startDate" th:field="*{startDate}" required class="form-control">
                 </div>
                 <div class="form-group">
                     <label for="end-date">Ngày kết thúc</label>
-                    <input type="date" id="end-date" name="endDate" th:field="*{endDate}" required class="form-control">
+                    <input type="datetime-local" id="end-date" name="endDate" th:field="*{endDate}" required class="form-control">
                 </div>
                 <div class="add-button">
                     <button type="submit" class="btn btn-primary"><i class="fas fa-user-plus"></i> Chỉnh Sửa</button>
@@ -214,7 +201,7 @@
                 <table class="table table-bordered">
                     <thead>
                     <tr>
-                        <th><input type="checkbox" id="select-all" onclick="toggleAll(this)"></th>
+                        <th><input type="checkbox"></th>
                         <th>STT</th>
                         <th>Mã sản phẩm</th>
                         <th>Tên sản phẩm</th>
@@ -223,7 +210,7 @@
                     </thead>
                     <tbody>
                     <tr th:each="sp, iterStat : ${listSanPham}">
-                        <td><input type="checkbox" class="product-checkbox" data-id="${sp.id}" onclick="showProductDetails(this)"></td>
+                        <td><input type="checkbox" class="product-checkbox"></td>
                         <td th:text="${iterStat.index + 1}"></td>
                         <td th:text="${sp.code}"></td>
                         <td th:text="${sp.tenSanPham}"></td>
@@ -232,71 +219,68 @@
                     </tbody>
                 </table>
             </div>
-            <!--            <div class="pagination">-->
-            <!--                <a href="#">&#60;</a>-->
-            <!--                <a href="#" class="active">1</a>-->
-            <!--                <a href="#">2</a>-->
-            <!--                <a href="#">3</a>-->
-            <!--                <a href="#">&#62;</a>-->
-            <!--            </div>-->
-            <!--            <h2>Chi tiết sản phẩm</h2>-->
-            <!--            <div id="product-details" class="table-container">-->
-            <!--                <table id="details-table" class="table table-bordered">-->
-            <!--                    <thead>-->
-            <!--                    <tr>-->
-            <!--                        <th>Tên sản phẩm</th>-->
-            <!--                        <th>Giới tính</th>-->
-            <!--                        <th>Kích thước</th>-->
-            <!--                        <th>Màu</th>-->
-            <!--                        <th>Trạng thái</th>-->
-            <!--                        <th>Tình trạng</th>-->
-            <!--                    </tr>-->
-            <!--                    </thead>-->
-            <!--                    <tbody>-->
-
-            <!--                    </tbody>-->
-            <!--                </table>-->
-            <!--            </div>-->
+            <h2>Chi tiết sản phẩm</h2>
+            <div id="product-details" class="table-container">
+                <table id="details-table" class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox"></th>
+                        <th>STT</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Giới tính</th>
+                        <th>Kích thước</th>
+                        <th>Màu</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="spct, iterStat : ${spctDto}">
+                        <td><input type="checkbox" class="product-checkbox"></td>
+                        <td th:text="${iterStat.index + 1}"></td>
+                        <td th:text="${spct.sanPham.tenSanPham}"></td>
+                        <td th:text="${spct.gioiTinh}"></td>
+                        <td th:text="${spct.kichThuoc.tenKichThuoc}"></td>
+                        <td th:text="${spct.mauSac.tenMauSac}"></td>
+                        <td th:text="${spct.trangThai}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </main>
 
 <script>
+    document.querySelectorAll('.product-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const id = this.getAttribute('data-id');
+            const detailsTableBody = document.querySelector('#details-table tbody');
 
-    // function showProductDetails(checkbox) {
-    //     const productId = checkbox.getAttribute('data-id');
-    //     const productDetailsTable = document.getElementById('details-table').getElementsByTagName('tbody')[0];
-    //
-    //     productDetailsTable.innerHTML = ''; // Xóa nội dung cũ
-    //
-    //     if (checkbox.checked) {
-    //         fetch(`/api/products/${productId}`)
-    //             .then(response => response.json())
-    //             .then(product => {
-    //                 if (product) {
-    //                     const newRow = productDetailsTable.insertRow();
-    //                     newRow.innerHTML = `
-    //                         <td>${product.name}</td>
-    //                         <td>${product.gender}</td>
-    //                         <td>${product.size}</td>
-    //                         <td>${product.color}</td>
-    //                         <td>${product.status}</td>
-    //                         <td>${product.condition}</td>
-    //                     `;
-    //                 }
-    //             })
-    //             .catch(error => console.error('Không tìm thấy chi tiết sản phẩm:', error));
-    //     }
-    // }
-    //
-    // // Hàm chọn hoặc bỏ chọn tất cả các checkbox
-    // function toggleAll(selectAllCheckbox) {
-    //     const checkboxes = document.querySelectorAll('.product-checkbox');
-    //     checkboxes.forEach(checkbox => {
-    //         checkbox.checked = selectAllCheckbox.checked;
-    //         showProductDetails(checkbox); // Hiển thị chi tiết cho từng sản phẩm
-    //     });
-    // }
+            // Xóa tất cả các hàng hiện có trong bảng chi tiết
+            detailsTableBody.innerHTML = '';
+
+            if (this.checked) {
+                // Gọi API để lấy thông tin chi tiết sản phẩm
+                fetch(`/product/details/${id}`)
+                    .then(response => response.json())
+                    .then(sptc => {
+                        // Tạo hàng mới cho bảng chi tiết
+                        const newRow = document.createElement('tr');
+                        newRow.innerHTML = `
+                                <td><input type="checkbox" class="product-checkbox"></td>
+                                <td>1</td>
+                                <td>${spct.sanPham.tenSanPham}</td>
+                                <td>${spct.gioiTinh}</td>
+                                <td>${spct.kichThuoc.tenKichThuoc}</td>
+                                <td>${spct.mauSac.tenMauSac}</td>
+                                <td>${spct.trangThai}</td>
+                            `;
+                        detailsTableBody.appendChild(newRow);
+                    })
+                    .catch(error => console.error('Error fetching product details:', error));
+            }
+        });
+    });
 
     // Tính năng tìm kiếm sản phẩm
     document.getElementById('search-product').addEventListener('input', function() {

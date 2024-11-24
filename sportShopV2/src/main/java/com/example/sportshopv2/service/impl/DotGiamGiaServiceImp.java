@@ -5,6 +5,7 @@ import com.example.sportshopv2.model.DotGiamGia;
 import com.example.sportshopv2.model.PhieuGiamGia;
 import com.example.sportshopv2.repository.DotGiamGiaRepo;
 import com.example.sportshopv2.service.DotGiamGiaService;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,8 +13,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
+
+
 @Service
 public class DotGiamGiaServiceImp implements DotGiamGiaService {
+    
+
     @Autowired
     private DotGiamGiaRepo dotGiamGiaRepo;
 
@@ -26,8 +32,6 @@ public class DotGiamGiaServiceImp implements DotGiamGiaService {
     @Override
     public Boolean create(DotGiamGia dotGiamGia) {
         try {
-            // Tạo mã giảm giá duy nhất
-            dotGiamGia.setSaleCode(generateUniqueVoucherCode());
             dotGiamGiaRepo.save(dotGiamGia);
             return true;
         } catch (Exception e) {
@@ -64,13 +68,13 @@ public class DotGiamGiaServiceImp implements DotGiamGiaService {
         dotGiamGiaRepo.save(dotGiamGia);
     }
 
-    private String generateUniqueVoucherCode() {
-        String code;
-        do {
-            code = "Sale" + UUID.randomUUID().toString().substring(0, 5).toUpperCase(); // Tạo mã ngẫu nhiên
-        } while (dotGiamGiaRepo.existsBySaleCode(code)); // Kiểm tra xem mã đã tồn tại chưa
-        return code;
-    }
+//    private String generateUniqueVoucherCode() {
+//        String code;
+//        do {
+//            code = "Sale" + UUID.randomUUID().toString().substring(0, 5).toUpperCase(); // Tạo mã ngẫu nhiên
+//        } while (dotGiamGiaRepo.existsBySaleCode(code)); // Kiểm tra xem mã đã tồn tại chưa
+//        return code;
+//    }
 
 
 }

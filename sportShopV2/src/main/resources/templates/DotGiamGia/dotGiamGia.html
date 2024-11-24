@@ -206,7 +206,7 @@
                 <thead>
                 <tr>
                     <th>STT</th>
-                    <th>Mã</th>
+
                     <th>Tên đợt giảm giá</th>
                     <th>Giá trị giảm</th>
                     <th>Ngày bắt đầu</th>
@@ -219,9 +219,9 @@
                 <tbody>
                 <tr th:each="dgg, iterStat : ${listDotGiamGia}">
                     <td th:text="${iterStat.index + 1}"></td> <!-- STT -->
-                    <td th:text="${dgg.saleCode}"></td> <!-- ma -->
+
                     <td th:text="${dgg.name}"></td> <!-- ten dot giam gia -->
-                    <td th:text="${dgg.discountValue}"></td> <!-- gia tri giam toi thieu -->
+                    <td th:text="${dgg.discount}"></td> <!-- gia tri giam toi thieu -->
                     <td th:text="${dgg.startDate}"></td> <!-- ngay bat dau -->
                     <td th:text="${dgg.endDate}"></td> <!-- ngay ket thuc -->
                     <td th:text="${dgg.updateAt}"></td> <!-- ngay cap nhat -->
