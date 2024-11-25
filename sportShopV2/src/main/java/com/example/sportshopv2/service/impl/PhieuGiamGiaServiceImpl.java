@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PhieuGiamGiaServiceImpl implements PhieuGiamGiaService {
@@ -25,7 +26,8 @@ public class PhieuGiamGiaServiceImpl implements PhieuGiamGiaService {
             phieuGiamGiaRepo.save(phieuGiamGia);
             return true;
         } catch (Exception e) {
-            return false; // Có thể log lỗi ở đây
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -50,5 +52,16 @@ public class PhieuGiamGiaServiceImpl implements PhieuGiamGiaService {
             return true;
         }
         return false;
+    }
+    @Override
+    public void save(PhieuGiamGia giamGia) {
+        phieuGiamGiaRepo.save(giamGia);
+    }
+    private String generateUniqueVoucherCode() {
+        String code;
+        do {
+            code = "VC" + UUID.randomUUID().toString().substring(0, 5).toUpperCase(); // Tạo mã ngẫu nhiên
+        } while (phieuGiamGiaRepo.existsByVoucherCode(code)); // Kiểm tra xem mã đã tồn tại chưa
+        return code;
     }
 }

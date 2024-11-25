@@ -1,8 +1,8 @@
+<!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{Menu}"
->
+      layout:decorate="~{Menu}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -180,35 +180,37 @@
     <div class="container">
         <div class="form-section">
             <h2>Thêm đợt giảm giá</h2>
-            <div class="form-group">
-                <label for="promotion-name">Tên khuyến mại</label>
-                <input type="text" id="promotion-name" placeholder="Tên khuyến mãi" required>
-            </div>
-            <div class="form-group">
-                <label for="discount-value">Giá trị giảm</label>
-                <input type="text" id="discount-value" placeholder="Giá trị giảm" required>
-            </div>
-            <div class="form-group">
-                <label for="start-date">Ngày bắt đầu</label>
-                <input type="date" id="start-date" required>
-            </div>
-            <div class="form-group">
-                <label for="end-date">Ngày kết thúc</label>
-                <input type="date" id="end-date" required>
-            </div>
-            <div class="add-button">
-                <button type="submit"><i class="fas fa-user-plus"></i> Thêm Mới</button>
-            </div>
+            <form th:action="@{/dot-giam-gia/save}" th:object="${dotGiamGia}" method="post">
+                <div class="form-group">
+                    <label for="promotion-name">Tên khuyến mại</label>
+                    <input type="text" id="promotion-name" name="promotionName" placeholder="Tên khuyến mãi" th:field="*{name}" required class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="discount-value">Giá trị giảm</label>
+                    <input type="number" id="discount-value" name="discountValue" placeholder="Giá trị giảm" th:field="*{discount}" required class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="start-date">Ngày bắt đầu</label>
+                    <input type="datetime-local" id="start-date" name="startDate" th:field="*{startDate}" required class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="end-date">Ngày kết thúc</label>
+                    <input type="datetime-local" id="end-date" name="endDate" th:field="*{endDate}" required class="form-control">
+                </div>
+                <div class="add-button">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-user-plus"></i> Thêm Mới</button>
+                </div>
+            </form>
         </div>
         <div class="product-section">
             <h2>Sản phẩm</h2>
             <label for="search-product" class="mr-2">Tìm Kiếm</label>
             <input type="text" id="search-product" placeholder="Mã hoặc tên sản phẩm" class="form-control mr-2">
-            <div class="table-container">
-                <table>
+            <div class="table-container mt-3">
+                <table class="table table-bordered">
                     <thead>
                     <tr>
-                        <th><input type="checkbox"></th>
+                        <th><input type="checkbox" id="select-all"></th>
                         <th>STT</th>
                         <th>Mã sản phẩm</th>
                         <th>Tên sản phẩm</th>
@@ -216,74 +218,73 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td><input type="checkbox"></td>
-                        <td>1</td>
-                        <td>SP8386</td>
-                        <td>GIÀY SNEAKERS 9 NGÓN</td>
-                        <td><span class="status">Đang kinh doanh</span></td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"></td>
-                        <td>2</td>
-                        <td>SP6789</td>
-                        <td>GIÀY SNEAKERS SỐNG BẰNG TÌNH CẢM</td>
-                        <td><span class="status">Đang kinh doanh</span></td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"></td>
-                        <td>3</td>
-                        <td>SP1234</td>
-                        <td>GIÀY SNEAKERS SẢNH TIẾN</td>
-                        <td><span class="status">Đang kinh doanh</span></td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"></td>
-                        <td>4</td>
-                        <td>SP3779</td>
-                        <td>GIÀY SNEAKER THẦN TÀI NHỎ THẦN TÀI LỚN</td>
-                        <td><span class="status">Đang kinh doanh</span></td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"></td>
-                        <td>5</td>
-                        <td>SP9999</td>
-                        <td>GIÀY SNEAKER TỨ CHÍN</td>
-                        <td><span class="status">Đang kinh doanh</span></td>
+                    <tr th:each="sp, iterStat : ${listSanPham}">
+                        <td><input type="checkbox" class="product-checkbox" data-id="${sp.id}"></td>
+                        <td th:text="${iterStat.index + 1}"></td>
+                        <td th:text="${sp.code}"></td>
+                        <td th:text="${sp.tenSanPham}"></td>
+                        <td th:text="${sp.trangThai}"></td>
                     </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="pagination">
-                <a href="#">&#60;</a>
-                <a href="#" class="active">1</a>
-                <a href="#">2</a>
-                <a href="#">3</a>
-                <a href="#">&#62;</a>
-            </div>
+<!--            <div class="pagination">-->
+<!--                <a href="#">&#60;</a>-->
+<!--                <a href="#" class="active">1</a>-->
+<!--                <a href="#">2</a>-->
+<!--                <a href="#">3</a>-->
+<!--                <a href="#">&#62;</a>-->
+<!--            </div>-->
             <h2>Chi tiết sản phẩm</h2>
-            <div class="table-container">
-                <table>
+            <div id="product-details" class="table-container">
+                <table id="details-table" class="table table-bordered">
                     <thead>
                     <tr>
                         <th><input type="checkbox"></th>
                         <th>STT</th>
-                        <th>Ảnh sản phẩm</th>
                         <th>Tên sản phẩm</th>
                         <th>Giới tính</th>
                         <th>Kích thước</th>
                         <th>Màu</th>
                         <th>Trạng thái</th>
-                        <th>Tình trạng</th>
+
                     </tr>
                     </thead>
                     <tbody>
-                    <!-- Add product details here -->
+                        <tr th:each="spct, iterStat : ${spctDto}">
+                            <td><input type="checkbox" class="product-checkbox"></td>
+                            <td th:text="${iterStat.index + 1}"></td>
+                            <td th:text="${spct.sanPham.tenSanPham}"></td>
+                            <td th:text="${spct.gioiTinh}"></td>
+                            <td th:text="${spct.kichThuoc.tenKichThuoc}"></td>
+                            <td th:text="${spct.mauSac.tenMauSac}"></td>
+                            <td th:text="${spct.trangThai}"></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </main>
+
+<script>
+
+    // Tính năng tìm kiếm sản phẩm
+    document.getElementById('search-product').addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const rows = document.querySelectorAll('tbody tr');
+
+        rows.forEach(row => {
+            const productCode = row.cells[2].textContent.toLowerCase(); // Mã sản phẩm
+            const productName = row.cells[3].textContent.toLowerCase(); // Tên sản phẩm
+
+            if (productCode.includes(searchTerm) || productName.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
 </body>
 </html>

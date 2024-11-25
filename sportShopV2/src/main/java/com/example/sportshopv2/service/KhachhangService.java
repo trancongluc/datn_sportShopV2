@@ -7,9 +7,11 @@ package com.example.sportshopv2.service;
 
 import com.example.sportshopv2.dto.UserDTO;
 import com.example.sportshopv2.model.Account;
+import com.example.sportshopv2.model.NguoiDung;
 import com.example.sportshopv2.model.User;
 import com.example.sportshopv2.repository.AddressRepository;
 import com.example.sportshopv2.repository.KhachHangRepository;
+import com.example.sportshopv2.repository.NguoiDungRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
     import java.util.ArrayList;
     import java.util.List;
     import java.util.Optional;
@@ -30,6 +34,8 @@ public class KhachhangService {
 
     @Autowired
     private KhachHangRepository userRepository;
+    @Autowired
+    private NguoiDungRepo ndRepo;
 
     @Autowired
     private AddressRepository addressRepository;
@@ -104,13 +110,15 @@ public class KhachhangService {
 
     public UserDTO getKHById(Integer id) {
         User userKH = userRepository.getKhachHangById(id);
-        UserDTO khDTO = User.toDTO(userKH);
+        UserDTO khDTO = User.toDTO(userKH, id, userRepository);
         return khDTO;
     }
+
     public User getKHByIdThemHoaDon(Integer id) {
         User userKH = userRepository.getKhachHangById(id);
         return userKH;
     }
+
     public void updateKhachHang(User khachHang) {
         userRepository.save(khachHang); // Save the updated customer
     }
@@ -131,7 +139,22 @@ public class KhachhangService {
         userRepository.save(customer);
     }
 
+    public NguoiDung saveKH(NguoiDung customer) {
+        String customerCode = generateCustomerCode();
+        // Gán mã khách hàng vào tài khoản
+        customer.setCode(customerCode);
+        return ndRepo.save(customer);
+    }
 
+    private String generateCustomerCode() {
+        // Tạo UUID và rút gọn
+        String uuid = UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
+        return "KH" + uuid; // Ví dụ: KH4F3A8D2B
+    }
+
+    public List<NguoiDung> getKHCbo() {
+        return ndRepo.findAllKhachHang();
+    }
     public Optional<User> findByPhoneNumber(String phoneNumber) {
         return userRepository.findByPhoneNumber(phoneNumber); // Cần phải có phương thức này trong repository
     }

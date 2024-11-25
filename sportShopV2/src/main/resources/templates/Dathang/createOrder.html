@@ -16,7 +16,7 @@
         <div class="card-body">
           <img th:src="@{/vnpay-logo.png}" style="width: 200px">
           <h2 class="card-title">Tạo Đơn Hàng</h2>
-          <form th:action="@{/VNPAY-demo/submitOrder}" method="post">
+          <form id="orderForm" th:action="@{/VNPAY-demo/submitOrder}" method="post">
             <div class="form-group">
               <label for="amount">Số tiền:</label>
               <input type="number" class="form-control" id="amount" name="amount" required value="299999">
@@ -36,6 +36,27 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script>
+  // Lấy dữ liệu từ localStorage và điền vào form
+  window.onload = function() {
+    const thucThu = localStorage.getItem('thucThu');
+    const billCode = localStorage.getItem('billCode');
+
+    if (thucThu) {
+      document.getElementById('amount').value = thucThu;
+    }
+
+    if (billCode) {
+      document.getElementById('orderInfo').value = billCode;
+    }
+
+    // Tự động submit form sau khi điền dữ liệu
+    if (thucThu && billCode) {
+      // Thay vì truy cập form qua 'orderForm', hãy đảm bảo rằng form có id="orderForm"
+      document.getElementById('orderForm').submit();
+    }
+  }
+</script>
 </body>
 
 </html>

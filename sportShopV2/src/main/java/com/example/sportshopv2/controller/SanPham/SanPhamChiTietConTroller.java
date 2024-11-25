@@ -6,6 +6,7 @@ import com.example.sportshopv2.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -65,4 +66,15 @@ public class SanPhamChiTietConTroller {
     public SanPhamChiTiet thongTinSPCT(@PathVariable("id") Integer id) {
         return spctService.findSPCTById(id);
     }
+    @PutMapping("/cap-nhat-so-luong/{idSPCT}")
+    @ResponseBody
+    public ResponseEntity<String> updateProductQuantity(@PathVariable("idSPCT") Integer idSPCT, @RequestParam Integer soLuongNew) {
+        boolean isUpdated = spctService.capNhatSoLuongSPCT(idSPCT, soLuongNew);
+        if (isUpdated) {
+            return ResponseEntity.ok("Cập nhật số lượng thành công!");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy sản phẩm hoặc cập nhật thất bại.");
+        }
+    }
+
 }

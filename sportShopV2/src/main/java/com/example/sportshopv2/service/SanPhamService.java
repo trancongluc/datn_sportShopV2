@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,6 +19,12 @@ public class SanPhamService {
 
     public Page<SanPham> getAllSanPham(Pageable pageable) {
         return sanPhamRepository.findAllByOrderByCreateAtDesc(pageable);
+    }
+    public List<SanPham> findAllSanPham() {
+        return sanPhamRepository.findAllByOrderByCreateAtDesc();
+    }
+    public SanPham findAllSanPhamById(Integer id) {
+        return sanPhamRepository.findAllById(id);
     }
     private String generateProductCode() {
         return "SP-" + UUID.randomUUID().toString();

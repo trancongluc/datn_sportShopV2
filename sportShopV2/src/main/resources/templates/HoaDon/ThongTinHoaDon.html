@@ -258,9 +258,9 @@
                     .summary td:first-child {
                         text-align: left;
                     }
-                    </style>
+                </style>
 
-                    <div class="header">
+                <div class="header">
                     <!--    <img th:src="@{/images/logoSSV2.png}" alt="logo"/>-->
 
                     <h1>Sport Shop</h1>
@@ -268,77 +268,77 @@
                     <p>SĐT: 0822580083</p>
                     <p>Mã hóa đơn: <span th:text="${hoaDon.billCode}"></span></p>
                     <p>
-                    <span th:text="${hoaDon.createAt}"></span>
+                        <span th:text="${hoaDon.createAt}"></span>
                     </p>
-                    </div>
+                </div>
 
-                    <div class="info">
+                <div class="info">
                     <p>Khách hàng: <span th:text="${hoaDon.getId_account().nguoiDung.full_name}"></span></p>
                     <p>Số điện thoại: <span th:text="${hoaDon.phone_number}"></span></p>
                     <p>Địa chỉ: <span th:text="${hoaDon.address}"></span></p>
-                    </div>
+                </div>
 
-                    <div class="order-details">
+                <div class="order-details">
                     <p><strong>Nội dung đơn hàng (Tổng số lượng sản phẩm): <span
-                                                                            th:text="${productCount}"></span>)</strong></p>
+                            th:text="${productCount}"></span>)</strong></p>
                     <table>
-                    <thead>
-                    <tr>
-                    <th>STT</th>
-                    <th>Tên</th>
-                    <th>Giá</th>
-                    <th>Số lượng</th>
-                    <th>Trạng thái</th>
-                    <th>Tổng</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="item, iterStat : ${list}">
-                    <td th:text="${iterStat.index + 1}"></td>
-                    <td th:text="${item.sanPhamChiTiet.idSanPham.tenSanPham}"></td>
-                    <td th:text="${item.sanPhamChiTiet.gia} + ' đ'"></td>
-                    <td th:text="${item.quantity}"></td>
-                    <td th:text="${item.hoaDon.status}"></td>
-                    <td th:text="${item.quantity * item.price} + ' đ'"></td>
-                    </tr>
-                    </tbody>
+                        <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                            <th>Trạng thái</th>
+                            <th>Tổng</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item, iterStat : ${list}">
+                            <td th:text="${iterStat.index + 1}"></td>
+                            <td th:text="${item.sanPhamChiTiet.idSanPham.tenSanPham}"></td>
+                            <td th:text="${item.sanPhamChiTiet.gia} + ' đ'"></td>
+                            <td th:text="${item.quantity}"></td>
+                            <td th:text="${item.hoaDon.status}"></td>
+                            <td th:text="${item.quantity * item.price} + ' đ'"></td>
+                        </tr>
+                        </tbody>
                     </table>
-                    </div>
+                </div>
 
-                    <div class="summary">
+                <div class="summary">
                     <table>
-                    <tr>
-                    <td>Giảm giá:</td>
-                    <td th:text="${hoaDon.money_reduced} + ' đ'"></td>
-                    </tr>
-                    <tr>
-                    <td><strong>Tổng tiền hóa đơn:</strong></td>
-                    <td><strong th:text="${hoaDon.status} + ' đ'"></strong></td>
-                    </tr>
-                    <tr>
-                    <td>Tổng số lượng sản phẩm:</td>
-                    <td th:text="${hoaDon.money_reduced}"></td>
-                    </tr>
-                    <tr>
-                    <td>Tổng thanh toán:</td>
-                    <td th:text="${hoaDon.total_money} + ' đ'"></td>
-                    </tr>
+                        <tr>
+                            <td>Giảm giá:</td>
+                            <td th:text="${hoaDon.money_reduced} + ' đ'"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tổng tiền hóa đơn:</strong></td>
+                            <td><strong th:text="${hoaDon.status} + ' đ'"></strong></td>
+                        </tr>
+                        <tr>
+                            <td>Tổng số lượng sản phẩm:</td>
+                            <td th:text="${hoaDon.money_reduced}"></td>
+                        </tr>
+                        <tr>
+                            <td>Tổng thanh toán:</td>
+                            <td th:text="${hoaDon.total_money} + ' đ'"></td>
+                        </tr>
                     </table>
-                    </div>
+                </div>
 
-                    <br>
+                <br>
 
-                    <div class="modal-footer">
+                <div class="modal-footer">
                     <a th:href="@{/bill/export/pdf(id=${hoaDon.id})}">
-                    <button class="btn btn-success">Xuất PDF</button>
+                        <button class="btn btn-success">Xuất PDF</button>
                     </a>
                     <button class="btn btn-danger" onclick="hideModal()">Đóng</button>
-                    </div>
+                </div>
 
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </main>
-                    </body>
-                    </html>
+            </div>
+        </div>
+    </div>
+    </div>
+</main>
+</body>
+</html>

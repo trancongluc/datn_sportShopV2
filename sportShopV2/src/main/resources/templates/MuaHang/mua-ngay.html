@@ -386,14 +386,56 @@
         }
     </style>
     <script>
-        function toggleActive(element) {
-            // Remove active class from all siblings
+        // Ensure that listProduct.id is available in the JavaScript
+        const listProduct = { id: [[${listProduct.sanPham.id}]] };
+
+        let selectedColorId = null;
+        let selectedSizeId = null;
+
+        function toggleActive(element, type) {
+            // Remove 'active' class from all siblings
             var siblings = element.parentNode.children;
             for (var i = 0; i < siblings.length; i++) {
                 siblings[i].classList.remove('active');
             }
-            // Add active class to the clicked element
+
+            // Add 'active' class to the clicked element
             element.classList.add('active');
+
+            // Set the selected color or size ID based on the type
+            if (type === 'color') {
+                selectedColorId = element.getAttribute('data-color-id');
+            } else if (type === 'size') {
+                selectedSizeId = element.getAttribute('data-size-id');
+            }
+
+            // Update the cart link if both color and size are selected
+            updateCartLink();
+        }
+
+        function updateCartLink() {
+            const link = document.querySelector('.add-to-cart-link');
+            if (selectedColorId && selectedSizeId && listProduct.id) {
+                // Construct the correct href URL for the cart link
+                const href = `/mua-sam-SportShopV2/gio-hang?id=${listProduct.id}&idcolor=${selectedColorId}&idsize=${selectedSizeId}`;
+                link.setAttribute('href', href);
+            }
+        }
+    </script>
+
+    <script>
+        function increaseValue() {
+            const input = document.getElementById("quantity");
+            let currentValue = parseInt(input.value);
+            input.value = currentValue + 1;
+        }
+
+        function decreaseValue() {
+            const input = document.getElementById("quantity");
+            let currentValue = parseInt(input.value);
+            if (currentValue > 1) { // Giới hạn giá trị tối thiểu là 1
+                input.value = currentValue - 1;
+            }
         }
     </script>
 </head>
@@ -478,62 +520,46 @@
                     Phí Vận Chuyển: 40₫
                 </div>
             </div>
+            <span>
+    Size:
+</span>
             <div class="product-options">
                 <div class="size">
-       <span>
-        Size:
-       </span>
-                    <span onclick="toggleActive(this)">
-        38
-       </span>
-                    <span onclick="toggleActive(this)">
-        39
-       </span>
-                    <span onclick="toggleActive(this)">
-        40
-       </span>
-                    <span onclick="toggleActive(this)">
-        41
-       </span>
-                    <span onclick="toggleActive(this)">
-        42
-       </span>
+        <span th:each="size : ${listSizeAndColor}"
+              onclick="toggleActive(this, 'size')"
+              th:text="${size.kichThuoc.tenKichThuoc}"
+              th:attr="data-size-id=${size.kichThuoc.id}">
+        </span>
                 </div>
-                <div class="color">
-       <span>
+
+                <span>
         Màu:
-       </span>
-                    <span onclick="toggleActive(this)">
-        Đen
-       </span>
-                    <span onclick="toggleActive(this)">
-        Trắng
-       </span>
-                    <span onclick="toggleActive(this)">
-        Xanh dương
-       </span>
-                    <span onclick="toggleActive(this)">
-        Đỏ
-       </span>
+    </span>
+                <div class="color">
+        <span th:each="color : ${listSizeAndColor}"
+              onclick="toggleActive(this, 'color')"
+              th:style="'width: 40px; height: 40px; background-color: ' + ${color.mauSac.tenMauSac}"
+              th:attr="data-color-id=${color.mauSac.id}">
+        </span>
                 </div>
             </div>
+
             <div class="product-quantity">
       <span>
        Số Lượng
       </span>
-                <button>
-                    -
-                </button>
-                <input type="text" value="1"/>
-                <button>
-                    +
-                </button>
+                <div>
+                    <button onclick="decreaseValue()">-</button>
+                    <input type="text" id="quantity" value="1" readonly />
+                    <button onclick="increaseValue()">+</button>
+                </div>
+
+
+
             </div>
             <div class="product-actions">
-                <a th:href="@{/mua-sam-SportShopV2/gio-hang-khach-hang}">
-                    <button class="add-to-cart">
-                        Thêm Vào Giỏ Hàng
-                    </button>
+                <a href="#" class="add-to-cart-link">
+                    <button class="add-to-cart">Thêm Vào Giỏ Hàng</button>
                 </a>
                 <a>
                     <button class="buy-now">
@@ -729,6 +755,9 @@
         document.getElementById("currentAddress").innerText = address;
         modal.style.display = "none";
     }
+
 </script>
+
+
 </body>
 </html>

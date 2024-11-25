@@ -199,14 +199,14 @@
             <div class="add-button">
                 <button>
                     <i class="fas fa-user-plus"></i>
-                    <a href="/add-dot-giam-gia" style="text-decoration: none; color: white;">Thêm Mới</a>
+                    <a href="/dot-giam-gia/add-dot-giam-gia" style="text-decoration: none; color: white;">Thêm Mới</a>
                 </button>
             </div>
             <table>
                 <thead>
                 <tr>
                     <th>STT</th>
-                    <th>Mã</th>
+
                     <th>Tên đợt giảm giá</th>
                     <th>Giá trị giảm</th>
                     <th>Ngày bắt đầu</th>
@@ -216,42 +216,27 @@
                     <th>Hành động</th>
                 </tr>
                 </thead>
-<!--                <tbody>-->
-<!--                <tr th:each="vc, iterStat : ${listVC}">-->
-<!--                    <td th:text="${iterStat.index + 1}"></td> &lt;!&ndash; STT &ndash;&gt;-->
-<!--                    <td th:text="${vc.voucher_code}"></td> &lt;!&ndash; ma &ndash;&gt;-->
-<!--                    <td th:text="${vc.name}"></td> &lt;!&ndash; ten dot giam gia &ndash;&gt;-->
-<!--                    <td th:text="${vc.minimum_value}"></td> &lt;!&ndash; gia tri giam toi thieu &ndash;&gt;-->
-<!--                    <td th:text="${vc.start_date}"></td> &lt;!&ndash; ngay bat dau &ndash;&gt;-->
-<!--                    <td th:text="${vc.end_date}"></td> &lt;!&ndash; ngay ket thuc &ndash;&gt;-->
-<!--                    <td th:text="${vc.end_date}"></td> &lt;!&ndash; ngay cap nhat &ndash;&gt;-->
-<!--                    <td>-->
-<!--                        <span class="status-label" th:text="${vc.status}"></span> &lt;!&ndash; trang thai &ndash;&gt;-->
-<!--                    </td>-->
-<!--                    <td>-->
-<!--                        <button class="icon">✏️</button>-->
-<!--                        <button class="icon">🗑️</button>-->
-<!--                    </td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-
-
-
                 <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>KM607321310</td>
-                    <td>DUNG NA</td>
-                    <td>80%</td>
-                    <td>09:37:10 17-12-2023</td>
-                    <td>09:37:58 21-12-2023</td>
-                    <td>09:38:02 19-12-2023</td>
+                <tr th:each="dgg, iterStat : ${listDotGiamGia}">
+                    <td th:text="${iterStat.index + 1}"></td> <!-- STT -->
+
+                    <td th:text="${dgg.name}"></td> <!-- ten dot giam gia -->
+                    <td th:text="${dgg.discount}"></td> <!-- gia tri giam toi thieu -->
+                    <td th:text="${dgg.startDate}"></td> <!-- ngay bat dau -->
+                    <td th:text="${dgg.endDate}"></td> <!-- ngay ket thuc -->
+                    <td th:text="${dgg.updateAt}"></td> <!-- ngay cap nhat -->
                     <td>
-                        <button class="btn-edit">Đang kích hoạt</button>
+                        <span class="status-label" th:text="${dgg.status}"></span> <!-- trang thai -->
                     </td>
                     <td>
-                        <button class="icon">✏️</button>
-                        <button class="icon">🗑️</button>
+                        <a th:href="@{/dot-giam-gia/detail/{id}(id=${dgg.id})}" title="Chỉnh sửa">
+                            <i class="fas fa-pencil-alt"></i> <!-- Biểu tượng bút chì -->
+                        </a>
+                        <form th:action="@{/dot-giam-gia/delete/{id}(id=${dgg.id})}" method="post" style="display:inline;">
+                            <button type="submit" class="icon" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa đợt giảm giá này?');">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>

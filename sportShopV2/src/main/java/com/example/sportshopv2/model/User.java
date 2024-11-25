@@ -2,6 +2,7 @@ package com.example.sportshopv2.model;
 
 import com.example.sportshopv2.dto.UserDTO;
 import com.example.sportshopv2.dto.UserNhanVienDTO;
+import com.example.sportshopv2.repository.KhachHangRepository;
 import com.example.sportshopv2.repository.NhanVienRepo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -125,8 +126,9 @@ public class User {
         // Nếu cần, bạn có thể thêm các trường khác ở đây
         return user;
     }
-    public static UserDTO toDTO(User user) {
+    public static UserDTO toDTO(User user, Integer idUser, KhachHangRepository khRepo) {
         UserDTO dto = new UserDTO();
+        user = khRepo.findById(idUser).orElse(null);
         dto.setId(user.getId());
         dto.setCode(user.getCode());
         dto.setFullName(user.getFullName());

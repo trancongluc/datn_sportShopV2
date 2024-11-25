@@ -15,30 +15,21 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Voucher")
-public class PhieuGiamGia {
+@Table(name = "Promotion")
+public class DotGiamGia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Integer id;
 
-    @Column(name = "voucher_code")
-    private String voucherCode;
-
     @Column(name = "name")
     private String name;
 
-    @Column(name = "discount_value")
-    private BigDecimal discountValue;
+    @Column(name = "discount")
+    private BigDecimal discount;
 
-    @Column(name = "minimum_value")
-    private BigDecimal minimumValue;
-
-    @Column(name = "form_voucher")
-    private String formVoucher;
-
-    @Column(name = "quantity")
-    private Integer quantity;
+    @Column(name = "description")
+    private BigDecimal description;
 
     @Column(name = "start_date")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -48,8 +39,22 @@ public class PhieuGiamGia {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime endDate;
 
+    @Column(name = "update_at")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime updateAt;
 
+    @Column(name = "create_at")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime createAt;
 
+    @Column(name = "create_by")
+    private String createBy;
+
+    @Column(name = "update_by")
+    private String updateBy;
+
+    @Column(name = "deleted")
+    private Boolean deleted;
 
     public boolean isActive() {
         LocalDateTime now = LocalDateTime.now();
@@ -61,4 +66,6 @@ public class PhieuGiamGia {
     public String getStatus() {
         return isActive() ? "Đang diễn ra" : "Kết thúc";
     }
+
+
 }

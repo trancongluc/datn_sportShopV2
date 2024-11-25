@@ -108,24 +108,27 @@
                     <td th:text="${iterStat.index + 1}"></td>
                     <td>
                         <img th:src="@{/images/{tenAnh}(tenAnh=${spct.anhSanPham.get(0).tenAnh})}
-                        " alt="Ảnh sản phẩm" style="width: 50px; height: auto;" />
+                        " alt="Ảnh sản phẩm" style="width: 50px; height: auto;"/>
                     </td>
 
                     <td th:text="${spct.sanPham.getCode()}"></td>
                     <td th:text="${spct.sanPham.getTenSanPham()}"></td>
                     <td th:text="${spct.kichThuoc.tenKichThuoc}"></td>
                     <td>
-                        <div  th:style="'background-color: ' + ${spct.mauSac.tenMauSac} + '; width: 30px; height: 30px; text-align: center; vertical-align: middle; padding: 5px;'">
-
+                        <div th:style="'background-color: ' + ${spct.mauSac.tenMauSac} + '; width: 30px; height: 30px; text-align: center; vertical-align: middle; padding: 5px;'">
+                            <!-- Phần tử hiển thị tên màu -->
                         </div>
+                        <span class="color-name" id="color-name-${spct.id}" th:text="${spct.mauSac.tenMauSac}"></span>
                     </td>
+
+
                     <!--<td th:text="${spct.thuongHieu.tenThuongHieu}"></td>
                     <td th:text="${spct.theLoai.tenTheLoai}"></td>
                     <td th:text="${spct.chatLieu.tenChatLieu}"></td>
                     <td th:text="${spct.deGiay.tenDeGiay}"></td>
                     <td th:text="${spct.coGiay.tenCoGiay}"></td>-->
                     <td th:text="${spct.soLuong}"></td>
-                    <td th:text="${spct.gia}"></td>
+                    <td class="price" th:text="${spct.gia}"></td>
                     <td><span class="status active" th:text="${spct.trangThai}"></span></td>
                     <td class="actions">
                         <i class="fas fa-eye" th:data-row-id="${spct.id}"
@@ -167,7 +170,40 @@
     <a href="/san-pham" class="btn btn-secondary ml-2">Quay về</a> <!-- Nút Quay về -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
+        }
 
+        document.querySelectorAll('.price').forEach(function (el) {
+            el.textContent = formatCurrency(el.textContent);
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            // Lấy tất cả các phần tử chứa mã màu
+            document.querySelectorAll('.color-name').forEach(function (el) {
+                const colorHex = el.innerText.trim(); // Lấy mã hex từ nội dung của phần tử span
+                if (colorHex.startsWith('#')) { // Kiểm tra mã có hợp lệ không
+                    getColorName(colorHex, el); // Gọi hàm để lấy tên màu từ API
+                } else {
+                    el.textContent = "Tên màu không hợp lệ"; // Nếu mã không hợp lệ, hiển thị thông báo lỗi
+                }
+            });
+        });
+
+        // Hàm gọi API để lấy tên màu
+        function getColorName(colorCode, el) {
+            fetch(`https://www.thecolorapi.com/id?hex=${colorCode.substring(1)}`) // Loại bỏ ký tự '#' trước khi gửi API
+                .then(response => response.json())
+                .then(data => {
+                    el.textContent = data.name.value; // Cập nhật tên màu vào phần tử span
+                })
+                .catch(error => {
+                    console.error("Error fetching color name:", error);
+                    el.textContent = "Không tìm thấy tên màu"; // Hiển thị lỗi nếu không lấy được tên màu
+                });
+        }
+
+    </script>
 </main>
 </body>
 </html>

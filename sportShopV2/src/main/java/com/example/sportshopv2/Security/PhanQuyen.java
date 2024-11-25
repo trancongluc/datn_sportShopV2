@@ -1,6 +1,4 @@
-
-package com.example.sportshopv2.Security;
-
+package com.example.sportshopv2.sercurity;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,41 +32,53 @@ public class PhanQuyen {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
-
-
-                        .requestMatchers("/buy/**", "/product/**", "/staff/**", "/bill/**","/khach-hang/**").hasAuthority("Admin")
-
-
-
+                        // Quyền truy cập cho Admin
                         .requestMatchers("/khach-hang/**", "/san-pham", "/san-pham/**", "/san-pham-chi-tiet/**",
                                 "/san-pham-chi-tiet", "/anh-san-pham/**", "/the-loai/**",
-
                                 "/nhanvien/**", "/bill/**", "/ban-hang-tai-quay/**").hasAuthority("Admin")
-
                         .requestMatchers("/bill/**", "/buy/**").hasAuthority("Staff")
                         .requestMatchers("/buy/**").hasAuthority("Employee")
-                        .requestMatchers("/login/**", "/mua-sam-SportShopV2/**", "/api/payment/**" , "/VNPAY-demo/**").permitAll()
+
+                        // Cho phép truy cập công cộng
+                        .requestMatchers("/login/**", "/mua-sam-SportShopV2/**", "/api/payment/**",
+                                "/VNPAY-demo/**", "/images/**").permitAll()
+                        // Các yêu cầu khác phải xác thực
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
+                        // Trang đăng nhập
                         .loginPage("/login/home")
                         .loginProcessingUrl("/login")
                         .successHandler((request, response, authentication) -> {
                             String role = authentication.getAuthorities().iterator().next().getAuthority();
                             String targetUrl;
+
+                            // Chuyển hướng theo vai trò người dùng
                             if ("Admin".equals(role) || "Staff".equals(role)) {
-                                targetUrl = "/ban-hang-tai-quay";
+                                targetUrl = "/ban-hang-tai-quay";  // Admin và Staff vào trang bán hàng tại quầy
+                            } else if ("Employee".equals(role)) {
+                                targetUrl = "/mua-sam-SportShopV2/trang-chu";  // Employee vào trang mua sắm
                             } else {
-                                targetUrl = "/mua-sam-SportShopV2/trang-chu";
+                                targetUrl = "/ban-hang/mua-sam";  // Default page nếu không có vai trò hợp lệ
                             }
-                            response.sendRedirect(targetUrl);
+
+                            response.sendRedirect(targetUrl);  // Chuyển hướng người dùng
                         })
                         .permitAll()
                 )
-                .logout(logout -> logout.permitAll())
-                .exceptionHandling(ex -> ex.accessDeniedPage("/login/access"));
+                .logout(logout -> logout.permitAll())  // Cho phép logout
+                .exceptionHandling(ex -> ex.accessDeniedPage("/login/access"));  // Trang lỗi nếu không có quyền truy cập
         return httpSecurity.build();
     }
+
+
+//    public boolean isLoggedIn() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        return authentication != null && authentication.isAuthenticated()
+//                && !(authentication.getPrincipal() instanceof String
+//                && authentication.getPrincipal().equals("anonymousUser"));
+//    }
+
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
