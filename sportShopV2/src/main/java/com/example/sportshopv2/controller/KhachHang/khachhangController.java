@@ -2,10 +2,13 @@ package com.example.sportshopv2.controller.KhachHang;
 
 import com.example.sportshopv2.dto.UserDTO;
 import com.example.sportshopv2.model.Address;
+import com.example.sportshopv2.model.HoaDon;
 import com.example.sportshopv2.model.User;
 import com.example.sportshopv2.repository.AddressRepository;
+import com.example.sportshopv2.repository.HoaDonRepo;
 import com.example.sportshopv2.repository.KhachHangRepository;
 import com.example.sportshopv2.service.AddressService;
+import com.example.sportshopv2.service.HoaDonService;
 import com.example.sportshopv2.service.KhachhangService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -37,7 +41,8 @@ public class khachhangController {
     private AddressRepository addressRepository;
     @Autowired
     private AddressService addressService;
-
+    @Autowired
+    private HoaDonService  hoaDonService;
 
     @GetMapping("/list")
     public String displayCustomers(@RequestParam(defaultValue = "0") int page,
@@ -326,6 +331,18 @@ public class khachhangController {
         // Chuyển hướng đến trang danh sách khách hàng
         return "redirect:/khach-hang/list";
     }
+
+
+
+    @GetMapping("/order_history/{id}")
+    public String viewOrderHistory(@PathVariable("id") Integer customerId, Model model) {
+        List<HoaDon> orders = hoaDonService .getOrdersByCustomerId(customerId);
+        model.addAttribute("orders", orders);
+
+        return "KhachHang/khachhang-donhang"; // Create a new Thymeleaf template for details
+    }
+
+
 
 
 }
