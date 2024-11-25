@@ -147,26 +147,26 @@
                         <div class="css_select_div">
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label for="tinh" class="form-label">Tỉnh</label>
+                                    <label for="tinh" class="form-label">Tỉnh/Thành</label>
                                     <select class="form-select" id="tinh" name="tinh" onchange="document.getElementsByName('tinh_name')[0].value = this.options[this.selectedIndex].text;">
-                                        <option value="0" hidden></option>
+                                        <option value="0" hidden>Chọn tỉnh/thành</option>
                                         <!-- Các lựa chọn tỉnh thành -->
                                     </select>
                                     <input type="hidden" name="tinh_name" value="">
 
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="quan" class="form-label">Huyện</label>
+                                    <label for="quan" class="form-label">Quận/Huyện</label>
                                     <select class="form-select" id="quan" name="quan" onchange="document.getElementsByName('quan_name')[0].value = this.options[this.selectedIndex].text;">
-                                        <option value="0" hidden></option>
+                                        <option value="0" hidden>Chọn Quận/Huyện</option>
                                     </select>
                                     <input type="hidden" name="quan_name" value="">
 
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="phuong" class="form-label">Phường</label>
+                                    <label for="phuong" class="form-label">Phường/Xã</label>
                                     <select class="form-select" id="phuong" name="phuong" onchange="document.getElementsByName('phuong_name')[0].value = this.options[this.selectedIndex].text;">
-                                        <option value="0" hidden></option>
+                                        <option value="0" hidden>Chọn Phường/Xã</option>
                                     </select>
                                     <input type="hidden" name="phuong_name" value="">
 

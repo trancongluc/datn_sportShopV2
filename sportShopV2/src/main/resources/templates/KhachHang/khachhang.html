@@ -107,11 +107,15 @@
                             <br/>
                         </div>
                         <div th:if="${session['selectedAddress_' + khachHang.id] == null}">
+                            <div th:if="${khachHang.addresses != null && !khachHang.addresses.isEmpty()}">
                             <!-- Hiển thị địa chỉ đầu tiên của khách hàng nếu không có địa chỉ đã chọn -->
                             <span th:text="${khachHang.addresses[0].tinh}"></span>,
                             <span th:text="${khachHang.addresses[0].quan}"></span>,
                             <span th:text="${khachHang.addresses[0].phuong}"></span>
-                            <br/>
+                            </div>
+                            <div th:if="${khachHang.addresses == null || khachHang.addresses.isEmpty()}">
+                                <span>Không có địa chỉ</span>
+                            </div>
                         </div>
 
 
@@ -126,7 +130,7 @@
                     </td>
                     <td>
                         <a th:href="@{/khach-hang/customer/detail/{id}(id=${khachHang.id})}" > <i class="fas fa-edit"></i></i> </a>
-<!--                        <a th:href="@{/khach-hang/delete/{id}(id=${khachHang.id})}" >🗑️</a>-->
+                        <a th:href="@{/khach-hang/delete/{id}(id=${khachHang.id})}" >🗑️</a>
 
                         <a  th:href="@{/khach-hang/customer/diachi/{id}(id=${khachHang.id})}" ><i class="bi bi-map"></i></a>
 

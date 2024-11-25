@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 
@@ -253,6 +254,7 @@ public class khachhangController {
             newAddress.setPhuong(phuong);
             newAddress.setLine(line);
 
+
             // Thêm địa chỉ vào khách hàng
             customer.addAddress(newAddress);
 
@@ -313,11 +315,14 @@ public class khachhangController {
     public String selectAddress(@PathVariable("customerId") Integer customerId, @PathVariable("addressId") Integer addressId, HttpSession session) {
         // Lấy khách hàng và địa chỉ theo ID
         User customer = userService.findCustomerById(customerId);
+        if (customer == null || customer.getAddresses() == null || customer.getAddresses().isEmpty()) {
+            return "redirect:/khach-hang/list";
+        }
         Address selectedAddress = userService.findAddressById(addressId);
-
-        // Lưu địa chỉ đã chọn vào session
-        session.setAttribute("selectedAddress_" + customerId, selectedAddress);
-
+        if (selectedAddress != null) {
+            // Lưu địa chỉ đã chọn vào session
+            session.setAttribute("selectedAddress_" + customerId, selectedAddress);
+        }
         // Chuyển hướng đến trang danh sách khách hàng
         return "redirect:/khach-hang/list";
     }

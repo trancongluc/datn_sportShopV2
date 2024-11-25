@@ -84,12 +84,13 @@
                         <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal" style="margin-bottom: 15px">Thêm Địa Chỉ</a>
                         <div th:each="address : ${customer.addresses}">
                             <div class="address-card">
-                                <a style="margin-left:550px" href="#" th:href="@{/khach-hang/customer/select-address/{customerId}/{addressId}(customerId=${customer.id}, addressId=${address.id})}"
-                                   class="star-icon" >
-
-                                    <i class="far fa-star" id="star-[[${address.id}]]"></i>
-    <!--                                chon-->
-                                </a>
+                                <button style="margin-left:550px" href="#" th:href="@{/khach-hang/customer/select-address/{customerId}/{addressId}(customerId=${customer.id}, addressId=${address.id})}"
+                                  class="btn btn-primary"
+                                >
+<!--                                    class="star-icon"-->
+<!--                                    <i class="far fa-star" id="star-[[${address.id}]]"></i>-->
+                            Chọn
+                                </button>
                                 <p>Địa chỉ: <span th:text="${address.tinh}">Tỉnh</span>,
                                     <span th:text="${address.quan}">Quận</span>,
                                     <span th:text="${address.phuong}">Phường</span> -
@@ -232,6 +233,7 @@
 
 
 
+
             <script>
                 // Hàm xử lý khi click vào icon sao
                 document.querySelectorAll('.star-icon').forEach(item => {
@@ -268,6 +270,8 @@
                         savedStar.classList.add('fas');
                     }
                 }
+
+
             </script>
 
 
