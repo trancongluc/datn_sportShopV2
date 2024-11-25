@@ -451,7 +451,7 @@ for (let i = 0; i < productRows.length; i++) {
                 selectedProduct.setAttribute('data-id', spctDTO.id);
 
                 // Tạo ô hình ảnh
-                /* const imageCell = document.createElement('td');
+                 const imageCell = document.createElement('td');
                  if (Array.isArray(spctDTO.anhSanPham) && spctDTO.anhSanPham.length > 0) {
                      const imgElement = document.createElement('img');
                      imgElement.src = `/images/${spctDTO.anhSanPham[0].tenAnh}`;
@@ -529,7 +529,7 @@ for (let i = 0; i < productRows.length; i++) {
                      selectedProduct.remove();
                      tongTien = calculateTotal();
                      updateTotal();
-                 });*/
+                 });
 
                 // Thêm hàng sản phẩm vào bảng đã chọn
                 selectedProductsTable.querySelector('tbody').appendChild(selectedProduct);
@@ -537,9 +537,9 @@ for (let i = 0; i < productRows.length; i++) {
                 saveProductDetailsForTab(currentInvoiceId, spctDTO);
                 updateSelectedProductsTable(currentInvoiceId);
                 //tongTien += giaSP; // Cập nhật tổng tiền khi thêm sản phẩm
-                /* let quantity = quantityInput.value;
+                 let quantity = quantityInput.value;
                  productQuantities[productId] = quantity;
-                 console.log("SoLuong" + productQuantities[productId], "idSPCT: " + productId);*/ // Kiểm tra giá trị
+                 console.log("SoLuong" + productQuantities[productId], "idSPCT: " + productId); // Kiểm tra giá trị
                 tongTien = calculateTotal();
                 updateTotal();// Cập nhật hiển thị tổng tiền
             })
@@ -820,7 +820,8 @@ async function capNhatHoaDon() {
                     console.warn(`Không tìm thấy giá cho sản phẩm ID: ${productId}`);
                     return null;
                 }
-                const quantity = productQuantities[productId]; // Lấy số lượng từ productQuantities
+                const quantity = productQuantities[productDetails.id]; // Lấy số lượng từ productQuantities
+                console.log("SL SP:" + quantity)
                 if (!quantity || quantity <= 0) {
                     console.warn(`Số lượng không hợp lệ cho sản phẩm ID: ${productId}`);
                     return null;
@@ -866,10 +867,10 @@ async function capNhatHoaDon() {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(validHoaDonChiTietList),
         });
-
+        console.log(validHoaDonChiTietList);
         showToast("Tạo Hóa Đơn Thành Công!");
         selectedProductIds = [];
-        window.location.href = '/ban-hang-tai-quay';
+        /* window.location.href = '/ban-hang-tai-quay';*/
     } catch (error) {
         console.error('Có lỗi xảy ra:', error);
         showToast("Thêm hóa đơn thất bại!");

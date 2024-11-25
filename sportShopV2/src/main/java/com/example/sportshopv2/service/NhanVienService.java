@@ -65,7 +65,7 @@ public class NhanVienService {
         nvRepository.deleteById(id); // Delete the customer by ID
     }
 
-    private final String UPLOAD_DIR = "C:\\Users\\panha\\OneDrive\\Documents\\GitHub\\datn_sportShopV2\\sportShopV2\\src\\main\\resources\\static\\uploads\\";
+    private final String UPLOAD_DIR = "D:\\demoMergeCodeDatn\\sportShopV2\\src\\main\\resources\\static\\uploads";
 
     public User addnv(User NhanVien, MultipartFile imageFile, String role, String username, String password) throws IOException {
         // Lưu tệp hình ảnh
