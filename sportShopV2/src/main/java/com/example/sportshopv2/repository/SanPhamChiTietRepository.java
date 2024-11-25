@@ -1,6 +1,5 @@
 package com.example.sportshopv2.repository;
 
-import com.example.sportshopv2.model.HoaDonChiTiet;
 import com.example.sportshopv2.model.SanPhamChiTiet;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

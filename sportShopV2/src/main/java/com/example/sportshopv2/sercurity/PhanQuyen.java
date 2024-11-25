@@ -34,13 +34,9 @@ public class PhanQuyen {
                 .authorizeHttpRequests(auth -> auth
                         // Quyền truy cập cho Admin
                         .requestMatchers("/khach-hang/**", "/san-pham", "/san-pham/**", "/san-pham-chi-tiet/**",
-                                "/san-pham-chi-tiet", "/anh-san-pham/**", "/the-loai/**", "/nhanvien/**", "/bill/**",
-                                "/ban-hang-tai-quay/**").hasAuthority("Admin")
-
-                        // Quyền truy cập cho Staff
-                        .requestMatchers("/bill/**").hasAuthority("Staff")
-
-                        // Quyền truy cập cho Employee
+                                "/san-pham-chi-tiet", "/anh-san-pham/**", "/the-loai/**",
+                                "/nhanvien/**", "/bill/**", "/ban-hang-tai-quay/**").hasAuthority("Admin")
+                        .requestMatchers("/bill/**", "/buy/**").hasAuthority("Staff")
                         .requestMatchers("/buy/**").hasAuthority("Employee")
 
                         // Cho phép truy cập công cộng

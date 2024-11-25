@@ -4,5 +4,5 @@ import com.example.sportshopv2.model.PhieuGiamGia;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PhieuGiamGiaResponsitory extends JpaRepository<PhieuGiamGia, Integer> {
-
+    boolean existsByVoucherCode(String voucherCode);
 }

@@ -10,4 +10,7 @@ public interface PhieuGiamGiaService {
     PhieuGiamGia findByID(Integer id);
     Boolean update(PhieuGiamGia phieuGiamGia);
     Boolean delete(Integer id);
+
+
+    void save(PhieuGiamGia giamGia);
 }

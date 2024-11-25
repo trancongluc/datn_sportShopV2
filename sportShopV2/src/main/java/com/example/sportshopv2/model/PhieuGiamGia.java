@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -27,6 +28,9 @@ public class PhieuGiamGia {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "discount_value")
+    private BigDecimal discountValue;
+
     @Column(name = "minimum_value")
     private BigDecimal minimumValue;
 
@@ -37,9 +41,11 @@ public class PhieuGiamGia {
     private Integer quantity;
 
     @Column(name = "start_date")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime startDate;
 
     @Column(name = "end_date")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime endDate;
 
 
@@ -47,7 +53,8 @@ public class PhieuGiamGia {
 
     public boolean isActive() {
         LocalDateTime now = LocalDateTime.now();
-        return startDate.isBefore(now) && endDate.isAfter(now);
+        System.out.println("Thời gian hiện tại: " + now); // In ra thời gian hiện tại
+        return startDate != null && endDate != null && startDate.isBefore(now) && endDate.isAfter(now);
     }
 
 

@@ -21,7 +21,7 @@
                 <h1>Phiếu Giảm Giá</h1>
             </div>
             <div class="add-button">
-                <button><i class="fas fa-user-plus"></i> <a href="/add-giam-gia" style="text-decoration: none; color: black"> Thêm Mới</a></button>
+                <button><i class="fas fa-user-plus"></i> <a href="/giam-gia/add-giam-gia" style="text-decoration: none; color: black"> Thêm Mới</a></button>
             </div>
         </div>
         <div class="filter-section">
@@ -68,8 +68,14 @@
                         <span class="status-label" th:text="${vc.getStatus()}"></span> <!-- Trạng thái -->
                     </td>
                     <td>
-                        <button class="icon">✏️</button>
-                        <button class="icon">🗑️</button>
+                        <a th:href="@{/giam-gia/detail/{id}(id=${vc.id})}" title="Chỉnh sửa">
+                            <i class="fas fa-pencil-alt"></i> <!-- Biểu tượng bút chì -->
+                        </a>
+                        <form th:action="@{/giam-gia/delete/{id}(id=${vc.id})}" method="post" style="display:inline;">
+                            <button type="submit" class="icon" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa phiếu giảm giá này?');">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>
