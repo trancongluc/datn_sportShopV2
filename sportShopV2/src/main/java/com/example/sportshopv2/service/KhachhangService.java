@@ -69,7 +69,7 @@ public class KhachhangService {
         }
         Account account = new Account();
         account.setUser(khachHang);
-        account.setRole("Customer"); // Đặt role là "Customer"
+        account.setRole("Employee"); // Đặt role là "Customer"
         account.setUsername(khachHang.getEmail()); // Hoặc bạn có thể thiết lập một username khác
         account.setPassword("123"); // Thiết lập mật khẩu mặc định (bạn có thể mã hóa mật khẩu ở đây)
 
