@@ -2,13 +2,13 @@ package com.example.sportshopv2.controller.DatHang;
 
 import com.example.sportshopv2.dto.SanPhamChiTietDTO;
 import com.example.sportshopv2.model.*;
-import com.example.sportshopv2.repository.AnhSanPhamRepository;
-import com.example.sportshopv2.repository.GioHangChiTietRepo;
-import com.example.sportshopv2.repository.GioHangRepo;
+import com.example.sportshopv2.repository.*;
 import com.example.sportshopv2.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,6 +49,8 @@ public class DatHangController {
     private Map<Integer, String> tongTienGioHang;
     @Autowired
     private VNPAYService vnPayService;
+    @Autowired
+    private TaiKhoanRepo taiKhoanRepo;
 
     @RequestMapping("/trang-chu")
     public String trangChu(Model model) {
@@ -126,6 +128,9 @@ public class DatHangController {
 
     @RequestMapping("/gio-hang-khach-hang")
     public String gioHang(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        model.addAttribute("thongTinKhachHang",  taiKhoanRepo.findTaiKhoanByUsername(username));
         List<GioHangChiTiet> listCart = gioHangChiTietRepo.findAll();
 
 // Use a merge function to handle duplicate keys

@@ -193,11 +193,11 @@ public class HoaDonController {
             Context context = new Context();
             context.setVariable("hoaDon", bill);
             context.setVariable("items", billDetail);
-            context.setVariable("productCount", billDetail.size()); // Total number of products
-            context.setVariable("discount", bill.getMoney_reduced()); // Assuming there is a discount method
-            context.setVariable("total", billDetail.stream().mapToDouble(HoaDonChiTiet::getPrice).sum()); // Replace with appropriate logic
-            context.setVariable("totalQuantity", billDetail.stream().mapToInt(HoaDonChiTiet::getQuantity).sum()); // Assuming you can get quantity from HoaDonChiTiet
-            context.setVariable("totalPayment", bill.getTotal_money()); // Replace with appropriate logic
+            context.setVariable("productCount", billDetail.size());
+            context.setVariable("discount", bill.getMoney_reduced());
+            context.setVariable("total", billDetail.stream().mapToDouble(HoaDonChiTiet::getPrice).sum());
+            context.setVariable("totalQuantity", billDetail.stream().mapToInt(HoaDonChiTiet::getQuantity).sum());
+            context.setVariable("totalPayment", bill.getTotal_money());
 
             String htmlContent = templateEngine.process("HoaDon/HinhAnhHoaDon", context);
 
