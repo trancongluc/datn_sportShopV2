@@ -49,4 +49,8 @@ public class HoaDonService {
     public List<HoaDon> getOrdersByCustomerId(Integer customerId) {
         return hdRepo.findByCustomerId(customerId);
     }
+
+    public HoaDon findHoaDonById(Integer id) {
+        return hdRepo.findById(id).orElse(null);
+    }
 }
