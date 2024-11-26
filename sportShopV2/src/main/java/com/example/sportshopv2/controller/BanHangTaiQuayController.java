@@ -1,16 +1,18 @@
 package com.example.sportshopv2.controller;
 
 import com.example.sportshopv2.dto.SanPhamChiTietDTO;
-import com.example.sportshopv2.model.User;
+import com.example.sportshopv2.dto.UserDTO;
+import com.example.sportshopv2.model.*;
 import com.example.sportshopv2.repository.KhachHangRepository;
+import com.example.sportshopv2.repository.NguoiDungRepo;
 import com.example.sportshopv2.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -18,16 +20,14 @@ import java.util.List;
 @RequestMapping("/ban-hang-tai-quay")
 @RequiredArgsConstructor
 public class BanHangTaiQuayController {
-    private final ChatLieuService chatLieuService;
-    private final CoGiayService coGiayService;
-    private final DeGiayService deGiayService;
-    private final KichThuocService kichThuocService;
-    private final MauSacService mauSacService;
-    private final SanPhamService sanPhamService;
-    private final TheLoaiService theLoaiService;
-    private final ThuongHieuService thuongHieuService;
+
     private final SanPhamChiTietService spctService;
     private final KhachHangRepository khRepo;
+    private final HoaDonService hoaDonService;
+    private final KhachhangService khachhangService;
+    private final HoaDonChiTietService hdctService;
+    private final TaiKhoanService tkService;
+    private final NguoiDungRepo ndRepo;
 
     @GetMapping("")
     public String banHangTaiQuay(Model model) {
@@ -39,16 +39,64 @@ public class BanHangTaiQuayController {
     }
 
     @GetMapping("/spct")
-    public String getAllSPCT(Model model) {
+    public String getAllSPCT(@RequestParam(required = false) Integer idKH, Model model) {
         List<SanPhamChiTietDTO> listSPCTDto = spctService.getAllSPCT();
         model.addAttribute("spctDto", listSPCTDto);
         return "BanHangTaiQuay/BanHangTaiQuay";
     }
 
+    @GetMapping("/thong-tin-kh/{idKH}")
+    @ResponseBody
+    public UserDTO getKhachHangById(@PathVariable("idKH") Integer idKH) {
+        return khachhangService.getKHById(idKH);
+    }
+
     @GetMapping("/spct/{id}")
     @ResponseBody
     public SanPhamChiTietDTO getSPCTById(@PathVariable("id") Integer id) {
-
         return spctService.getByID(id);
+    }
+
+    @GetMapping("/tk/{id}")
+    @ResponseBody
+    public TaiKhoan getTaiKhoan(@PathVariable("id") Integer id) {
+        return tkService.getTKByUser(id);
+    }
+
+    @GetMapping("/hd/{id}")
+    @ResponseBody
+    public HoaDon getHDById(@PathVariable("id") Integer id) {
+        return hoaDonService.hoaDonById(id);
+    }
+
+    @PostMapping("/tao-hoa-don")
+    @ResponseBody
+    public HoaDon createBill(@RequestBody HoaDon hoaDon) {
+        return hoaDonService.createHoaDon(hoaDon);
+    }
+
+    @PutMapping("/update-hoa-don/{idHD}")
+    @ResponseBody
+    public HoaDon updateBill(@PathVariable("idHD") Integer idHD,
+                             @RequestBody HoaDon hoaDon) {
+        try {
+            return hoaDonService.updateHoaDon(idHD, hoaDon);
+        } catch (Exception e) {
+            // Xử lý lỗi (có thể log lỗi và trả về thông báo lỗi)
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cập nhật hóa đơn không thành công", e);
+        }
+    }
+
+    @PostMapping("/tao-hoa-don-chi-tiet")
+    @ResponseBody
+    public ResponseEntity<Void> createBillDetails(@RequestBody List<HoaDonChiTiet> hoaDonChiTietList) {
+        hdctService.createBillDetails(hoaDonChiTietList);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/tao-tai-khoan")
+    @ResponseBody
+    public TaiKhoan createTaiKhoan(@RequestBody TaiKhoan taiKhoan) {
+        return tkService.createTK(taiKhoan);
     }
 }

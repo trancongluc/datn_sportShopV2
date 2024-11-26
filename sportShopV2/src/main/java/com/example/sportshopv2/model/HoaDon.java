@@ -29,7 +29,7 @@ public class HoaDon {
     @Column(name = "user_name")
     private String user_name;
 
-    @NotBlank(message = "{message.phonenumber}")
+
     @Column(name = "phone_number")
     private String phone_number;
 
@@ -37,15 +37,14 @@ public class HoaDon {
     @Column(name = "total_money")
     private Float total_money;
 
+    @Column(name = "money_reduced")
+    private Float money_reduced;
+
     @NotBlank(message = "{message.status}")
     @Column(name = "status")
     private String status;
-    @Column(name = "address")
+    @Column(name="address")
     private String address;
-
-    @NotNull(message = "{message.totalmoney}")
-    @Column(name = "money_reduced")
-    private Float money_reduced;
 
     @Column(name = "ship_date")
     private String ship_date;
@@ -74,7 +73,7 @@ public class HoaDon {
     private String pay_status;
 
     @Column(name = "bill_code")
-    private String bill_code;
+    private String billCode;
 
     @Column(name = "transaction_date")
     private String transaction_date;
@@ -86,50 +85,37 @@ public class HoaDon {
     private String note;
 
     @Column(name = "create_at")
-    private LocalDateTime create_at;
+    private LocalDateTime createAt;
 
     @Column(name = "create_by")
     private String create_by;
 
     @Column(name = "update_at")
-    private LocalDateTime update_at;
+    private LocalDateTime updateAt;
 
     @Column(name = "update_by")
     private String update_by;
     @Column(name = "deleted")
     private Boolean deleted;
-
     public String getStatusDisplay() {
         switch (status) {
-            case "ORDERED":
-                return "Chờ xác nhận";
-            case "CONFIRMED":
-                return "Đã xác nhận";
-            case "SHIPPING":
-                return "Chờ giao hàng";
-            case "SHIPPED":
-                return "Đang vận chuyển";
-            case "COMPLETE":
-                return "Hoàn thành";
-            default:
-                return "Chưa rõ";
+            case "Chờ xác nhận": return "Chờ xác nhận";
+            case "Đã xác nhận": return "Đã xác nhận";
+            case "Chờ vận chuyển": return "Chờ vận chuyển";
+            case "Đang vận chuyển": return "Đang vận chuyển";
+            case "Hoàn thành": return "Hoàn thành";
+            default: return "Chưa rõ";
         }
     }
 
     public int getStatusProgress() {
         switch (status) {
-            case "ORDERED":
-                return 25;
-            case "CONFIRMED":
-                return 50;
-            case "SHIPPING":
-                return 75;
-            case "SHIPPED":
-                return 90;
-            case "COMPLETE":
-                return 100;
-            default:
-                return 0;
+            case "Chờ xác nhận": return 25;
+            case "Đã xác nhận": return 50;
+            case "Chờ vận chuyển": return 75;
+            case "Đang vận chuyển": return 90;
+            case "Hoàn thành": return 100;
+            default: return 0;
         }
     }
 

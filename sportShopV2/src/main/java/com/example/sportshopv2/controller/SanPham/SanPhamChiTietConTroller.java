@@ -6,13 +6,11 @@ import com.example.sportshopv2.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.awt.print.Pageable;
-import java.util.List;
 
 @Controller
 @RequestMapping("/san-pham-chi-tiet")
@@ -27,6 +25,7 @@ public class SanPhamChiTietConTroller {
     private final TheLoaiService theLoaiService;
     private final ThuongHieuService thuongHieuService;
     private final SanPhamChiTietService spctService;
+
     @ModelAttribute
     public void addCommonAttributes(Model model) {
         model.addAttribute("cl", chatLieuService.getAll());
@@ -37,6 +36,7 @@ public class SanPhamChiTietConTroller {
         model.addAttribute("kt", kichThuocService.getAllKichThuoc());
         model.addAttribute("ms", mauSacService.getAllMauSac());
     }
+
     @GetMapping("")
     public String sanPhamChiTiet(Model model) {
         return "SanPham/them-san-pham";
@@ -60,4 +60,21 @@ public class SanPhamChiTietConTroller {
     public ResponseEntity<SanPhamChiTiet> themChatLieu(@RequestBody SanPhamChiTiet spct) {
         return ResponseEntity.ok(spctService.addSPCT(spct));
     }
+
+    @GetMapping("/thong-tin-spct/{id}")
+    @ResponseBody
+    public SanPhamChiTiet thongTinSPCT(@PathVariable("id") Integer id) {
+        return spctService.findSPCTById(id);
+    }
+    @PutMapping("/cap-nhat-so-luong/{idSPCT}")
+    @ResponseBody
+    public ResponseEntity<String> updateProductQuantity(@PathVariable("idSPCT") Integer idSPCT, @RequestParam Integer soLuongNew) {
+        boolean isUpdated = spctService.capNhatSoLuongSPCT(idSPCT, soLuongNew);
+        if (isUpdated) {
+            return ResponseEntity.ok("Cập nhật số lượng thành công!");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy sản phẩm hoặc cập nhật thất bại.");
+        }
+    }
+
 }

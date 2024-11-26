@@ -1,5 +1,9 @@
 package com.example.sportshopv2.model;
 
+import com.example.sportshopv2.dto.UserDTO;
+import com.example.sportshopv2.dto.UserNhanVienDTO;
+import com.example.sportshopv2.repository.KhachHangRepository;
+import com.example.sportshopv2.repository.NhanVienRepo;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -90,5 +94,61 @@ public class User {
         updatedAt = new Date();
     }
 
+    public static User of(UserDTO dto) {
+        User user = new User();
+        user.setId(dto.getId());
+        user.setCode(dto.getCode());
+        user.setFullName(dto.getFullName());
+        user.setPhoneNumber(dto.getPhoneNumber());
+        user.setEmail(dto.getEmail());
+        user.setGender(dto.getGender());
+        user.setDate(dto.getDate());
+        user.setPoints(dto.getPoints());
+        user.setImageFileName(dto.getImageFileName());
+        // Nếu cần, bạn có thể thêm các trường khác ở đây
+        return user;
+    }
+    public static UserDTO toDTO(User user, Integer idUser, KhachHangRepository khRepo) {
+        UserDTO dto = new UserDTO();
+        user = khRepo.findById(idUser).orElse(null);
+        dto.setId(user.getId());
+        dto.setCode(user.getCode());
+        dto.setFullName(user.getFullName());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setEmail(user.getEmail());
+        dto.setGender(user.getGender());
+        dto.setDate(user.getDate());
+        dto.setPoints(user.getPoints());
+        dto.setImageFileName(user.getImageFileName());
+        return dto;
+    }
+    public static UserNhanVienDTO toNVDTO(User user,NhanVienRepo nvRepo) {
+        user=nvRepo.findById(9).orElse(null);
+        UserNhanVienDTO dto = new UserNhanVienDTO();
+        dto.setId(user.getId());
+        dto.setCode(user.getCode());
+        dto.setFullName(user.getFullName());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setEmail(user.getEmail());
+        dto.setGender(user.getGender());
+        dto.setDate(user.getDate());
+        dto.setPoints(user.getPoints());
+        dto.setImageFileName(user.getImageFileName());
+        return dto;
+    }
+    public static User of(UserNhanVienDTO dto) {
+        User user = new User();
+        user.setId(dto.getId());
+        user.setCode(dto.getCode());
+        user.setFullName(dto.getFullName());
+        user.setPhoneNumber(dto.getPhoneNumber());
+        user.setEmail(dto.getEmail());
+        user.setGender(dto.getGender());
+        user.setDate(dto.getDate());
+        user.setPoints(dto.getPoints());
+        user.setImageFileName(dto.getImageFileName());
+        // Nếu cần, bạn có thể thêm các trường khác ở đây
+        return user;
+    }
 
 }

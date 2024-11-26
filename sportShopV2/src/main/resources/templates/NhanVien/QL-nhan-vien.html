@@ -88,8 +88,7 @@
 
                     <td>
                         <div class="d-flex align-items-center">
-                            <img th:src="@{uploads/{imageFileName}(imageFileName=${nv.imageFileName})}"
-                                 alt="Ảnh khách hàng" width="50" height="50" class="rounded-circle me-2">
+                            <img th:src="@{/uploads/{imageFileName}(imageFileName=${nv.imageFileName})}" alt="Ảnh khách hàng" width="50" height="50" class="rounded-circle me-2">
                             <span th:text="${nv.fullName}" style="color: black;"></span>
                         </div>
                     </td>

@@ -1,29 +1,32 @@
 package com.example.sportshopv2.controller.KhachHang;
 
+import com.example.sportshopv2.dto.UserDTO;
+import com.example.sportshopv2.model.Address;
+import com.example.sportshopv2.model.NguoiDung;
+import com.example.sportshopv2.model.User;
 import com.example.sportshopv2.repository.AddressRepository;
 import com.example.sportshopv2.repository.KhachHangRepository;
 import com.example.sportshopv2.service.AddressService;
 import com.example.sportshopv2.service.KhachhangService;
-import com.example.sportshopv2.model.Address;
-
-import com.example.sportshopv2.model.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequestMapping("/khach-hang")
 
 public class khachhangController {
-
 
 
     @Autowired
@@ -51,7 +54,6 @@ public class khachhangController {
         }
 
 
-
         model.addAttribute("khachHang", new User());
         model.addAttribute("customers", customers.getContent());
         model.addAttribute("currentPage", page);
@@ -72,19 +74,19 @@ public class khachhangController {
     @PostMapping("/add-khach-hang")
     public String addKhachHang(
 
-                                @RequestParam("fullName") String fullName,
-                               @RequestParam("phoneNumber") String phoneNumber,
-                               @RequestParam("email") String email,
-                               @RequestParam("gender") String gender,
-                               @RequestParam("date") String date,
-                               @RequestParam("imageFile") MultipartFile imageFile,
-                               @RequestParam("tinh_name") String tinh,
-                               @RequestParam("quan_name") String quan,
-                               @RequestParam("phuong_name") String phuong,
-                               @RequestParam("line") String line,
+            @RequestParam("fullName") String fullName,
+            @RequestParam("phoneNumber") String phoneNumber,
+            @RequestParam("email") String email,
+            @RequestParam("gender") String gender,
+            @RequestParam("date") String date,
+            @RequestParam("imageFile") MultipartFile imageFile,
+            @RequestParam("tinh_name") String tinh,
+            @RequestParam("quan_name") String quan,
+            @RequestParam("phuong_name") String phuong,
+            @RequestParam("line") String line,
 //                               @RequestParam("username") String username,
 //                               @RequestParam("password") String password,
-                               Model model) {
+            Model model) {
 
 
         User khachHang = new User();
@@ -104,7 +106,6 @@ public class khachhangController {
         // address.setProvince_id(...);
         // address.setDistrict_id(...);
         // address.setWard_id(...);
-
         khachHang.addAddress(address); // Thêm địa chỉ vào khách hàng
 
 
@@ -117,6 +118,7 @@ public class khachhangController {
 
         return "redirect:/khach-hang/list"; // Chuyển hướng đến trang hiển thị sau khi thêm
     }
+
     @GetMapping("/delete/{id}")
     public String deleteCustomer(@PathVariable("id") Integer id) {
         userService.deleteCustomerById(id); // Call the service to delete the customer
@@ -124,13 +126,20 @@ public class khachhangController {
     }
 
     @GetMapping("/customer/detaill/{id}")
-    public String viewCustomerDetails(@PathVariable("id") Integer id, Model model,HttpSession session) {
+    public String viewCustomerDetails(@PathVariable("id") Integer id, Model model, HttpSession session) {
         User customer = userService.getCustomerById(id); // Add this method to UserService
         model.addAttribute("customer", customer);
 
 
-
         return "KhachHang/khachhangdetail"; // Create a new Thymeleaf template for details
+    }
+
+    @GetMapping("/thong-tin-kh/{idKH}")
+    @ResponseBody
+    public User thongTinKH(@PathVariable("idKH") Integer id) {
+        UserDTO userKHDTO = userService.getKHById(id);
+        User user = User.of(userKHDTO);
+        return user;
     }
 
     @GetMapping("/customer/diachi/{id}")
@@ -214,6 +223,7 @@ public class khachhangController {
         model.addAttribute("customer", customer);
         return "KhachHang/diachi"; // Tên view để hiển thị lại chi tiết khách hàng
     }
+
     @GetMapping("/customer/delete-address/{customerId}/{addressId}")
     public String deleteAddress(@PathVariable("customerId") Integer customerId,
                                 @PathVariable("addressId") Integer addressId,
@@ -240,5 +250,14 @@ public class khachhangController {
         return "KhachHang/diachi"; // Return to the page displaying the customer's addresses
     }
 
-
+    @PostMapping("/them")
+    @ResponseBody
+    public NguoiDung createTaiKhoan(@RequestBody NguoiDung khachHang) {
+        return userService.saveKH(khachHang);
+    }
+    @GetMapping("/kh-cbo")
+    @ResponseBody
+    public List<NguoiDung> loadKHCombobox() {
+        return userService.getKHCbo();
+    }
 }
