@@ -4,13 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1cf1883e-5675-4e33-950b-148cfc47239c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="1cf1883e-5675-4e33-950b-148cfc47239c" name="Default Changelist" comment="commit">
+      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/KhachHang/khachhang-donhang-detail.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/KhachHang/khachhangController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/KhachHang/khachhangController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/HoaDon.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/HoaDon.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/HoaDonService.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/HoaDonService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/KhachhangService.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/KhachhangService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/KhachHang/khachhang-donhang.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/KhachHang/khachhang-donhang.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/KhachHang/khachhang.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/KhachHang/khachhang.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/ThongKe/ThongKe.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/ThongKe/ThongKe.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,6 +46,9 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="2nIYNERvsVUBdIdxlBh14jjXncN" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -46,16 +57,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "Spring Boot.SportShopV2Application.executor": "Run",
-    "node.js.selected.package.tslint": "(autodetect)"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JavaScript Debug.khachhang-donhang-detail.html.executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;Spring Boot.SportShopV2Application.executor&quot;: &quot;Run&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\testDATN\sportShopV2\src\main\resources\templates\MuaHang" />
@@ -76,7 +94,7 @@
     <configuration name="giamGia.html (1)" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/testDATN/sportShopV2/templates/PhieuGiamGia/giamGia.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
-    <configuration name="giamGia.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/sportShopV2/templates/PhieuGiamGia/giamGia.html" useBuiltInWebServerPort="true">
+    <configuration name="khachhang-donhang-detail.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/sportShopV2/sportShopV2/src/main/resources/templates/KhachHang/khachhang-donhang-detail.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
     <configuration name="view.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/testDATN/sportShopV2/templates/MuaHang/view.html" useBuiltInWebServerPort="true">
@@ -91,13 +109,21 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JavaScript Debug.khachhang-donhang-detail.html" />
         <item itemvalue="JavaScript Debug.view.html" />
         <item itemvalue="JavaScript Debug.giamGia.html (1)" />
         <item itemvalue="JavaScript Debug.detail.html" />
         <item itemvalue="JavaScript Debug.add.html (1)" />
-        <item itemvalue="JavaScript Debug.giamGia.html" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.17011.79" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.17011.79" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -141,7 +167,19 @@
       <workItem from="1732151830187" duration="19984000" />
       <workItem from="1732437154123" duration="9000" />
       <workItem from="1732437175256" duration="4323000" />
+      <workItem from="1732588577415" duration="3374000" />
+      <workItem from="1732616201777" duration="2918000" />
+      <workItem from="1732624680930" duration="1423000" />
     </task>
+    <task id="LOCAL-00001" summary="commit">
+      <option name="closed" value="true" />
+      <created>1732515363257</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1732515363257</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -160,6 +198,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="commit" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/sportShopV2$SportShopV2Application.ic" NAME="SportShopV2Application Coverage Results" MODIFIED="1732512949722" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
