@@ -34,4 +34,7 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
 
 //    Optional<HoaDon> findById(Integer id);
     List<HoaDon> findAllByStatus( String status);
+
+    @Query("SELECT h FROM HoaDon h WHERE h.id_account.id = :id")
+    List<HoaDon> findByCustomerId(@Param("id") Integer id);
 }

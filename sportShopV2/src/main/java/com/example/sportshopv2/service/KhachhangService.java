@@ -1,6 +1,10 @@
 package com.example.sportshopv2.service;
 
 
+    import com.example.sportshopv2.model.Address;
+    import com.example.sportshopv2.repository.AddressRepository;
+    import com.example.sportshopv2.repository.KhachHangRepository;
+
 import com.example.sportshopv2.dto.UserDTO;
 import com.example.sportshopv2.model.Account;
 import com.example.sportshopv2.model.NguoiDung;
@@ -16,10 +20,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
+    import java.util.ArrayList;
+    import java.util.List;
+    import java.util.Optional;
 
 @Service
 public class KhachhangService {
@@ -56,7 +64,7 @@ public class KhachhangService {
     }
 
 
-    private final String UPLOAD_DIR = "D:\\demoMergeCodeDatn\\sportShopV2\\src\\main\\resources\\static\\uploads";
+    private final String UPLOAD_DIR = "C:\\HOCTAP\\DATN\\sportShopV2\\sportShopV2\\src\\main\\resources\\static\\uploads";
 
     public User addKhachHang(User khachHang, MultipartFile imageFile) throws IOException {
 
@@ -75,13 +83,24 @@ public class KhachhangService {
 
 //            account.setUsername(username); // Hoặc bạn có thể thiết lập một username khác
 //            account.setPassword(password); // Thiết lập mật khẩu mặc định (bạn có thể mã hóa mật khẩu ở đây)
-        account.setStatus("Active");
+        account.setStatus("Đang hoạt động");
 
         khachHang.setAccount(account); // Gán tài khoản cho user
 
 
+
         // Lưu khách hàng cùng với địa chỉ
         return userRepository.save(khachHang);
+
+    }
+        public User findCustomerById(Integer customerId) {
+            return userRepository.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
+        }
+
+        public Address findAddressById(Integer addressId) {
+            return addressRepository.findById(addressId).orElseThrow(() -> new RuntimeException("Address not found"));
+
+
     }
 
 
@@ -136,4 +155,15 @@ public class KhachhangService {
     public List<NguoiDung> getKHCbo() {
         return ndRepo.findAllKhachHang();
     }
+    public Optional<User> findByPhoneNumber(String phoneNumber) {
+        return userRepository.findByPhoneNumber(phoneNumber); // Cần phải có phương thức này trong repository
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email); // Cần phải có phương thức này trong repository
+    }
+
+
+
+
 }
