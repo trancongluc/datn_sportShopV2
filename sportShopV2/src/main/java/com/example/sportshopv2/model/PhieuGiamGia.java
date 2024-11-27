@@ -48,6 +48,7 @@ public class PhieuGiamGia {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime endDate;
 
+    private String status;
 
 
 
