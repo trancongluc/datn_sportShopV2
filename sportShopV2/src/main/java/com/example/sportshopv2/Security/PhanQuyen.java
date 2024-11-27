@@ -106,5 +106,4 @@ public class PhanQuyen {
                 // Thêm các endpoint khác cần bỏ qua
         );
     }
-
 }

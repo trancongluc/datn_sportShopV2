@@ -764,25 +764,52 @@ async function capNhatHoaDon() {
         // Lấy thông tin nhân viên
         const emp = await fetch(`/ban-hang-tai-quay/tk/${idNV}`).then(handleResponse);
 
-        // Nếu phương thức thanh toán là "Chuyển Khoản", chuyển hướng đến VNPay
+        // Nếu phương thức thanh toán là "Chuyển Khoản", mở popup VNPay
         if (paymentMethod === 'Chuyển Khoản') {
             const redirectToVNPay = async () => {
                 try {
                     localStorage.setItem('thucThu', thucThu);  // Lưu số tiền
                     localStorage.setItem('billCode', currentInvoice.billCode);
-                    window.location.href = '/VNPAY-demo';
+
+                    // Mở popup đến VNPay
+                    const vnpayWindow = window.open('/VNPAY-demo', '_blank', 'width=800,height=600');
+
+                    // Theo dõi trạng thái của popup và quay lại trang sau khi thanh toán
+                    const checkPopupClosed = setInterval(async () => {
+                        if (vnpayWindow.closed) {
+                            console.log('Popup đã đóng, bắt đầu xử lý kết quả thanh toán...');
+                            clearInterval(checkPopupClosed);
+                            // Gọi lại /vnpay-payment-return để xử lý kết quả thanh toán
+                            try {
+                                const response = await fetch('/vnpay-payment-return', {
+                                    method: 'GET',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                }).then(res => res.json());
+
+                                if (response.pay_status === 1) {
+                                    console.log('Thanh toán thành công!');
+                                    showToast('Thanh toán thành công!');
+
+                                    // Tiến hành cập nhật hóa đơn ngay tại đây
+                                }
+                            } catch (error) {
+                                console.error('Có lỗi khi kiểm tra thanh toán:', error);
+                                showToast('Lỗi kết nối với hệ thống thanh toán');
+                            }
+                        }
+                    }, 1000); // Kiểm tra mỗi giây
                 } catch (error) {
                     console.error('Lỗi khi chuyển hướng đến VNPay:', error);
                     showToast('Thanh toán thất bại!');
                 }
             };
             await redirectToVNPay();
-            return;// Dừng hàm `capNhatHoaDon` khi chuyển hướng đến VNPay
+            return; // Dừng hàm `capNhatHoaDon` khi chuyển hướng đến VNPay
         }
-        const paymentStatus = await checkPaymentStatusFromVNPay();
-        // Nếu không phải thanh toán qua VNPay, tiếp tục cập nhật hóa đơn
-        /*  if (paymentStatus.success) {*/
-        // Tiến hành cập nhật hóa đơn khi thanh toán thành công
+
+        // Tiến hành cập nhật hóa đơn ngay nếu thanh toán không qua VNPay
         const hoaDon = {
             user_name: fullName || userKH.name,
             phone_number: sdt || userKH.phone_number,
@@ -812,7 +839,7 @@ async function capNhatHoaDon() {
             body: JSON.stringify(hoaDon),
         }).then(handleResponse);
 
-        // Lấy thông tin chi tiết sản phẩm và tạo hóa đơn chi tiết
+        // Tiến hành xử lý hóa đơn chi tiết và cập nhật số lượng sản phẩm
         const hoaDonChiTietList = await Promise.all(
             selectedProductIds.map(async (productId) => {
                 const productDetails = await fetch(`san-pham-chi-tiet/thong-tin-spct/${productId}`).then(handleResponse);
@@ -820,33 +847,18 @@ async function capNhatHoaDon() {
                     console.warn(`Không tìm thấy giá cho sản phẩm ID: ${productId}`);
                     return null;
                 }
-                const quantity = productQuantities[productDetails.id]; // Lấy số lượng từ productQuantities
-                console.log("SL SP:" + quantity)
+                const quantity = productQuantities[productDetails.id];
                 if (!quantity || quantity <= 0) {
                     console.warn(`Số lượng không hợp lệ cho sản phẩm ID: ${productId}`);
                     return null;
                 }
-                // if (nhanHang == 'Tại Quầy') {
+                // Cập nhật số lượng sản phẩm
                 soLuongNew = productDetails.soLuong - quantity;
-                fetch(`/san-pham-chi-tiet/cap-nhat-so-luong/${productId}?soLuongNew=${soLuongNew}`, {
+                await fetch(`/san-pham-chi-tiet/cap-nhat-so-luong/${productId}?soLuongNew=${soLuongNew}`, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Cập nhật thất bại');
-                        }
-                        return response.text(); // Lấy thông báo từ server
-                    })
-                    .then(message => {
-                        console.log("Cập nhật số lượng thành công!");
-                    })
-                    .catch(error => {
-                        console.error("Cập nhật thất bại. Vui lòng thử lại!");
-                    });
-                // }
+                    headers: {'Content-Type': 'application/json'},
+                });
+
                 return {
                     quantity: quantity,
                     hoaDon: updatedHoaDon,
@@ -858,7 +870,6 @@ async function capNhatHoaDon() {
             })
         );
 
-        // Loại bỏ các phần tử null nếu có lỗi trong danh sách sản phẩm
         const validHoaDonChiTietList = hoaDonChiTietList.filter(item => item !== null);
 
         // Gửi yêu cầu tạo hóa đơn chi tiết
@@ -867,45 +878,18 @@ async function capNhatHoaDon() {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(validHoaDonChiTietList),
         });
-        console.log(validHoaDonChiTietList);
+
         showToast("Tạo Hóa Đơn Thành Công!");
         selectedProductIds = [];
-        /* window.location.href = '/ban-hang-tai-quay';*/
+        window.location.href = '/ban-hang-tai-quay';
+
     } catch (error) {
         console.error('Có lỗi xảy ra:', error);
         showToast("Thêm hóa đơn thất bại!");
     }
 }
 
-async function checkPaymentStatusFromVNPay() {
-    const orderInfo = localStorage.getItem('orderInfo');  // Hoặc lấy từ URL nếu có
-    try {
-        // Gửi yêu cầu kiểm tra thanh toán từ VNPay
-        const response = await fetch(`/vnpay-payment-return?vnp_OrderInfo=${orderInfo}`, {
-            method: 'GET',
-        });
 
-        if (response.ok) {
-            const result = await response.json();  // Đọc dữ liệu trả về từ server
-
-            // Kiểm tra trạng thái thanh toán
-            if (result.paymentStatus === 1) {
-                // Thanh toán thành công, tiếp tục thực hiện hàm cập nhật hóa đơn
-                capNhatHoaDonChay(); // Gọi hàm capNhatHoaDonChay nếu thanh toán thành công
-            } else {
-                showToast("Thanh toán thất bại!"); // Hiển thị thông báo thất bại
-            }
-        } else {
-            const errorResult = await response.json();  // Đọc lỗi từ server
-            console.error("Lỗi từ server: ", errorResult.message);  // Log lỗi
-            showToast("Lỗi khi kiểm tra trạng thái thanh toán!");
-        }
-    } catch (error) {
-        // Nếu có lỗi khi gọi API
-        console.error('Lỗi kết nối: ', error);
-        showToast("Lỗi khi kết nối với server!");
-    }
-}
 
 // Hàm xử lý phản hồi từ API
 function handleResponse(response) {
