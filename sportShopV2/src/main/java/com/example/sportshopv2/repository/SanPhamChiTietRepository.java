@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -23,5 +24,5 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
 
     @Query("SELECT h FROM SanPhamChiTiet h WHERE h.id IN (SELECT MIN(hd.id) FROM  SanPhamChiTiet hd GROUP BY hd.idSanPham)")
     List<SanPhamChiTiet> findDistinctByIdProduct();
-
+    List<SanPhamChiTiet> findByIdIn(List<Long> ids);
 }

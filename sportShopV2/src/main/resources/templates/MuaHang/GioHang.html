@@ -26,6 +26,10 @@
             gap: 20px; /* Khoảng cách giữa hai cột */
         }
 
+        .center {
+            width: 100%;
+        }
+
         .left, .right {
             background-color: #fff;
             padding: 20px;
@@ -124,82 +128,131 @@
 <nav><a th:href="@{/mua-sam-SportShopV2/trang-chu}">
     <button class="btn btn-info">Trở lại</button>
 </a></nav>
-<div>
-    <table class="w-full table-auto">
-        <thead>
-        <tr class="bg-orange-500 text-black">
-            <th class="px-4 py-2">STT</th>
-            <th class="px-4 py-2">Ảnh Sản Phẩm</th>
-            <th class="px-4 py-2">Thông tin sản phẩm</th>
-            <th class="px-4 py-2">Màu sắc</th>
-            <th class="px-4 py-2">Số lượng</th>
-            <th class="px-4 py-2">Tổng tiền</th>
-            <th class="px-4 py-2">Trạng Thái</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="bg-gray-100" th:each="list, index: ${listCart}">
-            <td class="border px-4 py-2 text-center" th:text="${index.index + 1}"></td>
-            <td class="border px-4 py-2 text-center">
-                <img alt="Sản phẩm" height="50"
-                     th:src="${listImage[index.index]?.tenAnh != null ? '/images/' + listImage[index.index].tenAnh : '/images/giayMau.png'}"
-                     width="50"/>
-
-            </td>
-            <td class="border px-4 py-2">
-                <p th:text="${list.SanPhamChiTiet.idSanPham.tenSanPham}"></p>
-                <p>Kích cỡ:
-                    <span th:text="${list.SanPhamChiTiet.idKichThuoc.tenKichThuoc}"></span>
-                </p>
-            </td>
-            <td class="border px-4 py-2 text-center">
-                <div
-                        th:style="'width: 40px; height: 40px;background-color: ' + ${list.SanPhamChiTiet.idMauSac.tenMauSac}">
-                </div>
-                <span th:if="${list.SanPhamChiTiet.idMauSac == null}">Không có màu</span>
-            </td>
-
-            <td class="border px-4 py-2 text-center" th:text="${list.soLuong}"></td>
-            <td class="border px-4 py-2 text-center"
-                th:text="${list.soLuong * list.giaTien}"></td>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<div class="container">
+    <!-- Bảng Sản Phẩm -->
+    <div class="table-container center">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Lựa chọn</th>
+                <th>STT</th>
+                <th>Ảnh Sản Phẩm</th>
+                <th>Thông tin sản phẩm</th>
+                <th>Màu sắc</th>
+                <th>Số lượng</th>
+                <th>Tổng tiền</th>
+            </tr>
+            </thead>
+            <form th:action="@{/mua-sam-SportShopV2/dat-hang}" method="post">
+                <tbody>
+                <tr th:each="list, index : ${listCart}">
+                    <td>
+                        <input type="checkbox"
+                               style="margin-left: 40%; width: 40px; height: 40px"
+                               th:value="${list.sanPhamChiTiet.id}"
+                               name="selectedProducts"
+                               th:checked="${#lists.contains(selectedProductIds, list.sanPhamChiTiet.id)}"/>
+                    </td>
+                    <td th:text="${index.index + 1}"></td>
+                    <td>
+                        <img alt="Sản phẩm" height="50"
+                             th:src="${listImage[index.index]?.tenAnh != null ? '/images/' + listImage[index.index].tenAnh : '/images/giayMau.png'}"
+                             width="50"/>
+                    </td>
+                    <td>
+                        <p th:text="${list.SanPhamChiTiet.idSanPham.tenSanPham}"></p>
+                        <p> Giá tiền: <span style="color: red" th:text="${list.SanPhamChiTiet.gia}"></span></p>
+                        <p>Kích cỡ: <span th:text="${list.SanPhamChiTiet.idKichThuoc.tenKichThuoc}"></span></p>
+                    </td>
+                    <td class="border px-4 py-2 text-center">
+                        <div
+                                th:style="'width: 40px; height: 40px;background-color: ' + ${list.SanPhamChiTiet.idMauSac.tenMauSac}">
+                        </div>
+                        <span th:if="${list.SanPhamChiTiet.idMauSac == null}">Không có màu</span>
+                    </td>
+                    <td th:text="${list.soLuong}"></td>
+                    <td th:text="${list.soLuong * list.giaTien}"></td>
+                </tr>
+                </tbody>
+                <button id="btn-confirm" class="btn btn-success" disabled>Xác nhận</button>
+            </form>
+        </table>
+    </div>
 </div>
 <div class="container">
     <div class="left">
         <h2>Khách hàng</h2>
         <form>
-            <input type="text" name="name" required/>
-            <input type="tel" name="phone" pattern="[0-9]{10}" title="Vui lòng nhập số điện thoại 10 chữ số." required/>
-            <input type="email" name="email" required/>
-            <input type="text" name="address" required/>
+            <label>Họ và tên</label>
+            <input type="text" th:field="${thongTinKhachHang.nguoiDung.full_name}" name="name" required/>
+            <label>Số điện thoại</label>
+            <input type="tel" th:field="${thongTinKhachHang.nguoiDung.phone_number}" name="phone"
+                   pattern="[0-9]{10}" title="Vui lòng nhập số điện thoại 10 chữ số." required/>
+            <label>Email</label>
+            <input type="email" th:field="${thongTinKhachHang.nguoiDung.email}" name="email" required/>
+            <label>Địa chỉ cụ thể
+                <button style="margin-left: 600px" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#addressModal">+
+                </button>
+            </label>
+            <div>
+                <input type="text"
+                       th:value="${#lists.isEmpty(listDiaChi) ? '' : listDiaChi[0].line}"
+                       name="address" required/>
+            </div>
 
             <div class="css_select_div">
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label for="tinh" class="form-label">Tỉnh</label>
                         <select class="form-select" id="tinh" name="tinh" required>
-                            <option value="" hidden>Tỉnh Thành</option>
-                            <!-- Các lựa chọn tỉnh thành -->
+                            <option value="" hidden th:text="${#lists.isEmpty(listDiaChi) ? '' : listDiaChi[0].tinh}">
+                                Tỉnh Thành
+                            </option>
                         </select>
                     </div>
                     <div class="col-md-4">
                         <label for="quan" class="form-label">Huyện</label>
                         <select class="form-select" id="quan" name="quan" required>
-                            <option value="" hidden>Quận Huyện</option>
+                            <option value="" hidden th:text="${#lists.isEmpty(listDiaChi) ? '' : listDiaChi[0].quan}">
+                                Quận Huyện
+                            </option>
                         </select>
                     </div>
                     <div class="col-md-4">
                         <label for="phuong" class="form-label">Phường</label>
                         <select class="form-select" id="phuong" name="phuong" required>
-                            <option value="" hidden>Phường Xã</option>
+                            <option value="" hidden th:text="${#lists.isEmpty(listDiaChi) ? '' : listDiaChi[0].phuong}">
+                                Phường Xã
+                            </option>
                         </select>
                     </div>
                 </div>
             </div>
-
+            <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addressModalLabel">Danh sách địa chỉ</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Danh sách địa chỉ -->
+                            <ul class="list-group">
+                                <li class="list-group-item" th:each="address, index : ${listDiaChi}">
+                                    <span th:text="${address.tinh}"></span>
+                                    <span th:text="${address.quan}"></span>
+                                    <span th:text="${address.phuong}"></span>
+                                    <button type="button" class="btn btn-link text-primary float-end"
+                                            onclick="selectAddress(this)">Chọn
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <textarea placeholder="Ghi chú" name="note" required></textarea>
         </form>
 
@@ -214,7 +267,7 @@
         <h2>Thông tin thanh toán</h2>
         <div class="section">
             <label>Khách thanh toán</label>
-            <input readonly type="text" value="0 VND"/>
+            <input readonly type="text" th:value="${totalPrice} + ' VND'"/>
         </div>
         <div class="section">
             <label>Mã giảm giá:</label>
@@ -232,7 +285,7 @@
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" role="switch" id="GiaoHang" name="thanhToan"
                        value="GiaoHang" onchange="toggleSwitch('GiaoHang', 'TraSau')">
-                <label class="form-check-label" for="GiaoHang">Giao hàng</label>
+                <label class="form-check-label" for="GiaoHang">Trả khi nhận hàng</label>
             </div>
         </div>
         <script>
@@ -259,14 +312,14 @@
                 }
             }
         </script>
-        <form th:action="@{/mua-sam-SportShopV2/VNPAY/submitOrder}" method="post">
+        <form th:action="@{/mua-sam-SportShopV2/submitOrder}" method="post">
             <div class="section">
                 <label>Tiền hàng:</label>
-                <input readonly type="text" th:text="${tongTienGioHang}"/>
+                <input readonly type="text" th:field="${tongTienGioHang}"/>
             </div>
             <div class="section">
                 <label>Phí vận chuyển:</label>
-                <input type="text" value="0 VND"/>
+                <input type="text" value="0 VND" readonly/>
             </div>
             <div class="section">
                 <label>Giảm giá:</label>
@@ -283,11 +336,62 @@
             <div class="section total" for="amount">
                 <input name="orderInfo">
             </div>
-            <button class="confirm-button">Xác nhận đặt hàng</button>
+            <button class="btn btn-primary ">Xác nhận đặt hàng</button>
         </form>
     </div>
 
 </div>
 <script src="/js/KhachHang.js"></script>
+<script>
+    // Hàm kiểm tra trạng thái checkbox
+    function toggleButton() {
+        // Lấy danh sách tất cả các checkbox
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        // Kiểm tra nếu có ít nhất một checkbox được chọn
+        const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+        // Bật hoặc tắt nút dựa trên trạng thái checkbox
+        const confirmButton = document.getElementById('btn-confirm');
+        confirmButton.disabled = !anyChecked;
+    }
+
+    // Gắn sự kiện 'change' cho tất cả các checkbox khi DOM sẵn sàng
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', toggleButton);
+        });
+    });
+</script>
+<script>
+    function selectAddress(button) {
+        // Lấy nội dung địa chỉ từ danh sách
+        const address = button.parentElement.querySelector('span').innerText;
+        // Gán địa chỉ vào ô nhập liệu
+        document.querySelector('input[name="address"]').value = address;
+        // Đóng modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('addressModal'));
+        modal.hide();
+    }
+</script>
+<script>
+    function calculateTotal() {
+        // Lấy danh sách các checkbox
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        let total = 0;
+
+        checkboxes.forEach(checkbox => {
+            // Kiểm tra nếu checkbox được chọn
+            if (checkbox.checked) {
+                // Lấy giá tiền từ ô gần checkbox (sử dụng DOM traversal)
+                const row = checkbox.closest('tr');
+                const priceCell = row.querySelector('td:nth-child(7)');
+                const price = parseFloat(priceCell.textContent.replace(/[^\d.-]/g, ''));
+                total += price;
+            }
+        });
+
+        // Cập nhật tổng tiền trong ô "Khách thanh toán"
+        document.getElementById('totalPayment').value = total.toLocaleString() + ' VND';
+    }
+</script>
 </body>
 </html>

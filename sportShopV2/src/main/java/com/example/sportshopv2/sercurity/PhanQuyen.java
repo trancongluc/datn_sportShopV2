@@ -49,7 +49,7 @@ public class PhanQuyen {
 
                         // Cho phép truy cập công cộng
                         .requestMatchers("/login/**", "/mua-sam-SportShopV2/**", "/api/payment/**",
-                                "/VNPAY-demo/**", "/images/**").permitAll()
+                                "/VNPAY-demo/**", "/images/**", "https://**").permitAll()
                         // Các yêu cầu khác phải xác thực
                         .anyRequest().authenticated()
                 )
@@ -74,7 +74,11 @@ public class PhanQuyen {
                         })
                         .permitAll()
                 )
-                .logout(logout -> logout.permitAll())  // Cho phép logout
+                .logout(logout -> logout
+                        .logoutUrl("/logout") // Đường dẫn xử lý đăng xuất
+                        .logoutSuccessUrl("/login/home") // Chuyển hướng sau khi đăng xuất
+                        .permitAll()
+                )
                 .exceptionHandling(ex -> ex.accessDeniedPage("/login/access"));  // Trang lỗi nếu không có quyền truy cập
         return httpSecurity.build();
     }
@@ -88,30 +92,30 @@ public class PhanQuyen {
 //    }
 
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers(
-                "/chat-lieu/**",
-                "/the-loai/**",
-                "/san-pham/**",
-                "/san-pham-chi-tiet/**",
-                "/co-giay/**",
-                "/de-giay/**",
-                "/thuong-hieu/**",
-                "/mau-sac/**",
-                "/kich-thuoc/**",
-                "/anh-san-pham/**",
-                "/ban-hang-tai-quay/**",
-                "/ban-hang-tai-quay/update-hoa-don/**",
-                "/khach-hang/**",
-                "/nhanvien/**",
-                "/hoa-don/**",
-                "/hoa-don-chi-tiet/**",
-                "khach-hang/thong-tin-khach-hang/**"
-
-                // Thêm các endpoint khác cần bỏ qua
-        );
-    }
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return (web) -> web.ignoring().requestMatchers(
+//                "/chat-lieu/**",
+//                "/the-loai/**",
+//                "/san-pham/**",
+//                "/san-pham-chi-tiet/**",
+//                "/co-giay/**",
+//                "/de-giay/**",
+//                "/thuong-hieu/**",
+//                "/mau-sac/**",
+//                "/kich-thuoc/**",
+//                "/anh-san-pham/**",
+//                "/ban-hang-tai-quay/**",
+//                "/ban-hang-tai-quay/update-hoa-don/**",
+//                "/khach-hang/**",
+//                "/nhanvien/**",
+//                "/hoa-don/**",
+//                "/hoa-don-chi-tiet/**",
+//                "khach-hang/thong-tin-khach-hang/**"
+//
+//                // Thêm các endpoint khác cần bỏ qua
+//        );
+//    }
 
 
 }
