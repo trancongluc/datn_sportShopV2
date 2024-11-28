@@ -12,10 +12,10 @@ public class DangNhapController {
     public String login(){
         return "DangNhap/DangNhap";
     }
-    @GetMapping("/logout")
-    public String logout(){
-        return "DangNhap/DangNhap";
-    }
+//    @GetMapping("/logout")
+//    public String logout(){
+//        return "DangNhap/DangNhap";
+//    }
     @GetMapping("/access")
     public String access(){
         return "DangNhap/TruyCap";

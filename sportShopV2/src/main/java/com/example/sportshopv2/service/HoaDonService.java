@@ -44,4 +44,13 @@ public class HoaDonService {
         List<HoaDon> listHD = hdRepo.findAllByStatus("Hóa Đơn Chờ");
         return listHD;
     }
+
+
+    public List<HoaDon> getOrdersByCustomerId(Integer customerId) {
+        return hdRepo.findByCustomerId(customerId);
+    }
+
+    public HoaDon findHoaDonById(Integer id) {
+        return hdRepo.findById(id).orElse(null);
+    }
 }

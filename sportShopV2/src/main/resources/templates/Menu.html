@@ -22,7 +22,7 @@
     <aside id="sidebar" class="expand">
         <div class="d-flex">
             <div class="sidebar-logo">
-                <img src="/images/logoSSV2.png" alt="Logo" class="logo">
+                <img src="/images/logoSPSV2.png" alt="Logo" class="logo">
             </div>
         </div>
         <ul class="sidebar-nav">
@@ -139,14 +139,7 @@
             <button id="toggle-btn" type="button">
                 <i class="fa-solid fa-bars" style="color: #74C0FC"></i>
             </button>
-            <form action="#" class="d-none d-sm-inline-block">
-                <div class="input-group input-group-navbar">
-                    <input type="text" class="form-control border-0 rounded-0" placeholder="Search..."/>
-                    <button class="btn border-0 rounded-0" type="button">
-                        Search
-                    </button>
-                </div>
-            </form>
+
 
 
             <div class="right-section">
@@ -174,12 +167,13 @@
                         <i class="lni lni-question-circle"></i>
                         <span>Help</span>
                     </a>
-                    <a href="" class="dropdown-item">
-                        <i class="lni lni-question-circle"></i>
-                        <form th:action="@{/logout}" method="post">
-                            <button type="submit">Log out</button>
-                        </form>
-                    </a>
+                    <form th:action="@{/logout}" method="post" class="dropdown-item">
+                        <button type="submit" class="btn btn-link">
+                            <i class="lni lni-question-circle"></i>
+                            Đăng xuất
+                        </button>
+                    </form>
+
                 </div>
             </div>
         </div>

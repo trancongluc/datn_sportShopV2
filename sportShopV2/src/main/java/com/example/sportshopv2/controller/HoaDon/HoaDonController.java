@@ -58,6 +58,7 @@ public class HoaDonController {
     @Autowired
     private HoaDonService hdService;
     private Map<Integer, String> tongTienHD;
+    private Map<Integer, String> tongTienGiamGia;
 
 
     public HoaDonController(AnhSanPhamRepository anhSanPhamRepository,
@@ -70,35 +71,46 @@ public class HoaDonController {
 
     @RequestMapping("/view")
     public String view(Model model) {
-        List<HoaDon> hdList = hdrepo.findAllByOrderByCreateAtDesc();
+        List<HoaDon> hdList = hdrepo.findAllByStatusNotOrderByCreateAtDesc("Hóa đơn chờ");
         Map<Integer, String> tongTienHoaDon = hdList.stream().collect(Collectors.toMap(
                 HoaDon::getId, // Key là ID của hóa đơn
                 hd -> {
                     // Tính tổng tiền của hóa đơn
                     BigDecimal total = hdctrepo.findAllByHoaDon_Id(hd.getId()).stream()
-                            .map(hdct -> new BigDecimal(hdct.getPrice()).multiply(BigDecimal.valueOf(hdct.getQuantity())))
+                            .map(hdct -> new BigDecimal(hdct.getHoaDon().getTotal_money()).multiply(BigDecimal.valueOf(hdct.getQuantity())))
                             .reduce(BigDecimal.ZERO, BigDecimal::add);
-
                     // Làm tròn tổng tiền đến 2 chữ số thập phân
                     total = total.setScale(2, RoundingMode.HALF_UP); // Sử dụng RoundingMode.HALF_UP để làm tròn
-
                     // Định dạng tổng tiền
                     return NumberFormat.getCurrencyInstance(new Locale("vi", "VN")).format(total);
                 }
         ));
+        Map<Integer, String> tongTienGiam = hdList.stream().collect(Collectors.toMap(
+                HoaDon::getId, // Key là ID của hóa đơn
+                hd -> {
+                    BigDecimal tienGiam = hdctrepo.findAllByHoaDon_Id(hd.getId()).stream()
+                            .map(hdct -> new BigDecimal(hdct.getHoaDon().getMoney_reduced()).multiply(BigDecimal.valueOf(hdct.getQuantity())))
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                    tienGiam = tienGiam.setScale(2, RoundingMode.HALF_UP);
+                    return NumberFormat.getCurrencyInstance(new Locale("vi", "VN")).format(tienGiam);
+                }
+        ));
         tongTienHD = tongTienHoaDon;
+        tongTienGiamGia = tongTienGiam;
         model.addAttribute("hdList", hdList);
         model.addAttribute("tongTienHoaDon", tongTienHoaDon);
+        model.addAttribute("tienGiam", tongTienGiam);
         model.addAttribute("tab", "all");
         return "HoaDon/HoaDon";
     }
 
     @GetMapping("/tab")
     public String tab(Model model, @RequestParam(value = "status", defaultValue = "defaultStatus") String status) {
-        List<HoaDon> hdctList = hdrepo.findAllByStatusLike(status);
+        List<HoaDon> hdctList = hdrepo.findAllByStatusLikeOrderByCreateAtDesc(status);
         model.addAttribute("hdList", hdctList);
         model.addAttribute("tab", status);
         model.addAttribute("tongTienHoaDon", tongTienHD);
+        model.addAttribute("tienGiam", tongTienGiamGia);
         return "HoaDon/HoaDon";
     }
 
@@ -194,11 +206,11 @@ public class HoaDonController {
             Context context = new Context();
             context.setVariable("hoaDon", bill);
             context.setVariable("items", billDetail);
-            context.setVariable("productCount", billDetail.size()); // Total number of products
-            context.setVariable("discount", bill.getMoney_reduced()); // Assuming there is a discount method
-            context.setVariable("total", billDetail.stream().mapToDouble(HoaDonChiTiet::getPrice).sum()); // Replace with appropriate logic
-            context.setVariable("totalQuantity", billDetail.stream().mapToInt(HoaDonChiTiet::getQuantity).sum()); // Assuming you can get quantity from HoaDonChiTiet
-            context.setVariable("totalPayment", bill.getTotal_money()); // Replace with appropriate logic
+            context.setVariable("productCount", billDetail.size());
+            context.setVariable("discount", bill.getMoney_reduced());
+            context.setVariable("total", billDetail.stream().mapToDouble(HoaDonChiTiet::getPrice).sum());
+            context.setVariable("totalQuantity", billDetail.stream().mapToInt(HoaDonChiTiet::getQuantity).sum());
+            context.setVariable("totalPayment", bill.getTotal_money());
 
             String htmlContent = templateEngine.process("HoaDon/HinhAnhHoaDon", context);
 

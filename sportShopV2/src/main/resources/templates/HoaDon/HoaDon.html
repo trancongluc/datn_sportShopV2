@@ -146,7 +146,7 @@
                         <td th:text="${hd.email}"></td>
                         <td th:text="${hd.type}"></td>
                         <td th:text="${hd.createAt}"></td>
-                        <td th:text="${hd.money_reduced}"></td>
+                        <td th:text="${tienGiam[hd.id]}"></td>
                         <td th:text="${tongTienHoaDon[hd.id]}"></td>
                         <td>
                             <a th:href="@{~/bill/detail(id=${hd.id})}">

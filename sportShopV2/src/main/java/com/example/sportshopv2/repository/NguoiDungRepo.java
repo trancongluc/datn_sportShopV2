@@ -15,4 +15,5 @@ public interface NguoiDungRepo extends JpaRepository<NguoiDung, Integer> {
     List<NguoiDung> findAllKhachHang();
 
 
+
 }

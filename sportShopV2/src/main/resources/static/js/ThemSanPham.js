@@ -672,7 +672,7 @@ async function themSPCT() {
 
     try {
         // Thêm sản phẩm chính
-        const sanPhamResponse = await fetch('san-pham/them-san-pham', {
+        const sanPhamResponse = await fetch('/san-pham/them-san-pham', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -69,6 +69,14 @@ public class SanPhamChiTietService {
                 .collect(Collectors.toList());
     }
 
+    public List<SanPhamChiTietDTO> getAllSPCTBYID(
+            List<Long> ids) {
+        List<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findByIdIn(ids);
+        return listSPCT.stream().map(sanPhamChiTiet ->
+                        SanPhamChiTiet.toDTO(sanPhamChiTiet, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo))
+                .collect(Collectors.toList());
+    }
+
     public List<SanPhamChiTietDTO> findAllSPCTByIdSP(Integer idSP) {
         List<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndIdSanPham(false, idSP);
         return listSPCT.stream().map(sanPhamChiTiet ->

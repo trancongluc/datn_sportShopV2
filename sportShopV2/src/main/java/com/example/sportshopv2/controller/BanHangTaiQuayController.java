@@ -5,6 +5,7 @@ import com.example.sportshopv2.dto.UserDTO;
 import com.example.sportshopv2.model.*;
 import com.example.sportshopv2.repository.KhachHangRepository;
 import com.example.sportshopv2.repository.NguoiDungRepo;
+import com.example.sportshopv2.repository.PhieuGiamGiaChiTietResponsitory;
 import com.example.sportshopv2.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,8 @@ public class BanHangTaiQuayController {
     private final HoaDonChiTietService hdctService;
     private final TaiKhoanService tkService;
     private final NguoiDungRepo ndRepo;
-
+    private final PhieuGiamGiaService voucherService;
+    private final PhieuGiamGiaChiTietResponsitory voucherDetailService;
     @GetMapping("")
     public String banHangTaiQuay(Model model) {
         List<SanPhamChiTietDTO> listSPCTDto = spctService.getAllSPCT();
@@ -69,6 +71,22 @@ public class BanHangTaiQuayController {
         return hoaDonService.hoaDonById(id);
     }
 
+    @GetMapping("/voucher")
+    @ResponseBody
+    public List<PhieuGiamGia> getVoucherByGiaTriHD(@RequestParam Integer tongTien) {
+        return voucherService.getVoucherByGiaTriDonHang(tongTien);
+    }
+
+    @GetMapping("/voucher/{idVC}")
+    @ResponseBody
+    public PhieuGiamGia getVoucherById(@PathVariable("idVC") Integer idVC) {
+        return voucherService.findByID(idVC);
+    }
+    @GetMapping("/voucher-detail/add")
+    @ResponseBody
+    public PhieuGiamGiaChiTiet getVoucherByGiaTriHD(@RequestBody PhieuGiamGiaChiTiet voucherDetail) {
+        return voucherDetailService.save(voucherDetail);
+    }
     @PostMapping("/tao-hoa-don")
     @ResponseBody
     public HoaDon createBill(@RequestBody HoaDon hoaDon) {

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -29,18 +30,17 @@ public class HoaDon {
     @Column(name = "user_name")
     private String user_name;
 
-
     @Column(name = "phone_number")
     private String phone_number;
 
-    @NotNull(message = "{message.totalmoney}")
+
     @Column(name = "total_money")
     private Float total_money;
 
     @Column(name = "money_reduced")
     private Float money_reduced;
 
-    @NotBlank(message = "{message.status}")
+
     @Column(name = "status")
     private String status;
     @Column(name="address")
