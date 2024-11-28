@@ -31,7 +31,7 @@ public class Controller {
         String vnpayUrl = vnPayService.createOrder(request, orderTotal, orderInfo, baseUrl);
         return "redirect:" + vnpayUrl;
     }
-    @PostMapping("/api/vnpay/create-payment")
+   /* @PostMapping("/api/vnpay/create-payment")
     @ResponseBody
     public ResponseEntity<?> createVNPayPayment(@RequestBody Map<String, Object> payload, HttpServletRequest request) {
         int orderTotal = (int) payload.get("amount");
@@ -46,6 +46,6 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("message", "Không thể tạo URL thanh toán."));
         }
-    }
+    }*/
 
 }
