@@ -34,16 +34,20 @@ public class VNPayReturnController {
         return paymentStatus == 1 ? "Dathang/oderSuccess" : "Dathang/orderFail";
     }*/
     @GetMapping("/vnpay-payment-return")
-    @ResponseBody // Trả JSON thay vì view
+    @ResponseBody
     public ResponseEntity<?> paymentCompleted(HttpServletRequest request) {
         int paymentStatus = vnPayService.orderReturn(request);
 
         if (paymentStatus == 1) {
-            return ResponseEntity.ok().body(Map.of("pay_status", 1, "message", "Thanh toán thành công"));
+            // Thanh toán thành công
+            return ResponseEntity.ok()
+                    .body(Map.of("pay_status", 1, "message", "Thanh toán thành công", "redirectUrl", "/ban-hang-tai-quay"));
         } else {
+            // Thanh toán thất bại
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("pay_status", 0, "message", "Thanh toán thất bại"));
         }
     }
+
 
 }

@@ -767,45 +767,26 @@ async function capNhatHoaDon() {
 
         // Nếu phương thức thanh toán là "Chuyển Khoản", mở popup VNPay
         if (paymentMethod === 'Chuyển Khoản') {
-            const redirectToVNPay = async () => {
+            async function redirectToVNPay(orderTotal, orderInfo, orderId) {
                 try {
-                    localStorage.setItem('thucThu', thucThu);  // Lưu số tiền
-                    localStorage.setItem('billCode', currentInvoice.billCode);
+                    const response = await fetch('VNPAY-demo/api/vnpay/create_payment', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ amount: orderTotal, orderInfo: orderInfo, orderId: orderId })
+                    });
 
-                    // Mở popup đến VNPay
-                    const vnpayWindow = window.open('/VNPAY-demo', '_blank', 'width=800,height=600');
-
-                    // Theo dõi trạng thái của popup và quay lại trang sau khi thanh toán
-                    const checkPopupClosed = setInterval(async () => {
-                        if (vnpayWindow.closed) {
-                            console.log('Popup đã đóng, bắt đầu xử lý kết quả thanh toán...');
-                            clearInterval(checkPopupClosed);
-                            // Gọi lại /vnpay-payment-return để xử lý kết quả thanh toán
-                            try {
-                                const response = await fetch('/vnpay-payment-return', {
-                                    method: 'GET',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                }).then(res => res.json());
-
-                                if (response.pay_status === 1) {
-                                    console.log('Thanh toán thành công!');
-                                    showToast('Thanh toán thành công!');
-
-                                    // Tiến hành cập nhật hóa đơn ngay tại đây
-                                }
-                            } catch (error) {
-                                console.error('Có lỗi khi kiểm tra thanh toán:', error);
-                                showToast('Lỗi kết nối với hệ thống thanh toán');
-                            }
-                        }
-                    }, 1000); // Kiểm tra mỗi giây
+                    const result = await response.json();
+                    if (result.url) {
+                        window.location.href = result.url; // Chuyển hướng đến VNPay
+                    } else {
+                        showToast('Lỗi khi tạo thanh toán!');
+                    }
                 } catch (error) {
-                    console.error('Lỗi khi chuyển hướng đến VNPay:', error);
+                    console.error('Lỗi khi gọi API thanh toán:', error);
                     showToast('Thanh toán thất bại!');
                 }
-            };
+            }
+
             await redirectToVNPay();
             return; // Dừng hàm `capNhatHoaDon` khi chuyển hướng đến VNPay
         }
@@ -882,15 +863,13 @@ async function capNhatHoaDon() {
 
         showToast("Tạo Hóa Đơn Thành Công!");
         selectedProductIds = [];
-        window.location.href = '/ban-hang-tai-quay';
+        window.location.href = '/ban-hang-tai-quay'; // Chuyển hướng về trang bán hàng
 
     } catch (error) {
         console.error('Có lỗi xảy ra:', error);
         showToast("Thêm hóa đơn thất bại!");
     }
 }
-
-
 // Hàm xử lý phản hồi từ API
 function handleResponse(response) {
     if (!response.ok) {

@@ -100,7 +100,8 @@ public class PhanQuyen {
                 "/hoa-don/**",
                 "/hoa-don-chi-tiet/**",
                 "/bill/**",
-                "/api/proxy/**"
+                "/api/proxy/**",
+                "/VNPAY-demo"
 
 
                 // Thêm các endpoint khác cần bỏ qua
