@@ -83,7 +83,7 @@ public class KhachhangService {
 
 //            account.setUsername(username); // Hoặc bạn có thể thiết lập một username khác
 //            account.setPassword(password); // Thiết lập mật khẩu mặc định (bạn có thể mã hóa mật khẩu ở đây)
-        account.setStatus("Đang hoạt động");
+        account.setStatus("Active");
 
         khachHang.setAccount(account); // Gán tài khoản cho user
 

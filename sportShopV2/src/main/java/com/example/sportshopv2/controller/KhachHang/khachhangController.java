@@ -9,6 +9,7 @@ import com.example.sportshopv2.service.AddressService;
 import com.example.sportshopv2.service.HoaDonService;
 import com.example.sportshopv2.service.KhachhangService;
 import jakarta.servlet.http.HttpSession;
+import org.apache.xmlbeans.impl.soap.Detail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +20,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 
@@ -345,7 +350,9 @@ public class khachhangController {
     @GetMapping("/order_history/{id}")
     public String viewOrderHistory(@PathVariable("id") Integer customerId, Model model) {
         List<HoaDon> orders = hoaDonService .getOrdersByCustomerId(customerId);
+
         model.addAttribute("orders", orders);
+
 
         return "KhachHang/khachhang-donhang"; // Create a new Thymeleaf template for details
     }
@@ -358,8 +365,27 @@ public class khachhangController {
             model.addAttribute("error", "Hóa đơn không tồn tại!");
             return "error"; // Trang hiển thị lỗi
         }
+        // Lấy danh sách chi tiết hóa đơn
+        List<HoaDonChiTiet> hoaDonChiTietList = hoaDon.getHoaDonChiTiet();
 
+        // Định dạng giá tiền
+        DecimalFormat df = new DecimalFormat("#,### đ");
+        hoaDonChiTietList.forEach(detail -> {
+            detail.setFormattedPrice(df.format(detail.getPrice()));
+            detail.setFormattedTotal(df.format(detail.getPrice() * detail.getQuantity()));
+        });
+
+        // Tính tổng tiền và định dạng
+        BigDecimal total = hoaDonChiTietList.stream()
+                .map(detail -> BigDecimal.valueOf(detail.getPrice() * detail.getQuantity()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        String formattedTotal = df.format(total);
+
+        // Thêm dữ liệu vào Model
         model.addAttribute("hoaDon", hoaDon);
+        model.addAttribute("hoaDonChiTietList", hoaDonChiTietList);
+        model.addAttribute("formattedTotal", formattedTotal);
+
         return "KhachHang/khachhang-donhang-detail"; // Tên file HTML hiển thị chi tiết hóa đơn
     }
 

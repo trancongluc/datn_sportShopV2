@@ -5,8 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 
 @Getter
 @Setter
@@ -98,6 +100,12 @@ public class HoaDon {
     private String update_by;
     @Column(name = "deleted")
     private Boolean deleted;
+
+    public String getFormattedTotalMoney() {
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        return formatter.format(this.total_money);
+    }
+
     public String getStatusDisplay() {
         switch (status) {
             case "Chờ xác nhận": return "Chờ xác nhận";
