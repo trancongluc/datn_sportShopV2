@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @org.springframework.stereotype.Controller
-@RequestMapping("/VNPAY-demo")
+@RequestMapping("/VNPay/demo")
 public class Controller {
     @Autowired
     private VNPAYService vnPayService;
@@ -23,9 +23,10 @@ public class Controller {
 
     // Chuyển hướng người dùng đến cổng thanh toán VNPAY
     @PostMapping("/submitOrder")
-    public String submidOrder(@RequestParam("amount") int orderTotal,
+    public String submidOrder(@RequestParam("amount") String orderTotal,
                               @RequestParam("orderInfo") String orderInfo,
                               HttpServletRequest request){
+        System.out.println(orderTotal);
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
         String vnpayUrl = vnPayService.createOrder(request, orderTotal, orderInfo, baseUrl);
         return "redirect:" + vnpayUrl;

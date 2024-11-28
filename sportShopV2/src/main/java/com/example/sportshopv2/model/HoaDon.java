@@ -30,18 +30,17 @@ public class HoaDon {
     @Column(name = "user_name")
     private String user_name;
 
-
     @Column(name = "phone_number")
     private String phone_number;
 
-    @NotNull(message = "{message.totalmoney}")
+
     @Column(name = "total_money")
     private Float total_money;
 
     @Column(name = "money_reduced")
     private Float money_reduced;
 
-    @NotBlank(message = "{message.status}")
+
     @Column(name = "status")
     private String status;
     @Column(name="address")
@@ -119,7 +118,5 @@ public class HoaDon {
             default: return 0;
         }
     }
-    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<HoaDonChiTiet> hoaDonChiTiet;
 
 }

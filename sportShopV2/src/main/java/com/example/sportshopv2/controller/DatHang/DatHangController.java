@@ -11,11 +11,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import com.example.sportshopv2.config.VNPAYService;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -51,31 +49,57 @@ public class DatHangController {
     private VNPAYService vnPayService;
     @Autowired
     private TaiKhoanRepo taiKhoanRepo;
+    @Autowired
+    private AddressRepo addressRepo;
+    @Autowired
+    private HoaDonRepo hoaDonRepo;
+    @Autowired
+    private HoaDonChiTietRepo hoaDonChiTietRepo;
+    @Autowired
+    private SanPhamChiTietRepository sanPhamChiTietRepository;
+    @Autowired
+    private SPCTRePo sanPhamChiTietRepo;
+    private Integer idTK = null;
+    private List<Long> dsSPCT = null;
 
     @RequestMapping("/trang-chu")
     public String trangChu(Model model) {
-        List<SanPhamChiTietDTO> AllProductDetail = sanPhamChiTietService.getAllDISTINCTSPCT();
-//        List<SanPhamChiTietDTO> AllProductDetail = AllProduct.stream()
-//                .map(sp -> sanPhamChiTietService.findAllSPCTByIdSP(sp.getId())) // Lấy id từ SanPhamChiTiet
-//                .flatMap(List::stream) // Gộp danh sách ảnh từ từng sản phẩm thành một danh sách duy nhất
-//                .collect(Collectors.toList());
-        List<AnhSanPham> anhSanPhams = AllProductDetail.stream()
-                .map(spct -> anhSanPhamRepository.findByIdSPCT(spct.getId())) // Lấy id từ SanPhamChiTiet
+        // Lấy thông tin người dùng hiện tại
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-                .flatMap(List::stream) // Gộp danh sách ảnh từ từng sản phẩm thành một danh sách duy nhất
+        // Kiểm tra nếu người dùng chưa đăng nhập
+        if (authentication == null || !authentication.isAuthenticated() ||
+                "anonymousUser".equals(authentication.getName())) {
+            // Chuyển hướng đến trang đăng nhập
+            return "redirect:/login";
+        }
+
+        // Lấy tên người dùng đã đăng nhập
+        String username = authentication.getName();
+
+        // Lấy thông tin tài khoản
+        TaiKhoan taiKhoan = taiKhoanRepo.findTaiKhoanByUsername(username);
+        if (taiKhoan == null) {
+            taiKhoan = new TaiKhoan(); // Khởi tạo đối tượng rỗng nếu không tìm thấy
+        }
+        idTK = taiKhoan.getId();
+        model.addAttribute("thongTinKhachHang", taiKhoan);
+
+        // Xử lý danh sách sản phẩm
+        List<SanPhamChiTietDTO> AllProductDetail = sanPhamChiTietService.getAllDISTINCTSPCT();
+        List<AnhSanPham> anhSanPhams = AllProductDetail.stream()
+                .map(spct -> anhSanPhamRepository.findByIdSPCT(spct.getId()))
+                .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        if (anhSanPhams.isEmpty()) {
-            System.out.println("Danh sách hình ảnh rỗng.");
-        }
         List<String> imageUrls = anhSanPhams.stream()
                 .map(anh -> anh.getTenAnh() != null ? "/images/" + anh.getTenAnh() : "/images/giayMau.png")
                 .collect(Collectors.toList());
 
         model.addAttribute("imageUrls", imageUrls);
-//        model.addAttribute("listsp", AllProduct);
         model.addAttribute("listspct", AllProductDetail);
         model.addAttribute("listImage", anhSanPhams);
+
         return "MuaHang/TrangChu";
     }
 
@@ -89,7 +113,7 @@ public class DatHangController {
 
         // Kiểm tra tài khoản người dùng (tạm thời giả sử ID=1)
         TaiKhoan tk = new TaiKhoan();
-        tk.setId(1);
+        tk.setId(idTK);
 
         // Kiểm tra giỏ hàng
         GioHang gioHang = gioHangRepo.findByIdTaiKhoan_Id(tk.getId());
@@ -127,46 +151,63 @@ public class DatHangController {
 
 
     @RequestMapping("/gio-hang-khach-hang")
-    public String gioHang(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        model.addAttribute("thongTinKhachHang",  taiKhoanRepo.findTaiKhoanByUsername(username));
-        List<GioHangChiTiet> listCart = gioHangChiTietRepo.findAll();
+    public String gioHang(Model model, @RequestParam("id") Integer id,
+                          @RequestParam(value = "selectedProducts", required = false) List<Long> selectedProductIds) {
+        TaiKhoan taiKhoan = taiKhoanRepo.findTaiKhoanById(id);
+        idTK = id;
+        model.addAttribute("thongTinKhachHang", taiKhoan);
+        model.addAttribute("selectedProductIds", selectedProductIds != null ? selectedProductIds : Collections.emptyList());
+        dsSPCT = selectedProductIds;
+        List<GioHangChiTiet> listCart = gioHangChiTietRepo.findAllByGioHang_IdTaiKhoan_Id(id);
+        List<Address> diaChi = addressRepo.findByKhachHang_Id(taiKhoan.getNguoiDung().getId());
 
-// Use a merge function to handle duplicate keys
+        if (diaChi.size() == 0) {
+            model.addAttribute("listDiaChi", Collections.EMPTY_LIST);
+        } else {
+            model.addAttribute("listDiaChi", diaChi);
+        }
+
         Map<Integer, String> tongTienHoaDon = listCart.stream().collect(Collectors.toMap(
-                gioHangChiTiet -> gioHangChiTiet.getGioHang().getId(), // Key is the GioHang ID
+                gioHangChiTiet -> gioHangChiTiet.getGioHang().getId(),
                 ghct -> {
-                    // Tính tổng tiền của hóa đơn từ GioHangChiTiet
                     BigDecimal total = gioHangChiTietRepo.findAllByGioHang_Id(ghct.getGioHang().getId()).stream()
-                            .map(hdct -> new BigDecimal(hdct.getGiaTien()).multiply(BigDecimal.valueOf(hdct.getSoLuong()))) // Calculate price for each item
-                            .reduce(BigDecimal.ZERO, BigDecimal::add); // Sum up all the prices
-
-                    // Làm tròn tổng tiền đến 2 chữ số thập phân
-                    total = total.setScale(2, RoundingMode.HALF_UP); // Round to 2 decimal places
-
-                    // Định dạng tổng tiền
-                    return NumberFormat.getCurrencyInstance(new Locale("vi", "VN")).format(total); // Format total as currency in VND
+                            .map(hdct -> new BigDecimal(hdct.getGiaTien()).multiply(BigDecimal.valueOf(hdct.getSoLuong())))
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                    total = total.setScale(2, RoundingMode.HALF_UP);
+                    return NumberFormat.getCurrencyInstance(new Locale("vi", "VN")).format(total);
                 },
-                (existingValue, newValue) -> existingValue // Handle duplicates by keeping the existing value
+                (existingValue, newValue) -> existingValue
         ));
 
-// Print the size of the cart for debugging
-        System.out.println("ListCart size: " + listCart.size());
-
-// Retrieve images for each product (SanPhamChiTiet) in the cart
         List<AnhSanPham> anhSanPhams = listCart.stream()
-                .map(gioHangChiTiet -> anhSanPhamRepository.findByIdSPCT(gioHangChiTiet.getSanPhamChiTiet().getId())) // Lấy id từ SanPhamChiTiet
-                .flatMap(List::stream) // Merge image lists for each product into one list
+                .map(gioHangChiTiet -> anhSanPhamRepository.findByIdSPCT(gioHangChiTiet.getSanPhamChiTiet().getId()))
+                .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-// Add the cart and images to the model for rendering the view
         model.addAttribute("listCart", listCart);
         model.addAttribute("listImage", anhSanPhams);
-        model.addAttribute("tongTienGioHang", tongTienGioHang);
-
+//        model.addAttribute("tongTienGioHang", tongTienHoaDon);
         return "MuaHang/GioHang";
+    }
 
+    @PostMapping("/dat-hang")
+    public String submitOrder(@RequestParam("selectedProducts") List<Long> selectedProductIds,
+                              Model model, RedirectAttributes redirectAttributes) {
+        if (selectedProductIds == null || selectedProductIds.isEmpty()) {
+            model.addAttribute("error", "Không có sản phẩm nào được chọn");
+            return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
+        }
+
+        // Tính tổng tiền dựa trên danh sách sản phẩm được chọn
+        List<GioHangChiTiet> selectedProducts = gioHangChiTietRepo.findAllBySanPhamChiTiet_IdInAndGioHang_IdTaiKhoan_Id(selectedProductIds, idTK);
+        double totalPrice = selectedProducts.stream()
+                .mapToDouble(sp -> sp.getGiaTien() * sp.getSoLuong())
+                .sum();
+
+        // Lưu thông tin hoặc chuyển đến trang tiếp theo
+        redirectAttributes.addFlashAttribute("totalPrice", totalPrice);
+        redirectAttributes.addFlashAttribute("selectedProductIds", selectedProductIds); // Lưu lại sản phẩm đã chọn
+        return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
     }
 
     @RequestMapping("/mua-ngay")
@@ -195,6 +236,75 @@ public class DatHangController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/submitOrder")
+    public String submitOrder(@RequestParam("amount") String orderTotal,
+                              @RequestParam("orderInfo") String orderInfo,
+                              @RequestParam("tinh") String tinh,
+                              @RequestParam("phuong") String phuong,
+                              @RequestParam("quan") String quan,
+                              @RequestParam(value = "email", required = false) String email,
+                              @RequestParam(value = "phone", required = false) String sdt,
+                              @RequestParam(value = "name", required = false) String hoTen,
+                              @RequestParam("soNha") String soNha,
+                              @RequestParam("selectedProducts") List<Long> selectedProducts,
+                              HttpServletRequest request) {
+        // Log received values (for debugging purposes)
+        System.out.println("Username: " + hoTen);
+        System.out.println("Total Money: " + orderTotal);
+        System.out.println("Phone Number: " + sdt);
+
+        // Handle cases where hoTen or other required parameters might be missing
+        if (hoTen == null || hoTen.isEmpty()) {
+            hoTen = "Unknown Customer";  // Set a default value if not provided
+        }
+
+        TaiKhoan tk = new TaiKhoan();
+        tk.setId(2);  // Assuming you have logic to set this properly
+        TaiKhoan taiKhoan = taiKhoanRepo.findTaiKhoanById(idTK);  // Make sure 'idTK' is initialized or passed correctly
+
+        HoaDon hoaDon = new HoaDon();
+        hoaDon.setBillCode(orderInfo != null ? orderInfo : "HDTTW");  // Use default if orderInfo is null
+        hoaDon.setStatus("Thanh toán");
+        hoaDon.setId_staff(tk);
+        hoaDon.setId_account(taiKhoan);
+        hoaDon.setPhone_number(sdt);
+        hoaDon.setUser_name(hoTen);  // Ensure hoTen is set
+        hoaDon.setEmail(email);
+        hoaDon.setCreateAt(LocalDateTime.now());
+        hoaDon.setCreate_by(taiKhoan.getUsername());  // Assuming the logged-in user is set correctly
+        hoaDon.setUpdateAt(LocalDateTime.now());
+        hoaDon.setPay_method("Chuyển khoản");
+        hoaDon.setPay_status("Thanh toán trước");
+
+        // Sanitize the orderTotal (remove non-numeric characters)
+        String orderTotalStr = orderTotal.replaceAll("[^\\d]", "");
+        hoaDon.setTotal_money(orderTotalStr.isEmpty() ? 0 : Float.valueOf(orderTotalStr));  // Ensure no empty string
+
+        // Set the address
+        hoaDon.setAddress(soNha + " " + quan + " " + phuong + " " + tinh);  // Add space between components
+
+        hoaDonRepo.save(hoaDon);
+
+        // Assuming you have a list of product details (dsSPCT) to create bill details
+        List<SPCT> spctList = sanPhamChiTietRepo.findByIdIn(selectedProducts);  // Ensure dsSPCT is populated
+
+        // Create HoaDonChiTiet for each SanPhamChiTiet and associate it with the HoaDon
+        for (SPCT sanPhamChiTiet : spctList) {
+            HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
+            hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);  // Set the product detail
+            hoaDonChiTiet.setHoaDon(hoaDon);  // Associate the bill with the bill detail
+            hoaDonChiTiet.setQuantity(1);
+            hoaDonChiTiet.setPrice(Float.valueOf(orderTotalStr));
+            hoaDonChiTietRepo.save(hoaDonChiTiet);  // Save the bill detail
+        }
+        orderInfo = "hello";
+        // Generate VNPay URL
+        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        String vnpayUrl = vnPayService.createOrder(request, orderTotal, orderInfo, baseUrl);
+        return "redirect:" + vnpayUrl;
+    }
+
 
 //    @PostMapping("/VNPAY/submitOrder")
 //    public String submidOrder(@RequestParam("amount") int orderTotal,
