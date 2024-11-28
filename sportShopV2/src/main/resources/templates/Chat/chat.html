@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Menu}">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Application</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .chat-box {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .message {
+            margin-bottom: 5px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .user {
+            background-color: #007bff;
+            color: white;
+            text-align: right;
+        }
+
+        .system {
+            background-color: #e9ecef;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+<main layout:fragment="main1">
+    <div class="container mt-5">
+        <h1 class="text-center">Chat Application</h1>
+
+        <div class="row mt-4">
+            <!-- Lặp qua danh sách các chatbox -->
+            <div class="col-md-4" th:each="chatBox : ${chatBoxes}">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <strong th:text="${chatBox.name}">ChatBox Name</strong>
+                    </div>
+                    <div class="card-body">
+                        <!-- Khu vực hiển thị tin nhắn -->
+                        <div class="chat-box" th:id="'chat-box-' + ${chatBox.id}">
+                            <!-- Lấy danh sách tin nhắn theo chatbox -->
+                            <div th:each="message : ${messagesByChatBox.get(chatBox.id)}">
+                                <div th:classappend="${message.role == 'USER' ? 'user' : 'system'}"
+                                     class="message"
+                                     th:text="${message.content}">
+                                    Tin nhắn
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Input gửi tin nhắn -->
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Nhập tin nhắn..."
+                                   th:id="'input-message-' + ${chatBox.id}">
+                            <button class="btn btn-primary" onclick="sendMessage()">Gửi</button>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.2/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <script>
+        let stompClient = null;
+
+        // Kết nối WebSocket
+        function connect() {
+            const socket = new SockJS('http://localhost:8081/chat');
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, function () {
+                console.log("Connected to WebSocket");
+
+                // Subscribe để nhận tin nhắn mới
+                stompClient.subscribe('/topic/messages', function (message) {
+                    const data = JSON.parse(message.body);
+                    appendMessage(data.chatBox.id, data.role, data.content);
+                });
+            });
+        }
+
+        // Gửi tin nhắn
+        function sendMessage() {
+            // Lấy tất cả các input message và loop qua từng cái
+            const allInputFields = document.querySelectorAll('[id^="input-message-"]');
+
+            allInputFields.forEach(inputField => {
+                const chatBoxId = inputField.id.split('-')[2];  // Lấy id chatbox từ id của input
+                const message = inputField.value.trim(); // Lấy nội dung tin nhắn
+
+                // Lấy chatBox từ DOM
+                const chatBox = document.getElementById(`chat-box-${chatBoxId}`);
+
+                if (stompClient && stompClient.connected && message && chatBox) {
+                    const payload = {
+                        chatBox: { id: chatBoxId }, // Không cần lấy từ ngoài, đã lấy trực tiếp từ input
+                        role: "USER",  // Giả sử người dùng gửi tin nhắn
+                        content: message
+                    };
+
+                    // Gửi tin nhắn qua WebSocket (STOMP)
+                    stompClient.send("/app/sendMessage", {}, JSON.stringify(payload));
+
+                    // Sau khi gửi, xóa nội dung input
+                    inputField.value = '';
+                } else {
+                    console.error("STOMP client is not connected or message is empty.");
+                }
+            });
+        }
+
+        // Hiển thị tin nhắn vào giao diện
+        function appendMessage(chatBoxId, role, content) {
+            const chatBox = document.getElementById(`chat-box-${chatBoxId}`);
+            if (chatBox) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${role === 'USER' ? 'user' : 'system'}`;
+                messageDiv.textContent = content;
+
+                chatBox.appendChild(messageDiv);
+                chatBox.scrollTop = chatBox.scrollHeight; // Scroll xuống cuối
+            }
+        }
+
+        // Kết nối WebSocket khi tải trang
+        connect();
+    </script>
+</main>
+</body>
+</html>
