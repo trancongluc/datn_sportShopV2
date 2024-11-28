@@ -25,22 +25,20 @@ public class HoaDon {
     @JoinColumn(name = "id_staff")
     private TaiKhoan id_staff;
 
-    @NotBlank(message = "{message.username}")
     @Column(name = "user_name")
     private String user_name;
 
-    @NotBlank(message = "{message.phonenumber}")
     @Column(name = "phone_number")
     private String phone_number;
 
-    @NotNull(message = "{message.totalmoney}")
+
     @Column(name = "total_money")
     private Float total_money;
-    @NotNull(message = "{message.totalmoney}")
+
     @Column(name = "money_reduced")
     private Float money_reduced;
 
-    @NotBlank(message = "{message.status}")
+
     @Column(name = "status")
     private String status;
     @Column(name="address")

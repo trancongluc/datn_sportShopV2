@@ -51,7 +51,16 @@ public class DatHangController {
     private TaiKhoanRepo taiKhoanRepo;
     @Autowired
     private AddressRepo addressRepo;
+    @Autowired
+    private HoaDonRepo hoaDonRepo;
+    @Autowired
+    private HoaDonChiTietRepo hoaDonChiTietRepo;
+    @Autowired
+    private SanPhamChiTietRepository sanPhamChiTietRepository;
+    @Autowired
+    private SPCTRePo sanPhamChiTietRepo;
     private Integer idTK = null;
+    private List<Long> dsSPCT = null;
 
     @RequestMapping("/trang-chu")
     public String trangChu(Model model) {
@@ -148,7 +157,7 @@ public class DatHangController {
         idTK = id;
         model.addAttribute("thongTinKhachHang", taiKhoan);
         model.addAttribute("selectedProductIds", selectedProductIds != null ? selectedProductIds : Collections.emptyList());
-
+        dsSPCT = selectedProductIds;
         List<GioHangChiTiet> listCart = gioHangChiTietRepo.findAllByGioHang_IdTaiKhoan_Id(id);
         List<Address> diaChi = addressRepo.findByKhachHang_Id(taiKhoan.getNguoiDung().getId());
 
@@ -177,7 +186,7 @@ public class DatHangController {
 
         model.addAttribute("listCart", listCart);
         model.addAttribute("listImage", anhSanPhams);
-        model.addAttribute("tongTienGioHang", tongTienHoaDon);
+//        model.addAttribute("tongTienGioHang", tongTienHoaDon);
         return "MuaHang/GioHang";
     }
 
@@ -200,6 +209,7 @@ public class DatHangController {
         redirectAttributes.addFlashAttribute("selectedProductIds", selectedProductIds); // Lưu lại sản phẩm đã chọn
         return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
     }
+
     @RequestMapping("/mua-ngay")
     public String muaNgay(Model model, @RequestParam("id") Integer id) {
         SanPham listSP = sanPhamService.findAllSanPhamById(id);
@@ -227,6 +237,73 @@ public class DatHangController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/submitOrder")
+    public String submitOrder(@RequestParam("amount") String orderTotal,
+                              @RequestParam("orderInfo") String orderInfo,
+                              @RequestParam("tinh") String tinh,
+                              @RequestParam("phuong") String phuong,
+                              @RequestParam("quan") String quan,
+                              @RequestParam(value = "email", required = false) String email,
+                              @RequestParam(value = "phone", required = false) String sdt,
+                              @RequestParam(value = "name", required = false) String hoTen,
+                              @RequestParam("soNha") String soNha,
+                              @RequestParam("selectedProducts") List<Long> selectedProducts,
+                              HttpServletRequest request) {
+        // Log received values (for debugging purposes)
+        System.out.println("Username: " + hoTen);
+        System.out.println("Total Money: " + orderTotal);
+        System.out.println("Phone Number: " + sdt);
+
+        // Handle cases where hoTen or other required parameters might be missing
+        if (hoTen == null || hoTen.isEmpty()) {
+            hoTen = "Unknown Customer";  // Set a default value if not provided
+        }
+
+        TaiKhoan tk = new TaiKhoan();
+        tk.setId(2);  // Assuming you have logic to set this properly
+        TaiKhoan taiKhoan = taiKhoanRepo.findTaiKhoanById(idTK);  // Make sure 'idTK' is initialized or passed correctly
+
+        HoaDon hoaDon = new HoaDon();
+        hoaDon.setBillCode(orderInfo != null ? orderInfo : "HDTTW");  // Use default if orderInfo is null
+        hoaDon.setStatus("Thanh toán");
+        hoaDon.setId_staff(tk);
+        hoaDon.setId_account(taiKhoan);
+        hoaDon.setPhone_number(sdt);
+        hoaDon.setUser_name(hoTen);  // Ensure hoTen is set
+        hoaDon.setEmail(email);
+        hoaDon.setCreateAt(LocalDateTime.now());
+        hoaDon.setCreate_by(taiKhoan.getUsername());  // Assuming the logged-in user is set correctly
+        hoaDon.setUpdateAt(LocalDateTime.now());
+        hoaDon.setPay_method("Chuyển khoản");
+        hoaDon.setPay_status("Thanh toán trước");
+
+        // Sanitize the orderTotal (remove non-numeric characters)
+        String orderTotalStr = orderTotal.replaceAll("[^\\d]", "");
+        hoaDon.setTotal_money(orderTotalStr.isEmpty() ? 0 : Float.valueOf(orderTotalStr));  // Ensure no empty string
+
+        // Set the address
+        hoaDon.setAddress(soNha + " " + quan + " " + phuong + " " + tinh);  // Add space between components
+
+        hoaDonRepo.save(hoaDon);
+
+        // Assuming you have a list of product details (dsSPCT) to create bill details
+        List<SPCT> spctList = sanPhamChiTietRepo.findByIdIn(selectedProducts);  // Ensure dsSPCT is populated
+
+        // Create HoaDonChiTiet for each SanPhamChiTiet and associate it with the HoaDon
+        for (SPCT sanPhamChiTiet : spctList) {
+            HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
+            hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);  // Set the product detail
+            hoaDonChiTiet.setHoaDon(hoaDon);  // Associate the bill with the bill detail
+            hoaDonChiTiet.setQuantity(1);
+            hoaDonChiTiet.setPrice(Float.valueOf(orderTotalStr));
+            hoaDonChiTietRepo.save(hoaDonChiTiet);  // Save the bill detail
+        }
+        orderInfo = "hello";
+        // Generate VNPay URL
+        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        String vnpayUrl = vnPayService.createOrder(request, orderTotal, orderInfo, baseUrl);
+        return "redirect:" + vnpayUrl;
+    }
 
 
 //    @PostMapping("/VNPAY/submitOrder")

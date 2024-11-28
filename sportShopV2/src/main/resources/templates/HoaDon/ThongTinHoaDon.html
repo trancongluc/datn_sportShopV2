@@ -126,14 +126,14 @@
 
 
     <!-- Progress Bar -->
-    <div class="container mt-5">
-        <h2>Trạng thái hóa đơn</h2>
-        <div class="progress">
-            <div class="progress-bar" role="progressbar"
-                 th:style="'width:' + ${hoaDon.statusProgress} + '%;'"
-                 th:text="${hoaDon.statusDisplay}">Trạng thái tiến trình</div>
-        </div>
-    </div>
+<!--    <div class="container mt-5">-->
+<!--        <h2>Trạng thái hóa đơn</h2>-->
+<!--        <div class="progress">-->
+<!--            <div class="progress-bar" role="progressbar"-->
+<!--                 th:style="'width:' + ${hoaDon.statusProgress} + '%;'"-->
+<!--                 th:text="${hoaDon.statusDisplay}">Trạng thái tiến trình</div>-->
+<!--        </div>-->
+<!--    </div>-->
 
 <!--    &lt;!&ndash; Status Update Form &ndash;&gt;-->
 <!--    <form th:action="@{/bill/status/update}" method="post" class="mt-3">-->
@@ -164,7 +164,7 @@
                     <p><strong>Mã hóa đơn:</strong> <span th:text="${hoaDon.billCode}">Mã hóa đơn</span></p>
                     <p><strong>Ngày:</strong> <span th:text="${hoaDon.createAt}">Ngày</span></p>
                     <p><strong>Khách hàng:</strong> <span
-                            th:text="${hoaDon.id_account.id_user.full_name}">Khách hàng</span></p>
+                            th:text="${hoaDon.id_account.nguoiDung.full_name}">Khách hàng</span></p>
                     <p><strong>Địa chỉ:</strong> <span th:text="${hoaDon.address}">Địa chỉ</span></p>
                 </section>
                 <br>
@@ -207,7 +207,6 @@
 
                 </td>
                 <td class="border px-4 py-2">
-
                     <p th:text="${list[index.index].sanPhamChiTiet.idSanPham.tenSanPham}"></p>
                     <p>Kích cỡ:
                         <span th:text="${list[index.index].sanPhamChiTiet.idKichThuoc.tenKichThuoc}"></span>
@@ -382,7 +381,7 @@
                 <section class="invoice-info">
                     <p><strong>Mã hóa đơn:</strong> <span th:text="${hoaDon.bill_code}"></span></p>
                     <p><strong>Ngày:</strong> <span th:text="${hoaDon.create_at}"></span></p>
-                    <p><strong>Khách hàng:</strong> <span th:text="${hoaDon.id_account.id_user.full_name}"></span></p>
+                    <p><strong>Khách hàng:</strong> <span th:text="${hoaDon.id_account.nguoiDung.full_name}"></span></p>
                     <p><strong>Địa chỉ:</strong> <span th:text="${hoaDon.address}"></span></p>
                 </section>
                 <br>
