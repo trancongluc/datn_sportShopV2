@@ -2,14 +2,24 @@ package com.example.sportshopv2.model;
 
 import com.example.sportshopv2.dto.UserDTO;
 import com.example.sportshopv2.dto.UserNhanVienDTO;
+import com.example.sportshopv2.repository.KhachHangRepository;
 import com.example.sportshopv2.repository.NhanVienRepo;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+
+
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,11 +35,18 @@ public class User {
     private Integer id;
     @Column(name = "code")
     private String code;
+
     @Column(name = "full_name")
+
     private String fullName;
+
     @Column(name = "phone_number")
+    @NotNull(message = "Số điện thoại không được để trống")
+    @Pattern(regexp = "^[0-9]{10,15}$", message = "Số điện thoại phải có từ 10 đến 15 chữ số")
     private String phoneNumber;
+
     @Column(name = "email")
+    @Email
     private String email;
     @Column(name = "gender")
     private String gender;
@@ -69,6 +86,8 @@ public class User {
     private boolean deleted = false;
 
     // Phương thức tiện ích để thêm địa chỉ
+    private static final AtomicInteger COUNTER = new AtomicInteger(1);
+
 
 
     public void addAddress(Address address) {
@@ -85,7 +104,7 @@ public class User {
     }
 
     public String generateUniqueCode() {
-        return "KH" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        return "KH-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
     @PreUpdate // Được gọi trước khi thực thể được cập nhật
@@ -107,8 +126,9 @@ public class User {
         // Nếu cần, bạn có thể thêm các trường khác ở đây
         return user;
     }
-    public static UserDTO toDTO(User user) {
+    public static UserDTO toDTO(User user, Integer idUser, KhachHangRepository khRepo) {
         UserDTO dto = new UserDTO();
+        user = khRepo.findById(idUser).orElse(null);
         dto.setId(user.getId());
         dto.setCode(user.getCode());
         dto.setFullName(user.getFullName());

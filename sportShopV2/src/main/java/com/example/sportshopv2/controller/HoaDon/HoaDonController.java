@@ -2,11 +2,23 @@ package com.example.sportshopv2.controller.HoaDon;
 
 import com.example.sportshopv2.model.AnhSanPham;
 import com.example.sportshopv2.model.HoaDon;
+import com.example.sportshopv2.model.HoaDonChiTiet;
+import com.example.sportshopv2.repository.HoaDonChiTietRepo;
+import com.example.sportshopv2.repository.HoaDonRepo;
+import com.example.sportshopv2.service.HoaDonService;
 import com.example.sportshopv2.repository.AnhSanPhamRepository;
 import com.itextpdf.text.pdf.BaseFont;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -14,19 +26,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import com.example.sportshopv2.model.HoaDonChiTiet;
-import com.example.sportshopv2.repository.HoaDonChiTietRepo;
-import com.example.sportshopv2.repository.HoaDonRepo;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -55,8 +55,10 @@ public class HoaDonController {
 
     @Autowired
     private ServletContext servletContext;
-
+    @Autowired
+    private HoaDonService hdService;
     private Map<Integer, String> tongTienHD;
+    private Map<Integer, String> tongTienGiamGia;
 
 
     public HoaDonController(AnhSanPhamRepository anhSanPhamRepository,
@@ -69,35 +71,46 @@ public class HoaDonController {
 
     @RequestMapping("/view")
     public String view(Model model) {
-        List<HoaDon> hdList = hdrepo.findAllByOrderByCreateAtDesc();
+        List<HoaDon> hdList = hdrepo.findAllByStatusNotOrderByCreateAtDesc("Hóa đơn chờ");
         Map<Integer, String> tongTienHoaDon = hdList.stream().collect(Collectors.toMap(
                 HoaDon::getId, // Key là ID của hóa đơn
                 hd -> {
                     // Tính tổng tiền của hóa đơn
                     BigDecimal total = hdctrepo.findAllByHoaDon_Id(hd.getId()).stream()
-                            .map(hdct -> new BigDecimal(hdct.getPrice()).multiply(BigDecimal.valueOf(hdct.getQuantity())))
+                            .map(hdct -> new BigDecimal(hdct.getHoaDon().getTotal_money()).multiply(BigDecimal.valueOf(hdct.getQuantity())))
                             .reduce(BigDecimal.ZERO, BigDecimal::add);
-
                     // Làm tròn tổng tiền đến 2 chữ số thập phân
                     total = total.setScale(2, RoundingMode.HALF_UP); // Sử dụng RoundingMode.HALF_UP để làm tròn
-
                     // Định dạng tổng tiền
                     return NumberFormat.getCurrencyInstance(new Locale("vi", "VN")).format(total);
                 }
         ));
+        Map<Integer, String> tongTienGiam = hdList.stream().collect(Collectors.toMap(
+                HoaDon::getId, // Key là ID của hóa đơn
+                hd -> {
+                    BigDecimal tienGiam = hdctrepo.findAllByHoaDon_Id(hd.getId()).stream()
+                            .map(hdct -> new BigDecimal(hdct.getHoaDon().getMoney_reduced()).multiply(BigDecimal.valueOf(hdct.getQuantity())))
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                    tienGiam = tienGiam.setScale(2, RoundingMode.HALF_UP);
+                    return NumberFormat.getCurrencyInstance(new Locale("vi", "VN")).format(tienGiam);
+                }
+        ));
         tongTienHD = tongTienHoaDon;
+        tongTienGiamGia = tongTienGiam;
         model.addAttribute("hdList", hdList);
         model.addAttribute("tongTienHoaDon", tongTienHoaDon);
+        model.addAttribute("tienGiam", tongTienGiam);
         model.addAttribute("tab", "all");
         return "HoaDon/HoaDon";
     }
 
     @GetMapping("/tab")
     public String tab(Model model, @RequestParam(value = "status", defaultValue = "defaultStatus") String status) {
-        List<HoaDon> hdctList = hdrepo.findAllByStatusLike(status);
+        List<HoaDon> hdctList = hdrepo.findAllByStatusLikeOrderByCreateAtDesc(status);
         model.addAttribute("hdList", hdctList);
         model.addAttribute("tab", status);
         model.addAttribute("tongTienHoaDon", tongTienHD);
+        model.addAttribute("tienGiam", tongTienGiamGia);
         return "HoaDon/HoaDon";
     }
 
@@ -231,15 +244,15 @@ public class HoaDonController {
 
     @PostMapping("/status/update")
     public String updateStatus(@RequestParam Integer id, @RequestParam String status) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+        /*Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();*/
 
         Optional<HoaDon> hoaDonOptional = hdrepo.findById(id);
         if (hoaDonOptional.isPresent()) {
             HoaDon hoaDon = hoaDonOptional.get();
             hoaDon.setStatus(status);
             hoaDon.setUpdateAt(LocalDateTime.now());
-            hoaDon.setUpdate_by(username);
+            hoaDon.setUpdate_by("username");
             hdrepo.save(hoaDon);
         }
         return "redirect:/bill/detail?id=" + id;
@@ -269,4 +282,14 @@ public class HoaDonController {
     }
 
 
+    @GetMapping("/doitra/detail")
+    public String viewDTCT(Model model) {
+        return "DoiTra/DoiTraChiTiet";
+    }
+
+    @GetMapping("/list-hd-cho")
+    @ResponseBody
+    public List<HoaDon> listHoaDonCho() {
+        return hdService.getHoaDonTaiQuay();
+    }
 }

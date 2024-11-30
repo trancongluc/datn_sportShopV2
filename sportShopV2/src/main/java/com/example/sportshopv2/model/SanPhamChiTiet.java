@@ -48,6 +48,8 @@ public class SanPhamChiTiet extends BaseEntity {
     @Column(name = "gender")
     private String gioiTinh;
 
+
+
     public static SanPhamChiTiet of(SanPhamChiTietDTO spctDTO) {
         return SanPhamChiTiet.builder()
                 .id(spctDTO.getId())

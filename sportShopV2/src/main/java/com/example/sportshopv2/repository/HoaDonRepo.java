@@ -9,17 +9,19 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import java.util.List;
+
 public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
 
     HoaDon findAllById(Integer id);
 
-    List<HoaDon> findAllByOrderByCreateAtDesc();
+    List<HoaDon> findAllByStatusNotOrderByCreateAtDesc(String status);
 
     List<HoaDon> findAllByType(String Type);
 
     List<HoaDon> findAllByCreateAtBetween(LocalDateTime start, LocalDateTime end);
     List<HoaDon> findHoaDonByBillCodeLike(String billCode);
-    List<HoaDon> findAllByStatusLike(String status);
+    List<HoaDon> findAllByStatusLikeOrderByCreateAtDesc(String status);
     @Query("SELECT h FROM HoaDon h WHERE " +
             "(:maHoaDon IS NULL OR h.billCode LIKE %:maHoaDon%) AND " +
             "(:Type IS NULL OR h.type = :Type) AND " +
@@ -31,4 +33,8 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
 
 
 //    Optional<HoaDon> findById(Integer id);
+    List<HoaDon> findAllByStatus( String status);
+
+    @Query("SELECT h FROM HoaDon h WHERE h.id_account.id = :id")
+    List<HoaDon> findByCustomerId(@Param("id") Integer id);
 }

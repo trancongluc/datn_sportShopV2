@@ -3,11 +3,12 @@ package com.example.sportshopv2.controller.ThanhToan;
 import com.example.sportshopv2.config.VNPAYService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @org.springframework.stereotype.Controller
 @RequestMapping("/VNPay/demo")
@@ -30,4 +31,21 @@ public class Controller {
         String vnpayUrl = vnPayService.createOrder(request, orderTotal, orderInfo, baseUrl);
         return "redirect:" + vnpayUrl;
     }
+   /* @PostMapping("/api/vnpay/create-payment")
+    @ResponseBody
+    public ResponseEntity<?> createVNPayPayment(@RequestBody Map<String, Object> payload, HttpServletRequest request) {
+        int orderTotal = (int) payload.get("amount");
+        String orderInfo = (String) payload.get("orderInfo");
+        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+
+        String vnpayUrl = vnPayService.createOrder(request, orderTotal, orderInfo, baseUrl);
+
+        if (vnpayUrl != null) {
+            return ResponseEntity.ok(Map.of("url", vnpayUrl));
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Không thể tạo URL thanh toán."));
+        }
+    }*/
+
 }

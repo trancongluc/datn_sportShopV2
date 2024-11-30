@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,6 +26,7 @@ public class HoaDon {
     @JoinColumn(name = "id_staff")
     private TaiKhoan id_staff;
 
+    @NotBlank(message = "{message.username}")
     @Column(name = "user_name")
     private String user_name;
 

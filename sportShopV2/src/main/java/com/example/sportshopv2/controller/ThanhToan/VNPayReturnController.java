@@ -3,9 +3,14 @@ package com.example.sportshopv2.controller.ThanhToan;
 import com.example.sportshopv2.config.VNPAYService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Map;
 
 import java.text.DecimalFormat;
 
@@ -34,5 +39,20 @@ public class VNPayReturnController {
 
         return paymentStatus == 1 ? "Dathang/oderSuccess" : "Dathang/orderFail";
     }
+   /* @GetMapping("/vnpay-payment-return")
+    @ResponseBody
+    public ResponseEntity<?> paymentCompleted(HttpServletRequest request) {
+        int paymentStatus = vnPayService.orderReturn(request);
+
+        if (paymentStatus == 1) {
+            // Thanh toán thành công
+            return ResponseEntity.ok()
+                    .body(Map.of("pay_status", 1, "message", "Thanh toán thành công", "redirectUrl", "/ban-hang-tai-quay"));
+        } else {
+            // Thanh toán thất bại
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("pay_status", 0, "message", "Thanh toán thất bại"));
+        }
+    }*/
 
 }

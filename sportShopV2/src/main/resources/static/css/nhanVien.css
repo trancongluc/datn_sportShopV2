@@ -1,5 +1,6 @@
 
 
+
 .container {
     width: 100%;        /* Chiếm 100% không gian màn hình */
     margin: 0 auto;     /* Căn giữa trang */
@@ -89,7 +90,7 @@ tbody tr:nth-child(even) {
     border-radius: 5px;
     margin-bottom: 20px;
 }
----------------------------------------------------
+
 
 .container {
     width: 100%;        /* Chiếm 100% không gian màn hình */
@@ -147,3 +148,4 @@ form{
 #qr-reader {
     width: 100%;
 }
+

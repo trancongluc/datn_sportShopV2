@@ -1,6 +1,5 @@
 package com.example.sportshopv2.repository;
 
-import com.example.sportshopv2.model.HoaDonChiTiet;
 import com.example.sportshopv2.model.SanPhamChiTiet;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +13,7 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
 
     Page<SanPhamChiTiet> findAllByDeletedAndIdSanPham(boolean deleted, Integer idSanPham, Pageable pageable);
 
-    List<SanPhamChiTiet> findAllByDeleted(boolean deleted);
+    List<SanPhamChiTiet> findAllByDeletedAndTrangThaiOrderByCreateAtDesc(boolean deleted, String trangThai);
 
     List<SanPhamChiTiet> findAllByDeletedAndIdSanPham(boolean deleted, Integer idSP);
 

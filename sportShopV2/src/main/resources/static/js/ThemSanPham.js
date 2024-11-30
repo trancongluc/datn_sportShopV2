@@ -483,7 +483,13 @@ function formatPrice(input) {
         input.value = '0 VND'; // Nếu không phải số, đặt về mặc định
     }
 }
-
+function getNumericPrice(input) {
+    // Xóa " VND" và dấu chấm để lấy giá trị số
+    let value = input.replace(/ VND/g, '').replace(/\./g, '');
+    // Chuyển đổi sang số nguyên
+    let numericValue = parseInt(value, 10);
+    return isNaN(numericValue) ? 0 : numericValue; // Trả về giá trị số hoặc 0 nếu không hợp lệ
+}
 //Tự động tạo ra row trong table
 function updateProductTable() {
     const tableBody = document.querySelector('table tbody');
@@ -666,7 +672,7 @@ async function themSPCT() {
 
     try {
         // Thêm sản phẩm chính
-        const sanPhamResponse = await fetch('san-pham/them-san-pham', {
+        const sanPhamResponse = await fetch('/san-pham/them-san-pham', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -776,9 +782,8 @@ function getInfoTable() {
         // Lấy số lượng và giá tiền
         const quantity = row.querySelector('input[type="number"]').value;
         const priceText = row.querySelector('.price').value;
-
+        const priceNumber = getNumericPrice(priceText);
         // Chuyển đổi giá tiền sang số
-        const priceNumber = parseFloat(priceText.replace(/[^\d.-]/g, '')) || 0;
 
         // Lấy ID từ thuộc tính dữ liệu
         const sizeId = row.cells[2].getAttribute('data-size-id');

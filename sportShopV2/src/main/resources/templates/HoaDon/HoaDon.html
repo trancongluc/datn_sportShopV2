@@ -93,8 +93,8 @@
 
                 <li class="nav-item">
                     <a class="nav-link"
-                       th:href="@{~/bill/tab(status='Thanh toán')}"
-                       th:classappend="${tab == 'payment'} ? 'active' : ''">Thanh toán</a>
+                       th:href="@{~/bill/tab(status='Đang vận chuyển')}"
+                       th:classappend="${tab == 'payment'} ? 'active' : ''">Đang vận chuyển</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link"
@@ -146,7 +146,7 @@
                         <td th:text="${hd.email}"></td>
                         <td th:text="${hd.type}"></td>
                         <td th:text="${hd.createAt}"></td>
-                        <td th:text="${hd.money_reduced}"></td>
+                        <td th:text="${tienGiam[hd.id]}"></td>
                         <td th:text="${tongTienHoaDon[hd.id]}"></td>
                         <td>
                             <a th:href="@{~/bill/detail(id=${hd.id})}">
