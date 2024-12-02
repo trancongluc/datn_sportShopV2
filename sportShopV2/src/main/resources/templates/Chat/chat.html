@@ -45,10 +45,12 @@
         .list-group-item-action:hover {
             background-color: #f0f8ff;
         }
+
         .list-group-item {
             margin-bottom: 6px; /* Khoảng cách giữa các ô */
             border-radius: 5px; /* Bo góc cho đẹp hơn */
         }
+
         .list-group-item-action {
             display: flex; /* Dùng Flexbox để sắp xếp các phần tử */
             align-items: center; /* Căn giữa theo chiều dọc */
@@ -81,8 +83,9 @@
 </head>
 <body>
 <main layout:fragment="main1">
-    <h1 class="text-center mb-4">Chat Application</h1>
-
+    <h1 class="text-start mb-4">Chat Hỗ Trợ Khách Hàng</h1>
+    <hr>
+    <br>
     <div class="row">
         <!-- Danh sách chatbox bên trái -->
         <div class="col-md-4">
@@ -188,6 +191,7 @@
                 });
             });
         }
+
         // Lắng nghe sự kiện gửi tin nhắn từ form
         document.getElementById('messageForm').addEventListener('submit', function (event) {
             event.preventDefault(); // Prevent form from reloading the page
@@ -238,33 +242,33 @@
                     console.error('Error:', error);
                 });
         });
-        // Hiển thị tin nhắn vào giao diện
-            // Hiển thị tin nhắn lên giao diện với 2 role: shop và client
-            function appendMessage(chatBoxId, role, content) {
-                const chatBox = document.getElementById(`chat-box-${chatBoxId}`);
-                if (chatBox) {
-                    const messageDiv = document.createElement('div');
 
-                    // Gán class tương ứng với vai trò (role)
-                    if (role === 'client') {
-                        messageDiv.className = 'message client'; // Tin nhắn từ client
-                    } else if (role === 'shop') {
-                        messageDiv.className = 'message shop'; // Tin nhắn từ shop
-                    } else {
-                        console.error(`Unknown role: ${role}`);
-                        return; // Không hiển thị nếu vai trò không hợp lệ
-                    }
+        // Hiển thị tin nhắn lên giao diện với 2 role: shop và client
+        function appendMessage(chatBoxId, role, content) {
+            const chatBox = document.getElementById(`chat-box-${chatBoxId}`);
+            if (chatBox) {
+                const messageDiv = document.createElement('div');
 
-                    messageDiv.textContent = content;
-
-                    chatBox.appendChild(messageDiv);
-                    chatBox.scrollTop = chatBox.scrollHeight; // Scroll xuống cuối
+                // Gán class tương ứng với vai trò (role)
+                if (role === 'client') {
+                    messageDiv.className = 'message client'; // Tin nhắn từ client
+                } else if (role === 'shop') {
+                    messageDiv.className = 'message shop'; // Tin nhắn từ shop
+                } else {
+                    console.error(`Unknown role: ${role}`);
+                    return; // Không hiển thị nếu vai trò không hợp lệ
                 }
+
+                messageDiv.textContent = content;
+
+                chatBox.appendChild(messageDiv);
+                chatBox.scrollTop = chatBox.scrollHeight; // Scroll xuống cuối
             }
+        }
 
 
-            // Kết nối WebSocket khi tải trang
-            connect();
+        // Kết nối WebSocket khi tải trang
+        connect();
     </script>
 </main>
 </body>
