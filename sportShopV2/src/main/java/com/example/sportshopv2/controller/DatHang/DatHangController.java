@@ -6,6 +6,7 @@ import com.example.sportshopv2.repository.*;
 import com.example.sportshopv2.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -59,6 +60,9 @@ public class DatHangController {
     private SanPhamChiTietRepository sanPhamChiTietRepository;
     @Autowired
     private SPCTRePo sanPhamChiTietRepo;
+    @Autowired
+    private PhieuGiamGiaKhachHangRepository phieuGiamGiaKhachHangRepository;
+
     private Integer idTK = null;
     private List<Long> dsSPCT = null;
 
@@ -107,7 +111,8 @@ public class DatHangController {
     public String gioHang(Model model,
                           @RequestParam("id") Integer id,
                           @RequestParam("idcolor") Integer idcolor,
-                          @RequestParam("idsize") Integer idsize) {
+                          @RequestParam("idsize") Integer idsize, @RequestParam("soLuong") Integer soLuong) {
+        Integer soLuongDat = Integer.valueOf(soLuong);
         // Lấy chi tiết sản phẩm từ service dựa trên id, idsize và idcolor
         SanPhamChiTietDTO productDetail = sanPhamChiTietService.getSPCTByIDSPIDSIZEIDCOLOR(id, idsize, idcolor);
 
@@ -127,7 +132,7 @@ public class DatHangController {
         // Kiểm tra sản phẩm đã có trong giỏ hàng chưa
         GioHangChiTiet existingCartItem = gioHangChiTietRepo.findByGioHang_IdAndSanPhamChiTiet_Id(gioHang.getId(), productDetail.getId());
         if (existingCartItem != null) {
-            existingCartItem.setSoLuong(existingCartItem.getSoLuong() + 1);
+            existingCartItem.setSoLuong(existingCartItem.getSoLuong() + soLuongDat);
             gioHangChiTietRepo.save(existingCartItem);
         } else {
             GioHangChiTiet gioHangChiTiet = new GioHangChiTiet();
@@ -138,7 +143,7 @@ public class DatHangController {
             gioHangChiTiet.setGiaTien(productDetail.getGia());
             gioHangChiTiet.setGioHang(gioHang);
             gioHangChiTiet.setTrangThai("Active");
-            gioHangChiTiet.setSoLuong(1);
+            gioHangChiTiet.setSoLuong(soLuongDat);
             gioHangChiTietRepo.save(gioHangChiTiet);
         }
 
@@ -154,6 +159,7 @@ public class DatHangController {
     public String gioHang(Model model, @RequestParam("id") Integer id,
                           @RequestParam(value = "selectedProducts", required = false) List<Long> selectedProductIds) {
         TaiKhoan taiKhoan = taiKhoanRepo.findTaiKhoanById(id);
+        List<PhieuGiamGiaKhachHang> voucher = phieuGiamGiaKhachHangRepository.findAllByIdTaiKhoan_Id(id);
         idTK = id;
         model.addAttribute("thongTinKhachHang", taiKhoan);
         model.addAttribute("selectedProductIds", selectedProductIds != null ? selectedProductIds : Collections.emptyList());
@@ -186,7 +192,7 @@ public class DatHangController {
 
         model.addAttribute("listCart", listCart);
         model.addAttribute("listImage", anhSanPhams);
-//        model.addAttribute("tongTienGioHang", tongTienHoaDon);
+        model.addAttribute("voucher", voucher);
         return "MuaHang/GioHang";
     }
 
@@ -223,6 +229,36 @@ public class DatHangController {
         return "MuaHang/mua-ngay";
     }
 
+    @PostMapping("/update-quantity")
+    public ResponseEntity<?> updateQuantity(@RequestBody Map<String, Object> payload) {
+        try {
+            // Ensure proper data types
+            if (payload.get("id") == null || payload.get("soLuong") == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("error", "Missing required fields: id or soLuong"));
+            }
+
+            Integer id = Integer.parseInt(payload.get("id").toString());  // Convert to Integer
+            Integer soLuong = Integer.parseInt(payload.get("soLuong").toString());  // Convert to Integer
+
+            Optional<GioHangChiTiet> product = gioHangChiTietRepo.findById(id);
+            if (product.isPresent()) {
+                GioHangChiTiet existingProduct = product.get();
+                existingProduct.setSoLuong(soLuong);
+                gioHangChiTietRepo.save(existingProduct);
+                return ResponseEntity.ok(Map.of("message", "Số lượng đã được cập nhật."));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "Sản phẩm không tồn tại."));
+            }
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Invalid data format for id or soLuong."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "An unexpected error occurred."));
+        }
+    }
 
     @RequestMapping("/get-product-price")
     @ResponseBody
@@ -237,7 +273,7 @@ public class DatHangController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/submitOrder")
+    @GetMapping("/submitOrder")
     public String submitOrder(@RequestParam("amount") String orderTotal,
                               @RequestParam("orderInfo") String orderInfo,
                               @RequestParam("tinh") String tinh,
@@ -249,12 +285,6 @@ public class DatHangController {
                               @RequestParam("soNha") String soNha,
                               @RequestParam("selectedProducts") List<Long> selectedProducts,
                               HttpServletRequest request) {
-        // Log received values (for debugging purposes)
-        System.out.println("Username: " + hoTen);
-        System.out.println("Total Money: " + orderTotal);
-        System.out.println("Phone Number: " + sdt);
-
-        // Handle cases where hoTen or other required parameters might be missing
         if (hoTen == null || hoTen.isEmpty()) {
             hoTen = "Unknown Customer";  // Set a default value if not provided
         }

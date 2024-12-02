@@ -387,7 +387,7 @@
     </style>
     <script>
         // Ensure that listProduct.id is available in the JavaScript
-        const listProduct = { id: [[${listProduct.sanPham.id}]] };
+        const listProduct = {id: [[${listProduct.sanPham.id}]]};
 
         let selectedColorId = null;
         let selectedSizeId = null;
@@ -413,21 +413,11 @@
             updateCartLink();
         }
 
-        function updateCartLink() {
-            const link = document.querySelector('.add-to-cart-link');
-            if (selectedColorId && selectedSizeId && listProduct.id) {
-                // Construct the correct href URL for the cart link
-                const href = `/mua-sam-SportShopV2/gio-hang?id=${listProduct.id}&idcolor=${selectedColorId}&idsize=${selectedSizeId}`;
-                link.setAttribute('href', href);
-            }
-        }
-    </script>
-
-    <script>
         function increaseValue() {
             const input = document.getElementById("quantity");
             let currentValue = parseInt(input.value);
             input.value = currentValue + 1;
+            updateCartLink(); // Gọi lại để cập nhật URL
         }
 
         function decreaseValue() {
@@ -435,6 +425,17 @@
             let currentValue = parseInt(input.value);
             if (currentValue > 1) { // Giới hạn giá trị tối thiểu là 1
                 input.value = currentValue - 1;
+                updateCartLink(); // Gọi lại để cập nhật URL
+            }
+        }
+
+        function updateCartLink() {
+            const input = document.getElementById("quantity");
+            const soLuong = input.value; // Lấy giá trị hiện tại của số lượng
+            const link = document.querySelector('.add-to-cart-link'); // Đảm bảo đúng selector
+            if (selectedColorId && selectedSizeId && listProduct.id) {
+                const href = `/mua-sam-SportShopV2/gio-hang?id=${listProduct.id}&idcolor=${selectedColorId}&idsize=${selectedSizeId}&soLuong=${soLuong}`;
+                link.setAttribute('href', href);
             }
         }
     </script>
@@ -550,12 +551,9 @@
       </span>
                 <div>
                     <button onclick="decreaseValue()">-</button>
-                    <input type="text" id="quantity" value="1" readonly />
+                    <input type="text" id="quantity" name="soLuong" value="1" readonly/>
                     <button onclick="increaseValue()">+</button>
                 </div>
-
-
-
             </div>
             <div class="product-actions">
                 <a href="#" class="add-to-cart-link">

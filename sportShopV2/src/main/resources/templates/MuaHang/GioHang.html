@@ -128,22 +128,22 @@
 <nav><a th:href="@{/mua-sam-SportShopV2/trang-chu}">
     <button class="btn btn-info">Trở lại</button>
 </a></nav>
-<form th:action="@{/mua-sam-SportShopV2/submitOrder}" method="post">
-<div class="container">
-    <!-- Bảng Sản Phẩm -->
-    <div class="table-container center">
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Lựa chọn</th>
-                <th>STT</th>
-                <th>Ảnh Sản Phẩm</th>
-                <th>Thông tin sản phẩm</th>
-                <th>Màu sắc</th>
-                <th>Số lượng</th>
-                <th>Tổng tiền</th>
-            </tr>
-            </thead>
+<form th:action="@{/mua-sam-SportShopV2/submitOrder}" method="get">
+    <div class="container">
+        <!-- Bảng Sản Phẩm -->
+        <div class="table-container center">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Lựa chọn</th>
+                    <th>STT</th>
+                    <th>Ảnh Sản Phẩm</th>
+                    <th>Thông tin sản phẩm</th>
+                    <th>Màu sắc</th>
+                    <th>Số lượng</th>
+                    <th>Tổng tiền</th>
+                </tr>
+                </thead>
 
                 <tbody>
                 <tr th:each="list, index : ${listCart}">
@@ -171,27 +171,37 @@
                         </div>
                         <span th:if="${list.SanPhamChiTiet.idMauSac == null}">Không có màu</span>
                     </td>
-                    <td th:text="${list.soLuong}"></td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <button type="button" th:attr="onclick='decreaseQuantity(' + ${list.id} + ')'" >-</button>
+                            <input type="text" th:id="'quantity-' + ${list.id}" th:data-id="${list.id}" th:value="${list.soLuong}"
+                                   readonly style="width: 40px; text-align: center;"/>
+                            <button th:attr="onclick='increaseQuantity(' + ${list.id} + ')'" type="button">+</button>
+                        </div>
+                    </td>
+
                     <td th:text="${list.soLuong * list.giaTien}"></td>
                 </tr>
                 </tbody>
-                <button id="btn-confirm" class="btn btn-success" disabled>Xác nhận</button>
 
-        </table>
+            </table>
+        </div>
     </div>
-</div>
 
     <div class="container">
         <div class="left">
             <h2>Khách hàng</h2>
 
             <label>Họ và tên</label>
-            <input type="text" th:field="${thongTinKhachHang.nguoiDung.full_name}" th:value="${thongTinKhachHang.nguoiDung.full_name}" name="name" required/>
+            <input type="text" th:field="${thongTinKhachHang.nguoiDung.full_name}"
+                   th:value="${thongTinKhachHang.nguoiDung.full_name}" name="name" required/>
             <label>Số điện thoại</label>
-            <input type="tel" th:field="${thongTinKhachHang.nguoiDung.phone_number}" th:value="${thongTinKhachHang.nguoiDung.phone_number}" name="phone"
+            <input type="tel" th:field="${thongTinKhachHang.nguoiDung.phone_number}"
+                   th:value="${thongTinKhachHang.nguoiDung.phone_number}" name="phone"
                    pattern="[0-9]{10}" title="Vui lòng nhập số điện thoại 10 chữ số." required/>
             <label>Email</label>
-            <input type="email" th:field="${thongTinKhachHang.nguoiDung.email}" th:value="${thongTinKhachHang.nguoiDung.email}" name="email" required/>
+            <input type="email" th:field="${thongTinKhachHang.nguoiDung.email}"
+                   th:value="${thongTinKhachHang.nguoiDung.email}" name="email" required/>
             <label>Địa chỉ cụ thể
                 <button style="margin-left: 600px" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#addressModal">+
@@ -318,18 +328,7 @@
                 <label>Tổng tiền:</label>
                 <input readonly name="amount" id="totalAmount" type="text" value="0 VND"/>
             </div>
-
-
-            <!--            <label>Tổng tiền</label>-->
-            <!--            <div class="section total" for="amount">-->
-            <!--                <input name="amount" th:text="${tongTienGioHang}">-->
-            <!--            </div>-->
-            <!--            <label>Ghi chú</label>-->
-            <!--            <div class="section total" for="amount">-->
-            <!--                <input name="orderInfo">-->
-            <!--            </div>-->
             <button class="btn btn-primary " type="submit">Xác nhận đặt hàng</button>
-
         </div>
     </div>
 </form>
@@ -460,18 +459,60 @@
             otherCheckbox.checked = false;
         }
     }
-</script>
-<script>
-    function toggleSwitch(activeId, otherId) {
-        // Lấy checkbox đang được thao tác
-        const activeCheckbox = document.getElementById(activeId);
-        const otherCheckbox = document.getElementById(otherId);
 
-        // Nếu checkbox được bật, thì tắt checkbox còn lại
-        if (activeCheckbox.checked) {
-            otherCheckbox.checked = false;
+    function increaseQuantity(id) {
+        // Ensure you are passing the correct id to create the correct selector
+        const quantityInput = document.querySelector(`#quantity-${id}`);
+
+        if (quantityInput) {
+            let currentQuantity = parseInt(quantityInput.value, 10);
+            quantityInput.value = currentQuantity + 1;
+            // Optionally, send the updated quantity to the server
+        } else {
+            console.error(`Element with id 'quantity-${id}' not found`);
+        }
+        // This should show the actual id being passed to the function
+        console.log(id);
+    }
+
+
+    function decreaseQuantity(id) {
+        const quantityInput = document.querySelector(`#quantity-${id}`);
+        if (quantityInput) {
+            let currentQuantity = parseInt(quantityInput.value, 10);
+            if (currentQuantity > 1) {
+                currentQuantity -= 1;
+                quantityInput.value = currentQuantity;  // Update input value
+
+                // Now send the updated quantity to the backend
+                updateServerQuantity(id, currentQuantity);
+            }
+        } else {
+            console.error(`Element with id 'quantity-${id}' not found`);
         }
     }
+
+
+    function updateServerQuantity(id, newQuantity) {
+        fetch('/mua-sam-SportShopV2/update-quantity', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: id,
+                soLuong: newQuantity
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Server response:', data);
+            })
+            .catch(error => {
+                console.error('Error updating quantity:', error);
+            });
+    }
 </script>
+
 </body>
 </html>
