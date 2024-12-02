@@ -1,14 +1,13 @@
 package com.example.sportshopv2.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -39,7 +38,11 @@ public class chatBox {
 
     @Column
     private boolean deleted = false;
+    @JsonBackReference
+    @OneToMany(mappedBy = "chatBox", cascade = CascadeType.ALL)
+    private List<message> messages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "chatBox", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<message> messages;
+
+    public chatBox(int chatBoxId) {
+    }
 }

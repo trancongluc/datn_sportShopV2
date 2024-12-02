@@ -15,5 +15,4 @@ import java.util.Optional;
 public interface ChatBoxRepository extends JpaRepository<chatBox, Integer> {
     @Query("SELECT c FROM chatBox c LEFT JOIN FETCH c.messages WHERE c.deleted = false")
     List<chatBox> findWithMessagesByDeletedFalse();
-
 }

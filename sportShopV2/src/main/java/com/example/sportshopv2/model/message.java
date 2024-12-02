@@ -1,46 +1,52 @@
 package com.example.sportshopv2.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name="Message")
+@Table(name = "Message")
 public class message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @ManyToOne
+    @JsonManagedReference
+    @ManyToOne(cascade = CascadeType.PERSIST)  // Hoặc CascadeType.ALL nếu muốn lưu cả chatBox khi lưu message
     @JoinColumn(name = "id_chatbox", nullable = false)
     private chatBox chatBox;
 
     @Column(name = "id_account", nullable = false)
     private int accountId;
 
-    @Column
+    @Column(nullable = false)
     private String role;
-
-    @Column
+    @Column(name = "status")
     private String status;
 
     @Column(nullable = false)
     private String content;
 
-    @Column
-    private LocalDateTime timestamp = LocalDateTime.now();
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
 
     @Column(name = "update_by")
     private Integer updateBy;
 
     @Column(name = "update_at")
     private LocalDateTime updateAt;
+
+    // Đảm bảo timestamp được thiết lập tự động khi tạo mới
+    @PrePersist
+    protected void onCreate() {
+        this.timestamp = LocalDateTime.now();
+    }
+
+
 }

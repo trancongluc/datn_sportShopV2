@@ -8,74 +8,169 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         .chat-box {
-            max-height: 300px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            height: 400px;
             overflow-y: auto;
-            margin-bottom: 15px;
-            background: #f9f9f9;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+            display: none; /* Ẩn tất cả các chatbox ban đầu */
         }
 
-        .message {
-            margin-bottom: 5px;
-            padding: 10px;
-            border-radius: 5px;
+        .chat-box.active {
+            display: block; /* Chỉ hiện chatbox được chọn */
         }
 
-        .user {
+        .message.client {
             background-color: #007bff;
             color: white;
-            text-align: right;
+            text-align: left;
+            border-radius: 15px;
+            padding: 10px;
+            margin-bottom: 5px;
+            max-width: 75%;
         }
 
-        .system {
-            background-color: #e9ecef;
-            color: black;
+        .message.shop {
+            background-color: #28a745;
+            color: white;
+            text-align: right;
+            border-radius: 15px;
+            padding: 10px;
+            margin-bottom: 5px;
+            max-width: 75%;
+            margin-left: auto;
         }
+
+        .list-group-item-action:hover {
+            background-color: #f0f8ff;
+        }
+        .list-group-item {
+            margin-bottom: 6px; /* Khoảng cách giữa các ô */
+            border-radius: 5px; /* Bo góc cho đẹp hơn */
+        }
+        .list-group-item-action {
+            display: flex; /* Dùng Flexbox để sắp xếp các phần tử */
+            align-items: center; /* Căn giữa theo chiều dọc */
+        }
+
+        .avatar {
+            margin-right: 10px; /* Khoảng cách giữa avatar và tên chatbox */
+            width: 50px;
+            height: 50px;
+            background-color: #007bff;
+            color: white;
+            font-size: 18px; /* Kích thước chữ */
+            font-weight: bold;
+            text-transform: uppercase;
+            line-height: 50px; /* Căn giữa chữ trong avatar */
+        }
+
+        .list-group-item .ms-3 {
+            flex-grow: 1; /* Nội dung chat sẽ chiếm phần còn lại của container */
+        }
+
+        .list-group-item .ms-3 strong {
+            white-space: nowrap; /* Đảm bảo tên không bị cắt nếu dài */
+            text-overflow: ellipsis; /* Nếu tên quá dài, hiển thị "..." */
+            overflow: hidden; /* Đảm bảo tên không bị tràn */
+        }
+
+
     </style>
 </head>
 <body>
 <main layout:fragment="main1">
-    <div class="container mt-5">
-        <h1 class="text-center">Chat Application</h1>
+    <h1 class="text-center mb-4">Chat Application</h1>
 
-        <div class="row mt-4">
-            <!-- Lặp qua danh sách các chatbox -->
-            <div class="col-md-4" th:each="chatBox : ${chatBoxes}">
-                <div class="card mb-3">
-                    <div class="card-header">
-                        <strong th:text="${chatBox.name}">ChatBox Name</strong>
-                    </div>
-                    <div class="card-body">
-                        <!-- Khu vực hiển thị tin nhắn -->
-                        <div class="chat-box" th:id="'chat-box-' + ${chatBox.id}">
-                            <!-- Lấy danh sách tin nhắn theo chatbox -->
-                            <div th:each="message : ${messagesByChatBox.get(chatBox.id)}">
-                                <div th:classappend="${message.role == 'USER' ? 'user' : 'system'}"
-                                     class="message"
-                                     th:text="${message.content}">
-                                    Tin nhắn
-                                </div>
-                            </div>
+    <div class="row">
+        <!-- Danh sách chatbox bên trái -->
+        <div class="col-md-4">
+            <div class="list-group">
+                <a href="javascript:void(0);" class="list-group-item list-group-item-action"
+                   th:each="chatBox : ${chatBoxes}"
+                   th:data-id="${chatBox.id}"
+                   onclick="showChat(this)">
+                    <div class="d-flex align-items-center">
+                        <!-- Avatar bên trái -->
+                        <div class="avatar rounded-circle text-center d-flex align-items-center justify-content-center flex-shrink-0"
+                             style="width: 50px; height: 50px; background-color: #007bff; color: white;">
+                            <span th:text="${chatBox.name.substring(0, 1).toUpperCase()}"></span>
                         </div>
-                        <!-- Input gửi tin nhắn -->
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Nhập tin nhắn..."
-                                   th:id="'input-message-' + ${chatBox.id}">
-                            <button class="btn btn-primary" onclick="sendMessage()">Gửi</button>
+
+                        <!-- Nội dung chat -->
+                        <div class="ms-3 flex-grow-1">
+                            <strong th:text="${chatBox.name}" style="color: black">ChatBox Name</strong>
+                            <br>
+                            <small class="text-muted">Nhấn để mở chat</small>
+                        </div>
+                    </div>
+                </a>
 
 
+            </div>
+        </div>
+        <!-- Khu vực tin nhắn bên phải -->
+        <div class="col-md-8">
+            <div id="chat-title" class="mb-3">
+                <h5>Chọn một ChatBox để hiển thị nội dung</h5>
+            </div>
+            <div id="chat-container">
+                <!-- Lặp qua các chatbox để hiển thị nội dung -->
+                <div th:each="chatBox : ${chatBoxes}"
+                     th:id="'chat-box-' + ${chatBox.id}"
+                     class="chat-box">
+                    <div th:each="message : ${messagesByChatBox.get(chatBox.id)}">
+                        <div th:classappend="${message.role == 'client' ? 'client' : 'shop'}"
+                             class="message p-2 mb-2"
+                             th:text="${message.content}">
+                            Tin nhắn
                         </div>
                     </div>
                 </div>
             </div>
+
+            <form id="messageForm" class="mt-3 d-flex">
+                <!-- Kiểm tra và gán giá trị chatBoxId -->
+                <input type="hidden" id="chatBoxId" th:value="${chatBox != null ? chatBox.id : ''}">
+                <!-- Lấy accountId từ tài khoản đăng nhập -->
+                <input type="hidden" id="accountId" th:value="${accountId}">
+                <input type="text" id="content" placeholder="Nhập tin nhắn..." required class="form-control me-2">
+                <button type="submit" class="btn btn-success">Gửi</button>
+            </form>
         </div>
     </div>
+    </div>
+    <!-- Bootstrap 5 CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.2/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
     <script>
+        function showChat(element) {
+            const chatBoxId = element.getAttribute('data-id');
+            const allChatBoxes = document.querySelectorAll('.chat-box');
+            const chatTitle = document.getElementById('chat-title');
+
+            // Ẩn tất cả các chatbox
+            allChatBoxes.forEach(box => box.classList.remove('active'));
+
+            // Hiển thị chatbox được chọn
+            const selectedChatBox = document.getElementById(`chat-box-${chatBoxId}`);
+            if (selectedChatBox) {
+                selectedChatBox.classList.add('active');
+                chatTitle.innerHTML = `<h5>ChatBox: ${element.textContent.trim()}</h5>`;
+            }
+
+            // Gán giá trị chatBoxId cho input ẩn
+            const chatBoxIdInput = document.getElementById('chatBoxId');
+            if (chatBoxIdInput) {
+                chatBoxIdInput.value = chatBoxId;
+            }
+        }
+
         let stompClient = null;
 
         // Kết nối WebSocket
@@ -93,52 +188,83 @@
                 });
             });
         }
+        // Lắng nghe sự kiện gửi tin nhắn từ form
+        document.getElementById('messageForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent form from reloading the page
 
-        // Gửi tin nhắn
-        function sendMessage() {
-            // Lấy tất cả các input message và loop qua từng cái
-            const allInputFields = document.querySelectorAll('[id^="input-message-"]');
+            // Collect input values
+            const chatBoxId = document.getElementById('chatBoxId').value;
+            const accountId = document.getElementById('accountId').value;
+            const content = document.getElementById('content').value;
 
-            allInputFields.forEach(inputField => {
-                const chatBoxId = inputField.id.split('-')[2];  // Lấy id chatbox từ id của input
-                const message = inputField.value.trim(); // Lấy nội dung tin nhắn
+            // Tạo đối tượng tin nhắn
+            const message = {
+                chatBox: {
+                    id: chatBoxId
+                },
+                role: 'shop', // Ví dụ: role là 'client', có thể thay bằng dữ liệu thực tế
+                content: content
+            };
 
-                // Lấy chatBox từ DOM
-                const chatBox = document.getElementById(`chat-box-${chatBoxId}`);
+            // Gửi dữ liệu qua Fetch API
+            fetch('/sendMessage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    chatBoxId: chatBoxId,
+                    accountId: accountId,
+                    content: content
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to send message');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Hiển thị tin nhắn mới trên giao diện
+                    appendMessage(data.chatBox.id, data.role, data.content);
 
-                if (stompClient && stompClient.connected && message && chatBox) {
-                    const payload = {
-                        chatBox: { id: chatBoxId }, // Không cần lấy từ ngoài, đã lấy trực tiếp từ input
-                        role: "USER",  // Giả sử người dùng gửi tin nhắn
-                        content: message
-                    };
+                    // Gửi tin nhắn qua WebSocket
+                    stompClient.send('/app/sendMessage', {}, JSON.stringify(message)); // Gửi tới endpoint WebSocket
 
-                    // Gửi tin nhắn qua WebSocket (STOMP)
-                    stompClient.send("/app/sendMessage", {}, JSON.stringify(payload));
-
-                    // Sau khi gửi, xóa nội dung input
-                    inputField.value = '';
-                } else {
-                    console.error("STOMP client is not connected or message is empty.");
-                }
-            });
-        }
-
+                    // Clear the input field
+                    document.getElementById('content').value = '';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
         // Hiển thị tin nhắn vào giao diện
-        function appendMessage(chatBoxId, role, content) {
-            const chatBox = document.getElementById(`chat-box-${chatBoxId}`);
-            if (chatBox) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${role === 'USER' ? 'user' : 'system'}`;
-                messageDiv.textContent = content;
+            // Hiển thị tin nhắn lên giao diện với 2 role: shop và client
+            function appendMessage(chatBoxId, role, content) {
+                const chatBox = document.getElementById(`chat-box-${chatBoxId}`);
+                if (chatBox) {
+                    const messageDiv = document.createElement('div');
 
-                chatBox.appendChild(messageDiv);
-                chatBox.scrollTop = chatBox.scrollHeight; // Scroll xuống cuối
+                    // Gán class tương ứng với vai trò (role)
+                    if (role === 'client') {
+                        messageDiv.className = 'message client'; // Tin nhắn từ client
+                    } else if (role === 'shop') {
+                        messageDiv.className = 'message shop'; // Tin nhắn từ shop
+                    } else {
+                        console.error(`Unknown role: ${role}`);
+                        return; // Không hiển thị nếu vai trò không hợp lệ
+                    }
+
+                    messageDiv.textContent = content;
+
+                    chatBox.appendChild(messageDiv);
+                    chatBox.scrollTop = chatBox.scrollHeight; // Scroll xuống cuối
+                }
             }
-        }
 
-        // Kết nối WebSocket khi tải trang
-        connect();
+
+            // Kết nối WebSocket khi tải trang
+            connect();
     </script>
 </main>
 </body>

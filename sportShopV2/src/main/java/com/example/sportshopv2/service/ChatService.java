@@ -1,8 +1,10 @@
 package com.example.sportshopv2.service;
 
 
+import com.example.sportshopv2.model.Account;
 import com.example.sportshopv2.model.chatBox;
 import com.example.sportshopv2.model.message;
+import com.example.sportshopv2.repository.AccountRepo;
 import com.example.sportshopv2.repository.ChatBoxRepository;
 import com.example.sportshopv2.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,122 +16,55 @@ import java.util.Optional;
 
 @Service
 public class ChatService {
-    //    @Autowired
-//    private com.example.sportshopv2.repository.ChatBoxRepository chatBoxRepository;
-//
-//    @Autowired
-//
-//    private com.example.sportshopv2.repository.MessageRepository messageRepository;
-//
-//    // Tạo mới một ChatBox
-//    public chatBox createChatBox(String name, int createBy) {
-//        chatBox chatBox = new chatBox();
-//        chatBox.setName(name);
-//        chatBox.setCreateBy(createBy);
-//        chatBox.setCreateAt(LocalDateTime.now());
-//        chatBox.setDeleted(false);
-//        return chatBoxRepository.save(chatBox);
-//    }
-//
-//    // Lấy danh sách các ChatBox chưa bị xóa
-//    public List<chatBox> getActiveChatBoxes() {
-//        return chatBoxRepository.findByDeletedFalse();
-//    }
-//
-//    // Lưu tin nhắn vào Message
-//    public message saveMessage(int chatBoxId, int accountId, String role, String content) {
-//        // Tạo một đối tượng message mới
-//        message mess = new message();
-//
-//        // Tìm đối tượng chatBox từ chatBoxId
-//        chatBox box = chatBoxRepository.findById(chatBoxId)
-//                .orElseThrow(() -> new IllegalArgumentException("ChatBox không tồn tại với ID: " + chatBoxId));
-//
-//        // Thiết lập chatBox cho message
-//        mess.setChatBox(box); // Giả sử bạn có phương thức setChatBox trong lớp message
-//
-//        mess.setAccountId(accountId);
-//        mess.setRole(role);
-//        mess.setContent(content);
-//        mess.setTimestamp(LocalDateTime.now());
-//
-//        // Lưu message vào repository
-//        return messageRepository.save(mess);
-//    }
-//
-//    // Lấy lịch sử tin nhắn của một ChatBox
-//    public List<message> getMessagesByChatBoxId(int chatBoxId) {
-//        return messageRepository.findByChatBoxId(chatBoxId);
-//    }
+
     @Autowired
     private ChatBoxRepository chatBoxRepository;
 
     @Autowired
     private MessageRepository messageRepository;
 
-    // Tạo mới một ChatBox
-//    public chatBox createChatBox(String name, int createBy) {
-//        chatBox chatBox = new chatBox();
-//        chatBox.setName(name);
-//        chatBox.setCreateBy(createBy);
-//        chatBox.setCreateAt(LocalDateTime.now());
-//        chatBox.setDeleted(false);
-//        return chatBoxRepository.save(chatBox);
-//    }
-//
-//    // Lấy danh sách các ChatBox chưa bị xóa
-//    public List<chatBox> getActiveChatBoxes() {
-//        return chatBoxRepository.findByDeletedFalse();
-//    }
-//
-//    // Lưu tin nhắn vào Message
-//    public message saveMessage(int chatBoxId, int accountId, String role, String content) {
-//        message mess = new message();
-//
-//        chatBox box = chatBoxRepository.findById(chatBoxId)
-//                .orElseThrow(() -> new IllegalArgumentException("ChatBox không tồn tại với ID: " + chatBoxId));
-//
-//        mess.setChatBox(box);
-//        mess.setAccountId(accountId);
-//        mess.setRole(role);
-//        mess.setContent(content);
-//        mess.setTimestamp(LocalDateTime.now());
-//
-//        return messageRepository.save(mess);
-//    }
-//
-//    // Lấy lịch sử tin nhắn của một ChatBox
-//    public List<message> getMessagesByChatBoxId(int chatBoxId) {
-//        return messageRepository.findByChatBoxId(chatBoxId);
-//    }
-//
-//    // Tìm ChatBox theo accountId
-//    public Optional<chatBox> getChatBoxByAccountId(int accountId) {
-//        return chatBoxRepository.findByAccountId(accountId);
-//    }
+    @Autowired
+    private AccountRepo accountRepository;
 
-
-    public ChatService(ChatBoxRepository chatBoxRepository, MessageRepository messageRepository) {
-        this.chatBoxRepository = chatBoxRepository;
+    public ChatService(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
     }
 
-    // Lưu tin nhắn vào cơ sở dữ liệu
     public message saveMessage(int chatBoxId, int accountId, String role, String content) {
-        // Kiểm tra chatbox có tồn tại không
-        chatBox chatBox = chatBoxRepository.findById(chatBoxId)
-                .orElseThrow(() -> new RuntimeException("ChatBox không tồn tại với ID: " + chatBoxId));
+        chatBox chatBox;
 
-        // Tạo thực thể tin nhắn mới
-        message message = new message();
-        message.setChatBox(chatBox);
-        message.setAccountId(accountId);
-        message.setRole(role);
-        message.setContent(content);
-        message.setTimestamp(LocalDateTime.now());
+        // Kiểm tra nếu chatBox tồn tại, nếu không tạo mới
+        if (chatBoxRepository.existsById(chatBoxId)) {
+            chatBox = chatBoxRepository.findById(chatBoxId).orElseThrow(() ->
+                    new RuntimeException("ChatBox not found"));
+        } else {
+            chatBox = new chatBox();
+            chatBox.setId(chatBoxId); // Thiết lập id nếu cần thiết
+            // Thiết lập các thuộc tính khác cho chatBox nếu cần
+            chatBoxRepository.save(chatBox);
+        }
 
-        // Lưu vào cơ sở dữ liệu
-        return messageRepository.save(message);
+        // Tạo mới đối tượng message
+        message newMessage = new message();
+        newMessage.setChatBox(chatBox);  // Đảm bảo rằng chatBox đã tồn tại
+        newMessage.setAccountId(accountId);
+        newMessage.setRole(role);
+        newMessage.setContent(content);
+        newMessage.setTimestamp(LocalDateTime.now());
+
+        // Lưu tin nhắn vào cơ sở dữ liệu
+        return messageRepository.save(newMessage);
+    }
+
+    public int getAccountIdFromUsername(String username) {
+        // Tìm Account theo username
+        Optional<Account> account = accountRepository.findByUsername(username);
+
+        if (account.isPresent()) {
+            return account.get().getId(); // Trả về accountId nếu tìm thấy
+        } else {
+            throw new RuntimeException("User not found");
+        }
     }
 
     // Lấy danh sách tin nhắn theo ID chatbox

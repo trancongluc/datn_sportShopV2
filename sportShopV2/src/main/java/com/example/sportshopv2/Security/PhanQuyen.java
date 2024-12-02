@@ -18,6 +18,7 @@ import java.util.Arrays;
 @Configuration
 public class PhanQuyen {
 
+
     @Bean
     public UserDetailsManager userDetailsManager(DataSource dataSource) {
         JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
@@ -33,6 +34,7 @@ public class PhanQuyen {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.csrf(csrf -> csrf.disable()); // Tắt CSRF
 
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
