@@ -18,6 +18,18 @@
     </script>
 </head>
 <style>
+    body {
+        background-color: #f8f9fa;
+        height: 100vh;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .container {
+        max-width: 1200px;
+    }
+
     .progress-bar {
         display: flex;
         justify-content: space-between;
@@ -57,8 +69,9 @@
         background-color: #ddd;
     }
 </style>
-<body class="bg-gray-100 p-4">
+<body>
 <main layout:fragment="main1" th:object="${list}">
+
     <div class="container mt-5">
         <h2>Trạng thái hóa đơn</h2>
         <div class="progress">
@@ -193,10 +206,9 @@
         <button class="btn btn-primary mt-4" onclick="showModal()">Xuất hóa đơn</button>
     </div>
 
-    </div>
-    </div>
     <!-- Modal Confirmation -->
-    <div id="confirmationModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div id="confirmationModal"
+         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
         <div class="bg-white rounded-lg p-6 w-1/2">
             <h2 class="text-xl font-bold mb-4">Xác nhận xuất hóa đơn</h2>
             <div class="container">
@@ -339,6 +351,7 @@
         </div>
     </div>
     </div>
+
 </main>
 </body>
 </html>
