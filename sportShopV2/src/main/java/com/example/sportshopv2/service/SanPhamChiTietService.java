@@ -83,13 +83,21 @@ public class SanPhamChiTietService {
                 SanPhamChiTiet.toDTO(sanPhamChiTiet, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo))
                 .collect(Collectors.toList());
     }
-
+    public List<SanPhamChiTiet> findAllByIdSP(Integer idSP) {
+        List<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndIdSanPham(false, idSP);
+        return listSPCT;
+    }
     public Page<SanPhamChiTietDTO> getSPCTByIdSP(Integer idSP, Pageable pageable) {
         // Lấy trang danh sách SanPhamChiTiet từ repository
         Page<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndIdSanPham(false, idSP, pageable);
-
         // Ánh xạ từ SanPhamChiTiet sang SanPhamChiTietDTO
         return listSPCT.map(spct -> SanPhamChiTiet.toDTO(spct, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo));
+    }
+    public List<SanPhamChiTietDTO> getListSPCTByIdSP(Integer idSP) {
+        // Lấy trang danh sách SanPhamChiTiet từ repository
+        List<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndIdSanPham(false, idSP);
+        // Ánh xạ từ SanPhamChiTiet sang SanPhamChiTietDTO
+        return listSPCT.stream().map(spct -> SanPhamChiTiet.toDTO(spct, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo)).toList();
     }
     public boolean capNhatSoLuongSPCT(Integer idSPCT, Integer soLuongNew){
         SanPhamChiTiet spct = sanPhamChiTietRepository.findByIdAndDeleted(idSPCT,false);
@@ -119,4 +127,9 @@ public class SanPhamChiTietService {
                 cgRepo, clRepo, anhRepo);
 
     }
+    public Integer tongSoLuongSP(Integer idSP) {
+        Integer sLSanPham = sanPhamChiTietRepository.tongSoLuongSP(idSP);
+        return sLSanPham;
+    }
+
 }

@@ -24,4 +24,10 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
     @Query("SELECT h FROM SanPhamChiTiet h WHERE h.id IN (SELECT MIN(hd.id) FROM  SanPhamChiTiet hd GROUP BY hd.idSanPham)")
     List<SanPhamChiTiet> findDistinctByIdProduct();
     List<SanPhamChiTiet> findByIdIn(List<Long> ids);
+    @Query("SELECT COALESCE(SUM(pd.soLuong), 0) " +
+            "FROM SanPhamChiTiet pd " +
+            "WHERE pd.idSanPham = :productId")
+    Integer tongSoLuongSP(@Param("productId") Integer productId);
+
+
 }

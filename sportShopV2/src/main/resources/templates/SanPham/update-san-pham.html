@@ -298,14 +298,14 @@
 <main layout:fragment="main1">
 
     <div class="container">
-        <h1>THÊM SẢN PHẨM</h1>
+        <h1>UPDATE SẢN PHẨM</h1>
         <div class="form-group">
             <label for="tenSanPham">* Tên sản phẩm :</label>
-            <input type="text" id="tenSanPham" placeholder="Nhập tên sản phẩm">
+            <input type="text" id="tenSanPham" placeholder="Nhập tên sản phẩm" th:value="${sanPham.tenSanPham}">
         </div>
         <div class="form-group">
             <label for="description">* Mô tả :</label>
-            <textarea id="description" placeholder="Nhập mô tả sản phẩm"></textarea>
+            <textarea id="description" placeholder="Nhập mô tả sản phẩm" th:text="${moTa}"></textarea>
         </div>
         <div class="form-row">
             <div class="form-group">
@@ -314,7 +314,8 @@
                     <option value="" disabled selected hidden>Chọn thương hiệu</option>
                     <option th:each="thuongHieu : ${th}"
                             th:value="${thuongHieu.id}"
-                            th:text="${thuongHieu.tenThuongHieu}">
+                            th:text="${thuongHieu.tenThuongHieu}"
+                            th:selected="${thuongHieu.id == thuongHieuId}">
                     </option>
                 </select>
                 <button class="plus-button" onclick="openModal('brandModal')"><i class="fas fa-plus"></i></button>
@@ -325,7 +326,9 @@
                     <option value="" disabled selected hidden>Chọn thể loại</option>
                     <option th:each="theLoai : ${tl}"
                             th:value="${theLoai.id}"
-                            th:text="${theLoai.tenTheLoai}">
+                            th:text="${theLoai.tenTheLoai}"
+                            th:selected="${theLoai.id == theLoaiId}">
+
                     </option>
                 </select>
                 <button class="plus-button" onclick="openModal('categoryModal')"><i class="fas fa-plus"></i></button>
@@ -338,7 +341,8 @@
                     <option value="" disabled selected hidden>Chọn chất liệu</option>
                     <option th:each="chatLieu : ${cl}"
                             th:value="${chatLieu.id}"
-                            th:text="${chatLieu.tenChatLieu}">
+                            th:text="${chatLieu.tenChatLieu}"
+                            th:selected="${chatLieu.id == chatLieuId}">
                     </option>
                 </select>
                 <button class="plus-button" onclick="openModal('materialModal')"><i class="fas fa-plus"></i></button>
@@ -349,7 +353,8 @@
                     <option value="" disabled selected hidden>Chọn đế giày</option>
                     <option th:each="deGiay : ${dg}"
                             th:value="${deGiay.id}"
-                            th:text="${deGiay.tenDeGiay}">
+                            th:text="${deGiay.tenDeGiay}"
+                            th:selected="${deGiay.id == deGiayId}">
                     </option>
                 </select>
                 <button class="plus-button" onclick="openModal('soleModal')"><i class="fas fa-plus"></i></button>
@@ -360,9 +365,9 @@
                 <label for="gender">* Giới Tính :</label>
                 <select id="gender">
                     <option value="" disabled selected hidden>Chọn giới tính</option>
-                    <option value="Nam">Nam</option>
-                    <option value="Nữ">Nữ</option>
-                    <option value="Unisex">Unisex</option>
+                    <option value="Nam" th:selected="${gioiTinh == 'Nam'}">Nam</option>
+                    <option value="Nữ" th:selected="${gioiTinh == 'Nữ'}">Nữ</option>
+                    <option value="Unisex" th:selected="${gioiTinh == 'Unisex'}">Unisex</option>
                 </select>
                 <button class="plus-button" disabled><i class="fas fa-plus"></i></button>
             </div>
@@ -372,7 +377,8 @@
                     <option value="" disabled selected hidden>Chọn cổ giày</option>
                     <option th:each="coGiay : ${cg}"
                             th:value="${coGiay.id}"
-                            th:text="${coGiay.tenCoGiay}">
+                            th:text="${coGiay.tenCoGiay}"
+                            th:selected="${coGiay.id == coGiayId}">
                     </option>
                 </select>
                 <button class="plus-button" onclick="openModal('collarModal')"><i class="fas fa-plus"></i></button>
@@ -383,21 +389,37 @@
         <h1>KÍCH CỠ VÀ MÀU SẮC</h1>
         <div class="form-group">
             <h5>Kích Cỡ:</h5>
-            <div id="selected-sizes" class="selected-sizes"></div>
-            <button class="plus-button" onclick="openModal('sizeModal')"><i class="fas fa-plus"></i></button>
+            <div th:each="size : ${sizes}" class="selected-sizes">
+                <span class="selected-size" th:text="${size.tenKichThuoc}" th:data-id="${size.id}"></span>
+            </div>
+            <div id="selected-sizes" class="selected-sizes">
+            </div>
+            <button class="plus-button" onclick="openModal('sizeModal')">
+                <i class="fas fa-plus"></i>
+            </button>
         </div>
+
         <div class="form-group">
             <h5>Màu Sắc:</h5>
-            <div id="selected-colors" class="selected-colors-display"></div>
-            <button class="plus-button" onclick="openModal('mauSacModal')"><i class="fas fa-plus"></i></button>
+            <div th:each="color : ${colors}"  class="selected-colors-display">
+                <span class="selected-color"
+                      th:style="'display:inline-block;width:20px;height:20px;background-color:' + ${color.tenMauSac} + ';border:1px solid #000;'"
+                      th:data-id="${color.id}"></span>
+            </div>
+            <div  id="selected-colors" class="selected-colors-display">
+            </div>
+            <button class="plus-button" onclick="openModal('mauSacModal')">
+                <i class="fas fa-plus"></i>
+            </button>
         </div>
+
     </div>
     <div class="container">
         <div class="header">
             <h1>Chi tiết sản phẩm</h1>
             <div>
                 <button onclick="openModal('slAndGia')">Chỉnh sửa số lượng và giá chung</button>
-                <button onclick="themSPCT()">Hoàn Tất</button>
+                <button onclick="themSPCT()">Cập Nhật</button>
             </div>
         </div>
         <table>
@@ -411,8 +433,36 @@
                 <th class="action-column">Hành động</th>
                 <th style="text-align: center">Upload Ảnh</th>
             </tr>
+            <tr th:each="spct,index : ${spctDto}" th:data-id="${spct.id}">
+                <td><input type="checkbox" class="selectItem"></td>
+                <td th:text="${index.index+1}"></td>
+                <td>
+                    <span th:text="${spct.sanPham.tenSanPham}"></span>
+                    [ <span th:text="${spct.kichThuoc.tenKichThuoc}"></span> -
+                    <span th:style="'display:inline-block; background-color: ' + ${spct.mauSac.tenMauSac} + '; width: 20px; height: 20px; border: 1px solid #000;'"></span>
+                    <span class="color-name" id="color-name-${spct.id}" th:text="${spct.mauSac.tenMauSac}"></span>
+                    ]
+                </td>
+                <td><input type="number" value="1" style="width: 50px;" th:value="${spct.soLuong}"></td>
+                <td>
+                    <input type="text" class="price"
+                           th:value="${spct.gia}"
+                           style="width: 180px;">
+                </td>
+                <td class="action-buttons">
+                    <div class="action-buttons-container">
+                        <i class="fas fa-trash-alt" onclick="removeRow(this)"></i>
+                    </div>
+                </td>
+                <td>
+                    <img th:src="@{/images/{tenAnh}(tenAnh=${spct.anhSanPham.get(0).tenAnh})}"
+                         alt="Ảnh sản phẩm" style="width: 50px; height: auto;"/>
+                </td>
+            </tr>
             </thead>
+
             <tbody>
+
             </tbody>
         </table>
 
@@ -539,7 +589,7 @@
                 </button>
             </div>
             <div class="size-list">
-                <button th:each="size : ${kt}" th:text="${size.tenKichThuoc}" th:data-size="${size.id}"
+                <button th:each="size : ${ktNotSP}" th:text="${size.tenKichThuoc}" th:data-size="${size.id}"
                         onclick="selectSize(this)"></button>
             </div>
             <div class="buttons">
@@ -559,7 +609,7 @@
                 </button>
             </div>
             <div class="ms-list">
-                <button th:each="mauSac : ${ms}" th:style="'background-color: ' + ${mauSac.tenMauSac}"
+                <button th:each="mauSac : ${msNotSP}" th:style="'background-color: ' + ${mauSac.tenMauSac}"
                         th:data-size="${mauSac.id}" onclick="selectedColor(this)">
                     <span th:text="${mauSac.tenMauSac}"></span>
                 </button>
@@ -587,6 +637,10 @@
         <div class="progress-bar" id="progress-bar"></div>
     </div>
     <script src="/js/ThemSanPham.js"></script>
+    <script>
+
+
+    </script>
 </main>
 </body>
 </html>

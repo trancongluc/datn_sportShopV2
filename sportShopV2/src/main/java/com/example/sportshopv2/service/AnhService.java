@@ -21,7 +21,7 @@ public class AnhService {
             throw new IllegalArgumentException("Danh sách ảnh không được null hoặc rỗng.");
         }
 
-        String directory = "D:\\demoMergeCodeDatn\\sportShopV2\\src\\main\\resources\\static\\images"; // Đường dẫn đến thư mục lưu ảnh
+        String directory = "\\images"; // Đường dẫn đến thư mục lưu ảnh
 
         for (AnhSanPham image : images) {
             if (image == null) {
