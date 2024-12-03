@@ -122,6 +122,55 @@
             cursor: pointer;
             font-size: 16px;
         }
+
+        .voucher-container {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .voucher-item {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            background-color: #f9f9f9;
+        }
+
+        .voucher-item:hover {
+            background-color: #f1f1f1;
+            border-color: #bbb;
+        }
+
+        .voucher-logo img {
+            max-width: 50px;
+            max-height: 50px;
+            border-radius: 5px;
+        }
+
+        .voucher-content {
+            flex: 1;
+        }
+
+        .voucher-title {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .voucher-content p {
+            margin: 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .voucher-content .text-danger {
+            color: #00aaff;
+        }
+
     </style>
 </head>
 <body>
@@ -173,14 +222,17 @@
                     </td>
                     <td>
                         <div style="display: flex; align-items: center; gap: 5px;">
-                            <button type="button" th:attr="onclick='decreaseQuantity(' + ${list.id} + ')'" >-</button>
-                            <input type="text" th:id="'quantity-' + ${list.id}" th:data-id="${list.id}" th:value="${list.soLuong}"
-                                   readonly style="width: 40px; text-align: center;"/>
-                            <button th:attr="onclick='increaseQuantity(' + ${list.id} + ')'" type="button">+</button>
+                            <button type="button"
+                                    th:attr="onclick='decreaseQuantity(' + ${list.id} + ', ' + ${list.giaTien} + ')'">-
+                            </button>
+                            <input type="text" th:id="'quantity-' + ${list.id}" th:data-id="${list.id}"
+                                   th:value="${list.soLuong}" readonly style="width: 40px; text-align: center;"/>
+                            <button type="button"
+                                    th:attr="onclick='increaseQuantity(' + ${list.id} + ', ' + ${list.giaTien} + ')'">+
+                            </button>
                         </div>
                     </td>
-
-                    <td th:text="${list.soLuong * list.giaTien}"></td>
+                    <td th:id="'total-price-' + ${list.id}" th:text="${formattedTotals[list.id]}"></td>
                 </tr>
                 </tbody>
 
@@ -247,7 +299,6 @@
                         <select class="form-select" id="phuong" name="phuong" required>
                             <option value="" hidden>Phường Xã</option>
                             <option th:each="diaChi : ${listDiaChi}"
-
                                     th:text="${diaChi.phuong}"
                                     th:selected="${#lists.isEmpty(listDiaChi) ? false : diaChi.phuong == listDiaChi[0].phuong}">
                             </option>
@@ -282,8 +333,6 @@
             </div>
             <textarea placeholder="Ghi chú" required name="note"></textarea>
             <textarea placeholder="Ghi chú" name="orderInfo" th:value="''" hidden="hidden"></textarea>
-
-
             <div class="note">
                 <img alt="GHN Express logo" height="50"
                      src="https://storage.googleapis.com/a1aa/image/EjcVS2MxCj75FFC4qvqZuAEQcr4huuZ3KGfQSrmTIEaDdI5JA.jpg"
@@ -299,9 +348,52 @@
             </div>
             <div class="section">
                 <label>Mã giảm giá:</label>
-                <input type="text" id="discountCode" value=""/>
-                <button onclick="applyDiscount()">Chọn mã</button>
+                <input type="text" id="discountCode" value="" readonly/>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#voucherModal"
+                        style="color: #00aaff">
+                    Chọn voucher
+                </button>
             </div>
+            <div class="modal fade" id="voucherModal" tabindex="-1" aria-labelledby="voucherModalLabel">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="voucherModalLabel">Danh sách Voucher</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Danh sách voucher -->
+                            <div class="voucher-container">
+                                <h4>Chọn 1 voucher</h4>
+                                <div th:each="voucher : ${Voucher}" class="voucher-item d-flex align-items-center">
+                                    <div class="voucher-logo">
+                                        <img th:src="@{/images/logoSPSV2.png}" alt="Voucher Logo" class="img-fluid"/>
+                                    </div>
+                                    <div class="voucher-content ms-3">
+                                        <p th:text="${voucher.idPhieuGiamGia.name}" class="voucher-title fw-bold"></p>
+                                        <p>
+                                            <span class="text-danger">Giảm: </span>
+                                            <span th:text="${#numbers.formatDecimal(voucher.idPhieuGiamGia.discountValue, 0, 0)} + ' VND'"></span>
+                                        </p>
+                                        <p>
+                                            <span>Đơn tối thiểu: </span>
+                                            <span th:text="${#numbers.formatDecimal(voucher.idPhieuGiamGia.minimumValue, 0, 0)} + ' VND'"></span>
+                                        </p>
+                                        <p>HSD: <span th:text="${voucher.idPhieuGiamGia.endDate}"></span></p>
+                                    </div>
+                                    <div class="ms-auto">
+                                        <input type="radio" name="selectedVoucher" width="50px" height="50px"
+                                               th:value="${voucher.idPhieuGiamGia.id}"
+                                               onchange="selectVoucher(this.value)"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <div class="section toggle-switch">
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" role="switch" id="TraSau" checked name="thanhToan"
@@ -318,11 +410,11 @@
             </div>
             <div class="section">
                 <label>Phí vận chuyển:</label>
-                <input type="text" id="shippingFee" value="0"/>
+                <input type="text" id="shippingFee" value="0" readonly/>
             </div>
             <div class="section">
                 <label>Giảm giá:</label>
-                <input type="text" id="discountAmount" value="0" readonly/>
+                <input type="text" id="discountAmount" readonly/>
             </div>
             <div class="section">
                 <label>Tổng tiền:</label>
@@ -344,7 +436,7 @@
         checkboxes.forEach(checkbox => {
             // Lấy giá tiền từ ô gần checkbox (sử dụng DOM traversal)
             const row = checkbox.closest('tr');
-            const priceCell = row.querySelector('td:nth-child(7)'); // Giả sử giá ở cột 7
+            const priceCell = row.querySelector('td:nth-child(7)');
             if (priceCell) {
                 const price = parseFloat(priceCell.textContent.replace(/[^\d.-]/g, ''));
                 if (!isNaN(price)) {
@@ -460,57 +552,78 @@
         }
     }
 
-    function increaseQuantity(id) {
-        // Ensure you are passing the correct id to create the correct selector
+    function increaseQuantity(id, giaTien) {
         const quantityInput = document.querySelector(`#quantity-${id}`);
+        const totalPriceElement = document.querySelector(`#total-price-${id}`);
 
         if (quantityInput) {
             let currentQuantity = parseInt(quantityInput.value, 10);
-            quantityInput.value = currentQuantity + 1;
-            // Optionally, send the updated quantity to the server
-        } else {
-            console.error(`Element with id 'quantity-${id}' not found`);
+            currentQuantity += 1;
+            quantityInput.value = currentQuantity;
+
+            // Tính tổng tiền
+            const totalPrice = currentQuantity * giaTien;
+
+            // Cập nhật tổng tiền trong DOM
+            if (totalPriceElement) {
+                totalPriceElement.textContent = totalPrice.toLocaleString("vi-VN") + 'VND';
+            }
+
+            // Gửi yêu cầu cập nhật số lượng đến server (nếu cần)
+            updateServerQuantity(id, currentQuantity);
         }
-        // This should show the actual id being passed to the function
-        console.log(id);
     }
 
-
-    function decreaseQuantity(id) {
+    function decreaseQuantity(id, giaTien) {
         const quantityInput = document.querySelector(`#quantity-${id}`);
+        const totalPriceElement = document.querySelector(`#total-price-${id}`);
+
         if (quantityInput) {
             let currentQuantity = parseInt(quantityInput.value, 10);
             if (currentQuantity > 1) {
                 currentQuantity -= 1;
-                quantityInput.value = currentQuantity;  // Update input value
+                quantityInput.value = currentQuantity;
 
-                // Now send the updated quantity to the backend
+                // Tính tổng tiền
+                const totalPrice = currentQuantity * giaTien;
+
+                // Cập nhật tổng tiền trong DOM
+                if (totalPriceElement) {
+                    totalPriceElement.textContent = totalPrice.toLocaleString("vi-VN") + 'VND';
+                }
+
+                // Gửi yêu cầu cập nhật số lượng đến server (nếu cần)
                 updateServerQuantity(id, currentQuantity);
             }
-        } else {
-            console.error(`Element with id 'quantity-${id}' not found`);
         }
     }
 
-
     function updateServerQuantity(id, newQuantity) {
+        console.log("Sending ID:", id, "Quantity:", newQuantity); // Log giá trị gửi đi
         fetch('/mua-sam-SportShopV2/update-quantity', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                id: id,
-                soLuong: newQuantity
-            })
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({id: id, soLuong: newQuantity})
         })
             .then(response => response.json())
-            .then(data => {
-                console.log('Server response:', data);
+            .then(data => console.log("Server response:", data))
+            .catch(error => console.error("Error:", error));
+    }
+
+    function selectVoucher(id) {
+        fetch(`/mua-sam-SportShopV2/voucher/details/${id}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch voucher details");
+                }
+                return response.json();
             })
-            .catch(error => {
-                console.error('Error updating quantity:', error);
-            });
+            .then(data => {
+                // Gán giá trị vào input khi có phản hồi từ server
+                document.getElementById('discountAmount').value = `${new Intl.NumberFormat().format(data.idPhieuGiamGia.discountValue)} VND`;
+                document.getElementById('voucherCode').value = `${data.idPhieuGiamGia.voucherCode} VND`;
+            })
+            .catch(error => console.error("Error:", error));
     }
 </script>
 

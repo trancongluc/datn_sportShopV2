@@ -14,10 +14,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.example.sportshopv2.config.VNPAYService;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -157,14 +159,28 @@ public class DatHangController {
 
     @RequestMapping("/gio-hang-khach-hang")
     public String gioHang(Model model, @RequestParam("id") Integer id,
-                          @RequestParam(value = "selectedProducts", required = false) List<Long> selectedProductIds) {
+                          @RequestParam(value = "selectedProducts", required = false) List<Long> selectedProductIds, @RequestParam(value = "idVoucher", defaultValue = "0") Integer idVoucher) {
         TaiKhoan taiKhoan = taiKhoanRepo.findTaiKhoanById(id);
-        List<PhieuGiamGiaKhachHang> voucher = phieuGiamGiaKhachHangRepository.findAllByIdTaiKhoan_Id(id);
+        List<PhieuGiamGiaKhachHang> voucher = phieuGiamGiaKhachHangRepository.findAllByIdTaiKhoan_IdAndDeleted(id, false);
+        if (idVoucher != 0) {
+            model.addAttribute("giaTriGiam", phieuGiamGiaKhachHangRepository.findByIdPhieuGiamGia_Id(id));
+        }
         idTK = id;
         model.addAttribute("thongTinKhachHang", taiKhoan);
         model.addAttribute("selectedProductIds", selectedProductIds != null ? selectedProductIds : Collections.emptyList());
         dsSPCT = selectedProductIds;
         List<GioHangChiTiet> listCart = gioHangChiTietRepo.findAllByGioHang_IdTaiKhoan_Id(id);
+        DecimalFormat formatter = new DecimalFormat("###,###,###.0 VND");
+
+        // Tạo một Map để chứa giá trị đã định dạng cho từng sản phẩm
+        Map<Integer, String> formattedTotals = new HashMap<>();
+        for (GioHangChiTiet product : listCart) {
+            Float productTotal = product.getGiaTien() * product.getSoLuong();
+            String formattedTotal = formatter.format(productTotal); // Định dạng số tiền
+            formattedTotals.put(product.getId(), formattedTotal); // Lưu vào Map
+            System.out.println("Formatted Totals: " + formattedTotals);
+        }
+        model.addAttribute("formattedTotals", formattedTotals);
         List<Address> diaChi = addressRepo.findByKhachHang_Id(taiKhoan.getNguoiDung().getId());
 
         if (diaChi.size() == 0) {
@@ -192,7 +208,7 @@ public class DatHangController {
 
         model.addAttribute("listCart", listCart);
         model.addAttribute("listImage", anhSanPhams);
-        model.addAttribute("voucher", voucher);
+        model.addAttribute("Voucher", voucher);
         return "MuaHang/GioHang";
     }
 
@@ -336,13 +352,15 @@ public class DatHangController {
     }
 
 
-//    @PostMapping("/VNPAY/submitOrder")
-//    public String submidOrder(@RequestParam("amount") int orderTotal,
-//                              @RequestParam("orderInfo") String orderInfo,
-//                              HttpServletRequest request) {
-//        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-//        String vnpayUrl = vnPayService.createOrder(request, orderTotal, orderInfo, baseUrl);
-//        return "redirect:" + vnpayUrl;
-//    }
+    @GetMapping("/voucher/details/{id}")
+    @ResponseBody
+    public PhieuGiamGiaKhachHang getVoucherDetails(@PathVariable Integer id) {
+        PhieuGiamGiaKhachHang voucher = phieuGiamGiaKhachHangRepository.findByIdPhieuGiamGia_Id(id);
+        if (voucher == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Voucher không tồn tại");
+        }
+        return voucher; // Trả về JSON
+    }
+
 }
 
