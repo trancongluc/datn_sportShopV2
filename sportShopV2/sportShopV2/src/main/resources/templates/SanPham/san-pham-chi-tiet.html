@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Menu}"
+>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="/css/thuoc-tinh-sp.css"/>
+    <title>Quản Lý Sản Phẩm</title>
+
+</head>
+<body>
+<main layout:fragment="main1">
+
+    <div>
+        <div class="header">
+            <i class="fas fa-box"></i>
+            Sản Phẩm Chi Tiết
+        </div>
+        <div class="filter-section">
+            <div class="form-row align-items-end">
+                <div class="form-group col-md-3">
+                    <label for="filter" class="font-weight-bold">Bộ lọc</label>
+                    <input type="text" class="form-control" id="filter" placeholder="Tìm kiếm">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="status" class="font-weight-bold">Trạng thái</label>
+                    <select id="status" class="form-control">
+                        <option value="all">Tất cả</option>
+                        <option value="active">Kích hoạt</option>
+                        <option value="inactive">Vô hiệu hóa</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="size" class="font-weight-bold">Kích Thước</label>
+                    <select id="size" class="form-control">
+                        <option value="all">Tất cả</option>
+                        <!-- Các kích thước được lấy từ server -->
+                        <option th:each="size : ${kt}" th:value="${size.id}" th:text="${size.tenKichThuoc}"></option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="color" class="font-weight-bold">Màu Sắc</label>
+                    <select id="color" class="form-control">
+                        <option value="all">Tất cả</option>
+                        <!-- Các màu sắc được lấy từ server -->
+                        <option th:each="color : ${ms}" th:value="${color.id}" th:text="${color.tenMauSac}"></option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="brand" class="font-weight-bold">Thương Hiệu</label>
+                    <select id="brand" class="form-control">
+                        <option value="all">Tất cả</option>
+                        <!-- Các thương hiệu được lấy từ server -->
+                        <option th:each="brand : ${th}" th:value="${brand.id}"
+                                th:text="${brand.tenThuongHieu}"></option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="category" class="font-weight-bold">Thể Loại</label>
+                    <select id="category" class="form-control">
+                        <option value="all">Tất cả</option>
+                        <!-- Các thể loại được lấy từ server -->
+                        <option th:each="category : ${tl}" th:value="${category.id}"
+                                th:text="${category.tenTheLoai}"></option>
+                    </select>
+                </div>
+                <div class="filter-buttons">
+                    <button class="btn btn-primary mr-2">Tìm kiếm</button>
+                    <button class="btn btn-danger">Làm mới bộ lọc</button>
+                </div>
+            </div>
+        </div>
+        <div class="table-section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="header">
+                    <i class="fas fa-list"></i>
+                    Danh sách sản phẩm
+                </div>
+                <a href="/san-pham-chi-tiet" class="btn btn-primary add-btn">+ Thêm Sản Phẩm</a>
+            </div>
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Ảnh Sản Phẩm</th>
+                    <th>Mã Sản Phẩm</th>
+                    <th>Tên Sản Phẩm</th>
+                    <th>Kích Thước</th>
+                    <th>Màu Sắc</th>
+                    <!--<th>Thương Hiệu</th>
+                    <th>Thể Loại</th>
+                    <th>Chất Liệu</th>
+                    <th>Đế Giày</th>
+                    <th>Cổ Giày</th>-->
+                    <th>Số Lượng</th>
+                    <th>Giá</th>
+                    <th>Trạng Thái</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="spct,iterStat  : ${spct}">
+                    <td th:text="${iterStat.index + 1}"></td>
+                    <td>
+                        <img th:src="@{/images/{tenAnh}(tenAnh=${spct.anhSanPham.get(0).tenAnh})}
+                        " alt="Ảnh sản phẩm" style="width: 50px; height: auto;" />
+                    </td>
+
+                    <td th:text="${spct.sanPham.getCode()}"></td>
+                    <td th:text="${spct.sanPham.getTenSanPham()}"></td>
+                    <td th:text="${spct.kichThuoc.tenKichThuoc}"></td>
+                    <td>
+                        <div  th:style="'background-color: ' + ${spct.mauSac.tenMauSac} + '; width: 30px; height: 30px; text-align: center; vertical-align: middle; padding: 5px;'">
+
+                        </div>
+                    </td>
+                    <!--<td th:text="${spct.thuongHieu.tenThuongHieu}"></td>
+                    <td th:text="${spct.theLoai.tenTheLoai}"></td>
+                    <td th:text="${spct.chatLieu.tenChatLieu}"></td>
+                    <td th:text="${spct.deGiay.tenDeGiay}"></td>
+                    <td th:text="${spct.coGiay.tenCoGiay}"></td>-->
+                    <td th:text="${spct.soLuong}"></td>
+                    <td th:text="${spct.gia}"></td>
+                    <td><span class="status active" th:text="${spct.trangThai}"></span></td>
+                    <td class="actions">
+                        <i class="fas fa-eye" th:data-row-id="${spct.id}"
+                           onclick=""></i>
+                        <i class="fas fa-edit" th:data-row-id="${spct.id}"
+                           onclick=""></i>
+                    </td>
+                </tr>
+                </tbody>
+            </table><!-- Pagination -->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/san-pham-chi-tiet/{idSP}(idSP=${idSP}, page=${currentPage - 1})}"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a class="page-link" th:href="@{/san-pham-chi-tiet/{idSP}(idSP=${idSP}, page=${i})}"
+                           th:text="${i + 1}"></a>
+                    </li>
+
+                    <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/san-pham-chi-tiet/{idSP}(idSP=${idSP}, page=${currentPage + 1})}"
+                           aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <hr>
+    <a href="/san-pham" class="btn btn-secondary ml-2">Quay về</a> <!-- Nút Quay về -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</main>
+</body>
+</html>

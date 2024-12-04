@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Application</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f1f1f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #chatBox {
+            width: 350px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        #chatBoxHeader {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 10px 10px 0 0;
+        }
+
+        #messages {
+            padding: 10px;
+            overflow-y: auto;
+            flex-grow: 1;
+            max-height: 400px;
+        }
+
+        .message {
+            border-radius: 15px;
+            padding: 10px;
+            margin-bottom: 5px;
+            max-width: 80%;
+        }
+
+        .client {
+            background-color: #007bff;
+            color: white;
+            text-align: right;
+            margin-left: auto;
+        }
+
+        .shop {
+            background-color: #e0e0e0;
+            color: black;
+            text-align: left;
+            margin-right: auto;
+        }
+
+        #messageInputContainer {
+            display: flex;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 0 0 10px 10px;
+        }
+
+        #messageInput {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="chatBox">
+    <!-- Chat Header -->
+    <div id="chatBoxHeader">General Chat</div>
+
+    <!-- Chat Messages -->
+    <div id="messages"></div>
+
+    <!-- Input message container -->
+    <div id="messageInputContainer" class="d-flex align-items-center">
+        <input type="text" id="messageInput" class="form-control" placeholder="Nhập tin nhắn..."/>
+        <button id="sendButton" class="btn btn-primary">Gửi</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.2/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script>
+    let stompClient = null;
+    let isWebSocketConnected = false;
+
+    // Hàm kết nối WebSocket
+    function connect() {
+        if (isWebSocketConnected) return; // Đảm bảo không kết nối lại
+
+        const socket = new SockJS('http://localhost:8080/chat');
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function () {
+            console.log("Connected to WebSocket");
+            isWebSocketConnected = true;
+
+            // Đăng ký nhận tin nhắn mới
+            stompClient.subscribe('/chat/client/topic/messages', function (message) {
+                const data = JSON.parse(message.body);
+                if (data && data.chatBox && data.chatBox.id) {
+                    // Chỉ hiển thị tin nhắn nếu chưa hiển thị trước đó
+                    appendMessage(data.role, data.content);
+                }
+            });
+            stompClient.subscribe('/topic/messages', function (message) {
+                const data = JSON.parse(message.body);
+                if (data && data.chatBox && data.chatBox.id) {
+                    // Chỉ hiển thị tin nhắn nếu chưa hiển thị trước đó
+                    appendMessage(data.role, data.content);
+                }
+            });
+        });
+    }
+
+    // Hiển thị tin nhắn lên giao diện
+    function appendMessage(role, content) {
+        const messagesContainer = document.getElementById('messages');
+
+        // Kiểm tra nếu tin nhắn đã hiển thị
+        const existingMessages = Array.from(messagesContainer.children).map(msg => msg.textContent);
+        if (existingMessages.includes(content)) return;
+
+        // Thêm tin nhắn mới
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', role);
+        messageElement.textContent = content;
+        messagesContainer.appendChild(messageElement);
+
+        // Cuộn xuống cuối
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Gửi tin nhắn
+    document.getElementById('sendButton').addEventListener('click', function () {
+        const chatBoxId = '1004'; // ID của ChatBox
+        const accountId = '2029'; // ID của tài khoản
+        const content = document.getElementById('messageInput').value.trim();
+
+        if (!content) return; // Không gửi nếu tin nhắn trống
+
+        // Tạo đối tượng tin nhắn
+        const message = {
+            chatBox: {id: chatBoxId},
+            role: 'client', // Vai trò người gửi
+            content: content
+        };
+
+        // Gửi qua REST API
+        fetch('/chat/sendMessage', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: new URLSearchParams({chatBoxId, accountId, content})
+        })
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to send message');
+                return response.json();
+            })
+            .then(() => {
+                // Gửi tin nhắn qua WebSocket
+                stompClient.send('/app/chat/client/sendMessage', {}, JSON.stringify(message));
+                document.getElementById('messageInput').value = ''; // Clear input
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
+    // Kết nối WebSocket khi tải trang
+    window.onload = connect;
+</script>
+</body>
+</html>

@@ -7,7 +7,6 @@ import com.example.sportshopv2.repository.ChatBoxRepository;
 import com.example.sportshopv2.repository.MessageRepository;
 import com.example.sportshopv2.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -18,9 +17,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDateTime;
+
 import java.util.*;
 
 @Controller
@@ -64,7 +62,9 @@ public class ChatController {
 
     @MessageMapping("/sendMessage")
     @SendTo("/topic/messages")
-    public message sendMessage(message message) {
+    public message sendMessage(@Payload message message) {
+        //Log test tin nhắn nhận được phía Client
+        System.out.println("Received message: " + message);
         // Lưu tin nhắn vào cơ sở dữ liệu hoặc xử lý thêm
         return message; // Trả về tin nhắn để gửi lại cho tất cả người subscribe
     }
