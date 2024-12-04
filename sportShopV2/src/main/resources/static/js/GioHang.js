@@ -68,11 +68,16 @@ $(document).ready(function () {
                     if (fee === 0) {
                         $("#ship").val("Miễn Phí");
                     } else {
-                        $("#ship").val(fee + " đ");
+                        $("#ship").val(new Intl.NumberFormat('vi-VN', {
+                            style: 'decimal',
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }).format(fee) + "VND");
+                        calculateTotal();
                     }
                 } else {
                     console.error("Không thể tính phí ship.");
-                    $("#ship").val("0 đ");
+                    $("#ship").val("0VND");
                 }
             });
         });
