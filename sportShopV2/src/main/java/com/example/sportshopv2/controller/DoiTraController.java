@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -22,21 +23,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/doi-tra")
 public class DoiTraController {
-
-    @Autowired
-    private SanPhamChiTietService spctService;
-
-    @Autowired
-    private KhachhangService khachHangService;
-
-    @Autowired
-    private SanPhamRepository sanPhamRep;
-
-    @Autowired
-    private SanPhamChiTietRepository SPCTRep;
-
-    @Autowired
-    private HoaDonRepo billService; // Dịch vụ để lấy thông tin hóa đơn
 
     @Autowired
     private HoaDonServiceImp hoaDonServiceImp;
@@ -52,15 +38,21 @@ public class DoiTraController {
 
     @GetMapping("/detail")
     public String getHoaDonDetail(@RequestParam("maHoaDon") Integer maHoaDon, Model model) {
-        // Lấy hóa đơn bằng cách sử dụng entity HoaDon
+
         HoaDon hoaDon = hoaDonServiceImp.getBillDetailById(maHoaDon);
         if (hoaDon == null) {
             // Xử lý trường hợp không tìm thấy hóa đơn
             model.addAttribute("error", "Không tìm thấy hóa đơn với mã: " + maHoaDon);
-            return "DoiTra/view"; // Trả về trang lỗi
+            return "doi-tra/view";
         }
         model.addAttribute("hoaDon", hoaDon);
         return "DoiTra/DoiTraChiTiet";
+    }
+    @PostMapping("/cap-nhat")
+    public String doiTra(@RequestParam("maHoaDon") Integer maHoaDon, Model model) {
+        hoaDonServiceImp.updateTrangThai(maHoaDon, "Chờ xác nhận");
+        model.addAttribute("message", "Trạng thái hóa đơn đã được cập nhật thành công.");
+        return "redirect:/doi-tra/view";
     }
 
 }

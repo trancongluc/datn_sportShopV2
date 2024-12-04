@@ -235,29 +235,42 @@ button:hover {
     transform: scale(1.1); /* Phóng to nút lên 10% */
 }
 
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
+#myModal {
+    display: none; /* Ẩn modal mặc định */
+    position: fixed; /* Định vị cố định */
+    z-index: 1000; /* Đặt z-index cao để nằm trên các phần tử khác */
     left: 0;
     top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-    padding-top: 60px;
+    width: 100%; /* Chiều rộng 100% */
+    height: 100%; /* Chiều cao 100% */
+    overflow: auto; /* Thêm thanh cuộn nếu cần */
+    background-color: rgba(0, 0, 0, 0.5); /* Nền mờ */
 }
+
+/* Modal content */
 .modal-content {
-    background-color: #fefefe;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
+    background-color: #fefefe; /* Nền trắng cho nội dung modal */
+    margin: 15% auto; /* Đặt margin trên và dưới 15%, tự động căn giữa */
+    padding: 20px; /* Padding cho nội dung */
+    border: 1px solid #888; /* Đường viền */
+    width: 80%; /* Chiều rộng modal */
+    max-width: 500px; /* Chiều rộng tối đa */
+    border-radius: 5px; /* Bo góc */
 }
+
+/* Đóng modal */
 .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+    color: #aaa; /* Màu chữ */
+    float: right; /* Đặt ở bên phải */
+    font-size: 28px; /* Kích thước chữ */
+    font-weight: bold; /* Đậm */
 }
+
+.close:hover,
+.close:focus {
+    color: black; /* Màu khi hover */
+    text-decoration: none; /* Không gạch chân */
+    cursor: pointer; /* Con trỏ chuột */
+}
+
 

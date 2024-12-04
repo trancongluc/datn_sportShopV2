@@ -12,7 +12,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class HoaDonServiceImp {
-
+    @Autowired
+    private HoaDonRepo hoaDonRepo;
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -26,6 +27,13 @@ public class HoaDonServiceImp {
             return query.getSingleResult();
         } catch (NoResultException e) {
             throw new IllegalArgumentException("Không tìm thấy hóa đơn với ID: " + maHoaDon, e);
+        }
+    }
+    public void updateTrangThai(Integer maHoaDon, String trangThai) {
+        HoaDon hoaDon = hoaDonRepo.findById(maHoaDon).orElse(null);
+        if (hoaDon != null) {
+            hoaDon.setStatus(trangThai);
+            hoaDonRepo.save(hoaDon);
         }
     }
 }
