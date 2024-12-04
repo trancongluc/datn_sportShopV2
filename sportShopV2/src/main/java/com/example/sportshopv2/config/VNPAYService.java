@@ -15,7 +15,7 @@ public class VNPAYService {
     public String createOrder(HttpServletRequest request, String amount, String orderInfor, String urlReturn) {
         //Các bạn có thể tham khảo tài liệu hướng dẫn và điều chỉnh các tham số
 
-        amount = amount.replaceAll("[^\\d]", "");
+//        amount = amount.replaceAll("[^\\d]", "");
 
         int amountValue = Integer.parseInt(amount);
         String vnp_Version = "2.1.0";
@@ -29,7 +29,7 @@ public class VNPAYService {
         vnp_Params.put("vnp_Version", vnp_Version);
         vnp_Params.put("vnp_Command", vnp_Command);
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
-        vnp_Params.put("vnp_Amount", String.valueOf(amountValue * 100));
+        vnp_Params.put("vnp_Amount", String.valueOf(amountValue));
         vnp_Params.put("vnp_CurrCode", "VND");
 
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);

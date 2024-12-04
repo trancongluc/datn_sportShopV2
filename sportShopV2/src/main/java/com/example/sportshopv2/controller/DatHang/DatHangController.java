@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -170,7 +171,11 @@ public class DatHangController {
         model.addAttribute("selectedProductIds", selectedProductIds != null ? selectedProductIds : Collections.emptyList());
         dsSPCT = selectedProductIds;
         List<GioHangChiTiet> listCart = gioHangChiTietRepo.findAllByGioHang_IdTaiKhoan_Id(id);
-        DecimalFormat formatter = new DecimalFormat("###,###,###.0 VND");
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator(',');
+        symbols.setGroupingSeparator('.');
+
+        DecimalFormat formatter = new DecimalFormat("#,###.00", symbols);
 
         // Tạo một Map để chứa giá trị đã định dạng cho từng sản phẩm
         Map<Integer, String> formattedTotals = new HashMap<>();
@@ -345,9 +350,10 @@ public class DatHangController {
             hoaDonChiTietRepo.save(hoaDonChiTiet);  // Save the bill detail
         }
         orderInfo = "hello";
+        System.out.println(orderTotalStr);
         // Generate VNPay URL
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        String vnpayUrl = vnPayService.createOrder(request, orderTotal, orderInfo, baseUrl);
+        String vnpayUrl = vnPayService.createOrder(request, orderTotalStr, orderInfo, baseUrl);
         return "redirect:" + vnpayUrl;
     }
 
@@ -361,6 +367,5 @@ public class DatHangController {
         }
         return voucher; // Trả về JSON
     }
-
 }
 
