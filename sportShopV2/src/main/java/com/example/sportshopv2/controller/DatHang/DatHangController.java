@@ -302,7 +302,7 @@ public class DatHangController {
                               @RequestParam("quan_name") String quan,
                               @RequestParam(value = "email", required = false) String email,
                               @RequestParam("nguoiDung.phone_number") String sdt,
-                              @RequestParam(value = "name", required = false) String hoTen,
+                              @RequestParam(value = "nguoiDung.full_name", required = false) String hoTen,
                               @RequestParam("soNha") String soNha,
                               @RequestParam("selectedProducts") List<Long> selectedProducts,
                               @RequestParam(value = "moneyShip", defaultValue = "0.0") String moneyShip,
@@ -318,14 +318,15 @@ public class DatHangController {
         TaiKhoan taiKhoan = taiKhoanRepo.findTaiKhoanById(idTK);  // Make sure 'idTK' is initialized or passed correctly
 
         HoaDon hoaDon = new HoaDon();
-        hoaDon.setBillCode(orderInfo != null ? orderInfo : "HDTTW");  // Use default if orderInfo is null
+        String invoiceCode = "HD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        hoaDon.setBillCode(invoiceCode);  // Use default if orderInfo is null
         hoaDon.setStatus("Chờ xác nhận");
         hoaDon.setId_staff(tk);
         hoaDon.setUser_name(taiKhoan.getUsername());
         hoaDon.setId_account(taiKhoan);
         hoaDon.setPhone_number(sdt);
         hoaDon.setType("Chuyển phát");
-        hoaDon.setUser_name(hoTen);  // Ensure hoTen is set
+        hoaDon.setUser_name(hoTen);
         hoaDon.setEmail(email);
         hoaDon.setCreateAt(LocalDateTime.now());
         hoaDon.setCreate_by(taiKhoan.getUsername());  // Assuming the logged-in user is set correctly
