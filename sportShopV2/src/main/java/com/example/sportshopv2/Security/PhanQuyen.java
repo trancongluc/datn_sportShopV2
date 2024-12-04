@@ -1,4 +1,4 @@
-package com.example.sportshopv2.sercurity;
+package com.example.sportshopv2.Security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -109,7 +109,8 @@ public class PhanQuyen {
                 "/hoa-don-chi-tiet/**",
                 "/bill/**",
                 "/api/proxy/**",
-                "/VNPAY-demo"
+                "/VNPAY-demo",
+                "/mua-sam-SportShopV2/update-quantity"
 
 
                 // Thêm các endpoint khác cần bỏ qua
