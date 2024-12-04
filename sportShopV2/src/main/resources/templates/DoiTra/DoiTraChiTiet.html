@@ -396,7 +396,7 @@
             </p>
             <p>
                 Voucher đã sử dụng:
-                <span th:text="${item.hoaDon.point_use} + ' VND'"></span>
+                <span th:text="${hoaDon.point_use} + ' VND'"></span>
             </p>
             <p>
                 Tiền ship:
@@ -404,15 +404,15 @@
             </p>
             <p>
                 Điểm sử dụng (0):
-                <span th:text="${item.hoaDon.point_use} + ' VND'"></span>
+                <span th:text="${hoaDon.point_use} + ' VND'"></span>
             </p>
             <p class="total">
                 Tổng tiền thanh toán:
-                <span th:text="${hoaDon.total_money} + ' VND'"></span>
+                <span th:text="${item.price} + ' VND'"></span>
             </p>
             <p>
                 Tổng giá hàng trả:
-                <span th:text="${hoaDon.total_money} + ' VND'"></span>
+                <span th:text="${item.price} + ' VND'"></span>
             </p>
             <!--                    <p>-->
             <!--                        Voucher mới:-->
@@ -426,8 +426,8 @@
             <div class="return">
                 <p>* Mô tả:</p>
                 <textarea placeholder="Nhập mô tả" th:placeholder="'Nhập mô tả'"></textarea>
-                <form action="/doi-tra/cap-nhat" method="post">
-                    <input type="hidden" name="maHoaDon" value="${hoaDon.id}"/>
+                <form th:action="@{/doi-tra/cap-nhat}" method="get">
+                    <input type="" name="maHoaDon" th:value="${hoaDon.id}"/>
                     <button type="submit">Đổi trả</button>
                 </form>
             </div>

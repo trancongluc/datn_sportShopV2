@@ -48,9 +48,9 @@ public class DoiTraController {
         model.addAttribute("hoaDon", hoaDon);
         return "DoiTra/DoiTraChiTiet";
     }
-    @PostMapping("/cap-nhat")
+    @GetMapping("/cap-nhat")
     public String doiTra(@RequestParam("maHoaDon") Integer maHoaDon, Model model) {
-        hoaDonServiceImp.updateTrangThai(maHoaDon, "Chờ xác nhận");
+        hoaDonServiceImp.updateTrangThai(maHoaDon, "Hoàn trả");
         model.addAttribute("message", "Trạng thái hóa đơn đã được cập nhật thành công.");
         return "redirect:/doi-tra/view";
     }
