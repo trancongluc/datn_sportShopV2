@@ -33,7 +33,7 @@ public class AnhSanPham {
         return Files.readAllBytes(imagePath);
     }
 
-    @ManyToOne
+/*    @ManyToOne
     @JoinColumn(name = "id_product_detail")
-    private SanPhamChiTiet sanPhamChiTiet;
+    private SanPhamChiTiet sanPhamChiTiet;*/
 }

@@ -39,7 +39,7 @@ public class HoaDonService {
 
     public HoaDon hoaDonById(Integer idHD) {
 
-        return hdRepo.findById(idHD).orElse(null);
+        return hdRepo.findAllById(idHD);
     }
 
     public List<HoaDon> getHoaDonTaiQuay() {

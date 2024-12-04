@@ -43,6 +43,6 @@ public class NguoiDung {
     @Column(name = "deleted")
     private Boolean deleted;
 
-    @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Address> diaChi;
+  /*  @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Address> diaChi;*/
 }

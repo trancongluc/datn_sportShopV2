@@ -319,11 +319,12 @@ public class DatHangController {
 
         HoaDon hoaDon = new HoaDon();
         hoaDon.setBillCode(orderInfo != null ? orderInfo : "HDTTW");  // Use default if orderInfo is null
-        hoaDon.setStatus("Thanh toán");
+        hoaDon.setStatus("Chờ xác nhận");
         hoaDon.setId_staff(tk);
         hoaDon.setUser_name(taiKhoan.getUsername());
         hoaDon.setId_account(taiKhoan);
         hoaDon.setPhone_number(sdt);
+        hoaDon.setType("Chuyển phát");
         hoaDon.setUser_name(hoTen);  // Ensure hoTen is set
         hoaDon.setEmail(email);
         hoaDon.setCreateAt(LocalDateTime.now());
