@@ -763,7 +763,7 @@ async function capNhatHoaDon() {
 
         // Lấy thông tin nhân viên
         const emp = await fetch(`/ban-hang-tai-quay/tk/${idNV}`).then(handleResponse);
-        const voucher = await fetch(`/ban-hang-tai-quay/voucher/${idVoucher}`).then(handleResponse);
+        /*const voucher = await fetch(`/ban-hang-tai-quay/voucher/${idVoucher}`).then(handleResponse);*/
 
         // Nếu phương thức thanh toán là "Chuyển Khoản", mở popup VNPay
         if (paymentMethod === 'Chuyển Khoản') {

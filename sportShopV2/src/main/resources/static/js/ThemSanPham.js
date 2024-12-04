@@ -295,6 +295,7 @@ let selectedColors = [];
 let selectedSizes = [];
 let selectedColorsUpdate = [];
 let selectedSizesUpdate = [];// Mảng lưu trữ kích cỡ đã chọn
+let selectedSPCTsUpdate = [];
 function loadSelectedValues() {
     // Lấy các kích cỡ đã chọn từ HTML và lưu vào mảng
     document.querySelectorAll('.selected-size').forEach(sizeElement => {
@@ -309,9 +310,16 @@ function loadSelectedValues() {
         const colorCode = colorElement.style.backgroundColor || colorElement.getAttribute('data-color'); // Lấy mã màu từ backgroundColor hoặc data-color
         selectedColorsUpdate.push({id: colorId, code: colorCode}); // Lưu cả id và mã màu vào mảng
     });
-
+    // Lấy các idSPCT từ mỗi dòng trong bảng và lưu vào mảng
+    document.querySelectorAll('tr[data-id]').forEach(row => {
+        const spctId = row.getAttribute('data-id'); // Lấy giá trị id từ thuộc tính data-id của dòng
+        if (spctId) {
+            selectedSPCTsUpdate.push(spctId); // Lưu idSPCT vào mảng
+        }
+    });
     console.log('Sizes in database:', selectedSizesUpdate);
     console.log('Colors in database:', selectedColorsUpdate);
+    console.log('idSPCT in database:', selectedSPCTsUpdate);
 }
 
 
