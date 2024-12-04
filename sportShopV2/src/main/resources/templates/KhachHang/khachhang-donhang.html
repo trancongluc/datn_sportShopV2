@@ -51,7 +51,7 @@
                     <th>Ngày Đặt</th>
                     <th>Trạng Thái</th>
                     <th>Tổng Tiền</th>
-                    <th>Hành Động</th>
+<!--                    <th>Hành Động</th>-->
                 </tr>
                 </thead>
                 <tbody>
@@ -63,10 +63,10 @@
                     <td th:text="${order.status}"></td>
                     <td th:text="${order.getFormattedTotalMoney()}"></td>
 
-                    <td>
-                        <a th:href="@{'/khach-hang/detail/' + ${order.id}}" class="btn btn-primary">Chi tiết</a>
+<!--                    <td>-->
+<!--                        <a th:href="@{'/khach-hang/detail/' + ${order.id}}" class="btn btn-primary">Chi tiết</a>-->
 
-                    </td>
+<!--                    </td>-->
                 </tr>
                 </tbody>
             </table>

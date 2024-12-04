@@ -29,7 +29,7 @@ public class DotGiamGia {
     private BigDecimal discount;
 
     @Column(name = "description")
-    private BigDecimal description;
+    private String description;
 
     @Column(name = "start_date")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

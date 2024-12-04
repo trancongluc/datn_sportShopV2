@@ -610,14 +610,18 @@
 <body>
 <div class="navbar">
     <div class="logo">
-        <img th:src="@{/images/logoSSV2.png}" alt="SportShopLogo" height="40" width="40">
+        <img th:src="@{/images/logoSPSV2.png}" alt="SportShopLogo" height="40" width="40">
         <span>SportShopV2</span>
 
     </div>
-    <a th:href="@{/mua-sam-SportShopV2/gio-hang-khach-hang}">
-        <img th:src="@{/images/img_3.png}" style="margin-left: 50px" width="40" height="40">
-    </a>
-
+    <div style="margin-left: 50px">
+        <a th:href="@{/mua-sam-SportShopV2/gio-hang-khach-hang(id=${thongTinKhachHang.id})}">
+            <img th:src="@{/images/img_3.png}" width="40" height="40">
+        </a>
+        <a th:href="@{/login/home}">
+            <img th:src="@{/images/img_4.png}" width="40" height="40">
+        </a>
+    </div>
 </div>
 
 <div class="menu">
@@ -742,11 +746,11 @@
         <a href="javascript:void(0)" onclick="filterProducts('style2')">Sản Phẩm Mới</a>
         <a href="javascript:void(0)" onclick="filterProducts('style3')">Giảm Giá Sốc</a>
     </div>
-    <div class="product-list" >
+    <div class="product-list">
         <div class="product-item style1" th:each="spct, index: ${listspct}">
             <img alt="Sneaker" height="300"
-                  th:src="${imageUrls[index.index]}"
-                  width="300"/>
+                 th:src="${imageUrls[index.index]}"
+                 width="300"/>
             <h3 th:text="${spct.sanPham.tenSanPham}"></h3>
             <p th:text="${listspct[index.index].moTa}"><br>
             <div class="price" th:text="${listspct[index.index].gia}"></div>
@@ -757,7 +761,7 @@
                 <span class="star" data-value="4">★</span>
                 <span class="star inactive" data-value="5">★</span>
             </div>
-            <a class="buy-btn" th:href="@{/mua-sam-SportShopV2/mua-ngay(id=${listspct[index.index].id})}" >Mua Ngay</a>
+            <a class="buy-btn" th:href="@{/mua-sam-SportShopV2/mua-ngay(id=${listspct[index.index].id})}">Mua Ngay</a>
             <a class="buy-btn" href="javascript:void(0)" onclick="openModal(this.parentElement)">
                 <i class="bi bi-cart"></i> Thêm vào giỏ hàng
             </a>

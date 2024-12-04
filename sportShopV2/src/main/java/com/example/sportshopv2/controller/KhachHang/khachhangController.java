@@ -358,36 +358,36 @@ public class khachhangController {
     }
 
 
-    @GetMapping("/detail/{id}")
-    public String getHoaDonDetail(@PathVariable("id") Integer id, Model model) {
-        HoaDon hoaDon = hoaDonService.findHoaDonById(id);
-        if (hoaDon == null) {
-            model.addAttribute("error", "Hóa đơn không tồn tại!");
-            return "error"; // Trang hiển thị lỗi
-        }
-        // Lấy danh sách chi tiết hóa đơn
-        List<HoaDonChiTiet> hoaDonChiTietList = hoaDon.getHoaDonChiTiet();
-
-        // Định dạng giá tiền
-        DecimalFormat df = new DecimalFormat("#,### đ");
-        hoaDonChiTietList.forEach(detail -> {
-            detail.setFormattedPrice(df.format(detail.getPrice()));
-            detail.setFormattedTotal(df.format(detail.getPrice() * detail.getQuantity()));
-        });
-
-        // Tính tổng tiền và định dạng
-        BigDecimal total = hoaDonChiTietList.stream()
-                .map(detail -> BigDecimal.valueOf(detail.getPrice() * detail.getQuantity()))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        String formattedTotal = df.format(total);
-
-        // Thêm dữ liệu vào Model
-        model.addAttribute("hoaDon", hoaDon);
-        model.addAttribute("hoaDonChiTietList", hoaDonChiTietList);
-        model.addAttribute("formattedTotal", formattedTotal);
-
-        return "KhachHang/khachhang-donhang-detail"; // Tên file HTML hiển thị chi tiết hóa đơn
-    }
+//    @GetMapping("/detail/{id}")
+//    public String getHoaDonDetail(@PathVariable("id") Integer id, Model model) {
+//        HoaDon hoaDon = hoaDonService.findHoaDonById(id);
+//        if (hoaDon == null) {
+//            model.addAttribute("error", "Hóa đơn không tồn tại!");
+//            return "error"; // Trang hiển thị lỗi
+//        }
+//        // Lấy danh sách chi tiết hóa đơn
+//        List<HoaDonChiTiet> hoaDonChiTietList = hoaDon.getHoaDonChiTiet();
+//
+//        // Định dạng giá tiền
+//        DecimalFormat df = new DecimalFormat("#,### đ");
+//        hoaDonChiTietList.forEach(detail -> {
+//            detail.setFormattedPrice(df.format(detail.getPrice()));
+//            detail.setFormattedTotal(df.format(detail.getPrice() * detail.getQuantity()));
+//        });
+//
+//        // Tính tổng tiền và định dạng
+//        BigDecimal total = hoaDonChiTietList.stream()
+//                .map(detail -> BigDecimal.valueOf(detail.getPrice() * detail.getQuantity()))
+//                .reduce(BigDecimal.ZERO, BigDecimal::add);
+//        String formattedTotal = df.format(total);
+//
+//        // Thêm dữ liệu vào Model
+//        model.addAttribute("hoaDon", hoaDon);
+//        model.addAttribute("hoaDonChiTietList", hoaDonChiTietList);
+//        model.addAttribute("formattedTotal", formattedTotal);
+//
+//        return "KhachHang/khachhang-donhang-detail"; // Tên file HTML hiển thị chi tiết hóa đơn
+//    }
 
 }
 

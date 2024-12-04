@@ -34,14 +34,18 @@ public class PhanQuyen {
                 .authorizeHttpRequests(auth -> auth
                         // Quyền truy cập cho Admin
                         .requestMatchers("/khach-hang/**", "/san-pham", "/san-pham/**", "/san-pham-chi-tiet/**",
-                                "/san-pham-chi-tiet", "/anh-san-pham/**", "/the-loai/**",
-                                "/nhanvien/**", "/bill/**", "/ban-hang-tai-quay/**").hasAuthority("Admin")
-                        .requestMatchers("/bill/**", "/buy/**").hasAuthority("Staff")
+                                "/san-pham-chi-tiet", "/anh-san-pham/**", "/the-loai/**", "/nhanvien/**", "/bill/**",
+                                "/ban-hang-tai-quay/**").hasAuthority("Admin")
+
+                        // Quyền truy cập cho Staff
+                        .requestMatchers("/bill/**").hasAuthority("Staff")
+
+                        // Quyền truy cập cho Employee
                         .requestMatchers("/buy/**").hasAuthority("Employee")
 
                         // Cho phép truy cập công cộng
                         .requestMatchers("/login/**", "/mua-sam-SportShopV2/**", "/api/payment/**",
-                                "/VNPAY-demo/**", "/images/**").permitAll()
+                                "/VNPAY-demo/**", "/images/**", "https://**").permitAll()
                         // Các yêu cầu khác phải xác thực
                         .anyRequest().authenticated()
                 )
@@ -66,7 +70,11 @@ public class PhanQuyen {
                         })
                         .permitAll()
                 )
-                .logout(logout -> logout.permitAll())  // Cho phép logout
+                .logout(logout -> logout
+                        .logoutUrl("/logout") // Đường dẫn xử lý đăng xuất
+                        .logoutSuccessUrl("/login/home") // Chuyển hướng sau khi đăng xuất
+                        .permitAll()
+                )
                 .exceptionHandling(ex -> ex.accessDeniedPage("/login/access"));  // Trang lỗi nếu không có quyền truy cập
         return httpSecurity.build();
     }
@@ -100,11 +108,11 @@ public class PhanQuyen {
                 "/hoa-don/**",
                 "/hoa-don-chi-tiet/**",
                 "/bill/**",
-                "/api/proxy/**"
+                "/api/proxy/**",
+                "/VNPAY-demo"
 
 
                 // Thêm các endpoint khác cần bỏ qua
         );
     }
-
 }

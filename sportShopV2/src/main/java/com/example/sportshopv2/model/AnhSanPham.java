@@ -28,7 +28,7 @@ public class AnhSanPham  {
     private String trangThai;
     public byte[] getImageData() throws IOException {
         // Xây dựng đường dẫn đầy đủ đến file ảnh
-        Path imagePath = Paths.get("C:\\Users\\Admin\\Pictures\\image", tenAnh);
+        Path imagePath = Paths.get("C:\\HOCTAP\\DATN\\sportShopV2\\sportShopV2\\src\\main\\resources\\static\\images", tenAnh);
         return Files.readAllBytes(imagePath);
     }
 }
