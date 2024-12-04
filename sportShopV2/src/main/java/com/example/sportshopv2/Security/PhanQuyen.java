@@ -1,4 +1,4 @@
-package com.example.sportshopv2.Security;
+package com.example.sportshopv2.sercurity;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,10 +10,14 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.cors.CorsConfiguration;
+
 import javax.sql.DataSource;
+import java.util.Arrays;
 
 @Configuration
 public class PhanQuyen {
+
 
     @Bean
     public UserDetailsManager userDetailsManager(DataSource dataSource) {
@@ -30,6 +34,8 @@ public class PhanQuyen {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.csrf(csrf -> csrf.disable()); // Tắt CSRF
+
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
                         // Quyền truy cập cho Admin
@@ -116,4 +122,5 @@ public class PhanQuyen {
                 // Thêm các endpoint khác cần bỏ qua
         );
     }
+
 }

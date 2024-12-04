@@ -396,7 +396,7 @@
         <div class="header">
             <h1>Chi tiết sản phẩm</h1>
             <div>
-                <button>Chỉnh sửa số lượng và giá chung</button>
+                <button onclick="openModal('slAndGia')">Chỉnh sửa số lượng và giá chung</button>
                 <button onclick="themSPCT()">Hoàn Tất</button>
             </div>
         </div>
@@ -407,9 +407,9 @@
                 <th>STT</th>
                 <th>Tên Sản Phẩm</th>
                 <th>Số lượng</th>
-                <th class="price-column">Giá Bán</th>
+                <th class="price-column" style="text-align: center">Giá Bán</th>
                 <th class="action-column">Hành động</th>
-                <th>Upload Ảnh</th>
+                <th style="text-align: center">Upload Ảnh</th>
             </tr>
             </thead>
             <tbody>
@@ -569,6 +569,22 @@
                 <button class="btn btn-primary" onclick="confirmSelectedColors()">Chọn</button>
             </div>
         </div>
+    </div>
+    <div id="slAndGia" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('slAndGia')">&times;</span>
+            <h2>Chỉnh sửa số lượng và giá</h2>
+            <input type="text" id="soLuongChung" placeholder="Nhập số lượng" required>
+            <input type="text" id="giaChung" placeholder="Nhập giá" required>
+            <div class="buttons">
+                <button type="button" class="cancel-button" onclick="closeModal('slAndGia')">Hủy</button>
+                <button class="add-button" type="submit" onclick="applyQuantityAndPrice()">Thêm</button>
+            </div>
+        </div>
+    </div>
+    <div id="toast" class="toast hide">
+        <span id="toast-message">Thông báo sẽ xuất hiện ở đây!</span>
+        <div class="progress-bar" id="progress-bar"></div>
     </div>
     <script src="/js/ThemSanPham.js"></script>
 </main>

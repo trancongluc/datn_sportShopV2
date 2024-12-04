@@ -11,6 +11,37 @@
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DoiTraController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/dto/HoaDonChiTietDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/dto/ItemDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/impl/HoaDonServiceImp.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/js/DoiTra.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DotGiamGiaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DotGiamGiaController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/Address.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/Address.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/AnhSanPham.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/AnhSanPham.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/DotGiamGia.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/DotGiamGia.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/HoaDon.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/HoaDon.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/HoaDonChiTiet.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/HoaDonChiTiet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/NguoiDung.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/NguoiDung.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/PhieuGiamGia.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/PhieuGiamGia.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/SanPhamChiTiet.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/SanPhamChiTiet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/TaiKhoan.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/TaiKhoan.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/AnhSanPhamRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/AnhSanPhamRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/SanPhamChiTietRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/SanPhamChiTietRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/sercurity/PhanQuyen.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/sercurity/PhanQuyen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/HoaDonService.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/HoaDonService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/SanPhamChiTietService.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/SanPhamChiTietService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/css/DoiTraChiTiet.css" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/css/DoiTraChiTiet.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/css/giamGia.css" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/css/giamGia.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/DoiTra/DoiTra.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/DoiTra/DoiTra.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/DoiTra/DoiTraChiTiet.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/DoiTra/DoiTraChiTiet.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/DotGiamGia/addDotGiamGia.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/DotGiamGia/addDotGiamGia.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/DotGiamGia/dotGiamGia.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/DotGiamGia/dotGiamGia.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/Menu.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/Menu.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/giamGia.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/giamGia.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +70,7 @@
     </file-type-list>
   </component>
   <component name="ProjectId" id="2nIYNERvsVUBdIdxlBh14jjXncN" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+  <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
@@ -56,6 +87,21 @@
     "node.js.selected.package.tslint": "(autodetect)"
   }
 }]]></component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Java5_SD18307/asmNew" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
+    <property name="nodejs_package_manager_path" value="npm" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\testDATN\sportShopV2\src\main\resources\templates\MuaHang" />
@@ -140,7 +186,15 @@
       <workItem from="1732034239187" duration="6000" />
       <workItem from="1732151830187" duration="19984000" />
       <workItem from="1732437154123" duration="9000" />
-      <workItem from="1732437175256" duration="4323000" />
+      <workItem from="1732437175256" duration="4755000" />
+      <workItem from="1732511479651" duration="1760000" />
+      <workItem from="1732623428741" duration="3403000" />
+      <workItem from="1732674447885" duration="135000" />
+      <workItem from="1732697309653" duration="4294000" />
+      <workItem from="1732757640993" duration="20025000" />
+      <workItem from="1733107644654" duration="624000" />
+      <workItem from="1733196316898" duration="15687000" />
+      <workItem from="1733273599527" duration="7576000" />
     </task>
     <servers />
   </component>
@@ -157,6 +211,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />

@@ -37,6 +37,13 @@ public class PhieuGiamGia {
     @Column(name = "form_voucher")
     private String formVoucher;
 
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "status")
+    private String status;
+
+
     @Column(name = "quantity")
     private Integer quantity;
 
@@ -47,19 +54,40 @@ public class PhieuGiamGia {
     @Column(name = "end_date")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime endDate;
-
-    private String status;
+    
 
 
 
     public boolean isActive() {
         LocalDateTime now = LocalDateTime.now();
-        System.out.println("Thời gian hiện tại: " + now); // In ra thời gian hiện tại
+        System.out.println("Thời gian hiện tại: " + now);
         return startDate != null && endDate != null && startDate.isBefore(now) && endDate.isAfter(now);
     }
 
 
-    public String getStatus() {
-        return isActive() ? "Đang diễn ra" : "Kết thúc";
+    @PrePersist
+    @PreUpdate
+    public void updateStatus() {
+        this.status = getStatus();
     }
+
+    public String getStatus() {
+        LocalDateTime now = LocalDateTime.now();
+        String statusText;
+
+        if (startDate != null && endDate != null) {
+            if (startDate.isAfter(now)) {
+                statusText = "Chưa diễn ra";
+            } else if (endDate.isBefore(now)) {
+                statusText = "Hết hạn";
+            } else {
+                statusText = "Đang diễn ra";
+            }
+        } else {
+            statusText = "Không xác định";
+        }
+
+        return statusText;
+    }
+
 }

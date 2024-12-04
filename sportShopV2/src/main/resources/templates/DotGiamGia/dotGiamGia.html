@@ -211,7 +211,7 @@
                     <th>Giá trị giảm</th>
                     <th>Ngày bắt đầu</th>
                     <th>Ngày kết thúc</th>
-                    <th>Ngày cập nhật</th>
+                    <th>Mô tả</th>
                     <th>Trạng Thái</th>
                     <th>Hành động</th>
                 </tr>
@@ -224,7 +224,9 @@
                     <td th:text="${dgg.discount}"></td> <!-- gia tri giam toi thieu -->
                     <td th:text="${dgg.startDate}"></td> <!-- ngay bat dau -->
                     <td th:text="${dgg.endDate}"></td> <!-- ngay ket thuc -->
-                    <td th:text="${dgg.updateAt}"></td> <!-- ngay cap nhat -->
+<!--                    <td th:text="${dgg.updateAt}"></td> &lt;!&ndash; ngay cap nhat &ndash;&gt;-->
+
+                    <td th:text="${dgg.description}"></td>
                     <td>
                         <span class="status-label" th:text="${dgg.status}"></span> <!-- trang thai -->
                     </td>
