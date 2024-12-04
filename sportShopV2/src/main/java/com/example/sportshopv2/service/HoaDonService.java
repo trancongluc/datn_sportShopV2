@@ -53,4 +53,7 @@ public class HoaDonService {
     public HoaDon findHoaDonById(Integer id) {
         return hdRepo.findById(id).orElse(null);
     }
+    public int countByStatus(String status) {
+        return hdRepo.countByStatus(status);
+    }
 }

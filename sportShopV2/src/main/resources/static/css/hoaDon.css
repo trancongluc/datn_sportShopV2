@@ -86,6 +86,15 @@ body {
 .tab-content.active {
     display: block;
 }
+.nav-tabs .nav-item .nav-link.active {
+    border: 2px solid #007bff; /* Màu viền cho tab được chọn */
+    border-bottom: none; /* Bỏ viền dưới */
+    border-radius: 5px 5px 0 0; /* Bo tròn góc trên */
+    background-color: #fff; /* Nền trắng cho tab */
+    color: #007bff; /* Màu chữ xanh */
+    font-weight: bold; /* In đậm chữ */
+}
+
 .section-title {
     display: flex;
     align-items: center;
@@ -103,4 +112,11 @@ body {
     justify-content: center;
     align-items: center;
 }
-
+.badge {
+    background-color: #007bff;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    vertical-align: middle;
+}

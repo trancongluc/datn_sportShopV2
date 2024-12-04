@@ -635,9 +635,10 @@ function createRow(size, color, productName, productRows, tableBody) {
             </div>
         </td>
         <td>
-            <div class="upload-button" onclick="triggerFileInput(this, '${rowKey}')"><i class="fas fa-plus"></i> Tải lên</div>
-            <input type="file" class="fileInput" style="display:none;" multiple onchange="handleFileSelect(this, '${rowKey}')">
-        </td>
+                        <div class="upload-button" onclick="triggerFileInput(this, '${rowKey}')"><i class="fas fa-plus"></i> Tải lên</div>
+                        <input type="file" class="fileInput" style="display:none;" multiple onchange="handleFileSelect(this, '${rowKey}')">
+                        <div class="uploaded-images"></div>
+                    </td>
     `;
     productRows[rowKey] = row;
     tableBody.appendChild(row);

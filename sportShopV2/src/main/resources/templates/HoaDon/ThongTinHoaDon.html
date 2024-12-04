@@ -214,12 +214,16 @@
             <div class="container">
 
                 <style>
-                    body {
+
+                    .container {
+
                         font-family: "DejaVu Sans", Arial, sans-serif;
                         margin: 20px;
                         color: #333;
+                        max-height: 70vh; /* Giới hạn chiều cao nội dung */
+                        overflow-y: auto; /* Bật thanh cuộn dọc */
+                        padding-right: 8px;
                     }
-
                     .header, .info, .order-details {
                         text-align: center;
                     }

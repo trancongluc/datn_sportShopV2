@@ -60,7 +60,6 @@ public class HoaDonController {
     private Map<Integer, String> tongTienHD;
     private Map<Integer, String> tongTienGiamGia;
 
-
     public HoaDonController(AnhSanPhamRepository anhSanPhamRepository,
                             HoaDonChiTietRepo hdctrepo,
                             HoaDonRepo hdrepo) {
@@ -101,6 +100,12 @@ public class HoaDonController {
         model.addAttribute("tongTienHoaDon", tongTienHoaDon);
         model.addAttribute("tienGiam", tongTienGiam);
         model.addAttribute("tab", "all");
+        model.addAttribute("countChoXacNhan", hdService.countByStatus("Chờ xác nhận"));
+        model.addAttribute("countDaXacNhan", hdService.countByStatus("Đã xác nhận"));
+        model.addAttribute("countChoVanChuyen", hdService.countByStatus("Chờ vận chuyển"));
+        model.addAttribute("countDangVanChuyen", hdService.countByStatus("Đang vận chuyển"));
+        model.addAttribute("countHoanThanh", hdService.countByStatus("Hoàn thành"));
+        model.addAttribute("countHuy", hdService.countByStatus("Hủy"));
         return "HoaDon/HoaDon";
     }
 
@@ -111,6 +116,12 @@ public class HoaDonController {
         model.addAttribute("tab", status);
         model.addAttribute("tongTienHoaDon", tongTienHD);
         model.addAttribute("tienGiam", tongTienGiamGia);
+        model.addAttribute("countChoXacNhan", hdService.countByStatus("Chờ xác nhận"));
+        model.addAttribute("countDaXacNhan", hdService.countByStatus("Đã xác nhận"));
+        model.addAttribute("countChoVanChuyen", hdService.countByStatus("Chờ vận chuyển"));
+        model.addAttribute("countDangVanChuyen", hdService.countByStatus("Đang vận chuyển"));
+        model.addAttribute("countHoanThanh", hdService.countByStatus("Hoàn thành"));
+        model.addAttribute("countHuy", hdService.countByStatus("Hủy"));
         return "HoaDon/HoaDon";
     }
 
