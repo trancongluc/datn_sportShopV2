@@ -20,8 +20,8 @@ public class AnhSanPham  {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "id_product_detail")
-    private Integer idSPCT;
+//    @Column(name = "id_product_detail")
+//    private Integer idSPCT;
     @Column(name = "name")
     private String tenAnh;
     @Column(name = "status")
@@ -31,4 +31,7 @@ public class AnhSanPham  {
         Path imagePath = Paths.get("C:\\Users\\Admin\\Pictures\\image", tenAnh);
         return Files.readAllBytes(imagePath);
     }
+    @ManyToOne
+    @JoinColumn(name = "id_product_detail")
+    private SanPhamChiTiet sanPhamChiTiet;
 }

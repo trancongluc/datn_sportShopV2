@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,7 +21,7 @@ public class HoaDon {
     private Integer id;
     @ManyToOne
     @JoinColumn(name = "id_account")
-    private TaiKhoan id_account;
+    private TaiKhoan account;
     @ManyToOne
     @JoinColumn(name = "id_staff")
     private TaiKhoan id_staff;
@@ -97,6 +98,10 @@ public class HoaDon {
     private String update_by;
     @Column(name = "deleted")
     private Boolean deleted;
+
+    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<HoaDonChiTiet> billDetails;
+
     public String getStatusDisplay() {
         switch (status) {
             case "ORDERED": return "Chờ xác nhận";

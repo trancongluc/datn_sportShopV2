@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,11 +56,21 @@ public class DotGiamGiaController {
 
 
     @PostMapping("/save")
-    public String saveDotGiamGia(@ModelAttribute DotGiamGia dotGiamGia) {
-        dotGiamGiaRepo.save(dotGiamGia);
+    public String saveDotGiamGia(@RequestParam("discountValue") String discountValue,
+                                 @ModelAttribute DotGiamGia dotGiamGia,
+                                 RedirectAttributes redirectAttributes) {
+        try {
+            BigDecimal discount = new BigDecimal(discountValue);
+            dotGiamGia.setDiscount(discount);
+            dotGiamGiaRepo.save(dotGiamGia);
+            redirectAttributes.addFlashAttribute("successMessage", "Lưu đợt giảm giá thành công!");
+        } catch (NumberFormatException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Giá trị giảm không hợp lệ!");
+            return "redirect:/dot-giam-gia/add-dot-giam-gia";
+        }
+
         return "redirect:/dot-giam-gia/view";
     }
-
     @GetMapping("/product/details/{id}")
     @ResponseBody
     public ResponseEntity<SanPhamChiTietDTO> getProductDetails(@PathVariable Integer id) {

@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -40,4 +41,7 @@ public class NguoiDung {
     private String update_by;
     @Column(name = "deleted")
     private Boolean deleted;
+
+    @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Address> diaChi;
 }

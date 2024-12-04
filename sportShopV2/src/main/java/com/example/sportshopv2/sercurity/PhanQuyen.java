@@ -33,7 +33,7 @@ public class PhanQuyen {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/khach-hang/**", "/san-pham", "/san-pham/**", "/san-pham-chi-tiet/**",
                                 "/san-pham-chi-tiet", "/anh-san-pham/**", "/the-loai/**","/dot-giam-gia/**",
-                                "/nhanvien/**", "/bill/**", "/ban-hang-tai-quay/**", "/giam-gia/**").hasAuthority("Admin")
+                                "/nhanvien/**", "/bill/**", "/ban-hang-tai-quay/**", "/giam-gia/**,/doi-tra/**").hasAuthority("Admin")
                         .requestMatchers("/bill/**", "/buy/**").hasAuthority("Staff")
                         .requestMatchers("/buy/**").hasAuthority("Employee")
                         .requestMatchers("/login/**").permitAll()

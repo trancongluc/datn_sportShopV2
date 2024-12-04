@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, Integer> {
 
-    Page<SanPhamChiTiet> findAllByDeletedAndIdSanPham(boolean deleted, Integer idSanPham, Pageable pageable);
+    Page<SanPhamChiTiet> findAllByDeletedAndSanPham(boolean deleted, Integer idSanPham, Pageable pageable);
 //    @Query("SELECT pd FROM SanPhamChiTiet pd " +
 //            "LEFT JOIN pd.kichThuoc s " +
 //            "LEFT JOIN pd.mauSac c " +

@@ -21,6 +21,7 @@ public class TaiKhoan {
     @ManyToOne
     @JoinColumn(name = "id_user", nullable = false)
     private NguoiDung nguoiDung;
+
     private String username;
     private String role;
     private String password;

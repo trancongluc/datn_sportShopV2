@@ -57,7 +57,7 @@ public class SanPhamChiTietService {
 
     public Page<SanPhamChiTietDTO> getSPCTByIdSP(Integer idSP, Pageable pageable) {
         // Lấy trang danh sách SanPhamChiTiet từ repository
-        Page<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndIdSanPham(false, idSP, pageable);
+        Page<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndSanPham(false, idSP, pageable);
 
         // Ánh xạ từ SanPhamChiTiet sang SanPhamChiTietDTO
         return listSPCT.map(spct -> SanPhamChiTiet.toDTO(spct, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo));
