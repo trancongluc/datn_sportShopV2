@@ -297,19 +297,22 @@ public class DatHangController {
     @GetMapping("/submitOrder")
     public String submitOrder(@RequestParam("amount") String orderTotal,
                               @RequestParam("orderInfo") String orderInfo,
-                              @RequestParam("tinh") String tinh,
-                              @RequestParam("phuong") String phuong,
-                              @RequestParam("quan") String quan,
+                              @RequestParam("tinh_name") String tinh,
+                              @RequestParam("phuong_name") String phuong,
+                              @RequestParam("quan_name") String quan,
                               @RequestParam(value = "email", required = false) String email,
-                              @RequestParam(value = "phone", required = false) String sdt,
+                              @RequestParam("nguoiDung.phone_number") String sdt,
                               @RequestParam(value = "name", required = false) String hoTen,
                               @RequestParam("soNha") String soNha,
                               @RequestParam("selectedProducts") List<Long> selectedProducts,
+                              @RequestParam(value = "moneyShip", defaultValue = "0.0") String moneyShip,
+                              @RequestParam(value = "voucher", defaultValue = "0.0") String moneyVoucher,
                               HttpServletRequest request) {
         if (hoTen == null || hoTen.isEmpty()) {
             hoTen = "Unknown Customer";  // Set a default value if not provided
         }
-
+        Float ship = 0.0f;
+        Float voucher = 0.0f;
         TaiKhoan tk = new TaiKhoan();
         tk.setId(2);  // Assuming you have logic to set this properly
         TaiKhoan taiKhoan = taiKhoanRepo.findTaiKhoanById(idTK);  // Make sure 'idTK' is initialized or passed correctly
@@ -318,6 +321,7 @@ public class DatHangController {
         hoaDon.setBillCode(orderInfo != null ? orderInfo : "HDTTW");  // Use default if orderInfo is null
         hoaDon.setStatus("Thanh toán");
         hoaDon.setId_staff(tk);
+        hoaDon.setUser_name(taiKhoan.getUsername());
         hoaDon.setId_account(taiKhoan);
         hoaDon.setPhone_number(sdt);
         hoaDon.setUser_name(hoTen);  // Ensure hoTen is set
@@ -327,7 +331,10 @@ public class DatHangController {
         hoaDon.setUpdateAt(LocalDateTime.now());
         hoaDon.setPay_method("Chuyển khoản");
         hoaDon.setPay_status("Thanh toán trước");
-
+        ship = Float.valueOf(moneyShip.replaceAll("[^\\d]", ""));
+        voucher = Float.valueOf(moneyVoucher.replaceAll("[^\\d]", ""));
+        hoaDon.setMoney_ship(ship);
+        hoaDon.setMoney_reduced(voucher);
         // Sanitize the orderTotal (remove non-numeric characters)
         String orderTotalStr = orderTotal.replaceAll("[^\\d]", "");
         hoaDon.setTotal_money(orderTotalStr.isEmpty() ? 0 : Float.valueOf(orderTotalStr));  // Ensure no empty string
@@ -356,8 +363,6 @@ public class DatHangController {
         String vnpayUrl = vnPayService.createOrder(request, orderTotalStr, orderInfo, baseUrl);
         return "redirect:" + vnpayUrl;
     }
-
-
     @GetMapping("/voucher/details/{id}")
     @ResponseBody
     public PhieuGiamGiaKhachHang getVoucherDetails(@PathVariable Integer id) {
