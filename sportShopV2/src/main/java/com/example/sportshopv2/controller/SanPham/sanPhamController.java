@@ -87,7 +87,7 @@ public class sanPhamController {
         return ResponseEntity.ok(sanPhamService.addSanPham(sanPham));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     @ResponseBody
     public ResponseEntity<SanPham> updateChatLieu(@PathVariable Integer id, @RequestBody SanPham sanPham) {
         SanPham updateSP = sanPhamService.update(id, sanPham);
@@ -97,4 +97,5 @@ public class sanPhamController {
             return ResponseEntity.notFound().build();
         }
     }
+
 }

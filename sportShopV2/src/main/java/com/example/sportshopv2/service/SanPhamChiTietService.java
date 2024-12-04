@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -131,5 +132,29 @@ public class SanPhamChiTietService {
         Integer sLSanPham = sanPhamChiTietRepository.tongSoLuongSP(idSP);
         return sLSanPham;
     }
+    public SanPhamChiTiet updateSanPhamChiTiet(Integer idSPCT, SanPhamChiTiet spct) {
+        // Lấy sản phẩm chi tiết từ database
+        Optional<SanPhamChiTiet> optionalSanPhamChiTiet = sanPhamChiTietRepository.findById(idSPCT);
+        if (optionalSanPhamChiTiet.isEmpty()) {
+            throw new RuntimeException("Sản phẩm chi tiết không tồn tại");
+        }
 
+        // Cập nhật thông tin sản phẩm chi tiết
+        SanPhamChiTiet sanPhamChiTiet = optionalSanPhamChiTiet.get();
+        sanPhamChiTiet.setIdKichThuoc(spct.getIdKichThuoc());
+        sanPhamChiTiet.setIdSanPham(spct.getIdSanPham());
+        sanPhamChiTiet.setIdMauSac(spct.getIdMauSac());
+        sanPhamChiTiet.setIdThuongHieu(spct.getIdThuongHieu());
+        sanPhamChiTiet.setIdDeGiay(spct.getIdDeGiay());
+        sanPhamChiTiet.setIdTheLoai(spct.getIdTheLoai());
+        sanPhamChiTiet.setIdCoGiay(spct.getIdCoGiay());
+        sanPhamChiTiet.setIdChatLieu(spct.getIdChatLieu());
+        sanPhamChiTiet.setMoTa(spct.getMoTa());
+        sanPhamChiTiet.setSoLuong(spct.getSoLuong());
+        sanPhamChiTiet.setGia(spct.getGia());
+        sanPhamChiTiet.setGioiTinh(spct.getGioiTinh());
+
+        // Lưu thông tin cập nhật vào database
+        return sanPhamChiTietRepository.save(sanPhamChiTiet);
+    }
 }

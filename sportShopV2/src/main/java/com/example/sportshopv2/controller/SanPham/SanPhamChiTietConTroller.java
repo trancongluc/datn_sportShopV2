@@ -108,7 +108,18 @@ public class SanPhamChiTietConTroller {
         model.addAttribute("totalPages", listSPCT.getTotalPages());
         return "SanPham/san-pham-chi-tiet";
     }
-
+    @PutMapping("/update/{id}")
+    @ResponseBody
+    public ResponseEntity<?> updateSanPhamChiTiet(@PathVariable Integer id, @RequestBody SanPhamChiTiet spct) {
+        try {
+            SanPhamChiTiet updatedSanPhamChiTiet = spctService.updateSanPhamChiTiet(id, spct);
+            return ResponseEntity.ok(updatedSanPhamChiTiet);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi cập nhật sản phẩm chi tiết");
+        }
+    }
     @PostMapping("/them-san-pham-chi-tiet")
     @ResponseBody
     public ResponseEntity<SanPhamChiTiet> themChatLieu(@RequestBody SanPhamChiTiet spct) {

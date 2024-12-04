@@ -54,7 +54,6 @@ public class SanPhamService {
     public SanPham update(Integer id, SanPham sanPham) {
         return sanPhamRepository.findById(id).map(sp -> {
             sp.setTenSanPham(sanPham.getTenSanPham());
-            sp.setTrangThai(sanPham.getTrangThai());
             sp.setUpdateBy("CLT");
             sp.setUpdateAt(LocalDateTime.now());
             return sanPhamRepository.save(sp);

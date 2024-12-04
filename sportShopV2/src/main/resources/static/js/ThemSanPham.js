@@ -314,7 +314,7 @@ function loadSelectedValues() {
     document.querySelectorAll('tr[data-id]').forEach(row => {
         const spctId = row.getAttribute('data-id'); // Lấy giá trị id từ thuộc tính data-id của dòng
         if (spctId) {
-            selectedSPCTsUpdate.push(spctId); // Lưu idSPCT vào mảng
+            selectedSPCTsUpdate.push({id: spctId}); // Lưu idSPCT vào mảng
         }
     });
     console.log('Sizes in database:', selectedSizesUpdate);
@@ -943,7 +943,117 @@ async function themSPCT() {
     }
 
 }
+async function capNhatSPCT() {
+    const sanPhamNew = document.getElementById('tenSanPham').value;
+    const moTa = document.getElementById('description').value;
+    const gioiTinh = document.getElementById('gender').value;
+    const idThuongHieu = document.getElementById('idThuongHieu').value;
+    const idTheLoai = document.getElementById('category').value;
+    const idChatLieu = document.getElementById('idChatLieu').value;
+    const idDeGiay = document.getElementById('sole').value;
+    const idCoGiay = document.getElementById('collar').value;
 
+    resetBorders();
+
+    // Kiểm tra validate cho các trường
+    if (!sanPhamNew.trim()) {
+        showToast('Tên sản phẩm không được để trống!');
+        document.getElementById('tenSanPham').style.border = '1px solid red';
+        return;
+    }
+    if (!moTa.trim()) {
+        showToast('Mô tả không được để trống!');
+        document.getElementById('description').style.border = '1px solid red';
+        return;
+    }
+
+    const path = window.location.pathname;
+    const segments = path.split("/");
+    const sanPhamId = segments[segments.length - 1]; // Lấy idSP từ URL
+
+    try {
+        // Lấy thông tin sản phẩm chi tiết hiện tại từ server
+        const spctInfoPromises = selectedSPCTsUpdate.map(detail => {
+            return fetch(`/san-pham-chi-tiet/thong-tin-spct/${detail.id}`)
+                .then(response => response.json())
+                .then(data => {
+                    return {
+                        id: detail.id,
+                        idSanPham: sanPhamId,
+                        idKichThuoc: data.idKichThuoc,
+                        idMauSac: data.idMauSac,
+                        idThuongHieu: data.idThuongHieu,
+                        idDeGiay: data.idDeGiay,
+                        idTheLoai: data.idTheLoai,
+                        idCoGiay: data.idCoGiay,
+                        idChatLieu: data.idChatLieu,
+                        moTa: data.moTa,
+                        gioiTinh: data.gioiTinh,
+                        soLuong: data.soLuong,
+                        gia: data.price
+                    };
+                });
+        });
+
+        const spctInfoList = await Promise.all(spctInfoPromises);
+        console.log(spctInfoList);
+        // Cập nhật sản phẩm chính
+        const sanPhamResponse = await fetch(`/san-pham/update/${sanPhamId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                tenSanPham: sanPhamNew
+            })
+        });
+
+        if (!sanPhamResponse.ok) {
+            const errorText = await sanPhamResponse.text();
+            throw new Error(`Lỗi khi cập nhật sản phẩm: ${errorText}`);
+        }
+
+        // Cập nhật thông tin chi tiết của từng SPCT từ danh sách spctInfoList
+        const chiTietPromises = spctInfoList.map(detail => {
+            return fetch(`/san-pham-chi-tiet/update/${detail.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    idSanPham: sanPhamId,
+                    idKichThuoc: detail.idKichThuoc,
+                    idMauSac: detail.idMauSac,
+                    idThuongHieu: idThuongHieu,
+                    idDeGiay: idDeGiay,
+                    idTheLoai: idTheLoai,
+                    idCoGiay: idCoGiay,
+                    idChatLieu: idChatLieu,
+                    moTa: moTa,
+                    gioiTinh: gioiTinh,
+                    soLuong: detail.quantity,
+                    gia: detail.price
+                })
+            });
+        });
+
+        const chiTietResponses = await Promise.all(chiTietPromises);
+
+        chiTietResponses.forEach((response, index) => {
+            if (!response.ok) {
+                console.error(`Lỗi khi cập nhật SPCT với ID ${spctInfoList[index].id}`);
+            } else {
+                console.log(`Cập nhật SPCT với ID ${spctInfoList[index].id} thành công!`);
+            }
+        });
+
+        // Hiển thị thông báo thành công
+        localStorage.setItem('notification', showNotification("Cập nhật Thành Công"));
+
+    } catch (error) {
+        console.log('Có lỗi xảy ra: ' + error.message);
+    }
+}
 function handleResponse(response) {
     if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
