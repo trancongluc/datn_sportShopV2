@@ -64,8 +64,8 @@
                     <td th:text="${vc.minimumValue}"></td> <!-- Giá trị tối thiểu -->
                     <td th:text="${vc.startDate}"></td> <!-- Ngày bắt đầu -->
                     <td th:text="${vc.endDate}"></td> <!-- Ngày kết thúc -->
-                    <td>
-                        <span class="status-label" th:text="${vc.getStatus()}"></span> <!-- Trạng thái -->
+                    <td th:class="${vc.getStatus() == 'Chưa diễn ra' ? 'bg-yellow' : (vc.getStatus() == 'Hết hạn' ? 'bg-red' : (vc.getStatus() == 'Đang diễn ra' ? 'bg-green' : 'bg-gray'))}">
+                        <span style="color: black;">[[${vc.getStatus()}]]</span>
                     </td>
                     <td>
                         <a th:href="@{/giam-gia/detail/{id}(id=${vc.id})}" title="Chỉnh sửa">

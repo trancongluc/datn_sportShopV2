@@ -1,4 +1,4 @@
-package com.example.sportshopv2.Security;
+package com.example.sportshopv2.sercurity;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -122,4 +122,5 @@ public class PhanQuyen {
                 // Thêm các endpoint khác cần bỏ qua
         );
     }
+
 }

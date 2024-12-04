@@ -170,65 +170,90 @@
         }
 
     </style>
-    <script>
-        function generateVoucherCode() {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let result = 'VC';
-            for (let i = 0; i < 5; i++) {
-                result += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-            console.log("Generated Voucher Code: ", result); // In mã ra console
-            return result;
+<script>
+
+    function generateVoucherCode() {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let result = 'VC';
+        for (let i = 0; i < 5; i++) {
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
         }
+        console.log("Generated Voucher Code: ", result); // In mã ra console
+        return result;
+    }
 
-        function updatePreview() {
-            var tenPhieu = document.getElementById('ten-phieu').value || 'VCXXXXX';
-            var giaTriDonHang = document.getElementById('gia-tri-don-hang').value || '0';
-            var giamToiDa = document.getElementById('giam-toi-da').value || '0';
-            var soLuong = document.getElementById('so-luong').value || '0';
-            var phanTramGiam = document.getElementById('phan-tram-giam').value || '0';
-            var ngayKetThuc = document.getElementById('ngay-ket-thuc').value || 'dd/mm/yyyy';
+    function updatePreview() {
+        var tenPhieu = document.getElementById('ten-phieu').value || 'VCXXXXX';
+        var giaTriDonHang = document.getElementById('gia-tri-don-hang').value || '0';
+        var giamToiDa = document.getElementById('giam-toi-da').value || '0';
+        var soLuong = document.getElementById('so-luong').value || '0';
+        var phanTramGiam = document.getElementById('phan-tram-giam').value || '0';
+        var ngayKetThuc = document.getElementById('ngay-ket-thuc').value || 'dd/mm/yyyy';
 
-            var conditionText = 'Điều kiện: Áp dụng cho đơn hàng từ ' + giaTriDonHang + 'đ';
-            var maxText = 'Tối Đa: ' + giamToiDa + 'đ/Khách Hàng';
-            var quantityText = 'Số Lượng: ' + soLuong;
-            var discountText = tenPhieu;
-            var expiryText = 'Hạn Đến: ' + ngayKetThuc;
+        var conditionText = 'Điều kiện: Áp dụng cho đơn hàng từ ' + giaTriDonHang + 'đ';
+        var maxText = 'Tối Đa: ' + giamToiDa + 'đ/Khách Hàng';
+        var quantityText = 'Số Lượng: ' + soLuong;
+        var discountText = tenPhieu;
+        var expiryText = 'Hạn Đến: ' + ngayKetThuc;
 
-            document.querySelectorAll('.preview-code').forEach(function(element) {
-                element.innerText = tenPhieu;
-            });
-            document.querySelectorAll('.preview-condition').forEach(function(element) {
-                element.innerText = conditionText;
-            });
-            document.querySelectorAll('.preview-max').forEach(function(element) {
-                element.innerText = maxText;
-            });
-            document.querySelectorAll('.preview-quantity').forEach(function(element) {
-                element.innerText = quantityText;
-            });
-            document.querySelectorAll('.preview-discount').forEach(function(element) {
-                element.innerText = discountText;
-            });
-            document.querySelectorAll('.preview-expiry').forEach(function(element) {
-                element.innerText = expiryText;
-            });
-            var voucherCode = generateVoucherCode();
-            document.getElementById('voucher-code').value = voucherCode;
-            document.querySelectorAll('.preview-code').forEach(function(element) {
-                element.innerText = voucherCode;
-            });
+        document.querySelectorAll('.preview-code').forEach(function(element) {
+            element.innerText = tenPhieu;
+        });
+        document.querySelectorAll('.preview-condition').forEach(function(element) {
+            element.innerText = conditionText;
+        });
+        document.querySelectorAll('.preview-max').forEach(function(element) {
+            element.innerText = maxText;
+        });
+        document.querySelectorAll('.preview-quantity').forEach(function(element) {
+            element.innerText = quantityText;
+        });
+        document.querySelectorAll('.preview-discount').forEach(function(element) {
+            element.innerText = discountText;
+        });
+        document.querySelectorAll('.preview-expiry').forEach(function(element) {
+            element.innerText = expiryText;
+        });
+        var voucherCode = generateVoucherCode();
+        document.getElementById('voucherCode').value = voucherCode;
+        document.querySelectorAll('.preview-code').forEach(function(element) {
+            element.innerText = voucherCode;
+        });
+    }
+    function saveVoucher(event) {
+        event.preventDefault(); // Ngăn chặn việc gửi biểu mẫu ngay lập tức
+        var voucherCode = generateVoucherCode();
+        document.getElementById('voucher-code').value = voucherCode;
+        updatePreview();
+
+        // Gửi biểu mẫu sau khi mã đã được sinh ra
+        document.querySelector('form').submit();
+    }
+
+
+    function updateDiscountType() {
+        var loaiPhieu = document.getElementById('loai-phieu').value;
+        var phanTramGiamInput = document.getElementById('phan-tram-giam');
+        var currencyLabel = document.querySelector('.currency');
+
+        if (loaiPhieu === 'Tiền Mặt') {
+            phanTramGiamInput.placeholder = "Số tiền giảm...";
+            currencyLabel.innerText = "VND";
+            phanTramGiamInput.value = ''; // Xóa giá trị cũ
+            phanTramGiamInput.removeAttribute("max"); // Bỏ giới hạn tối đa
+            phanTramGiamInput.removeAttribute("min"); // Bỏ giới hạn tối thiểu
+        } else {
+            phanTramGiamInput.placeholder = "Phần trăm giảm giá...";
+            currencyLabel.innerText = "%";
+            phanTramGiamInput.value = ''; // Xóa giá trị cũ
+            phanTramGiamInput.setAttribute("max", "100"); // Giới hạn tối đa là 100%
+            phanTramGiamInput.setAttribute("min", "0"); // Giới hạn tối thiểu là 0
         }
-        function saveVoucher(event) {
-            event.preventDefault(); // Ngăn chặn việc gửi biểu mẫu ngay lập tức
-            var voucherCode = generateVoucherCode();
-            document.getElementById('voucher-code').value = voucherCode;
-            updatePreview();
+        updatePreview(); // Cập nhật lại xem trước
+    }
 
-            // Gửi biểu mẫu sau khi mã đã được sinh ra
-            document.querySelector('form').submit();
-        }
-    </script>
+
+</script>
 </head>
 <body>
 <main layout:fragment="main1">
@@ -256,7 +281,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="gia-tri-don-hang">Giá Trị Đơn Hàng</label>
-                                    <input type="text" id="gia-tri-don-hang"  placeholder="Điều kiện áp dụng..." oninput="updatePreview()">
+                                    <input type="text" id="gia-tri-don-hang" placeholder="Điều kiện áp dụng..." oninput="updatePreview()">
                                     <span class="currency">VND</span>
                                 </div>
                                 <div class="form-group">
@@ -269,20 +294,20 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="mo-ta">Mô Tả (Optional)</label>
-                                    <textarea id="mo-ta"  placeholder="Giảm tối đa..." oninput="updatePreview()"></textarea>
+                                    <textarea id="mo-ta"  th:field="*{description}" placeholder="Giảm tối đa..." oninput="updatePreview()"></textarea>
                                 </div>
                             </div>
                             <div class="form-column">
                                 <div class="form-group">
                                     <label for="loai-phieu">Loại Phiếu</label>
-                                    <select id="loai-phieu" th:field="*{formVoucher}" oninput="updatePreview()">
-                                        <option value="Percentage">Phần Trăm</option>
-                                        <option value="Fixed">Cố Định</option>
+                                    <select id="loai-phieu" th:field="*{formVoucher}" oninput="updateDiscountType()">
+                                        <option value="Phần Trăm">Phần Trăm</option>
+                                        <option value="Tiền Mặt">Tiền Mặt</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="phan-tram-giam">Số Tiền Giảm</label>
-                                    <input type="number" id="phan-tram-giam" th:field="*{discountValue}"  placeholder="Phần trăm giảm giá..." oninput="updatePreview()">
+                                    <input type="number" id="phan-tram-giam" th:field="*{discountValue}" placeholder="Số tiền giảm..." oninput="updatePreview()" min="0" max="100">
                                     <span class="currency">VND</span>
                                 </div>
                                 <div class="form-group">
