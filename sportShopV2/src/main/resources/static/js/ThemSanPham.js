@@ -952,7 +952,6 @@ async function capNhatSPCT() {
     const idChatLieu = document.getElementById('idChatLieu').value;
     const idDeGiay = document.getElementById('sole').value;
     const idCoGiay = document.getElementById('collar').value;
-
     resetBorders();
 
     // Kiểm tra validate cho các trường
@@ -1031,8 +1030,8 @@ async function capNhatSPCT() {
                     idChatLieu: idChatLieu,
                     moTa: moTa,
                     gioiTinh: gioiTinh,
-                    soLuong: detail.quantity,
-                    gia: detail.price
+                    soLuong: soLuong || detail.soLuong,
+                    gia: gia || detail.gia
                 })
             });
         });
@@ -1049,7 +1048,7 @@ async function capNhatSPCT() {
 
         // Hiển thị thông báo thành công
         localStorage.setItem('notification', showNotification("Cập nhật Thành Công"));
-
+        window.location.href = '/san-pham';
     } catch (error) {
         console.log('Có lỗi xảy ra: ' + error.message);
     }
@@ -1159,7 +1158,7 @@ function applyQuantityAndPrice() {
         return;
     }
 
-    const selectedRows = document.querySelectorAll('table tbody tr .selectItem:checked');
+    const selectedRows = document.querySelectorAll('table tr .selectItem:checked');
 
     if (selectedRows.length === 0) {
         showToast('Vui lòng chọn ít nhất một sản phẩm!');
