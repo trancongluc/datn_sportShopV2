@@ -278,13 +278,22 @@
         }
         function showSummary() {
             // Hiển thị thông tin tổng giá gốc, voucher đã sử dụng, và các thông tin khác
-            document.getElementById('summary').style.display = 'block';
+            const summary = document.getElementById('summary');
+            summary.style.display = 'block'; // Hiển thị phần tóm tắt
         }
         window.onload = function() {
             document.getElementById('summary').style.display = 'none';
         }
         function removeItem(button) {
             const row = button.parentNode.parentNode;
+            const priceCell = row.cells[5]; // Giả sử ô tổng tiền là ô thứ 6
+            const totalPrice = parseFloat(priceCell.innerText.replace(' VND', '').replace(',', ''));
+
+            // Cập nhật tổng tiền
+            const totalPaymentElement = document.getElementById('totalPayment');
+            const currentTotal = parseFloat(totalPaymentElement.innerText.replace(' VND', '').replace(',', ''));
+            totalPaymentElement.innerText = (currentTotal - totalPrice) + ' VND';
+
             row.parentNode.removeChild(row);
         }
 
@@ -389,7 +398,7 @@
             </tbody>
         </table>
 
-        <div class="summary" id="summary" th:each="item, iterStat : ${hoaDon.billDetails}">
+        <div class="summary" id="summary" th:each="item, iterStat : ${hoaDon.billDetails}" style="display: none;">
             <p>
                 Tổng giá hàng gốc:
                 <span th:text="${item.sanPhamChiTiet.gia} + ' VND'"></span>
@@ -409,6 +418,7 @@
             <p class="total">
                 Tổng tiền thanh toán:
                 <span th:text="${item.price} + ' VND'"></span>
+<!--                <span id="totalPayment">0 VND</span>-->
             </p>
             <p>
                 Tổng giá hàng trả:
@@ -427,7 +437,7 @@
                 <p>* Mô tả:</p>
                 <textarea placeholder="Nhập mô tả" th:placeholder="'Nhập mô tả'"></textarea>
                 <form th:action="@{/doi-tra/cap-nhat}" method="get">
-                    <input type="" name="maHoaDon" th:value="${hoaDon.id}"/>
+                    <input type="hidden" name="maHoaDon" th:value="${hoaDon.id}"/>
                     <button type="submit">Đổi trả</button>
                 </form>
             </div>

@@ -37,12 +37,12 @@ public class DoiTraController {
     }
 
     @GetMapping("/detail")
-    public String getHoaDonDetail(@RequestParam("maHoaDon") Integer maHoaDon, Model model) {
+    public String getHoaDonDetail(@RequestParam("tenHoaDon") String tenHoaDon, Model model) {
 
-        HoaDon hoaDon = hoaDonServiceImp.getBillDetailById(maHoaDon);
+        HoaDon hoaDon = hoaDonServiceImp.getBillDetailByBillCode(tenHoaDon);
         if (hoaDon == null) {
             // Xử lý trường hợp không tìm thấy hóa đơn
-            model.addAttribute("error", "Không tìm thấy hóa đơn với mã: " + maHoaDon);
+            model.addAttribute("error", "Không tìm thấy hóa đơn với mã: " + tenHoaDon);
             return "doi-tra/view";
         }
         model.addAttribute("hoaDon", hoaDon);
