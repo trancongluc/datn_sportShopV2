@@ -498,30 +498,22 @@ h3 {
     color: #2ecc71;
 }
 /*Khang hang*/
-.dropdown-container {
-    position: relative;
-}
-
-#customerDropdown {
-    cursor: pointer;
-}
-
-.dropdown-list {
-    position: absolute;
-    width: 100%;
+#customerList {
     max-height: 200px;
     overflow-y: auto;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    z-index: 9999;
+    border: 1px solid #ddd;
+    background-color: white;
+    position: absolute;
+    z-index: 999;
 }
 
 .dropdown-item {
-    padding: 10px;
+    padding: 8px;
     cursor: pointer;
 }
 
 .dropdown-item:hover {
     background-color: #f1f1f1;
 }
+
 
