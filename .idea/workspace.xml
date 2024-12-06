@@ -5,6 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1cf1883e-5675-4e33-950b-148cfc47239c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DoiTraController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/dto/HoaDonChiTietDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/dto/ItemDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/impl/HoaDonServiceImp.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/js/DoiTra.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DoiTraController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DoiTraController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/HoaDon.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/HoaDon.java" afterDir="false" />
@@ -22,10 +33,9 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CSS File" />
-        <option value="HTML File" />
         <option value="Interface" />
+        <option value="HTML File" />
         <option value="Class" />
-        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -48,6 +58,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "Spring Boot.SportShopV2Application.executor": "Run",
+    "node.js.selected.package.tslint": "(autodetect)"
+  }
+}]]></component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
@@ -181,5 +201,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/sportShopV2$SportShopV2Application.ic" NAME="SportShopV2Application Coverage Results" MODIFIED="1732512949722" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
   </component>
 </project>

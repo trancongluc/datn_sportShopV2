@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 public class TaiKhoan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
     @ManyToOne
     @JoinColumn(name = "id_user", nullable = false)

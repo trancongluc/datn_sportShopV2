@@ -23,7 +23,7 @@
         </h2>
         <!-- Invoice Tabs -->
         <div class="tab-container d-flex align-items-center" id="tabContainer">
-            <button class="btn btn-outline-primary ms-2" onclick="addTab()">+ Thêm</button>
+            <button class="btn btn-outline-primary ms-2" onclick="taoHoaDonCho()">+ Thêm</button>
         </div>
 
         <div class="row">
@@ -51,6 +51,7 @@
                                     <span th:text="${spct.sanPham.tenSanPham}"></span>
                                     [ <span th:text="${spct.kichThuoc.tenKichThuoc}"></span> -
                                     <span th:style="'display:inline-block; background-color: ' + ${spct.mauSac.tenMauSac} + '; width: 20px; height: 20px; border: 1px solid #000;'"></span>
+                                    <span class="color-name" id="color-name-${spct.id}" th:text="${spct.mauSac.tenMauSac}"></span>
                                     ]
                                 </td>
                                 <td th:text="'SL: ' + ${spct.soLuong}"></td>
@@ -72,15 +73,15 @@
                 <h5>Nhận Hàng:</h5>
                 <div class="delivery-option">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="deliveryOption" id="atStore" checked
-                               onchange="updateDeliveryOption(invoiceCount)">
-                        <label class="form-check-label" for="atStore">Tại Quầy</label>
+                        <input class="form-check-input" type="radio" name="deliveryOption" id="Tại Quầy" checked
+                               onchange="updateDeliveryOption()">
+                        <label class="form-check-label" for="Tại Quầy">Tại Quầy</label>
                         <small class="d-block">Có thể nhận hàng từ 7h30 đến 22h30 mọi ngày tại cửa hàng</small>
                     </div>
                     <div class="form-check mt-2">
-                        <input class="form-check-input" type="radio" name="deliveryOption" id="delivery"
-                               onchange="updateDeliveryOption(invoiceCount)">
-                        <label class="form-check-label" for="delivery">Chuyển Phát</label>
+                        <input class="form-check-input" type="radio" name="deliveryOption" id="Chuyển Phát"
+                               onchange="updateDeliveryOption()">
+                        <label class="form-check-label" for="Chuyển Phát">Chuyển Phát</label>
                         <small class="d-block">Giao hàng toàn quốc từ 1 đến 2 ngày</small>
                     </div>
 
@@ -91,19 +92,19 @@
                         <div class="col-md-4">
                             <label for="tinh" class="form-label">Tỉnh</label>
                             <select class="form-select" id="tinh" name="tinh" title="Chọn Tỉnh Thành">
-                                <option value="0">Tỉnh Thành</option>
+                                <option value="">Tỉnh Thành</option>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label for="quan" class="form-label">Huyện</label>
                             <select class="form-select" id="quan" name="quan" title="Chọn Quận Huyện">
-                                <option value="0">Quận Huyện</option>
+                                <option value="">Quận Huyện</option>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label for="phuong" class="form-label">Phường</label>
                             <select class="form-select" id="phuong" name="phuong" title="Chọn Phường Xã">
-                                <option value="0">Phường Xã</option>
+                                <option value="">Phường Xã</option>
                             </select>
                         </div>
                     </div>
@@ -111,6 +112,19 @@
                         <label for="soNha" class="form-label">Số nhà</label>
                         <input type="text" class="form-control" id="soNha"
                                placeholder="Nhập số nhà và địa chỉ chi tiết">
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="phuongThucNhanHang" id="thanhToanTruoc" checked
+                               onchange="">
+                        <label class="form-check-label" for="thanhToanTruoc">Thanh Toán Trước</label>
+
+                    </div>
+                    <div class="form-check" style="margin-left: 10px">
+                        <input class="form-check-input" type="radio" name="phuongThucNhanHang" id="thanhToanKhiNhan"
+                               onchange="">
+                        <label class="form-check-label" for="thanhToanKhiNhan">Thanh Toán Khi Nhận</label>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -121,7 +135,8 @@
                 <div class="customer-info">
                     <div class="mb-2 align-items-center">
                         <label for="customerDropdown" class="form-label mb-0">Khách Hàng:</label>
-                        <button class="btn btn-outline-secondary btn-sm">+</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="openAddCustomerModal()"
+                                 >+</button>
                     </div>
                     <select id="customerDropdown" class="form-control" name="selectedCustomerId">
                         <option value="all">Tất cả</option>
@@ -135,15 +150,15 @@
                     <div class="mt-3">
                         <div class="mb-2">
                             <label for="customerName">Họ Tên:</label>
-                            <input type="text" class="form-control" id="customerName" readonly>
+                            <input type="text" class="form-control" id="customerName">
                         </div>
                         <div class="mb-2">
                             <label for="phone">SĐT:</label>
-                            <input type="text" class="form-control" id="phone" readonly>
+                            <input type="text" class="form-control" id="phone">
                         </div>
                         <div class="mb-2">
                             <label for="email">Email:</label>
-                            <input type="email" class="form-control" id="email" readonly>
+                            <input type="email" class="form-control" id="email">
                         </div>
                         <div class="mb-2">
                             <label for="customerCode">Mã KH:</label>
@@ -154,8 +169,23 @@
                         <input type="text" class="form-control" placeholder="Nhập mã voucher">
                         <button class="btn btn-primary">Áp Dụng</button>
                     </div>
-                </div>
 
+                    <div class="voucher-container">
+                        <!-- Các voucher sẽ được thêm vào đây -->
+                    </div>
+
+
+                    <div style="display: flex; align-items: center;">
+                        <div class="form-check" style="margin-right: 20px;">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="tienMat" checked onchange="">
+                            <label class="form-check-label" for="tienMat">Tiền Mặt</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="chuyenKhoan" onchange="">
+                            <label class="form-check-label" for="chuyenKhoan">Chuyển Khoản</label>
+                        </div>
+                    </div>
+                </div>
 
 
                 <!-- Summary and Total -->
@@ -177,7 +207,7 @@
                         <td class="text-end" id="thucThu">0</td>
                     </tr>
                 </table>
-                <div class="total-btn" onclick="capNhatHoaDon()">THANH TOÁN</div>
+                <div class="total-btn" onclick="showConfirmation()">THANH TOÁN</div>
             </div>
         </div>
     </div>
@@ -185,9 +215,53 @@
         <span id="toast-message">Thông báo sẽ xuất hiện ở đây!</span>
         <div class="progress-bar" id="progress-bar"></div>
     </div>
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('#confirmationModal')">&times;</span>
+            <p id="modalMessage"></p>
+            <div class="button-group">
+                <button class="modal-button" onclick="capNhatHoaDon()">OK</button>
+                <button class="cancel-button" onclick="closeModal('#confirmationModal')">Hủy</button>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCustomerModalLabel">Thêm Khách Hàng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form Thêm Khách Hàng -->
+                    <form id="addCustomerForm">
+                        <div class="mb-3">
+                            <label for="customerName" class="form-label">Tên Khách Hàng</label>
+                            <input type="text" class="form-control" id="customerName2" name="customerName" required placeholder="Nhập tên khách hàng">
+                        </div>
+                        <div class="mb-3">
+                            <label for="customerPhone" class="form-label">Số Điện Thoại</label>
+                            <input type="tel" class="form-control" id="customerPhone" name="customerPhone" required placeholder="Nhập số điện thoại">
+                        </div>
+                        <div class="mb-3">
+                            <label for="customerEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="customerEmail" name="customerEmail" required placeholder="Nhập email">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary"  onclick="addCustomer()">Lưu Khách Hàng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="/js/Banhangtaiquay.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </main>
 </body>
 </html>

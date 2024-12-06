@@ -15,23 +15,25 @@ import java.nio.file.Paths;
 @NoArgsConstructor
 @Entity
 @Table(name = "Image")
-public class AnhSanPham  {
+public class AnhSanPham {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-//    @Column(name = "id_product_detail")
-//    private Integer idSPCT;
+    @Column(name = "id_product_detail")
+    private Integer idSPCT;
     @Column(name = "name")
     private String tenAnh;
     @Column(name = "status")
     private String trangThai;
+
     public byte[] getImageData() throws IOException {
         // Xây dựng đường dẫn đầy đủ đến file ảnh
-        Path imagePath = Paths.get("C:\\Users\\Admin\\Pictures\\image", tenAnh);
+        Path imagePath = Paths.get("D:\\demoMergeCodeDatn\\sportShopV2\\src\\main\\resources\\static\\images", tenAnh);
         return Files.readAllBytes(imagePath);
     }
-    @ManyToOne
+
+/*    @ManyToOne
     @JoinColumn(name = "id_product_detail")
-    private SanPhamChiTiet sanPhamChiTiet;
+    private SanPhamChiTiet sanPhamChiTiet;*/
 }

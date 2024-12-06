@@ -196,7 +196,7 @@ public class NhanVienController {
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Cập nhật không thành công.");
         }
-        return "redirect:/quan-ly-nhan-vien"; // Redirect back to the customer list
+        return "redirect:/nhanvien/list"; // Redirect back to the customer list
     }
 
 

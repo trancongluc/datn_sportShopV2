@@ -2,6 +2,7 @@ package com.example.sportshopv2.controller;
 
 import com.example.sportshopv2.dto.HoaDonChiTietDTO;
 import com.example.sportshopv2.model.HoaDon;
+import com.example.sportshopv2.model.HoaDonChiTiet;
 import com.example.sportshopv2.repository.HoaDonRepo;
 import com.example.sportshopv2.repository.SanPhamChiTietRepository;
 import com.example.sportshopv2.repository.SanPhamRepository;
@@ -46,6 +47,7 @@ public class DoiTraController {
             return "doi-tra/view";
         }
         model.addAttribute("hoaDon", hoaDon);
+
         return "DoiTra/DoiTraChiTiet";
     }
     @GetMapping("/cap-nhat")

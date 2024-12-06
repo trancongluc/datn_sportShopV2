@@ -20,6 +20,7 @@ public class NguoiDung {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(name = "code")
     private String code;
     private String full_name;
     private LocalDate date;
@@ -30,7 +31,7 @@ public class NguoiDung {
     private String image_file_name;
     @Column(name = "create_at")
     private LocalDateTime create_at;
-//    private String points;
+    //    private String points;
     @Column(name = "create_by")
     private String create_by;
 
@@ -42,6 +43,6 @@ public class NguoiDung {
     @Column(name = "deleted")
     private Boolean deleted;
 
-    @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Address> diaChi;
+  /*  @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Address> diaChi;*/
 }

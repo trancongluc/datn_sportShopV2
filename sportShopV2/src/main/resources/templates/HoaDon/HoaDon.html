@@ -23,13 +23,14 @@
             <i class="fas fa-filter"></i>
             <span>Bộ lọc</span>
         </div>
-        <form action="/bill/search" method="get">
+        <form th:action="@{/bill/search}" method="get">
             <div class="filter-section">
                 <div class="form-row">
 
                     <div class="form-group col-md-6">
                         <label for="search">Tìm kiếm:</label>
-                        <input type="text" class="form-control" id="search" placeholder="Nhập">
+                        <input type="text" class="form-control" id="search" placeholder="Nhập mã hóa đơn"
+                               name="maHoaDon">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="order-type">Loại đơn:</label>
@@ -41,11 +42,12 @@
                     </div>
                     <div class="form-group col-md-6">
                         <label for="start-date">Ngày bắt đầu:</label>
-                        <input type="date" class="form-control" id="start-date" placeholder="dd/mm/yyyy">
+                        <input type="text" class="form-control" id="start-date" placeholder="dd/mm/yyyy"
+                               name="startDate">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="end-date">Ngày kết thúc:</label>
-                        <input type="date" class="form-control" id="end-date" placeholder="dd/mm/yyyy">
+                        <input type="text" class="form-control" id="end-date" placeholder="dd/mm/yyyy" name="endDate">
                     </div>
                     <div class="form-group col-md-12 filter-buttons">
                         <button class="btn btn-primary" type="submit">Tìm kiếm</button>
@@ -74,56 +76,45 @@
                 <li class="nav-item">
                     <a class="nav-link"
                        th:href="@{~/bill/view}"
-                       th:classappend="${tab == 'all'} ? 'active' : ''">Tất cả</a>
+                       th:classappend="${tab == 'all'} ? 'active' : ''">Tất cả
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link"
                        th:href="@{~/bill/tab(status='Chờ xác nhận')}"
-                       th:classappend="${tab == 'pending'} ? 'active' : ''">Chờ xác nhận</a>
+                       th:classappend="${tab == 'pending'} ? 'active' : ''">Chờ xác nhận
+                        <span class="badge" th:text="${countChoXacNhan}"></span></a>
                 </li>
-
-                <!--                <li class="nav-item">-->
-                <!--                    <a class="nav-link" th:href="@{/bill/detail(status='Pending')}" th:class="${tab == 'pending'} ? 'nav-link active' : 'nav-link">Chờ xác nhận <span class="badge">8</span></a>-->
-                <!--                </li>-->
-                <!--                <li class="nav-item">-->
-                <!--                    <a class="nav-link" th:href="@{/bill/detail(status='Đã xác nhận')}" onclick="showTab(event, 'confirmed')">Đã xác nhận <span class="badge">3</span></a>-->
-                <!--                </li>-->
-                <!--                <li class="nav-item">-->
-                <!--                    <a class="nav-link" th:href="@{/bill/detail(status='Shipping')}" onclick="showTab(event, 'shipping')">Chờ vận chuyển <span class="badge">9</span></a>-->
-                <!--                </li>-->
-                <!--                <li class="nav-item">-->
-                <!--                    <a class="nav-link" th:href="@{/bill/detail(status='Payment')}" onclick="showTab(event, 'payment')">Thanh toán <span class="badge">4</span></a>-->
-                <!--                </li>-->
-                <!--                <li class="nav-item">-->
-                <!--                    <a class="nav-link" th:href="@{/bill/detail(status='Completed')}" onclick="showTab(event, 'completed')">Hoàn thành <span class="badge">99+</span></a>-->
-                <!--                </li>-->
-                <!--                <li class="nav-item">-->
-                <!--                    <a class="nav-link" th:href="@{/bill/detail(status='Cancelled')}" onclick="showTab(event, 'cancelled')">Hủy <span class="badge">8</span></a>-->
-                <!--                </li>-->
                 <li class="nav-item">
                     <a class="nav-link"
                        th:href="@{~/bill/tab(status='Đã xác nhận')}"
-                       th:classappend="${tab == 'confirmed'} ? 'active' : ''">Đã xác nhận</a>
+                       th:classappend="${tab == 'confirmed'} ? 'active' : ''">Đã xác nhận
+                        <span class="badge" th:text="${countDaXacNhan}"></span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link"
                        th:href="@{~/bill/tab(status='Chờ vận chuyển')}"
-                       th:classappend="${tab == 'shipping'} ? 'active' : ''">Chờ vận chuyển</a>
+                       th:classappend="${tab == 'shipping'} ? 'active' : ''">Chờ vận chuyển
+                        <span class="badge" th:text="${countChoVanChuyen}"></span></a>
 
                 <li class="nav-item">
                     <a class="nav-link"
-                       th:href="@{~/bill/tab(status='Thanh toán')}"
-                       th:classappend="${tab == 'payment'} ? 'active' : ''">Thanh toán</a>
+                       th:href="@{~/bill/tab(status='Đang vận chuyển')}"
+                       th:classappend="${tab == 'payment'} ? 'active' : ''">Đang vận chuyển
+                        <span class="badge" th:text="${countDangVanChuyen}"></span>
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link"
                        th:href="@{~/bill/tab(status='Hoàn thành')}"
-                       th:classappend="${tab == 'completed'} ? 'active' : ''">Hoàn thành</a>
+                       th:classappend="${tab == 'completed'} ? 'active' : ''">Hoàn thành
+                        <span class="badge" th:text="${countHoanThanh}"></span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link"
                        th:href="@{~/bill/tab(status='Hủy')}"
-                       th:classappend="${tab == 'cancelled'} ? 'active' : ''">Hủy</a>
+                       th:classappend="${tab == 'cancelled'} ? 'active' : ''">Hủy
+                        <span class="badge" th:text="${countHuy}"></span></a>
                     <!--                    <a class="nav-link" href="#" onclick="showTab(event, 'pending')">Chờ xác nhận <span class="badge">0</span></a>-->
                 </li>
                 <!--                <li class="nav-item">-->
@@ -158,17 +149,17 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="hdct, index : ${hdctList}">
+                    <tr th:each="hd, index : ${hdList}">
                         <td th:text="${index.index + 1}"></td>
-                        <td th:text="${hdct.hoaDon.bill_code}"></td>
-                        <td th:text="${hdct.hoaDon.user_name}"></td>
-                        <td th:text="${hdct.hoaDon.email}"></td>
-                        <td th:text="${hdct.hoaDon.type}"></td>
-                        <td th:text="${hdct.create_at}"></td>
-                        <td th:text="${hdct.quantity}"></td>
-                        <td th:text="${hdct.hoaDon.total_money}"></td>
+                        <td th:text="${hd.billCode}"></td>
+                        <td th:text="${hd.user_name}"></td>
+                        <td th:text="${hd.getId_staff().getUsername()}"></td>
+                        <td th:text="${hd.type}"></td>
+                        <td th:text="${hd.createAt}"></td>
+                        <td th:text="${tienGiam[hd.id]}"></td>
+                        <td th:text="${tongTienHoaDon[hd.id]}"></td>
                         <td>
-                            <a th:href="@{~/bill/detail(id=${hdct.hoaDon.id})}">
+                            <a th:href="@{~/bill/detail(id=${hd.id})}">
                                 <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
                             </a>
                         </td>
@@ -192,23 +183,21 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="hdct, index : ${hdctList}">
+                    <tr th:each="hd, index : ${hdList}">
                         <td th:text="${index.index + 1}"></td>
-                        <td th:text="${hdct.hoaDon.bill_code}"></td>
-                        <td th:text="${hdct.hoaDon.user_name}"></td>
-                        <td th:text="${hdct.hoaDon.email}"></td>
-                        <td th:text="${hdct.hoaDon.type}"></td>
-                        <td th:text="${hdct.create_at}"></td>
-                        <td th:text="${hdct.quantity}"></td>
-                        <td th:text="${hdct.price}"></td>
+                        <td th:text="${hd.billCode}"></td>
+                        <td th:text="${hd.user_name}"></td>
+                        <td th:text="${hd.email}"></td>
+                        <td th:text="${hd.type}"></td>
+                        <td th:text="${hd.createAt}"></td>
+                        <td th:text="${hd.money_reduced}"></td>
+                        <td th:text="${tongTienHoaDon[hd.id]}"></td>
                         <td>
-                            <a th:href="@{~/bill/detail(id=${hdct.hoaDon.id})}">
+                            <a th:href="@{~/bill/detail(id=${hd.id})}">
                                 <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
                             </a>
                         </td>
-                    </tr>
                     </tbody>
-
                 </table>
             </div>
 
@@ -228,21 +217,20 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="hdct, index : ${hdctList}">
+                    <tr th:each="hd, index : ${hdList}">
                         <td th:text="${index.index + 1}"></td>
-                        <td th:text="${hdct.hoaDon.bill_code}"></td>
-                        <td th:text="${hdct.hoaDon.user_name}"></td>
-                        <td th:text="${hdct.hoaDon.email}"></td>
-                        <td th:text="${hdct.hoaDon.type}"></td>
-                        <td th:text="${hdct.create_at}"></td>
-                        <td th:text="${hdct.quantity}"></td>
-                        <td th:text="${hdct.price}"></td>
+                        <td th:text="${hd.billCode}"></td>
+                        <td th:text="${hd.user_name}"></td>
+                        <td th:text="${hd.email}"></td>
+                        <td th:text="${hd.type}"></td>
+                        <td th:text="${hd.createAt}"></td>
+                        <td th:text="${hd.money_reduced}"></td>
+                        <td th:text="${tongTienHoaDon[hd.id]}"></td>
                         <td>
-                            <a th:href="@{~/bill/detail(id=${hdct.hoaDon.id})}">
+                            <a th:href="@{~/bill/detail(id=${hd.id})}">
                                 <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
                             </a>
                         </td>
-                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -262,23 +250,21 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="hdct, index : ${hdctList}">
+                    <tr th:each="hd, index : ${hdList}">
                         <td th:text="${index.index + 1}"></td>
-                        <td th:text="${hdct.hoaDon.bill_code}"></td>
-                        <td th:text="${hdct.hoaDon.user_name}"></td>
-                        <td th:text="${hdct.hoaDon.email}"></td>
-                        <td th:text="${hdct.hoaDon.type}"></td>
-                        <td th:text="${hdct.create_at}"></td>
-                        <td th:text="${hdct.quantity}"></td>
-                        <td th:text="${hdct.price}"></td>
+                        <td th:text="${hd.billCode}"></td>
+                        <td th:text="${hd.user_name}"></td>
+                        <td th:text="${hd.email}"></td>
+                        <td th:text="${hd.type}"></td>
+                        <td th:text="${hd.createAt}"></td>
+                        <td th:text="${hd.money_reduced}"></td>
+                        <td th:text="${tongTienHoaDon[hd.id]}"></td>
                         <td>
-                            <a th:href="@{~/bill/detail(id=${hdct.hoaDon.id})}">
+                            <a th:href="@{~/bill/detail(id=${hd.id})}">
                                 <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
                             </a>
                         </td>
-                    </tr>
                     </tbody>
-
                 </table>
             </div>
             <div id="completed" class="tab-content">
@@ -297,21 +283,20 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="hdct, index : ${hdctList}">
+                    <tr th:each="hd, index : ${hdList}">
                         <td th:text="${index.index + 1}"></td>
-                        <td th:text="${hdct.hoaDon.bill_code}"></td>
-                        <td th:text="${hdct.hoaDon.user_name}"></td>
-                        <td th:text="${hdct.hoaDon.email}"></td>
-                        <td th:text="${hdct.hoaDon.type}"></td>
-                        <td th:text="${hdct.create_at}"></td>
-                        <td th:text="${hdct.quantity}"></td>
-                        <td th:text="${hdct.price}"></td>
+                        <td th:text="${hd.billCode}"></td>
+                        <td th:text="${hd.user_name}"></td>
+                        <td th:text="${hd.email}"></td>
+                        <td th:text="${hd.type}"></td>
+                        <td th:text="${hd.createAt}"></td>
+                        <td th:text="${hd.money_reduced}"></td>
+                        <td th:text="${tongTienHoaDon[hd.id]}"></td>
                         <td>
-                            <a th:href="@{~/bill/detail(id=${hdct.hoaDon.id})}">
+                            <a th:href="@{~/bill/detail(id=${hd.id})}">
                                 <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
                             </a>
                         </td>
-                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -331,23 +316,21 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="hdct, index : ${hdctList}">
+                    <tr th:each="hd, index : ${hdList}">
                         <td th:text="${index.index + 1}"></td>
-                        <td th:text="${hdct.hoaDon.bill_code}"></td>
-                        <td th:text="${hdct.hoaDon.user_name}"></td>
-                        <td th:text="${hdct.hoaDon.email}"></td>
-                        <td th:text="${hdct.hoaDon.type}"></td>
-                        <td th:text="${hdct.create_at}"></td>
-                        <td th:text="${hdct.quantity}"></td>
-                        <td th:text="${hdct.price}"></td>
+                        <td th:text="${hd.billCode}"></td>
+                        <td th:text="${hd.user_name}"></td>
+                        <td th:text="${hd.email}"></td>
+                        <td th:text="${hd.type}"></td>
+                        <td th:text="${hd.createAt}"></td>
+                        <td th:text="${hd.money_reduced}"></td>
+                        <td th:text="${tongTienHoaDon[hd.id]}"></td>
                         <td>
-                            <a th:href="@{~/bill/detail(id=${hdct.hoaDon.id})}">
+                            <a th:href="@{~/bill/detail(id=${hd.id})}">
                                 <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
                             </a>
                         </td>
-                    </tr>
                     </tbody>
-
                 </table>
             </div>
 
@@ -360,7 +343,7 @@
     <script>
         $(function () {
             $("#start-date, #end-date").datepicker({
-                dateFormat: "dd/mm/yy"
+                dateFormat: "dd/mm/yyyy"
             });
         });
 
@@ -380,6 +363,7 @@
                 event.currentTarget.classList.add('active');
             }
         }
+
     </script>
 </main>
 </body>

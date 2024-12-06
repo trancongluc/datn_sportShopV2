@@ -353,11 +353,11 @@
                 <tr th:each="item, iterStat : ${hoaDon.billDetails}">
                     <td th:text="${iterStat.index + 1}"></td>
                     <td>
-                        <p th:text="${item.sanPhamChiTiet.sanPham.tenSanPham}"></p>
+                        <p th:text="${item.sanPhamChiTiet.idSanPham.tenSanPham}"></p>
                         <p style="color: red; font-weight: bold;" th:text="${item.sanPhamChiTiet.gia} + ' VND'"></p>
                     </td>
                     <td>
-                        <div th:style="'width: 25px; height: 25px; border-radius: 50%; background-color: ' + ${item.sanPhamChiTiet.mauSac.tenMauSac}"></div>
+                        <div th:style="'width: 25px; height: 25px; border-radius: 50%; background-color: ' + ${item.sanPhamChiTiet.idMauSac.tenMauSac}"></div>
                     </td>
                     <td th:text="${item.quantity}"></td>
                     <td th:text="${item.quantity}*${item.sanPhamChiTiet.gia} + ' VND'"></td>
@@ -365,7 +365,7 @@
                         <div class="status" th:text="${item.sanPhamChiTiet.trangThai}"></div>
                     </td>
                     <td class="action">
-                        <button th:data-product-name="${item.sanPhamChiTiet.sanPham.tenSanPham}"
+                        <button th:data-product-name="${item.sanPhamChiTiet.idSanPham.tenSanPham}"
                                 onclick="openModal(this.dataset.productName, this.parentNode.parentNode)">
                             <i class="fas fa-undo"></i>
                         </button>
