@@ -1201,7 +1201,7 @@ function updateVoucherDisplay(tongTien) {
             console.error('There was a problem with the fetch operation:', error);
         });
 }
-
+//Bam input ra khach hang
 
 
 
