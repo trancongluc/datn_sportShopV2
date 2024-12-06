@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.NumberFormat;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -64,7 +65,7 @@ public class SanPhamChiTietService {
     }
 
     public List<SanPhamChiTietDTO> getAllSPCT() {
-        List<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndTrangThaiOrderByCreateAtDesc(false,"Đang hoạt động");
+        List<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndTrangThaiOrderByCreateAtDesc(false, "Đang hoạt động");
         return listSPCT.stream().map(sanPhamChiTiet ->
                         SanPhamChiTiet.toDTO(sanPhamChiTiet, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo))
                 .collect(Collectors.toList());
@@ -81,32 +82,36 @@ public class SanPhamChiTietService {
     public List<SanPhamChiTietDTO> findAllSPCTByIdSP(Integer idSP) {
         List<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndIdSanPham(false, idSP);
         return listSPCT.stream().map(sanPhamChiTiet ->
-                SanPhamChiTiet.toDTO(sanPhamChiTiet, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo))
+                        SanPhamChiTiet.toDTO(sanPhamChiTiet, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo))
                 .collect(Collectors.toList());
     }
+
     public List<SanPhamChiTiet> findAllByIdSP(Integer idSP) {
         List<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndIdSanPham(false, idSP);
         return listSPCT;
     }
+
     public Page<SanPhamChiTietDTO> getSPCTByIdSP(Integer idSP, Pageable pageable) {
         // Lấy trang danh sách SanPhamChiTiet từ repository
         Page<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndIdSanPham(false, idSP, pageable);
         // Ánh xạ từ SanPhamChiTiet sang SanPhamChiTietDTO
         return listSPCT.map(spct -> SanPhamChiTiet.toDTO(spct, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo));
     }
+
     public List<SanPhamChiTietDTO> getListSPCTByIdSP(Integer idSP) {
         // Lấy trang danh sách SanPhamChiTiet từ repository
         List<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndIdSanPham(false, idSP);
         // Ánh xạ từ SanPhamChiTiet sang SanPhamChiTietDTO
         return listSPCT.stream().map(spct -> SanPhamChiTiet.toDTO(spct, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo)).toList();
     }
-    public boolean capNhatSoLuongSPCT(Integer idSPCT, Integer soLuongNew){
-        SanPhamChiTiet spct = sanPhamChiTietRepository.findByIdAndDeleted(idSPCT,false);
-        if(spct == null){
+
+    public boolean capNhatSoLuongSPCT(Integer idSPCT, Integer soLuongNew) {
+        SanPhamChiTiet spct = sanPhamChiTietRepository.findByIdAndDeleted(idSPCT, false);
+        if (spct == null) {
             return false;
         }
         spct.setSoLuong(soLuongNew);
-        if(spct.getSoLuong() == 0){
+        if (spct.getSoLuong() == 0) {
             spct.setTrangThai("Ngừng hoạt động");
         }
         sanPhamChiTietRepository.save(spct);
@@ -128,10 +133,12 @@ public class SanPhamChiTietService {
                 cgRepo, clRepo, anhRepo);
 
     }
+
     public Integer tongSoLuongSP(Integer idSP) {
         Integer sLSanPham = sanPhamChiTietRepository.tongSoLuongSP(idSP);
         return sLSanPham;
     }
+
     public SanPhamChiTiet updateSanPhamChiTiet(Integer idSPCT, SanPhamChiTiet spct) {
         // Lấy sản phẩm chi tiết từ database
         Optional<SanPhamChiTiet> optionalSanPhamChiTiet = sanPhamChiTietRepository.findById(idSPCT);
@@ -154,6 +161,23 @@ public class SanPhamChiTietService {
         sanPhamChiTiet.setGia(spct.getGia());
         sanPhamChiTiet.setGioiTinh(spct.getGioiTinh());
 
+        // Lưu thông tin cập nhật vào database
+        return sanPhamChiTietRepository.save(sanPhamChiTiet);
+    }
+
+    public SanPhamChiTiet updateSoLuongSanPhamChiTiet(Integer idSPCT, SanPhamChiTiet spct) {
+        // Lấy sản phẩm chi tiết từ database
+        Optional<SanPhamChiTiet> optionalSanPhamChiTiet = sanPhamChiTietRepository.findById(idSPCT);
+        if (optionalSanPhamChiTiet.isEmpty()) {
+            throw new RuntimeException("Sản phẩm chi tiết không tồn tại");
+        }
+
+        // Cập nhật thông tin sản phẩm chi tiết
+        SanPhamChiTiet sanPhamChiTiet = optionalSanPhamChiTiet.get();
+        sanPhamChiTiet.setSoLuong(spct.getSoLuong());
+        sanPhamChiTiet.setGia(spct.getGia());
+        sanPhamChiTiet.setGioiTinh(spct.getGioiTinh());
+        sanPhamChiTiet.setUpdateAt(LocalDateTime.now());
         // Lưu thông tin cập nhật vào database
         return sanPhamChiTietRepository.save(sanPhamChiTiet);
     }
