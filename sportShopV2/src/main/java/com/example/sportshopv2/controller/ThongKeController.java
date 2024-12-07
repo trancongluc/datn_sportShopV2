@@ -1,23 +1,33 @@
 package com.example.sportshopv2.controller;
 
 import com.example.sportshopv2.repository.ThongKeRepository;
+import com.example.sportshopv2.service.HoaDonService;
+import com.example.sportshopv2.service.ThongKeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 @Controller
+
 public class ThongKeController {
 
     @Autowired
     private ThongKeRepository billService;
-
+    @Autowired
+    private HoaDonService hoaDonService;
+    @Autowired
+    private ThongKeService thongKeService;
     @GetMapping("/statistical/view")
     public String viewStatistical(Model model) {
 
@@ -46,14 +56,47 @@ public class ThongKeController {
         totalMoneyTd = (totalMoneyTd != null) ? totalMoneyTd : BigDecimal.ZERO;
         DecimalFormat formatter2 = new DecimalFormat("#,###");
         String formattedMoneyTd = formatter2.format(totalMoneyTd);
-
+        Integer soLuongSPBanDuocTrongThang = hoaDonService.getTotalQuantityForCurrentMonth();
         // Đưa dữ liệu vào model
         model.addAttribute("totalOrders", totalOrders);
         model.addAttribute("totalMoney", formattedMoney);
         model.addAttribute("totalOrdersTd", totalOrdersTd);
         model.addAttribute("formattedMoneyTd", formattedMoneyTd);
-
+        model.addAttribute("tongSPInMonth",soLuongSPBanDuocTrongThang);
         return "ThongKe/ThongKe";
     }
+    @GetMapping("/thong-ke/thong-ke-nam")
+    public ResponseEntity<?> getYearlyStatistics() {
+        Map<String, Object> response = new HashMap<>();
 
+        // Kiểm tra xem có dữ liệu từ service
+        List<Integer> totalBills = thongKeService.getMonthlyBillCounts();
+        List<Integer> totalProducts = thongKeService.getMonthlyProductCounts();
+
+        // Debug: in ra dữ liệu để kiểm tra
+        System.out.println("Bills: " + totalBills);
+        System.out.println("Products: " + totalProducts);
+
+        // Trả về response nếu dữ liệu hợp lệ
+        response.put("totalBills", totalBills);
+        response.put("totalProducts", totalProducts);
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/thong-ke/thong-ke-7-ngay")
+    public ResponseEntity<?> thongKeTrong7Ngay() {
+        Map<String, Object> response = new HashMap<>();
+
+        // Kiểm tra xem có dữ liệu từ service
+        List<Integer> totalBills = thongKeService.getLast7DaysBillCounts();
+        List<Integer> totalProducts = thongKeService.getLast7DaysProductCounts();
+
+        // Debug: in ra dữ liệu để kiểm tra
+        System.out.println("Bills: " + totalBills);
+        System.out.println("Products: " + totalProducts);
+
+        // Trả về response nếu dữ liệu hợp lệ
+        response.put("totalBills", totalBills);
+        response.put("totalProducts", totalProducts);
+        return ResponseEntity.ok(response);
+    }
 }
