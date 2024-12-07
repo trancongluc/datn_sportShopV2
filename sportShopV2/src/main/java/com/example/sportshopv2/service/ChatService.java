@@ -1,12 +1,11 @@
 package com.example.sportshopv2.service;
 
 
-import com.example.sportshopv2.model.Account;
-import com.example.sportshopv2.model.chatBox;
-import com.example.sportshopv2.model.message;
+import com.example.sportshopv2.model.*;
 import com.example.sportshopv2.repository.AccountRepo;
 import com.example.sportshopv2.repository.ChatBoxRepository;
 import com.example.sportshopv2.repository.MessageRepository;
+import com.example.sportshopv2.repository.NguoiDungRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +24,9 @@ public class ChatService {
 
     @Autowired
     private AccountRepo accountRepository;
+
+    @Autowired
+    private NguoiDungRepo user;
 
     public ChatService(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
@@ -65,6 +67,19 @@ public class ChatService {
         } else {
             throw new RuntimeException("User not found");
         }
+    }
+    public int getNameFromIDUser(String username) {
+        // Tìm Account theo username
+        Optional<Account> account = accountRepository.findByUsername(username);
+
+        if (account.isPresent()) {
+            return account.get().getUser().getId(); // Trả về accountId nếu tìm thấy
+        } else {
+            throw new RuntimeException("User not found");
+        }
+    }
+    public Optional<NguoiDung> getName(int ID){
+        return user.findById(ID);
     }
 
     // Lấy danh sách tin nhắn theo ID chatbox

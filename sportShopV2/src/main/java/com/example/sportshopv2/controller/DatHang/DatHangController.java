@@ -90,6 +90,7 @@ public class DatHangController {
         // Lấy tên người dùng đã đăng nhập
         String username = authentication.getName();
 
+
         // Lấy thông tin tài khoản
         TaiKhoan taiKhoan = taiKhoanRepo.findTaiKhoanByUsername(username);
         if (taiKhoan == null) {
@@ -111,6 +112,8 @@ public class DatHangController {
 
         // Lấy accountId từ UserService
         int accountId = chatService.getAccountIdFromUsername(username);
+        int getName = chatService.getNameFromIDUser(username);
+        Optional<NguoiDung> name = chatService.getName(getName);
 
         model.addAttribute("accountId", accountId);
         // Lấy danh sách tất cả chatboxes
@@ -120,7 +123,7 @@ public class DatHangController {
         if (message.isEmpty()) {
             // Nếu không tìm thấy ChatBox, tạo mới ChatBox với tên đặt theo tên người dùng
             chatBox newChatBox = new chatBox();
-            newChatBox.setName(username); // Đặt tên ChatBox theo tên người dùng
+            newChatBox.setName(name.get().getFull_name()); // Đặt tên ChatBox theo tên người dùng
             newChatBox.setCreateAt(LocalDateTime.now());
             newChatBox.setCreateBy(accountId);
             // Lưu ChatBox mới vào cơ sở dữ liệu
