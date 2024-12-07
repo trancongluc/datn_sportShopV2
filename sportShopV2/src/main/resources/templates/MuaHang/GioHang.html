@@ -294,7 +294,8 @@
                                style="margin-left: 40%; width: 40px; height: 40px"
                                th:value="${list.sanPhamChiTiet.id}"
                                name="selectedProducts"
-                               th:checked="${#lists.contains(selectedProductIds, list.sanPhamChiTiet.id)}"/>
+                               th:checked="${#lists.contains(selectedProductIds, list.sanPhamChiTiet.id)}"
+                               onclick="calculateTotal()"/>
                     </td>
                     <td th:text="${index.index + 1}"></td>
                     <td>
@@ -482,28 +483,8 @@
                             <!-- Danh sách voucher -->
                             <div class="voucher-container">
                                 <h4>Chọn 1 voucher</h4>
-                                <div th:each="voucher : ${Voucher}" class="voucher-item d-flex align-items-center">
-                                    <div class="voucher-logo">
-                                        <img th:src="@{/images/logoSPSV2.png}" alt="Voucher Logo" class="img-fluid"/>
-                                    </div>
-                                    <div class="voucher-content ms-3">
-                                        <p th:text="${voucher.idPhieuGiamGia.name}" class="voucher-title fw-bold"></p>
-                                        <p>
-                                            <span class="text-danger">Giảm: </span>
-                                            <span th:text="${#numbers.formatDecimal(voucher.idPhieuGiamGia.discountValue, 0, 0)} + ' VND'"></span>
-                                        </p>
-                                        <p>
-                                            <span>Đơn tối thiểu: </span>
-                                            <span th:text="${#numbers.formatDecimal(voucher.idPhieuGiamGia.minimumValue, 0, 0)} + ' VND'"></span>
-                                        </p>
-                                        <p>HSD: <span th:text="${voucher.idPhieuGiamGia.endDate}"></span></p>
-                                    </div>
-                                    <div class="ms-auto">
-                                        <input type="radio" name="selectedVoucher" width="50px" height="50px"
-                                               th:value="${voucher.idPhieuGiamGia.id}"
-                                               onchange="selectVoucher(this.value)"/>
-                                    </div>
-                                </div>
+
+
                             </div>
                         </div>
                     </div>
@@ -590,6 +571,7 @@
 
         // Định dạng lại tổng tiền theo kiểu VND và hiển thị vào ô Tổng tiền
         document.getElementById("totalAmount").value = formatCurrency(totalAmount) + 'VND';
+        fetchVouchers(total)
     }
 
     // Hàm định dạng tiền tệ
@@ -600,6 +582,62 @@
             minimumFractionDigits: 0,
             maximumFractionDigits: 0
         }).format(amount);
+    }
+
+    function fetchVouchers(total) {
+        console.log('Sending total to API:', total); // Log dữ liệu gửi lên
+        fetch('/mua-sam-SportShopV2/get-voucher', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({total: total}),
+        })
+            .then(response => response.json())
+            .then(vouchers => {
+                console.log('Vouchers received:', vouchers); // Log dữ liệu nhận về
+                renderVoucherModal(vouchers);
+            })
+            .catch(error => {
+                console.error('Error fetching vouchers:', error);
+            });
+    }
+
+    function renderVoucherModal(vouchers) {
+        if (!Array.isArray(vouchers)) {
+            console.error('Expected an array, but got:', vouchers);
+            return;
+        }
+
+        const container = document.querySelector('.voucher-container');
+        container.innerHTML = ''; // Xóa nội dung cũ
+
+        if (vouchers.length === 0) {
+            container.innerHTML = '<p>Không có voucher phù hợp.</p>';
+            return;
+        }
+
+        vouchers.forEach(voucher => {
+            const voucherItem = `
+            <div class="voucher-item d-flex align-items-center">
+                <div class="voucher-logo">
+                    <img src="/images/logoSPSV2.png" alt="Voucher Logo" class="img-fluid" />
+                </div>
+                <div class="voucher-content ms-3">
+                    <p class="voucher-title fw-bold">${voucher.name}</p>
+                    <p>
+                        <span class="text-danger">Giảm: </span>
+                        <span>${voucher.discountValue.toLocaleString()} VND</span>
+                    </p>
+                    <p>HSD: <span>${voucher.endDate}</span></p>
+                </div>
+                <div class="ms-auto">
+                    <input type="radio" name="selectedVoucher" value="${voucher.id}" onchange="selectVoucher(this.value)" />
+                </div>
+            </div>
+        `;
+            container.insertAdjacentHTML('beforeend', voucherItem);
+        });
     }
 
 
@@ -774,9 +812,22 @@
 
                 document.getElementById('discountCode').value = `${data.idPhieuGiamGia.voucherCode}`;
                 calculateTotal();
+
+                // Sử dụng setTimeout để đảm bảo radio button được cập nhật đúng
+                setTimeout(() => {
+                    // Chọn radio button tương ứng với voucher đã chọn
+                    document.querySelectorAll('input[name="selectedVoucher"]').forEach(radio => {
+                        if (radio.value === id) {
+                            radio.checked = true; // Đánh dấu radio button là checked
+                        } else {
+                            radio.checked = false; // Bỏ chọn các radio khác
+                        }
+                    });
+                }, 100); // Thử trì hoãn 100ms để đảm bảo DOM đã được cập nhật
             })
             .catch(error => console.error("Error:", error));
     }
+
 
 
     function deleteProduct(id) {
