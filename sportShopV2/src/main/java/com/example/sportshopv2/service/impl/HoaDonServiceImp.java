@@ -19,12 +19,9 @@ public class HoaDonServiceImp {
     private EntityManager entityManager;
 
     public HoaDon getBillDetailByBillCode(String tenHoaDon) {
-        try {
-            return hoaDonRepo.findBillDetailByBillCode(tenHoaDon);
-        } catch (NoResultException e) {
-            throw new IllegalArgumentException("Không tìm thấy hóa đơn với ID: " + tenHoaDon, e);
-        }
+        return hoaDonRepo.findBillDetailByBillCode(tenHoaDon);
     }
+
     public void updateTrangThai(Integer maHoaDon, String trangThai) {
         HoaDon hoaDon = hoaDonRepo.findAllById(maHoaDon);
         if (hoaDon != null) {

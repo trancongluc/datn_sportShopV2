@@ -7,6 +7,7 @@ import com.example.sportshopv2.repository.HoaDonChiTietRepo;
 import com.example.sportshopv2.repository.HoaDonRepo;
 import com.example.sportshopv2.service.HoaDonService;
 import com.example.sportshopv2.repository.AnhSanPhamRepository;
+import com.example.sportshopv2.service.impl.HoaDonServiceImp;
 import com.itextpdf.text.pdf.BaseFont;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -106,6 +107,7 @@ public class HoaDonController {
         model.addAttribute("countDangVanChuyen", hdService.countByStatus("Đang vận chuyển"));
         model.addAttribute("countHoanThanh", hdService.countByStatus("Hoàn thành"));
         model.addAttribute("countHuy", hdService.countByStatus("Hủy"));
+        model.addAttribute("countHoanTra", hdService.countByStatus("Hoàn trả"));
         return "HoaDon/HoaDon";
     }
 
@@ -148,6 +150,7 @@ public class HoaDonController {
     }
 
 
+
     @GetMapping("/pdf")
     public String pdf(Model model, @RequestParam("id") Integer id) {
 //        model.addAttribute("list", hdctrepo.findAllById(id));
@@ -157,7 +160,7 @@ public class HoaDonController {
     @GetMapping("/export/excel")
     public ResponseEntity<byte[]> exportToExcel() throws IOException {
         List<HoaDonChiTiet> billList = hdctrepo.findAll(); // Lấy toàn bộ dữ liệu từ database
-        List<HoaDon> billList2 =  hdrepo.findAll();
+        List<HoaDon> billList2 = hdrepo.findAll();
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Danh sách hóa đơn");
 

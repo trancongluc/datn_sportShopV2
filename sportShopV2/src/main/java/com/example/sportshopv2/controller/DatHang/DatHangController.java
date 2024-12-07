@@ -4,6 +4,7 @@ import com.example.sportshopv2.dto.SanPhamChiTietDTO;
 import com.example.sportshopv2.model.*;
 import com.example.sportshopv2.repository.*;
 import com.example.sportshopv2.service.*;
+import com.example.sportshopv2.service.impl.HoaDonServiceImp;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -65,7 +66,10 @@ public class DatHangController {
     private SPCTRePo sanPhamChiTietRepo;
     @Autowired
     private PhieuGiamGiaKhachHangRepository phieuGiamGiaKhachHangRepository;
-
+    @Autowired
+    private HoaDonServiceImp hoaDonServiceImp;
+    @Autowired
+    private AnhService anhService;
     private Integer idTK = null;
     private List<Long> dsSPCT = null;
 
@@ -425,5 +429,30 @@ public class DatHangController {
         // Trả về đối tượng đã bị xóa
         return productInCart;
     }
+    @GetMapping("/tra-cuu-don-hang")
+    public String traCuuDonHang() {
+
+        return "MuaHang/TraCuuDonHang"; // Trả về JSON
+    }
+    @GetMapping("/theo-doi-hoa-don")
+    public String getHoaDonDetail(@RequestParam("tenHoaDon") String tenHoaDon, Model model) {
+
+        HoaDon hoaDon = hoaDonServiceImp.getBillDetailByBillCode(tenHoaDon);
+        List<HoaDonChiTiet> listSPCT = hoaDon.getBillDetails();
+        for (HoaDonChiTiet hdct:listSPCT){
+            AnhSanPham anhSanPham = anhService.anhSanPhamByIDSPCT(hdct.getSanPhamChiTiet().getId());
+            model.addAttribute("anhSP",anhSanPham);
+        }
+        if (hoaDon == null) {
+            // Xử lý trường hợp không tìm thấy hóa đơn
+            model.addAttribute("error", "Không tìm thấy hóa đơn với mã: " + tenHoaDon);
+            return "redirect:/doi-tra/view";
+
+        }
+        model.addAttribute("hoaDon", hoaDon);
+
+        return "MuaHang/TheoDoiHoaDon";
+    }
+
 }
 

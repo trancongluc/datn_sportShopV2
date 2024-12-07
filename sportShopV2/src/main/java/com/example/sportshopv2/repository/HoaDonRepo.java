@@ -45,7 +45,7 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
     @Query("SELECT b FROM HoaDon b " +
             "JOIN b.id_account a " +
             "JOIN a.nguoiDung u " +
-            "JOIN Address ad ON ad.khachHang.id = u.id " +
+            "LEFT JOIN Address ad ON ad.khachHang.id = u.id " +
             "JOIN HoaDonChiTiet bd on bd.hoaDon.id = b.id " +
             "JOIN SanPhamChiTiet pd on pd.id = bd.sanPhamChiTiet.id " +
             "JOIN MauSac c on c.id=pd.idMauSac " +

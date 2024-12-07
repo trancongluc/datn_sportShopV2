@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tra Cứu Đơn hàng</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f7f8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        text-align: center;
+        max-width: 600px; /* Đặt giới hạn chiều rộng */
+        padding: 20px;
+        background: #fff; /* Thêm màu nền trắng cho form */
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Thêm hiệu ứng đổ bóng */
+    }
+
+    .logo {
+        font-size: 2.5rem; /* Tăng kích thước chữ */
+        font-weight: bold;
+        margin-bottom: 20px; /* Tăng khoảng cách bên dưới */
+    }
+
+    .logo img {
+        width: 60px; /* Tăng kích thước logo */
+        height: auto;
+        vertical-align: middle;
+    }
+
+    .title {
+        font-size: 2.5rem; /* Tăng kích thước chữ */
+        font-weight: bold;
+        margin-bottom: 25px;
+    }
+
+    .subtitle {
+        font-size: 1.2rem; /* Tăng kích thước chữ */
+        margin-bottom: 30px;
+        color: #555; /* Đặt màu xám cho phụ đề */
+    }
+
+    .input-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 30px; /* Tăng khoảng cách bên dưới */
+    }
+
+    .input-container input {
+        width: 400px; /* Tăng chiều rộng input */
+        padding: 15px; /* Tăng padding cho input */
+        border: 1px solid #ccc;
+        border-radius: 30px; /* Tăng độ bo góc */
+        outline: none;
+        font-size: 1.2rem; /* Tăng kích thước chữ */
+    }
+
+    .button {
+        background-color: #000;
+        color: #fff;
+        padding: 15px 30px; /* Tăng padding cho nút */
+        border: none;
+        border-radius: 30px; /* Tăng độ bo góc */
+        font-size: 1.2rem; /* Tăng kích thước chữ */
+        cursor: pointer;
+        text-transform: uppercase;
+        transition: background-color 0.3s ease; /* Thêm hiệu ứng hover */
+    }
+
+    .button:hover {
+        background-color: #555; /* Màu xám đậm khi hover */
+    }
+
+    .button i {
+        margin-left: 10px;
+        font-size: 1.2rem; /* Tăng kích thước icon */
+    }
+
+</style>
+<body>
+
+<div class="container">
+    <div class="logo">
+            <img th:src="@{/images/logoSPSV2.png}" alt="SportShopLogo" height="40" width="40">
+        SPORTSHOPV2
+    </div>
+    <form th:action="@{/mua-sam-SportShopV2/theo-doi-hoa-don}" method="get">
+    <div class="title">
+        Tra Cứu Đơn Hàng
+    </div>
+    <div class="subtitle">
+        Mã đơn hàng của bạn là:
+    </div>
+    <div class="input-container">
+        <input placeholder="Nhập mã đơn hàng của bạn" type="text" id="tenHoaDon" name="tenHoaDon" required>
+    </div>
+    <button class="button" type="submit">
+        TRA CỨU ĐƠN
+        <i class="fas fa-arrow-right">
+        </i>
+    </button>
+    </form>
+</div>
+</body>
+</html>

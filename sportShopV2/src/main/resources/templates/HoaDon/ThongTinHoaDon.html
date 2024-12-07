@@ -192,7 +192,7 @@
 
                 <td class="border px-4 py-2 text-center" th:text="${list[index.index].quantity}"></td>
                 <td class="border px-4 py-2 text-center"
-                    th:text="${list[index.index].quantity * list[index.index].price}"></td>
+                    th:text="${list[index.index].quantity * list[index.index].price}" ></td>
                 <td class="border px-4 py-2 text-center" th:text="${list[index.index].hoaDon.status}">
                 </td>
             </tr>
@@ -552,6 +552,19 @@
             closeModal('#confirmationStatusModal'); // Đóng modal sau khi submit
         });
         toggleButtons();
+        document.addEventListener('DOMContentLoaded', function () {
+            const priceElements = document.querySelectorAll('.price');
+
+            priceElements.forEach(function (priceElement) {
+                let price = parseFloat(priceElement.value);
+                if (!isNaN(price)) {
+                    priceElement.value = formatCurrency(price);
+                }
+            });
+        });
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
+        }
     </script>
 </main>
 </body>

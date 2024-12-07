@@ -117,6 +117,13 @@
                         <span class="badge" th:text="${countHuy}"></span></a>
                     <!--                    <a class="nav-link" href="#" onclick="showTab(event, 'pending')">Chờ xác nhận <span class="badge">0</span></a>-->
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       th:href="@{~/bill/tab(status='Hoàn trả')}"
+                       th:classappend="${tab == 'hoanTra'} ? 'active' : ''">Hoàn trả
+                        <span class="badge" th:text="${countHoanTra}"></span></a>
+                    <!--                    <a class="nav-link" href="#" onclick="showTab(event, 'pending')">Chờ xác nhận <span class="badge">0</span></a>-->
+                </li>
                 <!--                <li class="nav-item">-->
                 <!--                    <a class="nav-link" href="#" onclick="showTab(event, 'confirmed')">Đã xác nhận <span class="badge">0</span></a>-->
                 <!--                </li>-->
@@ -333,7 +340,39 @@
                     </tbody>
                 </table>
             </div>
-
+            <div id="hoanTra" class="tab-content">
+                <table class="table table-bordered invoice-table mt-3">
+                    <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã hóa đơn</th>
+                        <th>Tên khách hàng</th>
+                        <th>Tên nhân viên</th>
+                        <th>Loại</th>
+                        <th>Ngày tạo</th>
+                        <th>Tiền giảm</th>
+                        <th>Tổng tiền</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="hd, index : ${hdList}">
+                        <td th:text="${index.index + 1}"></td>
+                        <td th:text="${hd.billCode}"></td>
+                        <td th:text="${hd.user_name}"></td>
+                        <td th:text="${hd.email}"></td>
+                        <td th:text="${hd.type}"></td>
+                        <td th:text="${hd.createAt}"></td>
+                        <td th:text="${hd.money_reduced}"></td>
+                        <td th:text="${tongTienHoaDon[hd.id]}"></td>
+                        <td>
+                            <a th:href="@{~/bill/detail(id=${hd.id})}">
+                                <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
+                            </a>
+                        </td>
+                    </tbody>
+                </table>
+            </div>
 
             <!-- Add similar blocks for 'shipping', 'payment', 'completed', and 'cancelled' -->
         </div>

@@ -484,6 +484,7 @@
         .star.inactive {
             color: #ccc; /* Màu của ngôi sao không được chọn (mờ) */
         }
+
     </style>
     <script>
         let lastScrollTop = 0;
@@ -615,7 +616,14 @@
 
     </div>
     <div style="margin-left: 50px">
-        <a th:href="@{/mua-sam-SportShopV2/gio-hang-khach-hang(id=${thongTinKhachHang.id})}">
+        <a th:href="@{/mua-sam-SportShopV2/tra-cuu-don-hang}"
+           style="color: black; text-decoration: none;"
+           onmouseover="this.style.color='#007bff'; this.style.textDecoration='underline';"
+           onmouseout="this.style.color='black'; this.style.textDecoration='none'; ">
+            <span>Tra cứu đơn hàng</span>
+        </a>
+
+        <a th:href="@{/mua-sam-SportShopV2/gio-hang-khach-hang(id=${thongTinKhachHang.id})}" style="text-decoration: none;">
             <img th:src="@{/images/img_3.png}" width="40" height="40">
         </a>
         <a th:href="@{/login/home}">
