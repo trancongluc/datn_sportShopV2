@@ -60,19 +60,25 @@
         <div class="row text-center">
             <div class="col-md-4">
                 <div class="stat-box">
-                    <h3>Doanh số tháng này</h3>
-                    <p>204 đơn hàng / 641.025.000 VND</p>
+                    <h3 class="text-start">Doanh số tháng này</h3>
+                    <p>
+                        <span th:text="${totalOrders}"></span> Đơn hàng /
+                        <span th:text="${totalMoney}"></span> VND
+                    </p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="stat-box">
-                    <h3>Doanh số hôm nay</h3>
-                    <p>2 đơn hàng / 11.000.000 VND</p>
+                    <h3  class="text-start">Doanh số hôm nay</h3>
+                    <p>
+                        <span th:text="${totalOrdersTd}"></span> Đơn hàng /
+                        <span th:text="${formattedMoneyTd}"></span> VND
+                    </p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="stat-box">
-                    <h3>Hàng bán được tháng này</h3>
+                    <h3  class="text-start">Hàng bán được tháng này</h3>
                     <p>366 sản phẩm</p>
                 </div>
             </div>

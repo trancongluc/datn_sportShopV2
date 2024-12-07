@@ -7,6 +7,10 @@ import com.example.sportshopv2.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -62,6 +66,15 @@ public class DatHangController {
     private Integer idTK = null;
     private List<Long> dsSPCT = null;
 
+    @Autowired
+    private ChatService chatService;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private ChatBoxRepository chatBoxRepository;
+    @Autowired
+    private MessageRepository messageRepository;
+
     @RequestMapping("/trang-chu")
     public String trangChu(Model model) {
         // Lấy thông tin người dùng hiện tại
@@ -96,6 +109,31 @@ public class DatHangController {
                 .map(anh -> anh.getTenAnh() != null ? "/images/" + anh.getTenAnh() : "/images/giayMau.png")
                 .collect(Collectors.toList());
 
+        // Lấy accountId từ UserService
+        int accountId = chatService.getAccountIdFromUsername(username);
+
+        model.addAttribute("accountId", accountId);
+        // Lấy danh sách tất cả chatboxes
+// Kiểm tra xem accountId đã có chatBox hay chưa
+        List<message> message = chatService.getMesByAccountId(accountId);
+
+        if (message.isEmpty()) {
+            // Nếu không tìm thấy ChatBox, tạo mới ChatBox với tên đặt theo tên người dùng
+            chatBox newChatBox = new chatBox();
+            newChatBox.setName(username); // Đặt tên ChatBox theo tên người dùng
+            newChatBox.setCreateAt(LocalDateTime.now());
+            newChatBox.setCreateBy(accountId);
+            // Lưu ChatBox mới vào cơ sở dữ liệu
+            chatService.saveChatBox(newChatBox);
+        }
+        chatBox cb = chatService.findChatBoxByAccountId(accountId);
+        // Lấy danh sách tin nhắn của ChatBox
+        List<message> messages = chatService.getMessagesByChatBoxId(cb.getId());
+
+        // Thêm ChatBox và tin nhắn vào Model để gửi ra view
+        model.addAttribute("chatBox", cb.getId());
+        model.addAttribute("messages", messages);
+        model.addAttribute("accountId", accountId);
         model.addAttribute("imageUrls", imageUrls);
         model.addAttribute("listspct", AllProductDetail);
         model.addAttribute("listImage", anhSanPhams);
@@ -314,5 +352,37 @@ public class DatHangController {
 //        String vnpayUrl = vnPayService.createOrder(request, orderTotal, orderInfo, baseUrl);
 //        return "redirect:" + vnpayUrl;
 //    }
+
+    //Chat Functions
+
+    @MessageMapping("client/sendMessage")
+    @SendTo("client/topic/messages")
+    public message sendMessage(@Payload message message) {
+        //Log test tin nhắn nhận được phía Client
+        System.out.println("Received message: " + message);
+        // Lưu tin nhắn vào cơ sở dữ liệu hoặc xử lý thêm
+        return message; // Trả về tin nhắn để gửi lại cho tất cả người subscribe
+    }
+
+    @PostMapping("/sendMessage")
+    public ResponseEntity<message> sendMessage(@RequestParam("chatBoxId") int chatBoxId,
+                                               @RequestParam("accountId") int accountId,
+                                               @RequestParam("content") String content) {
+        // Lưu tin nhắn vào cơ sở dữ liệu
+        message savedMessage = chatService.saveMessage(chatBoxId, accountId, "client", content);
+
+        // Gửi tin nhắn đến các subscriber thông qua STOMP
+        messagingTemplate.convertAndSend("/topic/messages", savedMessage);
+
+        // Trả về thông tin tin nhắn đã lưu
+        return ResponseEntity.ok(savedMessage);
+    }
+
+    // API để lấy danh sách tin nhắn theo chatbox
+    @GetMapping("/messages/{chatBoxId}")
+    @ResponseBody
+    public List<message> getMessagesByChatBoxId(@PathVariable int chatBoxId) {
+        return chatService.getMessagesByChatBoxId(chatBoxId);
+    }
 }
 

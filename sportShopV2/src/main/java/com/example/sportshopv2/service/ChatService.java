@@ -79,6 +79,19 @@ public class ChatService {
     public Optional<chatBox> getChatBoxById(int id) {
         return chatBoxRepository.findById(id); // Hoặc tùy thuộc vào logic bạn cần
     }
+
+    public List<message> getMesByAccountId(int accountId) {
+        return messageRepository.findByAccountId(accountId);
+    }
+
+    public chatBox saveChatBox(chatBox chatBox) {
+        return chatBoxRepository.save(chatBox);
+    }
+
+
+    public chatBox findChatBoxByAccountId(Integer accountId) {
+        return chatBoxRepository.findByCreateBy(accountId);
+    }
 }
 
 
