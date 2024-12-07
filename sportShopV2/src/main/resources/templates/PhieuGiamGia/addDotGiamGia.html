@@ -1,0 +1,289 @@
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Menu}"
+>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Thêm Đợt Giảm Giá</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+
+        .form-section, .product-section {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-section {
+            flex: 1 1 30%;
+            margin-right: 20px;
+        }
+
+        .product-section {
+            flex: 1 1 65%;
+        }
+
+        h2 {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #343a40;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .form-group input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 8px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .form-group input[type="submit"]:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .table-container {
+            margin-top: 20px;
+        }
+
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-container th, .table-container td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table-container th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .table-container td {
+            background-color: white;
+        }
+
+        .table-container .status {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 12px;
+            text-align: center;
+            white-space: nowrap; /* Prevent text from wrapping */
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            padding: 10px 15px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            color: #007bff;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .pagination a:hover {
+            background-color: #e9ecef;
+        }
+
+        .pagination a.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .add-button {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .add-button button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .add-button button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .form-section, .product-section {
+                flex: 1 1 100%;
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+<main layout:fragment="main1">
+    <div class="container">
+        <div class="form-section">
+            <h2>Thêm đợt giảm giá</h2>
+            <div class="form-group">
+                <label for="promotion-name">Tên khuyến mại</label>
+                <input type="text" id="promotion-name" placeholder="Tên khuyến mãi" required>
+            </div>
+            <div class="form-group">
+                <label for="discount-value">Giá trị giảm</label>
+                <input type="text" id="discount-value" placeholder="Giá trị giảm" required>
+            </div>
+            <div class="form-group">
+                <label for="start-date">Ngày bắt đầu</label>
+                <input type="date" id="start-date" required>
+            </div>
+            <div class="form-group">
+                <label for="end-date">Ngày kết thúc</label>
+                <input type="date" id="end-date" required>
+            </div>
+            <div class="add-button">
+                <button type="submit"><i class="fas fa-user-plus"></i> Thêm Mới</button>
+            </div>
+        </div>
+        <div class="product-section">
+            <h2>Sản phẩm</h2>
+            <label for="search-product" class="mr-2">Tìm Kiếm</label>
+            <input type="text" id="search-product" placeholder="Mã hoặc tên sản phẩm" class="form-control mr-2">
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox"></th>
+                        <th>STT</th>
+                        <th>Mã sản phẩm</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Trạng Thái</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>1</td>
+                        <td>SP8386</td>
+                        <td>GIÀY SNEAKERS 9 NGÓN</td>
+                        <td><span class="status">Đang kinh doanh</span></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>2</td>
+                        <td>SP6789</td>
+                        <td>GIÀY SNEAKERS SỐNG BẰNG TÌNH CẢM</td>
+                        <td><span class="status">Đang kinh doanh</span></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>3</td>
+                        <td>SP1234</td>
+                        <td>GIÀY SNEAKERS SẢNH TIẾN</td>
+                        <td><span class="status">Đang kinh doanh</span></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>4</td>
+                        <td>SP3779</td>
+                        <td>GIÀY SNEAKER THẦN TÀI NHỎ THẦN TÀI LỚN</td>
+                        <td><span class="status">Đang kinh doanh</span></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>5</td>
+                        <td>SP9999</td>
+                        <td>GIÀY SNEAKER TỨ CHÍN</td>
+                        <td><span class="status">Đang kinh doanh</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination">
+                <a href="#">&#60;</a>
+                <a href="#" class="active">1</a>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#">&#62;</a>
+            </div>
+            <h2>Chi tiết sản phẩm</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox"></th>
+                        <th>STT</th>
+                        <th>Ảnh sản phẩm</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Giới tính</th>
+                        <th>Kích thước</th>
+                        <th>Màu</th>
+                        <th>Trạng thái</th>
+                        <th>Tình trạng</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Add product details here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
