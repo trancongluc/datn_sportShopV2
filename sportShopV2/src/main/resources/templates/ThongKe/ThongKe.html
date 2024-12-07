@@ -106,10 +106,11 @@
         document.addEventListener('DOMContentLoaded', function () {
             const ctx = document.getElementById('myYearChart').getContext('2d');
 
-            const yearChart = new Chart(ctx, {
+            // Khởi tạo biểu đồ với dữ liệu mặc định
+            const chart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+                    labels: [], // Sẽ được cập nhật từ API
                     datasets: [{
                         label: 'Số lượng hóa đơn',
                         data: [], // Sẽ được cập nhật từ API
@@ -136,21 +137,45 @@
                 }
             });
 
-            // Hàm để tải dữ liệu từ API và cập nhật biểu đồ
-            function loadYearData() {
-                fetch('/thong-ke/thong-ke-nam')
+            // Hàm tải dữ liệu từ API và cập nhật biểu đồ
+            function loadData(apiUrl, is7Days) {
+                fetch(apiUrl)
                     .then(response => response.json())
                     .then(data => {
-                        console.log('Dữ liệu API:', data); // Debug log dữ liệu
-                        yearChart.data.datasets[0].data = data.totalBills;
-                        yearChart.data.datasets[1].data = data.totalProducts;
-                        yearChart.update(); // Cập nhật lại biểu đồ
+                        console.log('Dữ liệu API:', data);
+
+                        // Xác định nhãn và dữ liệu cho từng loại thống kê
+                        if (is7Days) {
+                            // Thống kê 7 ngày
+                            chart.data.labels = Array.from({ length: 7 }, (_, i) => {
+                                const date = new Date();
+                                date.setDate(date.getDate() - (6 - i)); // Tạo nhãn cho 7 ngày gần nhất
+                                return date.toISOString().split('T')[0]; // Chuyển ngày sang định dạng YYYY-MM-DD
+                            });
+                        } else {
+                            // Thống kê theo năm
+                            chart.data.labels = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+                        }
+
+                        // Cập nhật dữ liệu
+                        chart.data.datasets[0].data = data.totalBills;
+                        chart.data.datasets[1].data = data.totalProducts;
+                        chart.update(); // Cập nhật biểu đồ
                     })
                     .catch(error => console.error('Lỗi khi tải dữ liệu:', error));
             }
 
-            // Tự động tải dữ liệu khi trang được tải
-            loadYearData();  // Gọi hàm để tải dữ liệu và cập nhật biểu đồ
+            // Gán sự kiện cho các nút
+            document.querySelector('.btn-primary:nth-child(4)').addEventListener('click', function () {
+                loadData('/thong-ke/thong-ke-7-ngay', true); // Thống kê 7 ngày
+            });
+
+            document.querySelector('.btn-primary:nth-child(6)').addEventListener('click', function () {
+                loadData('/thong-ke/thong-ke-nam', false); // Thống kê năm
+            });
+
+            // Tự động tải dữ liệu năm khi trang được tải
+            loadData('/thong-ke/thong-ke-nam', false); // Mặc định hiển thị thống kê theo năm
         });
 
     </script>

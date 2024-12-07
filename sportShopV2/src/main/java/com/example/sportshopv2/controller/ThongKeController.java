@@ -86,17 +86,23 @@ public class ThongKeController {
     public ResponseEntity<?> thongKeTrong7Ngay() {
         Map<String, Object> response = new HashMap<>();
 
-        // Kiểm tra xem có dữ liệu từ service
-        List<Integer> totalBills = thongKeService.getLast7DaysBillCounts();
-        List<Integer> totalProducts = thongKeService.getLast7DaysProductCounts();
+        // Lấy danh sách số lượng hóa đơn và sản phẩm trong 7 ngày
+        List<Integer> totalBills = thongKeService.getLast7DaysBillCounts();  // Danh sách số lượng hóa đơn
+        List<Integer> totalProducts = thongKeService.getLast7DaysProductCounts();  // Danh sách số lượng sản phẩm
 
-        // Debug: in ra dữ liệu để kiểm tra
+        // Debug: In ra dữ liệu để kiểm tra
         System.out.println("Bills: " + totalBills);
         System.out.println("Products: " + totalProducts);
 
-        // Trả về response nếu dữ liệu hợp lệ
-        response.put("totalBills", totalBills);
-        response.put("totalProducts", totalProducts);
-        return ResponseEntity.ok(response);
+        // Kiểm tra xem dữ liệu có hợp lệ hay không (optional)
+        if (totalBills.size() != 7 || totalProducts.size() != 7) {
+            return ResponseEntity.badRequest().body("Dữ liệu không hợp lệ");
+        }
+
+        // Trả về dữ liệu cho mỗi ngày trong 7 ngày
+        response.put("totalBills", totalBills);  // Số lượng hóa đơn theo 7 ngày
+        response.put("totalProducts", totalProducts);  // Số lượng sản phẩm theo 7 ngày
+
+        return ResponseEntity.ok(response);  // Trả về kết quả cho người dùng
     }
 }

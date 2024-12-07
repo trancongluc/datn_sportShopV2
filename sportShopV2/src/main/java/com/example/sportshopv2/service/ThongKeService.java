@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,33 +47,23 @@ public class ThongKeService {
         }
         return monthlyCounts;
     }
-    public List<Integer> getLast7DaysProductCounts() {
-        LocalDate now = LocalDate.now();
-        List<Integer> dailyCounts = new ArrayList<>();
-
-        // Lặp qua 7 ngày (tính từ hôm nay trở về trước)
-        for (int i = 0; i < 7; i++) {
-            LocalDate date = now.minusDays(i);
-            Integer countSp = hoaDonRepo.countProductsByDay(date); // Sử dụng query theo từng ngày
-            dailyCounts.add(countSp != null ? countSp : 0); // Nếu kết quả null, set về 0
-            System.out.println("Ngày " + date + " có " + countSp + " sản phẩm.");
-        }
-
-        return dailyCounts;
-    }
     public List<Integer> getLast7DaysBillCounts() {
-        LocalDate now = LocalDate.now();
-        List<Integer> dailyCounts = new ArrayList<>();
-
-        for (int i = 0; i < 7; i++) {
-            LocalDate startDate = now.minusDays(i);       // Ngày cần thống kê
-            LocalDate endDate = startDate;               // Chỉ thống kê trong 1 ngày
-            Integer countBills = hoaDonRepo.countBillsLast7Days(startDate, endDate);
-            dailyCounts.add(countBills != null ? countBills : 0); // Nếu null, set về 0
-            System.out.println("Ngày " + startDate + " có " + countBills + " hóa đơn.");
+        List<Integer> bills = new ArrayList<>();
+        for (int i = 6; i >= 0; i--) {
+            LocalDateTime date = LocalDateTime.now().minusDays(i);
+            bills.add(hoaDonRepo.countBillsByDate(date));
         }
-
-        return dailyCounts;
+        return bills;
     }
+
+    public List<Integer> getLast7DaysProductCounts() {
+        List<Integer> products = new ArrayList<>();
+        for (int i = 6; i >= 0; i--) {
+            LocalDateTime date = LocalDateTime.now().minusDays(i);
+            products.add(hoaDonRepo.countProductsByDate(date));
+        }
+        return products;
+    }
+
 
 }
