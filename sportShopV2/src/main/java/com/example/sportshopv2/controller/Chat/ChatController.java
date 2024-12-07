@@ -48,6 +48,10 @@ public class ChatController {
         model.addAttribute("accountId", accountId);
         // Lấy danh sách tất cả chatboxes
         List<chatBox> chatBoxes = chatService.getActiveChatBoxes();
+
+        // Sắp xếp chatboxes theo thời gian tạo (mới nhất lên đầu)
+        chatBoxes.sort((cb1, cb2) -> cb2.getCreateAt().compareTo(cb1.getCreateAt()));
+
         model.addAttribute("chatBoxes", chatBoxes);
 
         // Lấy tin nhắn cho từng chatbox
@@ -63,7 +67,7 @@ public class ChatController {
 
     @MessageMapping("/sendMessage")
     @SendTo("/topic/messages")
-    public message sendMessage(@Payload message message,  SimpMessageHeaderAccessor headerAccessor) {
+    public message sendMessage(@Payload message message, SimpMessageHeaderAccessor headerAccessor) {
         // Kiểm tra nếu id = 0
         if (message.getId() == 0) {
             System.out.println("Processing message with ID = 0. Skipping duplicate checks.");
