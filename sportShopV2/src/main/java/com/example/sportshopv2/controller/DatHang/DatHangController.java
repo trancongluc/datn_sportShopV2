@@ -316,6 +316,7 @@ public class DatHangController {
                               @RequestParam("selectedProducts") List<Long> selectedProducts,
                               @RequestParam(value = "moneyShip", defaultValue = "0.0") String moneyShip,
                               @RequestParam(value = "voucher", defaultValue = "0.0") String moneyVoucher,
+                              @RequestParam(value = "soLuongSanPham") Integer soLuong,
                               HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
         if (hoTen == null || hoTen.isEmpty()) {
             hoTen = "Unknown Customer";  // Set a default value if not provided
@@ -369,7 +370,7 @@ public class DatHangController {
         List<SPCT> spctList = sanPhamChiTietRepo.findByIdIn(selectedProducts);  // Ensure dsSPCT is populated
         List<GioHangChiTiet> gioHangChiTiets = gioHangChiTietRepo.findAllBySanPhamChiTiet_IdIn(selectedProducts);
         for (GioHangChiTiet gioHangChiTiet : gioHangChiTiets) {
-            SanPhamChiTiet sanPhamChiTiet =  sanPhamChiTietService.findSPCTById(gioHangChiTiet.getSanPhamChiTiet().getId());
+            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietService.findSPCTById(gioHangChiTiet.getSanPhamChiTiet().getId());
             sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - gioHangChiTiet.getSoLuong());
             sanPhamChiTietService.updateSoLuongSanPhamChiTiet(sanPhamChiTiet.getId(), sanPhamChiTiet);
             gioHangChiTietRepo.delete(gioHangChiTiet);
@@ -379,7 +380,7 @@ public class DatHangController {
             HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
             hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);  // Set the product detail
             hoaDonChiTiet.setHoaDon(hoaDon);  // Associate the bill with the bill detail
-            hoaDonChiTiet.setQuantity(sanPhamChiTiet.getSoLuong());
+            hoaDonChiTiet.setQuantity(soLuong);
             hoaDonChiTiet.setPrice(Float.valueOf(orderTotalStr));
             hoaDonChiTietRepo.save(hoaDonChiTiet);  // Save the bill detail
         }
