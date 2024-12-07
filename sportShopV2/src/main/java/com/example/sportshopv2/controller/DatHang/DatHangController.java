@@ -6,6 +6,7 @@ import com.example.sportshopv2.repository.*;
 import com.example.sportshopv2.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,10 +14,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.example.sportshopv2.config.VNPAYService;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -59,6 +63,9 @@ public class DatHangController {
     private SanPhamChiTietRepository sanPhamChiTietRepository;
     @Autowired
     private SPCTRePo sanPhamChiTietRepo;
+    @Autowired
+    private PhieuGiamGiaKhachHangRepository phieuGiamGiaKhachHangRepository;
+
     private Integer idTK = null;
     private List<Long> dsSPCT = null;
 
@@ -107,7 +114,8 @@ public class DatHangController {
     public String gioHang(Model model,
                           @RequestParam("id") Integer id,
                           @RequestParam("idcolor") Integer idcolor,
-                          @RequestParam("idsize") Integer idsize) {
+                          @RequestParam("idsize") Integer idsize, @RequestParam("soLuong") Integer soLuong) {
+        Integer soLuongDat = Integer.valueOf(soLuong);
         // Lấy chi tiết sản phẩm từ service dựa trên id, idsize và idcolor
         SanPhamChiTietDTO productDetail = sanPhamChiTietService.getSPCTByIDSPIDSIZEIDCOLOR(id, idsize, idcolor);
 
@@ -127,7 +135,7 @@ public class DatHangController {
         // Kiểm tra sản phẩm đã có trong giỏ hàng chưa
         GioHangChiTiet existingCartItem = gioHangChiTietRepo.findByGioHang_IdAndSanPhamChiTiet_Id(gioHang.getId(), productDetail.getId());
         if (existingCartItem != null) {
-            existingCartItem.setSoLuong(existingCartItem.getSoLuong() + 1);
+            existingCartItem.setSoLuong(existingCartItem.getSoLuong() + soLuongDat);
             gioHangChiTietRepo.save(existingCartItem);
         } else {
             GioHangChiTiet gioHangChiTiet = new GioHangChiTiet();
@@ -138,7 +146,7 @@ public class DatHangController {
             gioHangChiTiet.setGiaTien(productDetail.getGia());
             gioHangChiTiet.setGioHang(gioHang);
             gioHangChiTiet.setTrangThai("Active");
-            gioHangChiTiet.setSoLuong(1);
+            gioHangChiTiet.setSoLuong(soLuongDat);
             gioHangChiTietRepo.save(gioHangChiTiet);
         }
 
@@ -152,13 +160,32 @@ public class DatHangController {
 
     @RequestMapping("/gio-hang-khach-hang")
     public String gioHang(Model model, @RequestParam("id") Integer id,
-                          @RequestParam(value = "selectedProducts", required = false) List<Long> selectedProductIds) {
+                          @RequestParam(value = "selectedProducts", required = false) List<Long> selectedProductIds, @RequestParam(value = "idVoucher", defaultValue = "0") Integer idVoucher) {
         TaiKhoan taiKhoan = taiKhoanRepo.findTaiKhoanById(id);
+        List<PhieuGiamGiaKhachHang> voucher = phieuGiamGiaKhachHangRepository.findAllByIdTaiKhoan_IdAndDeleted(id, false);
+        if (idVoucher != 0) {
+            model.addAttribute("giaTriGiam", phieuGiamGiaKhachHangRepository.findByIdPhieuGiamGia_Id(id));
+        }
         idTK = id;
         model.addAttribute("thongTinKhachHang", taiKhoan);
         model.addAttribute("selectedProductIds", selectedProductIds != null ? selectedProductIds : Collections.emptyList());
         dsSPCT = selectedProductIds;
         List<GioHangChiTiet> listCart = gioHangChiTietRepo.findAllByGioHang_IdTaiKhoan_Id(id);
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator(',');
+        symbols.setGroupingSeparator('.');
+
+        DecimalFormat formatter = new DecimalFormat("#,###.00", symbols);
+
+        // Tạo một Map để chứa giá trị đã định dạng cho từng sản phẩm
+        Map<Integer, String> formattedTotals = new HashMap<>();
+        for (GioHangChiTiet product : listCart) {
+            Float productTotal = product.getGiaTien() * product.getSoLuong();
+            String formattedTotal = formatter.format(productTotal); // Định dạng số tiền
+            formattedTotals.put(product.getId(), formattedTotal); // Lưu vào Map
+            System.out.println("Formatted Totals: " + formattedTotals);
+        }
+        model.addAttribute("formattedTotals", formattedTotals);
         List<Address> diaChi = addressRepo.findByKhachHang_Id(taiKhoan.getNguoiDung().getId());
 
         if (diaChi.size() == 0) {
@@ -186,7 +213,7 @@ public class DatHangController {
 
         model.addAttribute("listCart", listCart);
         model.addAttribute("listImage", anhSanPhams);
-//        model.addAttribute("tongTienGioHang", tongTienHoaDon);
+        model.addAttribute("Voucher", voucher);
         return "MuaHang/GioHang";
     }
 
@@ -223,6 +250,36 @@ public class DatHangController {
         return "MuaHang/mua-ngay";
     }
 
+    @PostMapping("/update-quantity")
+    public ResponseEntity<?> updateQuantity(@RequestBody Map<String, Object> payload) {
+        try {
+            // Ensure proper data types
+            if (payload.get("id") == null || payload.get("soLuong") == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("error", "Missing required fields: id or soLuong"));
+            }
+
+            Integer id = Integer.parseInt(payload.get("id").toString());  // Convert to Integer
+            Integer soLuong = Integer.parseInt(payload.get("soLuong").toString());  // Convert to Integer
+
+            Optional<GioHangChiTiet> product = gioHangChiTietRepo.findById(id);
+            if (product.isPresent()) {
+                GioHangChiTiet existingProduct = product.get();
+                existingProduct.setSoLuong(soLuong);
+                gioHangChiTietRepo.save(existingProduct);
+                return ResponseEntity.ok(Map.of("message", "Số lượng đã được cập nhật."));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "Sản phẩm không tồn tại."));
+            }
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Invalid data format for id or soLuong."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "An unexpected error occurred."));
+        }
+    }
 
     @RequestMapping("/get-product-price")
     @ResponseBody
@@ -237,46 +294,49 @@ public class DatHangController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/submitOrder")
+    @GetMapping("/submitOrder")
     public String submitOrder(@RequestParam("amount") String orderTotal,
                               @RequestParam("orderInfo") String orderInfo,
-                              @RequestParam("tinh") String tinh,
-                              @RequestParam("phuong") String phuong,
-                              @RequestParam("quan") String quan,
+                              @RequestParam("tinh_name") String tinh,
+                              @RequestParam("phuong_name") String phuong,
+                              @RequestParam("quan_name") String quan,
                               @RequestParam(value = "email", required = false) String email,
-                              @RequestParam(value = "phone", required = false) String sdt,
-                              @RequestParam(value = "name", required = false) String hoTen,
+                              @RequestParam("nguoiDung.phone_number") String sdt,
+                              @RequestParam(value = "nguoiDung.full_name", required = false) String hoTen,
                               @RequestParam("soNha") String soNha,
                               @RequestParam("selectedProducts") List<Long> selectedProducts,
+                              @RequestParam(value = "moneyShip", defaultValue = "0.0") String moneyShip,
+                              @RequestParam(value = "voucher", defaultValue = "0.0") String moneyVoucher,
                               HttpServletRequest request) {
-        // Log received values (for debugging purposes)
-        System.out.println("Username: " + hoTen);
-        System.out.println("Total Money: " + orderTotal);
-        System.out.println("Phone Number: " + sdt);
-
-        // Handle cases where hoTen or other required parameters might be missing
         if (hoTen == null || hoTen.isEmpty()) {
             hoTen = "Unknown Customer";  // Set a default value if not provided
         }
-
+        Float ship = 0.0f;
+        Float voucher = 0.0f;
         TaiKhoan tk = new TaiKhoan();
         tk.setId(2);  // Assuming you have logic to set this properly
         TaiKhoan taiKhoan = taiKhoanRepo.findTaiKhoanById(idTK);  // Make sure 'idTK' is initialized or passed correctly
 
         HoaDon hoaDon = new HoaDon();
-        hoaDon.setBillCode(orderInfo != null ? orderInfo : "HDTTW");  // Use default if orderInfo is null
-        hoaDon.setStatus("Thanh toán");
+        String invoiceCode = "HD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        hoaDon.setBillCode(invoiceCode);  // Use default if orderInfo is null
+        hoaDon.setStatus("Chờ xác nhận");
         hoaDon.setId_staff(tk);
+        hoaDon.setUser_name(taiKhoan.getUsername());
         hoaDon.setId_account(taiKhoan);
         hoaDon.setPhone_number(sdt);
-        hoaDon.setUser_name(hoTen);  // Ensure hoTen is set
+        hoaDon.setType("Chuyển phát");
+        hoaDon.setUser_name(hoTen);
         hoaDon.setEmail(email);
         hoaDon.setCreateAt(LocalDateTime.now());
         hoaDon.setCreate_by(taiKhoan.getUsername());  // Assuming the logged-in user is set correctly
         hoaDon.setUpdateAt(LocalDateTime.now());
         hoaDon.setPay_method("Chuyển khoản");
         hoaDon.setPay_status("Thanh toán trước");
-
+        ship = Float.valueOf(moneyShip.replaceAll("[^\\d]", ""));
+        voucher = Float.valueOf(moneyVoucher.replaceAll("[^\\d]", ""));
+        hoaDon.setMoney_ship(ship);
+        hoaDon.setMoney_reduced(voucher);
         // Sanitize the orderTotal (remove non-numeric characters)
         String orderTotalStr = orderTotal.replaceAll("[^\\d]", "");
         hoaDon.setTotal_money(orderTotalStr.isEmpty() ? 0 : Float.valueOf(orderTotalStr));  // Ensure no empty string
@@ -299,20 +359,20 @@ public class DatHangController {
             hoaDonChiTietRepo.save(hoaDonChiTiet);  // Save the bill detail
         }
         orderInfo = "hello";
+        System.out.println(orderTotalStr);
         // Generate VNPay URL
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        String vnpayUrl = vnPayService.createOrder(request, orderTotal, orderInfo, baseUrl);
+        String vnpayUrl = vnPayService.createOrder(request, orderTotalStr, orderInfo, baseUrl);
         return "redirect:" + vnpayUrl;
     }
-
-
-//    @PostMapping("/VNPAY/submitOrder")
-//    public String submidOrder(@RequestParam("amount") int orderTotal,
-//                              @RequestParam("orderInfo") String orderInfo,
-//                              HttpServletRequest request) {
-//        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-//        String vnpayUrl = vnPayService.createOrder(request, orderTotal, orderInfo, baseUrl);
-//        return "redirect:" + vnpayUrl;
-//    }
+    @GetMapping("/voucher/details/{id}")
+    @ResponseBody
+    public PhieuGiamGiaKhachHang getVoucherDetails(@PathVariable Integer id) {
+        PhieuGiamGiaKhachHang voucher = phieuGiamGiaKhachHangRepository.findByIdPhieuGiamGia_Id(id);
+        if (voucher == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Voucher không tồn tại");
+        }
+        return voucher; // Trả về JSON
+    }
 }
 

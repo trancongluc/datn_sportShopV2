@@ -29,7 +29,8 @@
 
                     <div class="form-group col-md-6">
                         <label for="search">Tìm kiếm:</label>
-                        <input type="text" class="form-control" id="search" placeholder="Nhập mã hóa đơn" name="maHoaDon">
+                        <input type="text" class="form-control" id="search" placeholder="Nhập mã hóa đơn"
+                               name="maHoaDon">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="order-type">Loại đơn:</label>
@@ -41,7 +42,8 @@
                     </div>
                     <div class="form-group col-md-6">
                         <label for="start-date">Ngày bắt đầu:</label>
-                        <input type="text" class="form-control" id="start-date" placeholder="dd/mm/yyyy" name="startDate">
+                        <input type="text" class="form-control" id="start-date" placeholder="dd/mm/yyyy"
+                               name="startDate">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="end-date">Ngày kết thúc:</label>
@@ -74,37 +76,45 @@
                 <li class="nav-item">
                     <a class="nav-link"
                        th:href="@{~/bill/view}"
-                       th:classappend="${tab == 'all'} ? 'active' : ''">Tất cả</a>
+                       th:classappend="${tab == 'all'} ? 'active' : ''">Tất cả
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link"
                        th:href="@{~/bill/tab(status='Chờ xác nhận')}"
-                       th:classappend="${tab == 'pending'} ? 'active' : ''">Chờ xác nhận</a>
+                       th:classappend="${tab == 'pending'} ? 'active' : ''">Chờ xác nhận
+                        <span class="badge" th:text="${countChoXacNhan}"></span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link"
                        th:href="@{~/bill/tab(status='Đã xác nhận')}"
-                       th:classappend="${tab == 'confirmed'} ? 'active' : ''">Đã xác nhận</a>
+                       th:classappend="${tab == 'confirmed'} ? 'active' : ''">Đã xác nhận
+                        <span class="badge" th:text="${countDaXacNhan}"></span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link"
                        th:href="@{~/bill/tab(status='Chờ vận chuyển')}"
-                       th:classappend="${tab == 'shipping'} ? 'active' : ''">Chờ vận chuyển</a>
+                       th:classappend="${tab == 'shipping'} ? 'active' : ''">Chờ vận chuyển
+                        <span class="badge" th:text="${countChoVanChuyen}"></span></a>
 
                 <li class="nav-item">
                     <a class="nav-link"
                        th:href="@{~/bill/tab(status='Đang vận chuyển')}"
-                       th:classappend="${tab == 'payment'} ? 'active' : ''">Đang vận chuyển</a>
+                       th:classappend="${tab == 'payment'} ? 'active' : ''">Đang vận chuyển
+                        <span class="badge" th:text="${countDangVanChuyen}"></span>
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link"
                        th:href="@{~/bill/tab(status='Hoàn thành')}"
-                       th:classappend="${tab == 'completed'} ? 'active' : ''">Hoàn thành</a>
+                       th:classappend="${tab == 'completed'} ? 'active' : ''">Hoàn thành
+                        <span class="badge" th:text="${countHoanThanh}"></span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link"
                        th:href="@{~/bill/tab(status='Hủy')}"
-                       th:classappend="${tab == 'cancelled'} ? 'active' : ''">Hủy</a>
+                       th:classappend="${tab == 'cancelled'} ? 'active' : ''">Hủy
+                        <span class="badge" th:text="${countHuy}"></span></a>
                     <!--                    <a class="nav-link" href="#" onclick="showTab(event, 'pending')">Chờ xác nhận <span class="badge">0</span></a>-->
                 </li>
                 <!--                <li class="nav-item">-->
@@ -353,6 +363,7 @@
                 event.currentTarget.classList.add('active');
             }
         }
+
     </script>
 </main>
 </body>

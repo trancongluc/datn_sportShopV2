@@ -1,6 +1,9 @@
 package com.example.sportshopv2.controller.SanPham;
 
 import com.example.sportshopv2.dto.SanPhamChiTietDTO;
+import com.example.sportshopv2.model.KichThuoc;
+import com.example.sportshopv2.model.MauSac;
+import com.example.sportshopv2.model.SanPham;
 import com.example.sportshopv2.model.SanPhamChiTiet;
 import com.example.sportshopv2.service.*;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/san-pham-chi-tiet")
@@ -41,7 +47,55 @@ public class SanPhamChiTietConTroller {
     public String sanPhamChiTiet(Model model) {
         return "SanPham/them-san-pham";
     }
+    @GetMapping("/update/{idSP}")
+    public String updateSpctByIdSP(
+            @PathVariable("idSP") Integer idSP,
+            Model model
+    ) {
+        List<SanPhamChiTietDTO> listSPCTDTO = spctService.getListSPCTByIdSP(idSP);
+        List<SanPhamChiTiet> listSPCT = spctService.findAllByIdSP(idSP);
+        SanPham sanPham = sanPhamService.findAllSanPhamById(idSP);
 
+        if (!listSPCT.isEmpty()) {
+            SanPhamChiTiet spct = listSPCT.get(0); // Lấy giá trị chung từ bản ghi đầu tiên
+            model.addAttribute("thuongHieuId", spct.getIdThuongHieu());
+            model.addAttribute("chatLieuId", spct.getIdChatLieu());
+            model.addAttribute("gioiTinh", spct.getGioiTinh());
+            model.addAttribute("coGiayId", spct.getIdCoGiay());
+            model.addAttribute("deGiayId", spct.getIdDeGiay());
+            model.addAttribute("theLoaiId",spct.getIdTheLoai());
+            model.addAttribute("moTa",spct.getMoTa());
+
+        }
+        // Lấy danh sách ID kích cỡ và màu sắc duy nhất
+        List<Integer> sizeIds = listSPCT.stream()
+                .map(SanPhamChiTiet::getIdKichThuoc)
+                .distinct()
+                .collect(Collectors.toList());
+
+        List<Integer> colorIds = listSPCT.stream()
+                .map(SanPhamChiTiet::getIdMauSac)
+                .distinct()
+                .collect(Collectors.toList());
+
+        // Lấy chi tiết kích cỡ và màu sắc từ database
+        List<KichThuoc> uniqueSizes = kichThuocService.findAllByIds(sizeIds);
+        List<MauSac> uniqueColors = mauSacService.findAllByIds(colorIds);
+        model.addAttribute("ktNotSP", kichThuocService.getSizesNotInProduct(idSP));
+        model.addAttribute("msNotSP", mauSacService.getColorsNotInProduct(idSP));
+        model.addAttribute("sanPham", sanPham);
+        model.addAttribute("spDetail", listSPCT);
+        model.addAttribute("spctDto", listSPCTDTO);
+        model.addAttribute("sizes", uniqueSizes);
+        model.addAttribute("colors", uniqueColors);
+        return "SanPham/update-san-pham";
+    }
+  /*  @GetMapping("/product/{productId}/sizes-not-in")
+    @ResponseBody
+    public List<KichThuoc> getSizesNotInProduct(@PathVariable Integer productId) {
+        List<KichThuoc> sizes = kichThuocService.getSizesNotInProduct(productId);
+        return sizes;
+    }*/
     @GetMapping("/{idSP}")
     public String getSPCTByIdSP(
             @PathVariable("idSP") Integer idSP,
@@ -54,7 +108,18 @@ public class SanPhamChiTietConTroller {
         model.addAttribute("totalPages", listSPCT.getTotalPages());
         return "SanPham/san-pham-chi-tiet";
     }
-
+    @PutMapping("/update/{id}")
+    @ResponseBody
+    public ResponseEntity<?> updateSanPhamChiTiet(@PathVariable Integer id, @RequestBody SanPhamChiTiet spct) {
+        try {
+            SanPhamChiTiet updatedSanPhamChiTiet = spctService.updateSanPhamChiTiet(id, spct);
+            return ResponseEntity.ok(updatedSanPhamChiTiet);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi cập nhật sản phẩm chi tiết");
+        }
+    }
     @PostMapping("/them-san-pham-chi-tiet")
     @ResponseBody
     public ResponseEntity<SanPhamChiTiet> themChatLieu(@RequestBody SanPhamChiTiet spct) {

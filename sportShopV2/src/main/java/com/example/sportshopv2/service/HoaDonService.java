@@ -10,6 +10,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class HoaDonService {
@@ -37,7 +39,7 @@ public class HoaDonService {
 
     public HoaDon hoaDonById(Integer idHD) {
 
-        return hdRepo.findById(idHD).orElse(null);
+        return hdRepo.findAllById(idHD);
     }
 
     public List<HoaDon> getHoaDonTaiQuay() {
@@ -53,4 +55,8 @@ public class HoaDonService {
     public HoaDon findHoaDonById(Integer id) {
         return hdRepo.findById(id).orElse(null);
     }
+    public int countByStatus(String status) {
+        return hdRepo.countByStatus(status);
+    }
+
 }

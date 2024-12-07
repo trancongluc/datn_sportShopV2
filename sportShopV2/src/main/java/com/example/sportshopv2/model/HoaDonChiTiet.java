@@ -23,7 +23,7 @@ public class HoaDonChiTiet {
     private Integer quantity;
 
     @ManyToOne
-    @JoinColumn(name = "id_bill")
+    @JoinColumn(name = "id_bill" , nullable = false)
     private HoaDon hoaDon;
 
     @ManyToOne

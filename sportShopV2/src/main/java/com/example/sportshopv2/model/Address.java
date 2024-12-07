@@ -53,4 +53,7 @@ public class Address {
     @Column(name = "deleted", columnDefinition = "BIT DEFAULT 0")
     private boolean deleted = false;
 
+//    @ManyToOne
+//    @JoinColumn(name = "id_User")
+//    private User khachHang;
 }
