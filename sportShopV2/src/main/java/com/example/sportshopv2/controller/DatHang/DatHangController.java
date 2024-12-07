@@ -4,6 +4,7 @@ import com.example.sportshopv2.dto.SanPhamChiTietDTO;
 import com.example.sportshopv2.model.*;
 import com.example.sportshopv2.repository.*;
 import com.example.sportshopv2.service.*;
+import com.example.sportshopv2.service.impl.PhieuGiamGiaServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -65,7 +66,8 @@ public class DatHangController {
     private SPCTRePo sanPhamChiTietRepo;
     @Autowired
     private PhieuGiamGiaKhachHangRepository phieuGiamGiaKhachHangRepository;
-
+    @Autowired
+    private PhieuGiamGiaServiceImpl phieuGiamGiaService;
     private Integer idTK = null;
     private List<Long> dsSPCT = null;
 
@@ -161,10 +163,10 @@ public class DatHangController {
     public String gioHang(Model model, @RequestParam("id") Integer id,
                           @RequestParam(value = "selectedProducts", required = false) List<Long> selectedProductIds, @RequestParam(value = "idVoucher", defaultValue = "0") Integer idVoucher) {
         TaiKhoan taiKhoan = taiKhoanRepo.findTaiKhoanById(id);
-        List<PhieuGiamGiaKhachHang> voucher = phieuGiamGiaKhachHangRepository.findAllByIdTaiKhoan_IdAndDeleted(id, false);
-        if (idVoucher != 0) {
-            model.addAttribute("giaTriGiam", phieuGiamGiaKhachHangRepository.findByIdPhieuGiamGia_Id(id));
-        }
+//        List<PhieuGiamGiaKhachHang> voucher = phieuGiamGiaKhachHangRepository.findAllByIdTaiKhoan_IdAndDeleted(id, false);
+//        if (idVoucher != 0) {
+//            model.addAttribute("giaTriGiam", phieuGiamGiaKhachHangRepository.findByIdPhieuGiamGia_Id(id));
+//        }
         idTK = id;
         model.addAttribute("thongTinKhachHang", taiKhoan);
         model.addAttribute("selectedProductIds", selectedProductIds != null ? selectedProductIds : Collections.emptyList());
@@ -212,7 +214,7 @@ public class DatHangController {
 
         model.addAttribute("listCart", listCart);
         model.addAttribute("listImage", anhSanPhams);
-        model.addAttribute("Voucher", voucher);
+//        model.addAttribute("Voucher", voucher);
         return "MuaHang/GioHang";
     }
 
@@ -426,5 +428,17 @@ public class DatHangController {
         // Trả về đối tượng đã bị xóa
         return productInCart;
     }
+
+    @PostMapping("/get-voucher")
+    @ResponseBody
+    public ResponseEntity<List<PhieuGiamGia>> getVoucher(@RequestBody Map<String, String> request) {
+        String total = request.get("total");
+        Integer vc = Integer.valueOf(total.replaceAll("[^\\d]", ""));
+        List<PhieuGiamGia> vouchers = phieuGiamGiaService.getVoucherByGiaTriDonHang(vc);
+
+        System.out.println("Vouchers sent to client: " + vouchers); // Log dữ liệu gửi
+        return ResponseEntity.ok(vouchers);
+    }
+
 }
 
