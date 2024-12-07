@@ -20,7 +20,7 @@ public class HistoryDTO {
 
     private String status;
 
-    private Float total_money;
+    private String total_money;
 
     private String address;
 

@@ -12,13 +12,7 @@ import java.util.List;
 
 public interface NhanVienRepo extends JpaRepository<User, Integer> {
 
-    @Query(value = """
-        SELECT u.*
-        FROM [User] u
-        JOIN Account a ON u.id = a.id_user
-        LEFT JOIN Address addr ON u.id = addr.id_User
-        WHERE a.role = 'Staff'
-        """, nativeQuery = true)
+    @Query("SELECT u FROM User u JOIN u.account a LEFT JOIN FETCH u.addresses  WHERE  a.role = 'Employee' AND u.deleted = false")
     Page<User> findAllEmp(Pageable pageable);
 
     @Query("SELECT u FROM User u JOIN u.account a LEFT JOIN FETCH u.addresses WHERE a.role = 'Staff' AND " +
@@ -27,6 +21,6 @@ public interface NhanVienRepo extends JpaRepository<User, Integer> {
     @Query("SELECT u "
             + "FROM User u "
             + "JOIN u.account a "
-            + "WHERE u.id = :userId AND a.role = 'Staff'")
+            + "WHERE u.id = :userId AND a.role = 'Employee'")
     User getNhanVienById(@Param("userId") Integer userId);
 }

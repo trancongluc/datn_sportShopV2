@@ -101,4 +101,21 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
     List<Object[]> countProductsByDayInMonth(@Param("month") int month, @Param("year") int year);
 
 
+    //Loại bỏ nếu các chức năng khác bị ảnh hưởng
+    @Query(value = "SELECT b.id, b.user_name, b.create_at, b.status, b.total_money, b.address, p.name " +
+            "FROM Bill b " +
+            "JOIN Bill_Detail bd ON b.ID = bd.id_bill " +
+            "JOIN Product_detail pd ON bd.id_product_detail = pd.ID " +
+            "JOIN Product p ON pd.id_product = p.ID " +
+            "WHERE b.id_staff = :id", nativeQuery = true)
+    List<Object[]> getHistory(Integer id);
+
+    //Loại bỏ nếu các chức năng khác bị ảnh hưởng
+    @Query(value = "SELECT b.id, b.user_name, b.create_at, b.status, b.total_money, b.address, p.name " +
+            "FROM Bill b " +
+            "JOIN Bill_Detail bd ON b.id = bd.id_bill " +
+            "JOIN Product_detail pd ON bd.id_product_detail = pd.id " +
+            "JOIN Product p ON pd.id_product = p.id " +
+            "WHERE b.id_staff = :id AND b.status LIKE CONCAT('%', :trangthai, '%')", nativeQuery = true)
+    List<Object[]> SearchHistory(@Param("id") Integer id, @Param("trangthai") String trangthai);
 }
