@@ -2,6 +2,7 @@ package com.example.sportshopv2.controller;
 
 import com.example.sportshopv2.dto.HoaDonChiTietDTO;
 import com.example.sportshopv2.model.HoaDon;
+import com.example.sportshopv2.model.HoaDonChiTiet;
 import com.example.sportshopv2.repository.HoaDonRepo;
 import com.example.sportshopv2.repository.SanPhamChiTietRepository;
 import com.example.sportshopv2.repository.SanPhamRepository;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -22,21 +24,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/doi-tra")
 public class DoiTraController {
-
-    @Autowired
-    private SanPhamChiTietService spctService;
-
-    @Autowired
-    private KhachhangService khachHangService;
-
-    @Autowired
-    private SanPhamRepository sanPhamRep;
-
-    @Autowired
-    private SanPhamChiTietRepository SPCTRep;
-
-    @Autowired
-    private HoaDonRepo billService; // Dịch vụ để lấy thông tin hóa đơn
 
     @Autowired
     private HoaDonServiceImp hoaDonServiceImp;
@@ -51,16 +38,23 @@ public class DoiTraController {
     }
 
     @GetMapping("/detail")
-    public String getHoaDonDetail(@RequestParam("maHoaDon") Integer maHoaDon, Model model) {
-        // Lấy hóa đơn bằng cách sử dụng entity HoaDon
-        HoaDon hoaDon = hoaDonServiceImp.getBillDetailById(maHoaDon);
+    public String getHoaDonDetail(@RequestParam("tenHoaDon") String tenHoaDon, Model model) {
+
+        HoaDon hoaDon = hoaDonServiceImp.getBillDetailByBillCode(tenHoaDon);
         if (hoaDon == null) {
             // Xử lý trường hợp không tìm thấy hóa đơn
-            model.addAttribute("error", "Không tìm thấy hóa đơn với mã: " + maHoaDon);
-            return "DoiTra/view"; // Trả về trang lỗi
+            model.addAttribute("error", "Không tìm thấy hóa đơn với mã: " + tenHoaDon);
+            return "doi-tra/view";
         }
         model.addAttribute("hoaDon", hoaDon);
+
         return "DoiTra/DoiTraChiTiet";
+    }
+    @GetMapping("/cap-nhat")
+    public String doiTra(@RequestParam("maHoaDon") Integer maHoaDon, Model model) {
+        hoaDonServiceImp.updateTrangThai(maHoaDon, "Hoàn trả");
+        model.addAttribute("message", "Trạng thái hóa đơn đã được cập nhật thành công.");
+        return "redirect:/doi-tra/view";
     }
 
 }

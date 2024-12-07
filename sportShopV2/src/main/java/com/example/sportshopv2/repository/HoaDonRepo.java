@@ -15,6 +15,7 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
 
     HoaDon findAllById(Integer id);
 
+
     List<HoaDon> findAllByStatusNotOrderByCreateAtDesc(String status);
 
     List<HoaDon> findAllByType(String Type);
@@ -38,4 +39,16 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
     @Query("SELECT h FROM HoaDon h WHERE h.id_account.id = :id")
     List<HoaDon> findByCustomerId(@Param("id") Integer id);
     int countByStatus(String status);
+
+
+
+    @Query("SELECT b FROM HoaDon b " +
+            "JOIN b.id_account a " +
+            "JOIN a.nguoiDung u " +
+            "JOIN Address ad ON ad.khachHang.id = u.id " +
+            "JOIN HoaDonChiTiet bd on bd.hoaDon.id = b.id " +
+            "JOIN SanPhamChiTiet pd on pd.id = bd.sanPhamChiTiet.id " +
+            "JOIN MauSac c on c.id=pd.idMauSac " +
+            "WHERE b.billCode = :tenHoaDon")
+    HoaDon findBillDetailByBillCode(@Param("tenHoaDon") String tenHoaDon);
 }

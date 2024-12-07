@@ -97,6 +97,10 @@ public class HoaDon {
     private String update_by;
     @Column(name = "deleted")
     private Boolean deleted;
+
+    @OneToMany(mappedBy = "hoaDon", fetch = FetchType.LAZY)
+    private List<HoaDonChiTiet> billDetails;
+
     public String getStatusDisplay() {
         switch (status) {
             case "Chờ xác nhận": return "Chờ xác nhận";
@@ -118,5 +122,6 @@ public class HoaDon {
             default: return 0;
         }
     }
+
 
 }
