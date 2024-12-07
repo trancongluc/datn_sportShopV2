@@ -28,7 +28,9 @@ public class KichThuocService {
         Optional<KichThuoc> kichThuocDetail = kichThuocRepository.findById(id);
         return kichThuocDetail.orElse(null);
     }
-
+    public List<KichThuoc> findAllByIds(List<Integer> ids) {
+        return kichThuocRepository.findAllById(ids);
+    }
     public KichThuoc update(Integer id, KichThuoc kichThuoc) {
         return kichThuocRepository.findById(id).map(kt -> {
             kt.setTenKichThuoc(kichThuoc.getTenKichThuoc());
@@ -37,5 +39,8 @@ public class KichThuocService {
             kt.setUpdateAt(LocalDateTime.now());
             return kichThuocRepository.save(kt);
         }).orElse(null);
+    }
+    public List<KichThuoc> getSizesNotInProduct(Integer productId) {
+        return kichThuocRepository.findSizesNotInProduct(productId);
     }
 }

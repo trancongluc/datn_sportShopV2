@@ -1,5 +1,6 @@
 package com.example.sportshopv2.service;
 
+import com.example.sportshopv2.model.KichThuoc;
 import com.example.sportshopv2.repository.MauSacRepository;
 import com.example.sportshopv2.model.MauSac;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,9 @@ public class MauSacService {
         Optional<MauSac> mauSacDetail = mauSacRepository.findById(id);
         return mauSacDetail.orElse(null);
     }
-
+    public List<MauSac> findAllByIds(List<Integer> ids) {
+        return mauSacRepository.findAllById(ids);
+    }
     public MauSac update(Integer id, MauSac mauSac) {
         return mauSacRepository.findById(id).map(ms -> {
             ms.setTenMauSac(mauSac.getTenMauSac());
@@ -37,5 +40,8 @@ public class MauSacService {
             ms.setUpdateAt(LocalDateTime.now());
             return mauSacRepository.save(ms);
         }).orElse(null);
+    }
+    public List<MauSac> getColorsNotInProduct(Integer productId) {
+        return mauSacRepository.findColorsNotInProduct(productId);
     }
 }

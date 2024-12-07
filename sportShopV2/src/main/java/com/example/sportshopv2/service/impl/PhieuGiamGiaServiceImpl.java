@@ -6,6 +6,7 @@ import com.example.sportshopv2.service.PhieuGiamGiaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,10 +54,17 @@ public class PhieuGiamGiaServiceImpl implements PhieuGiamGiaService {
         }
         return false;
     }
+
+    @Override
+    public List<PhieuGiamGia> getVoucherByGiaTriDonHang(Integer giaTriDonHang) {
+        return phieuGiamGiaRepo.findVoucherByStatusAndMinimumValue("Đang diễn ra",giaTriDonHang);
+    }
+
     @Override
     public void save(PhieuGiamGia giamGia) {
         phieuGiamGiaRepo.save(giamGia);
     }
+
     private String generateUniqueVoucherCode() {
         String code;
         do {

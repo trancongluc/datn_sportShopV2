@@ -23,10 +23,10 @@ public class SanPhamChiTiet extends BaseEntity {
     private Integer id;
     @Column(name = "id_size")
     private Integer idKichThuoc;
-//    @Column(name = "id_product")
-//    private Integer idSanPham;
-//    @Column(name = "id_color")
-//    private Integer idMauSac;
+    @Column(name = "id_product")
+    private Integer idSanPham;
+    @Column(name = "id_color")
+    private Integer idMauSac;
     @Column(name = "id_brand")
     private Integer idThuongHieu;
     @Column(name = "id_sole")
@@ -48,27 +48,14 @@ public class SanPhamChiTiet extends BaseEntity {
     @Column(name = "gender")
     private String gioiTinh;
 
-    @ManyToOne
-    @JoinColumn(name = "id_product")
-    private SanPham sanPham;
-
-    @ManyToOne
-    @JoinColumn(name = "id_color")
-    private MauSac mauSac;
-
-    @OneToMany(mappedBy = "sanPhamChiTiet")
-    private List<AnhSanPham> anhSP;
 
 
-    public static SanPhamChiTiet of(SanPhamChiTietDTO spctDTO, MauSacRepository mauSacRepository, SanPhamRepository sanPhamRep,AnhSanPhamRepository anhRepo) {
-        MauSac mauSac = mauSacRepository.findById(spctDTO.getMauSac().getId()).orElse(null); // Tìm MauSac từ ID
-        SanPham sanPham = sanPhamRep.findById(spctDTO.getSanPham().getId()).orElse(null);
-        List<AnhSanPham> danhSachAnh = anhRepo.findBySanPhamChiTiet_Id(spctDTO.getId());
+    public static SanPhamChiTiet of(SanPhamChiTietDTO spctDTO) {
         return SanPhamChiTiet.builder()
                 .id(spctDTO.getId())
                 .idKichThuoc(spctDTO.getKichThuoc().getId())
-                .sanPham(sanPham)
-                .mauSac(mauSac)
+                .idSanPham(spctDTO.getSanPham().getId())
+                .idMauSac(spctDTO.getMauSac().getId())
                 .idThuongHieu(spctDTO.getMauSac().getId())
                 .idDeGiay(spctDTO.getDeGiay().getId())
                 .idTheLoai(spctDTO.getTheLoai().getId())
@@ -79,7 +66,6 @@ public class SanPhamChiTiet extends BaseEntity {
                 .gia(spctDTO.getGia())
                 .trangThai(spctDTO.getTrangThai())
                 .gioiTinh(spctDTO.getGioiTinh())
-                .anhSP(danhSachAnh)
                 .build();
     }
 
@@ -87,13 +73,12 @@ public class SanPhamChiTiet extends BaseEntity {
                                           SanPhamRepository spRepo, MauSacRepository msRepo, ThuongHieuRepository thRepo,
                                           DeGiayRepository dgRepo, TheLoaiRepository tlRepo, CoGiayRepository cgRepo,
                                           ChatLieuRepository clRepo, AnhSanPhamRepository anhRepo) {
-        List<AnhSanPham> danhSachAnh = anhRepo.findBySanPhamChiTiet_Id(spct.getId()); // Giả sử có phương thức này
-
+        List<AnhSanPham> danhSachAnh = anhRepo.findByIdSPCT(spct.getId()); // Giả sử có phương thức này
         return SanPhamChiTietDTO.builder()
                 .id(spct.getId())
                 .kichThuoc(kichThuocRepository.findById(spct.idKichThuoc).orElse(null)) // Tạo đối tượng KichThuoc từ ID
-                .sanPham(spRepo.findById(spct.getSanPham().getId()).orElse(null)) // Tạo đối tượng SanPham từ ID
-                .mauSac(msRepo.findById(spct.getMauSac().getId()).orElse(null)) // Tạo đối tượng MauSac từ ID
+                .sanPham(spRepo.findById(spct.idSanPham).orElse(null)) // Tạo đối tượng SanPham từ ID
+                .mauSac(msRepo.findById(spct.idMauSac).orElse(null)) // Tạo đối tượng MauSac từ ID
                 .thuongHieu(thRepo.findById(spct.idThuongHieu).orElse(null)) // Tạo đối tượng ThuongHieu từ ID
                 .deGiay(dgRepo.findById(spct.idDeGiay).orElse(null)) // Tạo đối tượng DeGiay từ ID
                 .theLoai(tlRepo.findById(spct.idTheLoai).orElse(null)) // Tạo đối tượng TheLoai từ ID
@@ -106,6 +91,10 @@ public class SanPhamChiTiet extends BaseEntity {
                 .gioiTinh(spct.getGioiTinh())
                 .anhSanPham(danhSachAnh)
                 .build();
+    }
+    public static SanPhamChiTietDTO toDTI(SanPhamChiTiet spct, HoaDonChiTietRepo hoaDonChiTietRepo){
+        List<HoaDonChiTiet> danhSachHoaDonChiTiet = hoaDonChiTietRepo.findAllBySanPhamChiTiet_Id(spct.id);
+        return SanPhamChiTietDTO.builder().id(spct.id).hoaDonChiTiet(danhSachHoaDonChiTiet).build();
     }
 
 

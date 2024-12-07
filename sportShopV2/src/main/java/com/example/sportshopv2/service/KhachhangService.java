@@ -1,11 +1,17 @@
 package com.example.sportshopv2.service;
 
 
+    import com.example.sportshopv2.model.Address;
+    import com.example.sportshopv2.repository.AddressRepository;
+    import com.example.sportshopv2.repository.KhachHangRepository;
+
 import com.example.sportshopv2.dto.UserDTO;
 import com.example.sportshopv2.model.Account;
+import com.example.sportshopv2.model.NguoiDung;
 import com.example.sportshopv2.model.User;
 import com.example.sportshopv2.repository.AddressRepository;
 import com.example.sportshopv2.repository.KhachHangRepository;
+import com.example.sportshopv2.repository.NguoiDungRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,14 +20,22 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+    import java.util.ArrayList;
+    import java.util.List;
+    import java.util.Optional;
 
 @Service
 public class KhachhangService {
 
     @Autowired
     private KhachHangRepository userRepository;
+    @Autowired
+    private NguoiDungRepo ndRepo;
 
     @Autowired
     private AddressRepository addressRepository;
@@ -50,7 +64,7 @@ public class KhachhangService {
     }
 
 
-    private final String UPLOAD_DIR = "C:\\HOCTAP\\DATN\\sportShopV2\\sportShopV2\\src\\main\\resources\\static\\uploads";
+    private final String UPLOAD_DIR = "D:\\demoMergeCodeDatn\\sportShopV2\\src\\main\\resources\\static\\uploads";
 
     public User addKhachHang(User khachHang, MultipartFile imageFile) throws IOException {
 
@@ -63,19 +77,30 @@ public class KhachhangService {
         }
         Account account = new Account();
         account.setUser(khachHang);
-        account.setRole("Customer"); // Đặt role là "Customer"
+        account.setRole("Employee"); // Đặt role là "Customer"
         account.setUsername(khachHang.getEmail()); // Hoặc bạn có thể thiết lập một username khác
         account.setPassword("123"); // Thiết lập mật khẩu mặc định (bạn có thể mã hóa mật khẩu ở đây)
 
 //            account.setUsername(username); // Hoặc bạn có thể thiết lập một username khác
 //            account.setPassword(password); // Thiết lập mật khẩu mặc định (bạn có thể mã hóa mật khẩu ở đây)
-        account.setStatus("Active");
+        account.setStatus("Đang hoạt động");
 
         khachHang.setAccount(account); // Gán tài khoản cho user
 
 
+
         // Lưu khách hàng cùng với địa chỉ
         return userRepository.save(khachHang);
+
+    }
+        public User findCustomerById(Integer customerId) {
+            return userRepository.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
+        }
+
+        public Address findAddressById(Integer addressId) {
+            return addressRepository.findById(addressId).orElseThrow(() -> new RuntimeException("Address not found"));
+
+
     }
 
 
@@ -85,13 +110,15 @@ public class KhachhangService {
 
     public UserDTO getKHById(Integer id) {
         User userKH = userRepository.getKhachHangById(id);
-        UserDTO khDTO = User.toDTO(userKH);
+        UserDTO khDTO = User.toDTO(userKH, id, userRepository);
         return khDTO;
     }
+
     public User getKHByIdThemHoaDon(Integer id) {
         User userKH = userRepository.getKhachHangById(id);
         return userKH;
     }
+
     public void updateKhachHang(User khachHang) {
         userRepository.save(khachHang); // Save the updated customer
     }
@@ -111,6 +138,32 @@ public class KhachhangService {
     public void save(User customer) {
         userRepository.save(customer);
     }
+
+    public NguoiDung saveKH(NguoiDung customer) {
+        String customerCode = generateCustomerCode();
+        // Gán mã khách hàng vào tài khoản
+        customer.setCode(customerCode);
+        return ndRepo.save(customer);
+    }
+
+    private String generateCustomerCode() {
+        // Tạo UUID và rút gọn
+        String uuid = UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
+        return "KH" + uuid; // Ví dụ: KH4F3A8D2B
+    }
+
+    public List<NguoiDung> getKHCbo() {
+        return ndRepo.findAllKhachHang();
+    }
+    public Optional<User> findByPhoneNumber(String phoneNumber) {
+        return userRepository.findByPhoneNumber(phoneNumber); // Cần phải có phương thức này trong repository
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email); // Cần phải có phương thức này trong repository
+    }
+
+
 
 
 }

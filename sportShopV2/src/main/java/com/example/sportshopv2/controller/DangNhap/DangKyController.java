@@ -31,7 +31,7 @@ public class DangKyController {
         nd.setCreate_at(LocalDateTime.now());
         nd.setUpdate_at(LocalDateTime.now());
         nd.setUpdate_by("admin");
-
+        nd.setCode("User");
         // Lưu NguoiDung trước để lấy ID
         nguoiDungRepo.save(nd);
 
@@ -39,6 +39,7 @@ public class DangKyController {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         tk.setPassword("{bcrypt}" + encoder.encode(tk.getPassword()));
         tk.setRole("Employee");
+
         tk.setCreate_at(LocalDateTime.now());
         tk.setCreate_by("admin");
         tk.setStatus("Active");

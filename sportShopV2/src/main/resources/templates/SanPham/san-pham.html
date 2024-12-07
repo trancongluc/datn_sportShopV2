@@ -22,22 +22,28 @@
             Quản lý sản phẩm
         </div>
         <div class="filter-section">
-            <div class="form-row align-items-end">
-                <div class="form-group col-md-3">
-                    <label for="filter" class="font-weight-bold">Bộ lọc</label>
-                    <input type="text" class="form-control" id="filter" placeholder="Tìm kiếm">
+            <form th:action="@{/san-pham}" method="get">
+                <div class="form-row align-items-end">
+                    <div class="form-group col-md-3">
+                        <label for="keyword" class="font-weight-bold">Từ khóa tìm kiếm</label>
+                        <input type="text" class="form-control" id="keyword" name="keyword"
+                               th:value="${keyword}" placeholder="Tìm kiếm theo tên sản phẩm hoặc mã">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="status" class="font-weight-bold">Trạng thái</label>
+                        <select id="status" class="form-control" name="status">
+                            <option value="all" th:selected="${status == 'all'}">Tất cả</option>
+                            <option value="Đang hoạt động" th:selected="${status == 'Đang hoạt động'}">Đang hoạt động</option>
+                            <option value="Không hoạt động" th:selected="${status == 'Không hoạt động'}">Không hoạt động</option>
+                        </select>
+                    </div>
+                    <div class="filter-buttons">
+                        <button type="submit" class="btn btn-primary mr-2">Tìm kiếm</button>
+                        <button type="reset" class="btn btn-danger" onclick="this.form.reset(); location.href='/san-pham';">Làm mới bộ lọc</button>
+
+                    </div>
                 </div>
-                <div class="form-group col-md-3">
-                    <label for="status" class="font-weight-bold">Trạng thái</label>
-                    <select id="status" class="form-control">
-                        <option value="all">Tất cả</option>
-                    </select>
-                </div>
-                <div class="filter-buttons">
-                    <button class="btn btn-primary mr-2">Tìm kiếm</button>
-                    <button class="btn btn-danger">Làm mới bộ lọc</button>
-                </div>
-            </div>
+            </form>
         </div>
         <div class="table-section">
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -64,19 +70,25 @@
                     <td th:text="${iterStat.index + 1}"></td>
                     <td th:text="${sanPham.code}"></td>
                     <td th:text="${sanPham.tenSanPham}"></td>
-                    <td th:text="${sanPham.updateAt}"></td>
+                    <td id="soLuongSP" th:data-row-id="${sanPham.id}">Đang tải...</td>
                     <td><span class="status active" th:text="${sanPham.trangThai}"></span></td>
                     <td class="actions">
                         <a th:href="@{/san-pham-chi-tiet/{idSP}(idSP=${sanPham.id})}">
                             <i class="fas fa-eye" th:data-row-id="${sanPham.id}"></i>
                         </a>
-                        <i class="fas fa-edit" th:data-row-id="${sanPham.id}"
-                           onclick=""></i>
+                        <a th:href="@{/san-pham-chi-tiet/update/{idSP}(idSP=${sanPham.id})}">
+                        <i class="fas fa-edit" th:data-row-id="${sanPham.id}"></i>
+                        </a>
                     </td>
                 </tr>
 
                 </tbody>
-            </table><!-- Pagination -->
+            </table>
+            <div th:if="${isNoData}" class="alert alert-warning">
+                Không có dữ liệu tìm kiếm.
+            </div>
+            <!-- Pagination -->
+
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
                     <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
@@ -101,7 +113,68 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Duyệt qua tất cả các thẻ <td> có id="soLuongSP"
+            document.querySelectorAll('td[id="soLuongSP"]').forEach(async function (td) {
+                const idSP = td.getAttribute("data-row-id");
 
+                // Gọi API để lấy số lượng sản phẩm chi tiết
+                const soLuong = await fetchSoLuongSPCT(idSP);
+
+                // Cập nhật số lượng sản phẩm vào thẻ <td>
+                if (soLuong !== null) {
+                    td.innerText = soLuong;
+                    if (soLuong == 0) {
+                        const spResponse = await fetch(`/san-pham/${idSP}`);
+                        if (spResponse.ok) {
+                            const sanPham = await spResponse.json();
+                            sanPham.trangThai = "Không hoạt động"; // Cập nhật trạng thái sản phẩm
+
+                            // Gọi API PUT để cập nhật trạng thái sản phẩm trên server
+                            const updateResponse = await fetch(`/san-pham/${idSP}`, {
+                                method: "PUT",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify(sanPham)
+                            });
+
+                            if (updateResponse.ok) {
+                                // Cập nhật giao diện hiển thị trạng thái sản phẩm
+                                const statusSpan = td.parentElement.querySelector('span.status');
+                                statusSpan.innerText = "Không hoạt động";
+                                statusSpan.classList.remove("active");
+                                statusSpan.classList.add("inactive");
+
+                                console.log(`Sản phẩm ID ${idSP} đã được cập nhật trạng thái thành "Hết hàng".`);
+                            } else {
+                                console.error(`Không thể cập nhật trạng thái sản phẩm ID ${idSP}`);
+                            }
+                        } else {
+                            console.error(`Không thể lấy chi tiết sản phẩm ID ${idSP}`);
+                        }
+                    }
+                } else {
+                    td.innerText = "Không thể tải";
+                }
+            });
+        });
+
+        // Hàm gọi API lấy số lượng sản phẩm chi tiết
+        async function fetchSoLuongSPCT(idSP) {
+            try {
+                const response = await fetch(`/san-pham/soLuong-spct?idSP=${idSP}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                console.error("Lỗi khi gọi API /soLuong-spct:", error);
+                return null;
+            }
+        }
+    </script>
 </main>
 </body>
 </html>
