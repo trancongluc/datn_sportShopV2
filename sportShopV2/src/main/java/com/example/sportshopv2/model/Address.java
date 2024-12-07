@@ -53,7 +53,13 @@ public class Address {
     @Column(name = "deleted", columnDefinition = "BIT DEFAULT 0")
     private boolean deleted = false;
 
+<<<<<<< HEAD
+//    @ManyToOne
+//    @JoinColumn(name = "id_User")
+//    private NguoiDung diaChi;
+=======
   /*  @ManyToOne
     @JoinColumn(name = "id_User")
     private NguoiDung diaChi;*/
+>>>>>>> origin/tan
 }
