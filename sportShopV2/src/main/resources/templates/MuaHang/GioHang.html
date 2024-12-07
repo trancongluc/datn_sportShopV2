@@ -195,8 +195,6 @@
 
         /* Định dạng cho ô nhập liệu */
         .quantity-input {
-            width: 20px;
-            height: 20px;
             text-align: center;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -206,6 +204,64 @@
             background-color: #f9f9f9;
             cursor: not-allowed;
         }
+
+        /* Bố cục cơ bản */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Nút thùng rác */
+        .trash-btn-custom {
+            background-color: #00aaff; /* Màu nền ban đầu */
+            border: none;
+            border-radius: 10px; /* Bo góc */
+            padding: 10px 20px;
+            color: gray; /* Màu biểu tượng thùng rác */
+            font-size: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s, transform 0.2s;
+        }
+
+        /* Hiệu ứng hover */
+        .trash-btn-custom:hover {
+            background-color: red; /* Màu nền khi di chuột */
+            color: white; /* Màu biểu tượng thùng rác khi di chuột */
+            transform: scale(1.1); /* Tăng kích thước một chút */
+        }
+
+        .custom-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1050; /* Đảm bảo nổi trên các thành phần khác */
+            width: 500px; /* Đặt độ rộng cố định */
+            height: 400px;
+            text-align: center;
+            animation: fadeInOut 5s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            10%, 90% {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -40%);
+            }
+        }
+
 
     </style>
 </head>
@@ -227,6 +283,7 @@
                     <th>Màu sắc</th>
                     <th>Số lượng</th>
                     <th>Tổng tiền</th>
+                    <th>Thao tác</th>
                 </tr>
                 </thead>
 
@@ -259,19 +316,31 @@
                     <td>
                         <div style="display: flex; align-items: center; gap: 5px;">
                             <button type="button"
-                                    th:attr="onclick='decreaseQuantity(' + ${list.id} + ', ' + ${list.giaTien} + ')'"
-                                    class="quantity-btn quantity-btn-decrease">-
+                                    th:attr="onclick='decreaseQuantity(' + ${list.id} + ', ' + ${list.giaTien} + ',' + ${list.sanPhamChiTiet.id} + ')'"
+                                    class="quantity-btn quantity-btn-decrease" name="idSanPhamChiTiet"
+                                    th:value="${list.sanPhamChiTiet.id}">-
                             </button>
                             <input type="text" th:id="'quantity-' + ${list.id}" th:data-id="${list.id}"
-                                   th:value="${list.soLuong}" readonly class="quantity-input"/>
+                                   th:value="${list.soLuong}" name="soLuongSanPham" readonly class="quantity-input"/>
                             <button type="button"
-                                    th:attr="onclick='increaseQuantity(' + ${list.id} + ', ' + ${list.giaTien} + ')'"
-                                    class="quantity-btn quantity-btn-increase">+
+                                    th:attr="onclick='increaseQuantity(' + ${list.id} + ', ' + ${list.giaTien} + ',' + ${list.sanPhamChiTiet.id} + ')'"
+                                    class="quantity-btn quantity-btn-increase" name="idSanPhamChiTiet"
+                                    th:value="${list.sanPhamChiTiet.id}">+
                             </button>
                         </div>
                     </td>
 
                     <td th:id="'total-price-' + ${list.id}" th:text="${formattedTotals[list.id]} + 'VND'"></td>
+                    <td>
+                        <button class="trash-btn-custom" type="button"
+                                th:attr="onclick='deleteProduct(' + ${list.id} +')'">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-trash" viewBox="0 0 16 16">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                            </svg>
+                        </button>
+                    </td>
                 </tr>
                 </tbody>
 
@@ -310,7 +379,8 @@
                     <!-- Tỉnh -->
                     <div class="col-md-4">
                         <label for="tinh" class="form-label">Tỉnh</label>
-                        <select class="form-select" id="tinh" name="tinh" required onchange="document.getElementsByName('tinh_name')[0].value = this.options[this.selectedIndex].text;">
+                        <select class="form-select" id="tinh" name="tinh" required
+                                onchange="document.getElementsByName('tinh_name')[0].value = this.options[this.selectedIndex].text;">
                             <option value="0" hidden>Tỉnh Thành</option>
                             <option th:each="diaChi : ${listDiaChi}"
 
@@ -324,12 +394,13 @@
                     <!-- Huyện -->
                     <div class="col-md-4">
                         <label for="quan" class="form-label">Huyện</label>
-                        <select class="form-select" id="quan" name="quan" required onchange="document.getElementsByName('quan_name')[0].value = this.options[this.selectedIndex].text;">
+                        <select class="form-select" id="quan" name="quan" required
+                                onchange="document.getElementsByName('quan_name')[0].value = this.options[this.selectedIndex].text;">
                             <option value="0" hidden>Quận Huyện</option>
                             <option th:each="diaChi : ${listDiaChi}"
 
                                     th:text="${diaChi.quan}"
-                                    th:selected="${#lists.isEmpty(listDiaChi) ? false : diaChi.quan == listDiaChi[0].quan}" >
+                                    th:selected="${#lists.isEmpty(listDiaChi) ? false : diaChi.quan == listDiaChi[0].quan}">
                             </option>
                         </select>
                         <input type="hidden" name="quan_name" value="">
@@ -338,7 +409,8 @@
                     <!-- Phường -->
                     <div class="col-md-4">
                         <label for="phuong" class="form-label">Phường</label>
-                        <select class="form-select" id="phuong" name="phuong" required onchange="document.getElementsByName('phuong_name')[0].value = this.options[this.selectedIndex].text;">
+                        <select class="form-select" id="phuong" name="phuong" required
+                                onchange="document.getElementsByName('phuong_name')[0].value = this.options[this.selectedIndex].text;">
                             <option value="0" hidden>Phường Xã</option>
                             <option th:each="diaChi : ${listDiaChi}"
                                     th:text="${diaChi.phuong}"
@@ -374,14 +446,16 @@
                     </div>
                 </div>
             </div>
-            <textarea placeholder="Ghi chú" required name="note"></textarea>
-            <textarea placeholder="Ghi chú" name="orderInfo" th:value="''" hidden="hidden"></textarea>
-            <div class="note">
-                <img alt="GHN Express logo" height="50"
-                     src="https://storage.googleapis.com/a1aa/image/EjcVS2MxCj75FFC4qvqZuAEQcr4huuZ3KGfQSrmTIEaDdI5JA.jpg"
-                     width="50"/>
-                <span>Thời gian nhận hàng dự kiến: 27/12/2024</span>
+
+            <div>
+                <label>Ghi Chú</label>
+                <textarea placeholder="Ghi chú" required name="note"></textarea>
+                <textarea placeholder="Ghi chú" name="orderInfo" th:value="''" hidden="hidden"></textarea>
             </div>
+            <div class="note"><img alt="GHN Express logo" height="50"
+                                   src="https://storage.googleapis.com/a1aa/image/EjcVS2MxCj75FFC4qvqZuAEQcr4huuZ3KGfQSrmTIEaDdI5JA.jpg"
+                                   width="50"/>
+                <span>Thời gian nhận hàng dự kiến: 27/12/2024</span></div>
         </div>
         <div class="right">
             <h2>Thông tin thanh toán</h2>
@@ -435,20 +509,32 @@
                     </div>
                 </div>
             </div>
-
+            <div id="error-message" style="color: red;"></div>
 
             <div class="section toggle-switch">
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="TraSau" checked name="thanhToan"
-                           value="TraSau" onchange="toggleSwitch('TraSau', 'GiaoHang')">
+                    <input class="form-check-input" type="checkbox" role="switch" id="TraSau" checked name="pay-status"
+                           value="Thanh toán trước" onchange="toggleSwitch('TraSau', 'GiaoHang')">
                     <label class="form-check-label" for="TraSau">Thanh toán bằng VNPay</label>
                 </div>
             </div>
             <div class="section toggle-switch">
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="GiaoHang" name="thanhToan"
-                           value="GiaoHang" onchange="toggleSwitch('GiaoHang', 'TraSau')">
+                    <input class="form-check-input" type="checkbox" role="switch" id="GiaoHang" name="pay-status"
+                           value="Thanh toán khi nhận hàng" onchange="toggleSwitch('GiaoHang', 'TraSau')">
                     <label class="form-check-label" for="GiaoHang">Trả khi nhận hàng</label>
+                </div>
+            </div>
+            <div th:if="${message != null}" class="custom-alert">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Thông báo:</strong> <span th:text="${message}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+            <div th:if="${error != null}" class="custom-alert">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Thông báo:</strong> <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </div>
             <div class="section">
@@ -457,7 +543,7 @@
             </div>
             <div class="section">
                 <label>Giảm giá:</label>
-                <input type="text" name="voucher" id="discountAmount" value="0" readonly/>
+                <input type="text" name="voucher" id="discountAmount" value="0VND" readonly/>
             </div>
             <div class="section">
                 <label>Tổng tiền:</label>
@@ -511,8 +597,8 @@
         // Định dạng theo kiểu Việt Nam: 100.000,00
         return new Intl.NumberFormat('vi-VN', {
             style: 'decimal',
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
         }).format(amount);
     }
 
@@ -602,29 +688,33 @@
         }
     }
 
-    function increaseQuantity(id, giaTien) {
+
+    function increaseQuantity(id, giaTien, idSanPhamChiTiet) {
         const quantityInput = document.querySelector(`#quantity-${id}`);
         const totalPriceElement = document.querySelector(`#total-price-${id}`);
 
         if (quantityInput) {
             let currentQuantity = parseInt(quantityInput.value, 10);
             currentQuantity += 1;
-            quantityInput.value = currentQuantity;
 
-            // Tính tổng tiền
-            const totalPrice = currentQuantity * giaTien;
-
-            // Cập nhật tổng tiền trong DOM
-            if (totalPriceElement) {
-                totalPriceElement.textContent = totalPrice.toLocaleString("vi-VN") + ' VND';
-            }
-
-            // Gửi yêu cầu cập nhật số lượng đến server (nếu cần)
-            updateServerQuantity(id, currentQuantity);
+            // Gửi yêu cầu cập nhật số lượng đến server
+            updateServerQuantity(id, currentQuantity, idSanPhamChiTiet)
+                .then(response => {
+                    if (response.ok) {
+                        quantityInput.value = currentQuantity;
+                        const totalPrice = currentQuantity * giaTien;
+                        if (totalPriceElement) {
+                            totalPriceElement.textContent = totalPrice.toLocaleString("vi-VN") + ' VND';
+                        }
+                    } else {
+                        response.json().then(data => alert(data.error));
+                    }
+                })
+                .catch(error => console.error("Error:", error));
         }
     }
 
-    function decreaseQuantity(id, giaTien) {
+    function decreaseQuantity(id, giaTien, idSanPhamChiTiet) {
         const quantityInput = document.querySelector(`#quantity-${id}`);
         const totalPriceElement = document.querySelector(`#total-price-${id}`);
 
@@ -632,33 +722,38 @@
             let currentQuantity = parseInt(quantityInput.value, 10);
             if (currentQuantity > 1) {
                 currentQuantity -= 1;
-                quantityInput.value = currentQuantity;
 
-                // Tính tổng tiền
-                const totalPrice = currentQuantity * giaTien;
-
-                // Cập nhật tổng tiền trong DOM
-                if (totalPriceElement) {
-                    totalPriceElement.textContent = totalPrice.toLocaleString("vi-VN") + 'VND';
-                }
-
-                // Gửi yêu cầu cập nhật số lượng đến server (nếu cần)
-                updateServerQuantity(id, currentQuantity);
+                // Gửi yêu cầu cập nhật số lượng đến server
+                updateServerQuantity(id, currentQuantity, idSanPhamChiTiet)
+                    .then(response => {
+                        if (response.ok) {
+                            quantityInput.value = currentQuantity;
+                            const totalPrice = currentQuantity * giaTien;
+                            if (totalPriceElement) {
+                                totalPriceElement.textContent = totalPrice.toLocaleString("vi-VN") + ' VND';
+                            }
+                        } else {
+                            response.json().then(data => alert(data.error));
+                        }
+                    })
+                    .catch(error => console.error("Error:", error));
             }
         }
     }
 
-    function updateServerQuantity(id, newQuantity) {
-        console.log("Sending ID:", id, "Quantity:", newQuantity); // Log giá trị gửi đi
-        fetch('/mua-sam-SportShopV2/update-quantity', {
+    function updateServerQuantity(id, newQuantity, idSanPhamChiTiet) {
+        return fetch('/mua-sam-SportShopV2/update-quantity', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({id: id, soLuong: newQuantity})
-        })
-            .then(response => response.json())
-            .then(data => console.log("Server response:", data))
-            .catch(error => console.error("Error:", error));
+            body: JSON.stringify({id: id, soLuong: newQuantity, idSPCT: idSanPhamChiTiet})
+        });
     }
+
+    const errorMessageElement = document.getElementById('error-message');
+    response.json().then(data => {
+        errorMessageElement.textContent = data.error;
+    });
+
 
     function selectVoucher(id) {
         fetch(`/mua-sam-SportShopV2/voucher/details/${id}`)
@@ -670,17 +765,48 @@
             })
             .then(data => {
                 // Gán giá trị vào input khi có phản hồi từ server
-                document.getElementById('discountAmount').value = `${new Intl.NumberFormat('vi-VN', {
-                    style: 'decimal',
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }).format(data.idPhieuGiamGia.discountValue)}VND`;
+                document.getElementById('discountAmount').value =
+                    `${new Intl.NumberFormat('vi-VN', {
+                        style: 'decimal',
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                    }).format(data.idPhieuGiamGia.discountValue)} VND`;
 
                 document.getElementById('discountCode').value = `${data.idPhieuGiamGia.voucherCode}`;
                 calculateTotal();
             })
             .catch(error => console.error("Error:", error));
     }
+
+
+    function deleteProduct(id) {
+        fetch(`/mua-sam-SportShopV2/xoa-san-pham-gio-hang/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Sản phẩm đã được xóa!');
+                    location.reload(); // Reload the page to reflect changes
+                } else {
+                    alert('Lỗi khi xóa sản phẩm');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            const alertBox = document.querySelector('.custom-alert');
+            if (alertBox) {
+                alertBox.style.display = 'none';
+            }
+        }, 5000); // 5000ms = 5 giây
+    });
 </script>
 
 </body>

@@ -119,7 +119,6 @@ public class DatHangController {
         // Lấy chi tiết sản phẩm từ service dựa trên id, idsize và idcolor
         SanPhamChiTietDTO productDetail = sanPhamChiTietService.getSPCTByIDSPIDSIZEIDCOLOR(id, idsize, idcolor);
 
-        // Kiểm tra tài khoản người dùng (tạm thời giả sử ID=1)
         TaiKhoan tk = new TaiKhoan();
         tk.setId(idTK);
 
@@ -175,7 +174,7 @@ public class DatHangController {
         symbols.setDecimalSeparator(',');
         symbols.setGroupingSeparator('.');
 
-        DecimalFormat formatter = new DecimalFormat("#,###.00", symbols);
+        DecimalFormat formatter = new DecimalFormat("#,###", symbols);
 
         // Tạo một Map để chứa giá trị đã định dạng cho từng sản phẩm
         Map<Integer, String> formattedTotals = new HashMap<>();
@@ -251,8 +250,17 @@ public class DatHangController {
     }
 
     @PostMapping("/update-quantity")
-    public ResponseEntity<?> updateQuantity(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<?> updateQuantity(@RequestBody Map<String, Object> payload, RedirectAttributes redirectAttributes) {
         try {
+            Integer soLuong = Integer.parseInt(payload.get("soLuong").toString());
+            if (payload.get("soLuong") != null || payload.get("idSPCT") != null) {
+                SanPhamChiTietDTO sanPham = sanPhamChiTietService.getByID(Integer.valueOf(payload.get("idSPCT").toString()));
+                if (sanPham.getSoLuong() < soLuong) {
+//                    redirectAttributes.addFlashAttribute("message", "Số lượng không hợp lệ!!!");
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                            .body(Map.of("error", "Số lượng không hợp lệ!!!"));
+                }
+            }
             // Ensure proper data types
             if (payload.get("id") == null || payload.get("soLuong") == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -260,7 +268,7 @@ public class DatHangController {
             }
 
             Integer id = Integer.parseInt(payload.get("id").toString());  // Convert to Integer
-            Integer soLuong = Integer.parseInt(payload.get("soLuong").toString());  // Convert to Integer
+            // Convert to Integer
 
             Optional<GioHangChiTiet> product = gioHangChiTietRepo.findById(id);
             if (product.isPresent()) {
@@ -295,8 +303,9 @@ public class DatHangController {
     }
 
     @GetMapping("/submitOrder")
-    public String submitOrder(@RequestParam("amount") String orderTotal,
-                              @RequestParam("orderInfo") String orderInfo,
+    public String submitOrder(@RequestParam("pay-status") String paystatus,
+                              @RequestParam("amount") String orderTotal,
+                              @RequestParam(value = "orderInfo", defaultValue = "0") String orderInfo,
                               @RequestParam("tinh_name") String tinh,
                               @RequestParam("phuong_name") String phuong,
                               @RequestParam("quan_name") String quan,
@@ -307,9 +316,18 @@ public class DatHangController {
                               @RequestParam("selectedProducts") List<Long> selectedProducts,
                               @RequestParam(value = "moneyShip", defaultValue = "0.0") String moneyShip,
                               @RequestParam(value = "voucher", defaultValue = "0.0") String moneyVoucher,
-                              HttpServletRequest request) {
+                              HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
         if (hoTen == null || hoTen.isEmpty()) {
             hoTen = "Unknown Customer";  // Set a default value if not provided
+        }
+        if (paystatus == null || paystatus.isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", "Phương thức thanh toán không được để trống!");
+            return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
+        }
+        System.out.println(orderTotal);
+        if (orderTotal == null || orderTotal.equals("0VND")) {
+            redirectAttributes.addFlashAttribute("message", "Vui lòng chọn sản phẩm để có thể mua hàng");
+            return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
         }
         Float ship = 0.0f;
         Float voucher = 0.0f;
@@ -332,39 +350,54 @@ public class DatHangController {
         hoaDon.setCreate_by(taiKhoan.getUsername());  // Assuming the logged-in user is set correctly
         hoaDon.setUpdateAt(LocalDateTime.now());
         hoaDon.setPay_method("Chuyển khoản");
-        hoaDon.setPay_status("Thanh toán trước");
+        hoaDon.setPay_status(paystatus);
         ship = Float.valueOf(moneyShip.replaceAll("[^\\d]", ""));
         voucher = Float.valueOf(moneyVoucher.replaceAll("[^\\d]", ""));
         hoaDon.setMoney_ship(ship);
         hoaDon.setMoney_reduced(voucher);
+        hoaDon.setNote(orderInfo);
         // Sanitize the orderTotal (remove non-numeric characters)
         String orderTotalStr = orderTotal.replaceAll("[^\\d]", "");
         hoaDon.setTotal_money(orderTotalStr.isEmpty() ? 0 : Float.valueOf(orderTotalStr));  // Ensure no empty string
 
         // Set the address
-        hoaDon.setAddress(soNha + " " + quan + " " + phuong + " " + tinh);  // Add space between components
+        hoaDon.setAddress(soNha + " " + phuong + " " + quan + " " + tinh);  // Add space between components
 
         hoaDonRepo.save(hoaDon);
 
         // Assuming you have a list of product details (dsSPCT) to create bill details
         List<SPCT> spctList = sanPhamChiTietRepo.findByIdIn(selectedProducts);  // Ensure dsSPCT is populated
-
+        List<GioHangChiTiet> gioHangChiTiets = gioHangChiTietRepo.findAllBySanPhamChiTiet_IdIn(selectedProducts);
+        for (GioHangChiTiet gioHangChiTiet : gioHangChiTiets) {
+            SanPhamChiTiet sanPhamChiTiet =  sanPhamChiTietService.findSPCTById(gioHangChiTiet.getSanPhamChiTiet().getId());
+            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - gioHangChiTiet.getSoLuong());
+            sanPhamChiTietService.updateSoLuongSanPhamChiTiet(sanPhamChiTiet.getId(), sanPhamChiTiet);
+            gioHangChiTietRepo.delete(gioHangChiTiet);
+        }
         // Create HoaDonChiTiet for each SanPhamChiTiet and associate it with the HoaDon
         for (SPCT sanPhamChiTiet : spctList) {
             HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
             hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);  // Set the product detail
             hoaDonChiTiet.setHoaDon(hoaDon);  // Associate the bill with the bill detail
-            hoaDonChiTiet.setQuantity(1);
+            hoaDonChiTiet.setQuantity(sanPhamChiTiet.getSoLuong());
             hoaDonChiTiet.setPrice(Float.valueOf(orderTotalStr));
             hoaDonChiTietRepo.save(hoaDonChiTiet);  // Save the bill detail
         }
-        orderInfo = "hello";
+
+
+//        orderInfo = "hello";
         System.out.println(orderTotalStr);
-        // Generate VNPay URL
-        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        String vnpayUrl = vnPayService.createOrder(request, orderTotalStr, orderInfo, baseUrl);
-        return "redirect:" + vnpayUrl;
+        if (paystatus.equals("Thanh toán khi nhận hàng")) {
+            redirectAttributes.addFlashAttribute("message", "Đặt hàng thành công!");
+            return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
+        } else {
+            // Generate VNPay URL
+            String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+            String vnpayUrl = vnPayService.createOrder(request, orderTotalStr, orderInfo, baseUrl);
+            return "redirect:" + vnpayUrl;
+        }
     }
+
     @GetMapping("/voucher/details/{id}")
     @ResponseBody
     public PhieuGiamGiaKhachHang getVoucherDetails(@PathVariable Integer id) {
@@ -373,6 +406,24 @@ public class DatHangController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Voucher không tồn tại");
         }
         return voucher; // Trả về JSON
+    }
+
+    @DeleteMapping("/xoa-san-pham-gio-hang/{id}")
+    @ResponseBody
+    public GioHangChiTiet deleteProductCart(@PathVariable Integer id) {
+
+        GioHangChiTiet productInCart = gioHangChiTietRepo.findById(id).orElse(null);
+
+        // Kiểm tra nếu không tìm thấy sản phẩm
+        if (productInCart == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sản phẩm không tồn tại trong giỏ hàng");
+        }
+
+        // Xóa sản phẩm
+        gioHangChiTietRepo.delete(productInCart);
+
+        // Trả về đối tượng đã bị xóa
+        return productInCart;
     }
 }
 
