@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Controller
@@ -29,6 +30,7 @@ public class ThongKeController {
     private HoaDonService hoaDonService;
     @Autowired
     private ThongKeService thongKeService;
+
     @GetMapping("/statistical/view")
     public String viewStatistical(Model model) {
 
@@ -63,9 +65,10 @@ public class ThongKeController {
         model.addAttribute("totalMoney", formattedMoney);
         model.addAttribute("totalOrdersTd", totalOrdersTd);
         model.addAttribute("formattedMoneyTd", formattedMoneyTd);
-        model.addAttribute("tongSPInMonth",soLuongSPBanDuocTrongThang);
+        model.addAttribute("tongSPInMonth", soLuongSPBanDuocTrongThang);
         return "ThongKe/ThongKe";
     }
+
     @GetMapping("/thong-ke/thong-ke-nam")
     public ResponseEntity<?> getYearlyStatistics() {
         Map<String, Object> response = new HashMap<>();
@@ -83,6 +86,7 @@ public class ThongKeController {
         response.put("totalProducts", totalProducts);
         return ResponseEntity.ok(response);
     }
+
     @GetMapping("/thong-ke/thong-ke-thang")
     @ResponseBody
     public Map<String, List<Integer>> thongKeTheoThang(@RequestParam int month, @RequestParam int year) {
@@ -112,10 +116,30 @@ public class ThongKeController {
         result.put("totalProducts", totalProducts);
         return result;
     }
+
     @GetMapping("/thong-ke/thong-ke-ngay")
     @ResponseBody
     public Map<String, List<Integer>> thongKeTheoNgay(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return thongKeService.thongKeTheoNgay(date);
+    }
+
+    @GetMapping("/thong-ke/thong-ke-khoang-thoi-gian")
+    @ResponseBody
+    public ResponseEntity<?> getStatisticsByDateRange(@RequestParam("startDate")
+                                                      LocalDateTime startDate,
+                                                      @RequestParam("endDate")
+                                                       LocalDateTime endDate) {
+        Map<String, Object> response = new HashMap<>();
+
+        // Kiểm tra xem có dữ liệu từ service
+        List<Object[]> billStatisticsByDay = thongKeService.getBillStatisticsByDayInDateRange(startDate, endDate);
+        List<Object[]> productStatisticsByDay = thongKeService.getProductStatisticsByDayInDateRange(startDate, endDate);
+
+        // Tạo kết quả trả về
+        response.put("billStatisticsByDay", billStatisticsByDay);
+        response.put("productStatisticsByDay", productStatisticsByDay);
+
+        return ResponseEntity.ok(response);
     }
 
 }

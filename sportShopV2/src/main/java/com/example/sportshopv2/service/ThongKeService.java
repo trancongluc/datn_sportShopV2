@@ -76,4 +76,12 @@ public class ThongKeService {
         result.put("totalProducts", totalProducts);
         return result;
     }
+    public List<Object[]> getBillStatisticsByDayInDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        return hoaDonRepo.countBillsByDayInDateRange(startDate, endDate);
+    }
+
+    // Thống kê sản phẩm theo ngày trong khoảng thời gian
+    public List<Object[]> getProductStatisticsByDayInDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        return hoaDonRepo.countProductsByDayInDateRange(startDate, endDate);
+    }
 }

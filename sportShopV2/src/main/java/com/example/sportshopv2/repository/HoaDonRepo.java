@@ -58,15 +58,15 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
     @Query("SELECT SUM(bd.quantity) AS totalQuantity " +
             "FROM HoaDonChiTiet bd " +
             "JOIN bd.hoaDon b " +
-            "WHERE MONTH(b.createAt) = :month AND YEAR(b.createAt) = :year and b.status = 'Hoàn thành'")
+            "WHERE MONTH(b.receive_date) = :month AND YEAR(b.receive_date) = :year and b.status = 'Hoàn thành'")
     Integer getTotalQuantityForMonthAndYear(@Param("month") int month, @Param("year") int year);
 
-    @Query("SELECT COUNT(b) FROM HoaDon b WHERE MONTH(b.createAt) = :month AND YEAR(b.createAt) = :year and b.status = 'Hoàn thành'")
+    @Query("SELECT COUNT(b) FROM HoaDon b WHERE MONTH(b.receive_date) = :month AND YEAR(b.receive_date) = :year and b.status = 'Hoàn thành'")
     Integer countBillsByMonth(@Param("month") int month, @Param("year") int year);
 
     @Query("SELECT SUM(bd.quantity) FROM HoaDonChiTiet bd " +
             "JOIN bd.hoaDon b " +
-            "WHERE MONTH(b.createAt) = :month AND YEAR(b.createAt) = :year and b.status = 'Hoàn thành'")
+            "WHERE MONTH(b.receive_date) = :month AND YEAR(b.receive_date) = :year and b.status = 'Hoàn thành'")
     Integer countProductsByMonth(@Param("month") int month, @Param("year") int year);
 
     @Query("SELECT COUNT(b) FROM HoaDon b WHERE DATE(b.createAt) = :date")
@@ -74,40 +74,54 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
 
     @Query("SELECT SUM(bd.quantity) FROM HoaDonChiTiet bd " +
             "JOIN bd.hoaDon b " +
-            "WHERE DATE(b.createAt) = :date")
+            "WHERE DATE(b.receive_date) = :date")
     Integer countProductsByDay(@Param("date") LocalDate date);
 
 
     //tháng
-    @Query("SELECT DAY(b.createAt) AS day, COUNT(b) AS billCount " +
+    @Query("SELECT DAY(b.receive_date) AS day, COUNT(b) AS billCount " +
             "FROM HoaDon b " +
-            "WHERE b.status = 'Hoàn thành' and MONTH(b.createAt) = :month AND YEAR(b.createAt) = :year " +
-            "GROUP BY DAY(b.createAt) " +
-            "ORDER BY DAY(b.createAt)")
+            "WHERE b.status = 'Hoàn thành' and MONTH(b.receive_date) = :month AND YEAR(b.receive_date) = :year " +
+            "GROUP BY DAY(b.receive_date) " +
+            "ORDER BY DAY(b.receive_date)")
     List<Object[]> countBillsByDayInMonth(@Param("month") int month, @Param("year") int year);
 
-    @Query("SELECT DAY(b.createAt) AS day, SUM(bd.quantity) AS productCount " +
+    @Query("SELECT DAY(b.receive_date) AS day, SUM(bd.quantity) AS productCount " +
             "FROM HoaDonChiTiet bd " +
             "JOIN bd.hoaDon b " +
-            "WHERE b.status = 'Hoàn thành' and MONTH(b.createAt) = :month AND YEAR(b.createAt) = :year " +
-            "GROUP BY DAY(b.createAt) " +
-            "ORDER BY DAY(b.createAt)")
+            "WHERE b.status = 'Hoàn thành' and MONTH(b.receive_date) = :month AND YEAR(b.receive_date) = :year " +
+            "GROUP BY DAY(b.receive_date) " +
+            "ORDER BY DAY(b.receive_date)")
     List<Object[]> countProductsByDayInMonth(@Param("month") int month, @Param("year") int year);
 
     //ngày
-    @Query("SELECT HOUR(b.createAt) AS hour, COUNT(b) AS billCount " +
+    @Query("SELECT HOUR(b.receive_date) AS hour, COUNT(b) AS billCount " +
             "FROM HoaDon b " +
-            "WHERE b.status = 'Hoàn thành' AND CAST(b.createAt AS DATE) = :date " +
-            "GROUP BY HOUR(b.createAt) " +
-            "ORDER BY HOUR(b.createAt)")
+            "WHERE b.status = 'Hoàn thành' AND CAST(b.receive_date AS DATE) = :date " +
+            "GROUP BY HOUR(b.receive_date) " +
+            "ORDER BY HOUR(b.receive_date)")
     List<Object[]> countBillsByHour(@Param("date") LocalDate date);
 
-    @Query("SELECT HOUR(b.createAt) AS hour, SUM(bd.quantity) AS productCount " +
+    @Query("SELECT HOUR(b.receive_date) AS hour, SUM(bd.quantity) AS productCount " +
             "FROM HoaDonChiTiet bd " +
             "JOIN bd.hoaDon b " +
-            "WHERE b.status = 'Hoàn thành' AND CAST(b.createAt AS DATE) = :date " +
-            "GROUP BY HOUR(b.createAt) " +
-            "ORDER BY HOUR(b.createAt)")
+            "WHERE b.status = 'Hoàn thành' AND CAST(b.receive_date AS DATE) = :date " +
+            "GROUP BY HOUR(b.receive_date) " +
+            "ORDER BY HOUR(b.receive_date)")
     List<Object[]> countProductsByHour(@Param("date") LocalDate date);
+    // Thống kê hóa đơn theo ngày trong khoảng thời gian
+    @Query("SELECT CAST(b.receive_date AS date) AS day, COUNT(b) AS billCount " +
+            "FROM HoaDon b " +
+            "WHERE b.status = 'Hoàn thành' AND b.receive_date BETWEEN :startDate AND :endDate " +
+            "GROUP BY CAST(b.receive_date AS date) ORDER BY CAST(b.receive_date AS date)")
+    List<Object[]> countBillsByDayInDateRange(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    // Thống kê sản phẩm theo ngày trong khoảng thời gian
+    @Query("SELECT CAST(b.receive_date AS date) AS day, SUM(bd.quantity) AS productCount " +
+            "FROM HoaDonChiTiet bd " +
+            "JOIN bd.hoaDon b " +
+            "WHERE b.status = 'Hoàn thành' AND b.receive_date BETWEEN :startDate AND :endDate " +
+            "GROUP BY CAST(b.receive_date AS date) ORDER BY CAST(b.receive_date AS date)")
+    List<Object[]> countProductsByDayInDateRange(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
 }

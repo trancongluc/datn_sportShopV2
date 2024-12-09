@@ -629,10 +629,7 @@ async function taoHoaDonCho() {
     const phiShip = 0;
     const giamGia = 0;
     const status = "Hóa Đơn Chờ"; // Trạng thái mặc định
-    const date = new Date(); // Lấy thời gian hiện tại
-    const options = { timeZone: 'Asia/Ho_Chi_Minh', hour12: false }; // Định dạng múi giờ GMT+7
-    const vietnamTime = date.toLocaleString('en-GB', options);
-
+    const date = new Date();
     try {
         const userKH = await fetch(`/khach-hang/thong-tin-kh/14`).then(res => res.json());
         const emp = await fetch(`/nhanvien/thong-tin-nv/${idNV}`).then(res => res.json());
@@ -646,7 +643,6 @@ async function taoHoaDonCho() {
             email: email,
             money_ship: phiShip,
             billCode: `HD-${Date.now()}`,
-            transaction_date: vietnamTime,
             type: "Tại Quầy",
             createAt: date,
             create_by: idNV,
@@ -739,8 +735,6 @@ async function capNhatHoaDon() {
         const email = document.getElementById('email').value;
         var status = "Chờ xác nhận"; // Trạng thái mặc định
         const date = new Date(); // Lấy thời gian hiện tại
-        const options = { timeZone: 'Asia/Ho_Chi_Minh', hour12: false }; // Định dạng múi giờ GMT+7
-        const vietnamTime = date.toLocaleString('en-GB', options);
         const soNha = document.getElementById('soNha').value;
         var payStatus = null;
         var soLuongNew;
@@ -750,11 +744,14 @@ async function capNhatHoaDon() {
         payStatus = document.querySelector('input[name="phuongThucNhanHang"]:checked').id === 'thanhToanTruoc'
             ? 'Thanh toán trước'
             : 'Thanh toán khi nhận';
+        let receive_date = null;
+        let transaction_date = null;
         if (nhanHang == 'Tại Quầy') {
             address = null;
             payStatus = null;
             status = "Hoàn thành";
-
+            receive_date = date;
+            transaction_date = date;
         }
         var diaChiChiTiet = (nhanHang === 'Tại Quầy') ? null : `${soNha}, ${address}`;
         const currentInvoice = await fetch(`ban-hang-tai-quay/hd/${idHD}`).then(handleResponse);
@@ -802,17 +799,18 @@ async function capNhatHoaDon() {
             email: email,
             money_ship: phiShip,
             billCode: currentInvoice.billCode,
-            transaction_date: date,
+            transaction_date: transaction_date,
             type: nhanHang,
             address: diaChiChiTiet,
-            updateAt: vietnamTime,
+            updateAt: date,
             createAt: currentInvoice.createAt,
             create_by: idNV,
             id_account: userKH,
             id_staff: emp,
             pay_method: paymentMethod,
             pay_status: payStatus,
-            deleted: 0
+            deleted: 0,
+            receive_date: receive_date,
         };
 
         // Cập nhật hóa đơn
