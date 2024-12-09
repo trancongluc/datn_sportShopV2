@@ -68,8 +68,10 @@ public class DatHangController {
     private PhieuGiamGiaKhachHangRepository phieuGiamGiaKhachHangRepository;
     @Autowired
     private PhieuGiamGiaServiceImpl phieuGiamGiaService;
+
     private Integer idTK = null;
     private List<Long> dsSPCT = null;
+    private Integer idVC = null;
 
     @RequestMapping("/trang-chu")
     public String trangChu(Model model) {
@@ -348,6 +350,7 @@ public class DatHangController {
         hoaDon.setPhone_number(sdt);
         hoaDon.setType("Chuyển phát");
         hoaDon.setUser_name(hoTen);
+        hoaDon.setNote(orderInfo);
         hoaDon.setEmail(email);
         hoaDon.setCreateAt(LocalDateTime.now());
         hoaDon.setCreate_by(taiKhoan.getUsername());  // Assuming the logged-in user is set correctly
@@ -367,29 +370,49 @@ public class DatHangController {
         hoaDon.setAddress(soNha + " " + phuong + " " + quan + " " + tinh);  // Add space between components
 
         hoaDonRepo.save(hoaDon);
-
+        PhieuGiamGia phieuGiamGia = phieuGiamGiaService.findByID(idVC);
+        if (phieuGiamGia.getQuantity() >= 1) {
+            phieuGiamGia.setQuantity(phieuGiamGia.getQuantity() - 1);
+            phieuGiamGiaService.save(phieuGiamGia);
+            if (phieuGiamGia.getQuantity() == 0) {
+                PhieuGiamGia hetPhieuGiamGia = phieuGiamGiaService.findByID(idVC);
+                hetPhieuGiamGia.setDeleted(true);
+                phieuGiamGiaService.save(hetPhieuGiamGia);
+            }
+        }
         // Assuming you have a list of product details (dsSPCT) to create bill details
         List<SPCT> spctList = sanPhamChiTietRepo.findByIdIn(selectedProducts);  // Ensure dsSPCT is populated
         List<GioHangChiTiet> gioHangChiTiets = gioHangChiTietRepo.findAllBySanPhamChiTiet_IdIn(selectedProducts);
+
+        // Create HoaDonChiTiet for each SanPhamChiTiet and associate it with the HoaDon
+        for (SPCT sanPhamChiTiet : spctList) {
+            HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
+            GioHang gioHang = gioHangRepo.findByIdTaiKhoan_Id(idTK);
+            if (gioHang == null) {
+                throw new IllegalArgumentException("Giỏ hàng không tồn tại hoặc chưa được tạo cho tài khoản ID: " + idTK);
+            }
+
+            if (sanPhamChiTiet == null) {
+                throw new IllegalArgumentException("Sản phẩm chi tiết không tồn tại hoặc không hợp lệ: " + sanPhamChiTiet.getId());
+            }
+            GioHangChiTiet gioHangChiTiet = gioHangChiTietRepo.findByGioHang_IdAndSanPhamChiTiet_Id(gioHang.getId(), sanPhamChiTiet.getId());
+            if (gioHangChiTiet == null) {
+                throw new IllegalArgumentException("Không tìm thấy chi tiết giỏ hàng cho sản phẩm ID: " + gioHangChiTiet.getId());
+            }
+            System.out.println(gioHangChiTiet.getId());
+            hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);  // Set the product detail
+            hoaDonChiTiet.setHoaDon(hoaDon);  // Associate the bill with the bill detail
+            hoaDonChiTiet.setQuantity(gioHangChiTiet.getSoLuong());
+            hoaDonChiTiet.setPrice(Float.valueOf(orderTotalStr));
+            hoaDonChiTiet.setCreate_at(LocalDateTime.now());
+            hoaDonChiTietRepo.save(hoaDonChiTiet);  // Save the bill detail
+        }
         for (GioHangChiTiet gioHangChiTiet : gioHangChiTiets) {
             SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietService.findSPCTById(gioHangChiTiet.getSanPhamChiTiet().getId());
             sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - gioHangChiTiet.getSoLuong());
             sanPhamChiTietService.updateSoLuongSanPhamChiTiet(sanPhamChiTiet.getId(), sanPhamChiTiet);
             gioHangChiTietRepo.delete(gioHangChiTiet);
         }
-        // Create HoaDonChiTiet for each SanPhamChiTiet and associate it with the HoaDon
-        for (SPCT sanPhamChiTiet : spctList) {
-            HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
-            hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);  // Set the product detail
-            hoaDonChiTiet.setHoaDon(hoaDon);  // Associate the bill with the bill detail
-            hoaDonChiTiet.setQuantity(soLuong);
-            hoaDonChiTiet.setPrice(Float.valueOf(orderTotalStr));
-            hoaDonChiTietRepo.save(hoaDonChiTiet);  // Save the bill detail
-        }
-
-
-//        orderInfo = "hello";
-        System.out.println(orderTotalStr);
         if (paystatus.equals("Thanh toán khi nhận hàng")) {
             redirectAttributes.addFlashAttribute("message", "Đặt hàng thành công!");
             return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
@@ -403,8 +426,9 @@ public class DatHangController {
 
     @GetMapping("/voucher/details/{id}")
     @ResponseBody
-    public PhieuGiamGiaKhachHang getVoucherDetails(@PathVariable Integer id) {
-        PhieuGiamGiaKhachHang voucher = phieuGiamGiaKhachHangRepository.findByIdPhieuGiamGia_Id(id);
+    public PhieuGiamGia getVoucherDetails(@PathVariable Integer id) {
+        PhieuGiamGia voucher = phieuGiamGiaService.findByID(id);
+        idVC = id;
         if (voucher == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Voucher không tồn tại");
         }
@@ -433,6 +457,7 @@ public class DatHangController {
     @ResponseBody
     public ResponseEntity<List<PhieuGiamGia>> getVoucher(@RequestBody Map<String, String> request) {
         String total = request.get("total");
+        System.out.println(total);
         Integer vc = Integer.valueOf(total.replaceAll("[^\\d]", ""));
         List<PhieuGiamGia> vouchers = phieuGiamGiaService.getVoucherByGiaTriDonHang(vc);
 

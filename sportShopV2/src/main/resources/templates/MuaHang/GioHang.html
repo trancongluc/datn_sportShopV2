@@ -450,8 +450,7 @@
 
             <div>
                 <label>Ghi Chú</label>
-                <textarea placeholder="Ghi chú" required name="note"></textarea>
-                <textarea placeholder="Ghi chú" name="orderInfo" th:value="''" hidden="hidden"></textarea>
+                <textarea placeholder="Ghi chú" required name="orderInfo"></textarea>
             </div>
             <div class="note"><img alt="GHN Express logo" height="50"
                                    src="https://storage.googleapis.com/a1aa/image/EjcVS2MxCj75FFC4qvqZuAEQcr4huuZ3KGfQSrmTIEaDdI5JA.jpg"
@@ -483,8 +482,6 @@
                             <!-- Danh sách voucher -->
                             <div class="voucher-container">
                                 <h4>Chọn 1 voucher</h4>
-
-
                             </div>
                         </div>
                     </div>
@@ -642,20 +639,6 @@
 
 
     // Hàm áp dụng mã giảm giá
-    function applyDiscount() {
-        var discountCode = document.getElementById("discountCode").value.trim();
-
-        // Kiểm tra và áp dụng giảm giá
-        if (discountCode === "DISCOUNT10") {
-            var discount = 0.1 * parseFloat(document.getElementById("totalPayment").value.replace(' VND', '').replace(',', ''));
-            document.getElementById("discountAmount").value = discount.toFixed(0);
-        } else {
-            document.getElementById("discountAmount").value = 0;
-        }
-
-        // Sau khi áp dụng mã giảm giá, tính lại tổng tiền
-        calculateTotal();
-    }
 
     // Hàm xử lý chuyển đổi giữa các phương thức thanh toán
     function toggleSwitch(selected, other) {
@@ -808,9 +791,9 @@
                         style: 'decimal',
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 0
-                    }).format(data.idPhieuGiamGia.discountValue)} VND`;
+                    }).format(data.discountValue)} VND`;
 
-                document.getElementById('discountCode').value = `${data.idPhieuGiamGia.voucherCode}`;
+                document.getElementById('discountCode').value = `${data.voucherCode}`;
                 calculateTotal();
 
                 // Sử dụng setTimeout để đảm bảo radio button được cập nhật đúng
