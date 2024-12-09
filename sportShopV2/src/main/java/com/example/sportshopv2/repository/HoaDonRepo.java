@@ -77,12 +77,6 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
             "WHERE DATE(b.createAt) = :date")
     Integer countProductsByDay(@Param("date") LocalDate date);
 
-    // tuần
-    @Query("SELECT COUNT(b) FROM HoaDon b WHERE b.status = 'Hoàn thành' AND b.createAt = :date")
-    Integer countBillsByDate(@Param("date") LocalDateTime date);
-
-    @Query("SELECT SUM(bd.quantity) FROM HoaDonChiTiet bd JOIN bd.hoaDon b WHERE b.status = 'Hoàn thành' AND b.createAt = :date")
-    Integer countProductsByDate(@Param("date") LocalDateTime date);
 
     //tháng
     @Query("SELECT DAY(b.createAt) AS day, COUNT(b) AS billCount " +
@@ -100,5 +94,20 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
             "ORDER BY DAY(b.createAt)")
     List<Object[]> countProductsByDayInMonth(@Param("month") int month, @Param("year") int year);
 
+    //ngày
+    @Query("SELECT HOUR(b.createAt) AS hour, COUNT(b) AS billCount " +
+            "FROM HoaDon b " +
+            "WHERE b.status = 'Hoàn thành' AND CAST(b.createAt AS DATE) = :date " +
+            "GROUP BY HOUR(b.createAt) " +
+            "ORDER BY HOUR(b.createAt)")
+    List<Object[]> countBillsByHour(@Param("date") LocalDate date);
+
+    @Query("SELECT HOUR(b.createAt) AS hour, SUM(bd.quantity) AS productCount " +
+            "FROM HoaDonChiTiet bd " +
+            "JOIN bd.hoaDon b " +
+            "WHERE b.status = 'Hoàn thành' AND CAST(b.createAt AS DATE) = :date " +
+            "GROUP BY HOUR(b.createAt) " +
+            "ORDER BY HOUR(b.createAt)")
+    List<Object[]> countProductsByHour(@Param("date") LocalDate date);
 
 }

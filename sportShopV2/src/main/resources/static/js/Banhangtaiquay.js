@@ -629,7 +629,9 @@ async function taoHoaDonCho() {
     const phiShip = 0;
     const giamGia = 0;
     const status = "Hóa Đơn Chờ"; // Trạng thái mặc định
-    const date = new Date().toISOString();
+    const date = new Date(); // Lấy thời gian hiện tại
+    const options = { timeZone: 'Asia/Ho_Chi_Minh', hour12: false }; // Định dạng múi giờ GMT+7
+    const vietnamTime = date.toLocaleString('en-GB', options);
 
     try {
         const userKH = await fetch(`/khach-hang/thong-tin-kh/14`).then(res => res.json());
@@ -644,7 +646,7 @@ async function taoHoaDonCho() {
             email: email,
             money_ship: phiShip,
             billCode: `HD-${Date.now()}`,
-            transaction_date: date,
+            transaction_date: vietnamTime,
             type: "Tại Quầy",
             createAt: date,
             create_by: idNV,
@@ -736,7 +738,9 @@ async function capNhatHoaDon() {
         const sdt = document.getElementById('phone').value;
         const email = document.getElementById('email').value;
         var status = "Chờ xác nhận"; // Trạng thái mặc định
-        const date = new Date().toISOString(); // Lấy thời gian hiện tại
+        const date = new Date(); // Lấy thời gian hiện tại
+        const options = { timeZone: 'Asia/Ho_Chi_Minh', hour12: false }; // Định dạng múi giờ GMT+7
+        const vietnamTime = date.toLocaleString('en-GB', options);
         const soNha = document.getElementById('soNha').value;
         var payStatus = null;
         var soLuongNew;
@@ -750,6 +754,7 @@ async function capNhatHoaDon() {
             address = null;
             payStatus = null;
             status = "Hoàn thành";
+
         }
         var diaChiChiTiet = (nhanHang === 'Tại Quầy') ? null : `${soNha}, ${address}`;
         const currentInvoice = await fetch(`ban-hang-tai-quay/hd/${idHD}`).then(handleResponse);
@@ -800,7 +805,7 @@ async function capNhatHoaDon() {
             transaction_date: date,
             type: nhanHang,
             address: diaChiChiTiet,
-            updateAt: date,
+            updateAt: vietnamTime,
             createAt: currentInvoice.createAt,
             create_by: idNV,
             id_account: userKH,
