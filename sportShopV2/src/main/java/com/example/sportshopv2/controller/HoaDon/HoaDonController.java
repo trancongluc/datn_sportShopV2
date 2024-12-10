@@ -257,7 +257,7 @@ public class HoaDonController {
     }
 
     @PostMapping("/status/update")
-    public String updateStatus(@RequestParam Integer id, @RequestParam String status) {
+    public String updateStatus(@RequestParam Integer id, @RequestParam String status,@RequestParam(required = false) String confirmation_date) {
         /*Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();*/
 
@@ -267,6 +267,31 @@ public class HoaDonController {
             hoaDon.setStatus(status);
             hoaDon.setUpdateAt(LocalDateTime.now());
             hoaDon.setUpdate_by("username");
+            if (confirmation_date != null && !confirmation_date.isEmpty()) {
+                // Loại bỏ 'Z' và tạo DateTimeFormatter để phân tích chuỗi
+                DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+                if (confirmation_date.endsWith("Z")) {
+                    confirmation_date = confirmation_date.substring(0, confirmation_date.length() - 1); // Loại bỏ 'Z'
+                }
+                LocalDateTime confirmationDate = LocalDateTime.parse(confirmation_date, formatter);
+                hoaDon.setConfirmation_date(confirmationDate);
+            }
+            if (status.equals("Chờ vận chuyển")) {
+                LocalDateTime desireDate = LocalDateTime.now();
+                hoaDon.setDesire_date(desireDate);
+            }
+
+            if (status.equals("Đang vận chuyển") ) {
+                LocalDateTime shipDate = LocalDateTime.now();
+                hoaDon.setShip_date(shipDate);
+            }
+
+            if (status.equals("Hoàn thành") ) {
+                LocalDateTime receiveDate = LocalDateTime.now();
+                hoaDon.setReceive_date(receiveDate);
+                hoaDon.setTransaction_date(receiveDate);
+            }
+
             hdrepo.save(hoaDon);
         }
         return "redirect:/bill/detail?id=" + id;

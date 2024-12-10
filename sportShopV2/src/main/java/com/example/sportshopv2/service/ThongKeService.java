@@ -7,9 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ThongKeService {
@@ -47,23 +45,43 @@ public class ThongKeService {
         }
         return monthlyCounts;
     }
-    public List<Integer> getLast7DaysBillCounts() {
-        List<Integer> bills = new ArrayList<>();
-        for (int i = 6; i >= 0; i--) {
-            LocalDateTime date = LocalDateTime.now().minusDays(i);
-            bills.add(hoaDonRepo.countBillsByDate(date));
+    public List<Object[]> getBillStatisticsByDay(int month, int year) {
+        return hoaDonRepo.countBillsByDayInMonth(month, year);
+    }
+    public List<Object[]> getProductStatisticsByDay(int month, int year) {
+        return hoaDonRepo.countProductsByDayInMonth(month, year);
+    }
+    public Map<String, List<Integer>> thongKeTheoNgay(LocalDate date) {
+        List<Object[]> billData = hoaDonRepo.countBillsByHour(date);
+        List<Object[]> productData = hoaDonRepo.countProductsByHour(date);
+
+        // Tạo danh sách mặc định với 24 giá trị (tương ứng 24 giờ)
+        List<Integer> totalBills = new ArrayList<>(Collections.nCopies(24, 0));
+        List<Integer> totalProducts = new ArrayList<>(Collections.nCopies(24, 0));
+
+        // Cập nhật dữ liệu vào danh sách
+        for (Object[] bill : billData) {
+            int hour = (int) bill[0];
+            totalBills.set(hour, ((Long) bill[1]).intValue());
         }
-        return bills;
+
+        for (Object[] product : productData) {
+            int hour = (int) product[0];
+            totalProducts.set(hour, ((Long) product[1]).intValue());
+        }
+
+        // Trả về kết quả
+        Map<String, List<Integer>> result = new HashMap<>();
+        result.put("totalBills", totalBills);
+        result.put("totalProducts", totalProducts);
+        return result;
+    }
+    public List<Object[]> getBillStatisticsByDayInDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        return hoaDonRepo.countBillsByDayInDateRange(startDate, endDate);
     }
 
-    public List<Integer> getLast7DaysProductCounts() {
-        List<Integer> products = new ArrayList<>();
-        for (int i = 6; i >= 0; i--) {
-            LocalDateTime date = LocalDateTime.now().minusDays(i);
-            products.add(hoaDonRepo.countProductsByDate(date));
-        }
-        return products;
+    // Thống kê sản phẩm theo ngày trong khoảng thời gian
+    public List<Object[]> getProductStatisticsByDayInDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        return hoaDonRepo.countProductsByDayInDateRange(startDate, endDate);
     }
-
-
 }
