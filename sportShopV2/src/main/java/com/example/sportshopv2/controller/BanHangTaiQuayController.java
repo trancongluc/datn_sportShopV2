@@ -82,7 +82,7 @@ public class BanHangTaiQuayController {
     public PhieuGiamGia getVoucherById(@PathVariable("idVC") Integer idVC) {
         return voucherService.findByID(idVC);
     }
-    @GetMapping("/voucher-detail/add")
+    @PostMapping("/voucher-detail/add")
     @ResponseBody
     public PhieuGiamGiaChiTiet getVoucherByGiaTriHD(@RequestBody PhieuGiamGiaChiTiet voucherDetail) {
         return voucherDetailService.save(voucherDetail);
@@ -117,4 +117,5 @@ public class BanHangTaiQuayController {
     public TaiKhoan createTaiKhoan(@RequestBody TaiKhoan taiKhoan) {
         return tkService.createTK(taiKhoan);
     }
+
 }

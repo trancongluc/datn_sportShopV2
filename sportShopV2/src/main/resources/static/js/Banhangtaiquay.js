@@ -717,7 +717,6 @@ async function loadInvoicesFromDatabase() {
 }
 
 
-
 // Hàm thêm tab khi nhấn nút thêm hóa đơn
 document.getElementById('addInvoiceButton').addEventListener('click', () => {
     if (soLuongHoaDonCho < maxInvoices) {
@@ -761,16 +760,79 @@ async function capNhatHoaDon() {
 
         // Lấy thông tin nhân viên
         const emp = await fetch(`/ban-hang-tai-quay/tk/${idNV}`).then(handleResponse);
-        const voucher = await fetch(`/ban-hang-tai-quay/voucher/${idVoucher}`).then(handleResponse);
+        if (idVoucher != null) {
+            try {
+                // Gọi API để lấy thông tin voucher
+                const voucher = await fetch(`/ban-hang-tai-quay/voucher/${idVoucher}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    });
 
+                // Kiểm tra số lượng và thực hiện giảm số lượng
+                if (voucher.quantity > 0) {
+                    voucher.quantity -= 1; // Giảm số lượng voucher
+                    if(voucher.quantity ==0){
+                        voucher.status ="Đã hết";
+                    }
+                } else {
+                    console.warn("Voucher không còn số lượng!");
+                    return;
+                }
+
+                // Gửi API PUT để cập nhật voucher
+                const updateResponse = await fetch(`/giam-gia/update`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(voucher)
+                });
+
+                if (updateResponse.ok) {
+                    console.log("Cập nhật số lượng voucher thành công.");
+                } else {
+                    throw new Error("Cập nhật số lượng voucher thất bại.");
+                }
+                const voucherDetail = {
+                    idVoucher: voucher.id,  // ID voucher
+                    idBill: idHD,           // ID hóa đơn
+                    before_price: tongTien,  // Giá trị trước khi áp dụng voucher
+                    after_price: tongTien-giamGia,  // Giá trị sau khi áp dụng voucher
+                    valueVoucher: giamGia, // Giá trị voucher
+                    create_at: date,
+                    create_by: "admin",
+                };
+
+                // Gửi API để lưu voucher detail
+                const saveVoucherDetailResponse = await fetch(`/ban-hang-tai-quay/voucher-detail/add`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(voucherDetail)
+                });
+
+                if (saveVoucherDetailResponse.ok) {
+                    const savedVoucherDetail = await saveVoucherDetailResponse.json();
+                    console.log("Voucher Detail đã được lưu thành công", savedVoucherDetail);
+                } else {
+                    throw new Error("Lỗi khi lưu Voucher Detail");
+                }
+            } catch (error) {
+                console.error("Lỗi xử lý voucher:", error.message);
+            }
+        }
         // Nếu phương thức thanh toán là "Chuyển Khoản", mở popup VNPay
         if (paymentMethod === 'Chuyển Khoản') {
             async function redirectToVNPay(orderTotal, orderInfo, orderId) {
                 try {
                     const response = await fetch('VNPAY-demo/api/vnpay/create_payment', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ amount: orderTotal, orderInfo: orderInfo, orderId: orderId })
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({amount: orderTotal, orderInfo: orderInfo, orderId: orderId})
                     });
 
                     const result = await response.json();
@@ -869,6 +931,7 @@ async function capNhatHoaDon() {
         showToast("Thêm hóa đơn thất bại!");
     }
 }
+
 // Hàm xử lý phản hồi từ API
 function handleResponse(response) {
     if (!response.ok) {
