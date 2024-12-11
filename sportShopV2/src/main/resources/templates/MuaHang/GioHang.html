@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Khách hàng</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px; /* Khoảng cách giữa hai cột */
+        }
+
+        .center {
+            width: 100%;
+        }
+
+        .left, .right {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .left {
+            width: 60%;
+        }
+
+        .right {
+            width: 35%;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        input[type="text"], input[type="email"], input[type="tel"], select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .note {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .note img {
+            width: 50px;
+            margin-right: 10px;
+        }
+
+        .note span {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .right .section {
+            margin-bottom: 20px;
+        }
+
+        .right .section label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .right .section input[type="text"] {
+            width: calc(100% - 100px);
+            display: inline-block;
+        }
+
+        .right .section button {
+            width: 80px;
+            padding: 10px;
+            margin-left: 10px;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .right .section .toggle-switch {
+            display: flex;
+            align-items: center;
+        }
+
+        .right .section .toggle-switch input {
+            margin-right: 10px;
+        }
+
+        .right .section .total {
+            font-size: 18px;
+            font-weight: bold;
+            color: red;
+        }
+
+        .right .section .confirm-button {
+            width: 100%;
+            padding: 15px;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .voucher-container {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .voucher-item {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            background-color: #f9f9f9;
+        }
+
+        .voucher-item:hover {
+            background-color: #f1f1f1;
+            border-color: #bbb;
+        }
+
+        .voucher-logo img {
+            max-width: 50px;
+            max-height: 50px;
+            border-radius: 5px;
+        }
+
+        .voucher-content {
+            flex: 1;
+        }
+
+        .voucher-title {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .voucher-content p {
+            margin: 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .voucher-content .text-danger {
+            color: #00aaff;
+        }
+
+        /* Định dạng cho các nút tăng/giảm số lượng */
+        .quantity-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .quantity-btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.1);
+        }
+
+        .quantity-btn:active {
+            background-color: #004085;
+        }
+
+        /* Định dạng cho ô nhập liệu */
+        .quantity-input {
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            padding: 5px;
+            margin: 0 10px;
+            background-color: #f9f9f9;
+            cursor: not-allowed;
+        }
+
+        /* Bố cục cơ bản */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Nút thùng rác */
+        .trash-btn-custom {
+            background-color: #00aaff; /* Màu nền ban đầu */
+            border: none;
+            border-radius: 10px; /* Bo góc */
+            padding: 10px 20px;
+            color: gray; /* Màu biểu tượng thùng rác */
+            font-size: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s, transform 0.2s;
+        }
+
+        /* Hiệu ứng hover */
+        .trash-btn-custom:hover {
+            background-color: red; /* Màu nền khi di chuột */
+            color: white; /* Màu biểu tượng thùng rác khi di chuột */
+            transform: scale(1.1); /* Tăng kích thước một chút */
+        }
+
+        .custom-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1050; /* Đảm bảo nổi trên các thành phần khác */
+            width: 500px; /* Đặt độ rộng cố định */
+            height: 400px;
+            text-align: center;
+            animation: fadeInOut 5s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            10%, 90% {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -40%);
+            }
+        }
+
+
+    </style>
+</head>
+<body>
+<nav><a th:href="@{/mua-sam-SportShopV2/trang-chu}">
+    <button class="btn btn-info">Trở lại</button>
+</a></nav>
+<form th:action="@{/mua-sam-SportShopV2/submitOrder}" method="get">
+    <div class="container">
+        <!-- Bảng Sản Phẩm -->
+        <div class="table-container center">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Lựa chọn</th>
+                    <th>STT</th>
+                    <th>Ảnh Sản Phẩm</th>
+                    <th>Thông tin sản phẩm</th>
+                    <th>Màu sắc</th>
+                    <th>Số lượng</th>
+                    <th>Tổng tiền</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="list, index : ${listCart}">
+                    <td>
+                        <input type="checkbox"
+                               style="margin-left: 40%; width: 40px; height: 40px"
+                               th:value="${list.sanPhamChiTiet.id}"
+                               name="selectedProducts"
+                               th:checked="${#lists.contains(selectedProductIds, list.sanPhamChiTiet.id)}"
+                               onclick="calculateTotal()"/>
+                    </td>
+                    <td th:text="${index.index + 1}"></td>
+                    <td>
+                        <img alt="Sản phẩm" height="50"
+                             th:src="${listImage[index.index]?.tenAnh != null ? '/images/' + listImage[index.index].tenAnh : '/images/giayMau.png'}"
+                             width="50"/>
+                    </td>
+                    <td>
+                        <p th:text="${list.SanPhamChiTiet.idSanPham.tenSanPham}"></p>
+                        <p> Giá tiền: <span style="color: red" th:text="${list.SanPhamChiTiet.gia}"></span></p>
+                        <p>Kích cỡ: <span th:text="${list.SanPhamChiTiet.idKichThuoc.tenKichThuoc}"></span></p>
+                    </td>
+                    <td class="border px-4 py-2 text-center">
+                        <div
+                                th:style="'width: 40px; height: 40px;background-color: ' + ${list.SanPhamChiTiet.idMauSac.tenMauSac}">
+                        </div>
+                        <span th:if="${list.SanPhamChiTiet.idMauSac == null}">Không có màu</span>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <button type="button"
+                                    th:attr="onclick='decreaseQuantity(' + ${list.id} + ', ' + ${list.giaTien} + ',' + ${list.sanPhamChiTiet.id} + ')'"
+                                    class="quantity-btn quantity-btn-decrease" name="idSanPhamChiTiet"
+                                    th:value="${list.sanPhamChiTiet.id}">-
+                            </button>
+                            <input type="text" th:id="'quantity-' + ${list.id}" th:data-id="${list.id}"
+                                   th:value="${list.soLuong}" name="soLuongSanPham" readonly class="quantity-input"/>
+                            <button type="button"
+                                    th:attr="onclick='increaseQuantity(' + ${list.id} + ', ' + ${list.giaTien} + ',' + ${list.sanPhamChiTiet.id} + ')'"
+                                    class="quantity-btn quantity-btn-increase" name="idSanPhamChiTiet"
+                                    th:value="${list.sanPhamChiTiet.id}">+
+                            </button>
+                        </div>
+                    </td>
+
+                    <td th:id="'total-price-' + ${list.id}" th:text="${formattedTotals[list.id]} + 'VND'"></td>
+                    <td>
+                        <button class="trash-btn-custom" type="button"
+                                th:attr="onclick='deleteProduct(' + ${list.id} +')'">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-trash" viewBox="0 0 16 16">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="left">
+            <h2>Khách hàng</h2>
+
+            <label>Họ và tên</label>
+            <input type="text" th:field="${thongTinKhachHang.nguoiDung.full_name}"
+                   th:value="${thongTinKhachHang.nguoiDung.full_name}" name="hoTen" required/>
+            <label>Số điện thoại</label>
+            <input type="tel" th:field="${thongTinKhachHang.nguoiDung.phone_number}"
+                   pattern="[0-9]{10}"
+                   title="Vui lòng nhập số điện thoại 10 chữ số."
+                   required/>
+            <label>Email</label>
+            <input type="email" th:field="${thongTinKhachHang.nguoiDung.email}"
+                   th:value="${thongTinKhachHang.nguoiDung.email}" name="email" required/>
+            <label>Địa chỉ cụ thể
+                <button style="margin-left: 600px" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#addressModal">+
+                </button>
+            </label>
+            <div>
+                <input type="text"
+                       th:value="${#lists.isEmpty(listDiaChi) ? '' : listDiaChi[0].line}"
+                       name="soNha" required/>
+            </div>
+
+            <div class="css_select_div">
+                <div class="row mb-3">
+                    <!-- Tỉnh -->
+                    <div class="col-md-4">
+                        <label for="tinh" class="form-label">Tỉnh</label>
+                        <select class="form-select" id="tinh" name="tinh" required
+                                onchange="document.getElementsByName('tinh_name')[0].value = this.options[this.selectedIndex].text;">
+                            <option value="0" hidden>Tỉnh Thành</option>
+                            <option th:each="diaChi : ${listDiaChi}"
+
+                                    th:text="${diaChi.tinh}"
+                                    th:selected="${#lists.isEmpty(listDiaChi) ? false : diaChi.tinh == listDiaChi[0].tinh}">
+                            </option>
+                        </select>
+                        <input type="hidden" name="tinh_name" value="">
+                    </div>
+
+                    <!-- Huyện -->
+                    <div class="col-md-4">
+                        <label for="quan" class="form-label">Huyện</label>
+                        <select class="form-select" id="quan" name="quan" required
+                                onchange="document.getElementsByName('quan_name')[0].value = this.options[this.selectedIndex].text;">
+                            <option value="0" hidden>Quận Huyện</option>
+                            <option th:each="diaChi : ${listDiaChi}"
+
+                                    th:text="${diaChi.quan}"
+                                    th:selected="${#lists.isEmpty(listDiaChi) ? false : diaChi.quan == listDiaChi[0].quan}">
+                            </option>
+                        </select>
+                        <input type="hidden" name="quan_name" value="">
+                    </div>
+
+                    <!-- Phường -->
+                    <div class="col-md-4">
+                        <label for="phuong" class="form-label">Phường</label>
+                        <select class="form-select" id="phuong" name="phuong" required
+                                onchange="document.getElementsByName('phuong_name')[0].value = this.options[this.selectedIndex].text;">
+                            <option value="0" hidden>Phường Xã</option>
+                            <option th:each="diaChi : ${listDiaChi}"
+                                    th:text="${diaChi.phuong}"
+                                    th:selected="${#lists.isEmpty(listDiaChi) ? false : diaChi.phuong == listDiaChi[0].phuong}">
+                            </option>
+                        </select>
+                        <input type="hidden" name="phuong_name" value="">
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addressModalLabel">Danh sách địa chỉ</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Danh sách địa chỉ -->
+                            <ul class="list-group">
+                                <li class="list-group-item" th:each="address, index : ${listDiaChi}">
+                                    <span th:text="${address.tinh}"></span>
+                                    <span th:text="${address.quan}"></span>
+                                    <span th:text="${address.phuong}"></span>
+                                    <button type="button" class="btn btn-link text-primary float-end"
+                                            onclick="selectAddress(this)">Chọn
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label>Ghi Chú</label>
+                <textarea placeholder="Ghi chú" required name="note"></textarea>
+                <textarea placeholder="Ghi chú" name="orderInfo" th:value="''" hidden="hidden"></textarea>
+            </div>
+            <div class="note"><img alt="GHN Express logo" height="50"
+                                   src="https://storage.googleapis.com/a1aa/image/EjcVS2MxCj75FFC4qvqZuAEQcr4huuZ3KGfQSrmTIEaDdI5JA.jpg"
+                                   width="50"/>
+                <span>Thời gian nhận hàng dự kiến: 27/12/2024</span></div>
+        </div>
+        <div class="right">
+            <h2>Thông tin thanh toán</h2>
+            <div class="section">
+                <label>Tiền hàng</label>
+                <input id="totalPayment" readonly type="text" value="0 VND"/>
+            </div>
+            <div class="section">
+                <label>Mã giảm giá:</label>
+                <input type="text" id="discountCode" value="" readonly/>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#voucherModal" type="button"
+                        style="color: #00aaff">
+                    Chọn voucher
+                </button>
+            </div>
+            <div class="modal fade" id="voucherModal" tabindex="-1" aria-labelledby="voucherModalLabel">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="voucherModalLabel">Danh sách Voucher</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Danh sách voucher -->
+                            <div class="voucher-container">
+                                <h4>Chọn 1 voucher</h4>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="error-message" style="color: red;"></div>
+
+            <div class="section toggle-switch">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="TraSau" checked name="pay-status"
+                           value="Thanh toán trước" onchange="toggleSwitch('TraSau', 'GiaoHang')">
+                    <label class="form-check-label" for="TraSau">Thanh toán bằng VNPay</label>
+                </div>
+            </div>
+            <div class="section toggle-switch">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="GiaoHang" name="pay-status"
+                           value="Thanh toán khi nhận hàng" onchange="toggleSwitch('GiaoHang', 'TraSau')">
+                    <label class="form-check-label" for="GiaoHang">Trả khi nhận hàng</label>
+                </div>
+            </div>
+            <div th:if="${message != null}" class="custom-alert">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Thông báo:</strong> <span th:text="${message}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+            <div th:if="${error != null}" class="custom-alert">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Thông báo:</strong> <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="section">
+                <label>Phí vận chuyển:</label>
+                <input type="text" id="ship" value="0" name="moneyShip" readonly/>
+            </div>
+            <div class="section">
+                <label>Giảm giá:</label>
+                <input type="text" name="voucher" id="discountAmount" value="0VND" readonly/>
+            </div>
+            <div class="section">
+                <label>Tổng tiền:</label>
+                <input readonly name="amount" id="totalAmount" type="text" value="0 VND"/>
+            </div>
+            <button class="btn btn-primary " type="submit">Xác nhận đặt hàng</button>
+        </div>
+    </div>
+</form>
+<script src="/js/GioHang.js"></script>
+<script>
+    // Hàm tính tổng tiền
+    function calculateTotal() {
+        // Lấy danh sách các checkbox đã được chọn
+        const checkboxes = document.querySelectorAll('input[name="selectedProducts"]:checked');
+        let total = 0;
+
+        // Tính tổng tiền cho các sản phẩm đã chọn
+        checkboxes.forEach(checkbox => {
+            // Lấy giá tiền từ ô gần checkbox (sử dụng DOM traversal)
+            const row = checkbox.closest('tr');
+            const priceCell = row.querySelector('td:nth-child(7)');
+            if (priceCell) {
+                // Chuyển đổi chuỗi tiền Việt Nam thành số
+                const price = parseFloat(priceCell.textContent.replace(/\./g, '').replace(/,/g, '.'));
+                if (!isNaN(price)) {
+                    total += price;
+                }
+            }
+        });
+
+        // Cập nhật tổng tiền trong ô "Khách thanh toán"
+        const totalPaymentField = document.getElementById('totalPayment');
+        if (totalPaymentField) {
+            totalPaymentField.value = formatCurrency(total) + 'VND';
+        }
+
+        // Sau khi tính tổng tiền cho sản phẩm, tính tổng tiền thanh toán
+        const shippingFee = parseFloat(document.getElementById("ship").value.replace(/\./g, '').replace(/,/g, '.')) || 0;
+        const discountAmount = parseFloat(document.getElementById("discountAmount").value.replace(/\./g, '').replace(/,/g, '.')) || 0;
+
+        // Tính tổng tiền
+        const totalAmount = total + shippingFee - discountAmount;
+
+        // Định dạng lại tổng tiền theo kiểu VND và hiển thị vào ô Tổng tiền
+        document.getElementById("totalAmount").value = formatCurrency(totalAmount) + 'VND';
+        fetchVouchers(total)
+    }
+
+    // Hàm định dạng tiền tệ
+    function formatCurrency(amount) {
+        // Định dạng theo kiểu Việt Nam: 100.000,00
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'decimal',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(amount);
+    }
+
+    function fetchVouchers(total) {
+        console.log('Sending total to API:', total); // Log dữ liệu gửi lên
+        fetch('/mua-sam-SportShopV2/get-voucher', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({total: total}),
+        })
+            .then(response => response.json())
+            .then(vouchers => {
+                console.log('Vouchers received:', vouchers); // Log dữ liệu nhận về
+                renderVoucherModal(vouchers);
+            })
+            .catch(error => {
+                console.error('Error fetching vouchers:', error);
+            });
+    }
+
+    function renderVoucherModal(vouchers) {
+        if (!Array.isArray(vouchers)) {
+            console.error('Expected an array, but got:', vouchers);
+            return;
+        }
+
+        const container = document.querySelector('.voucher-container');
+        container.innerHTML = ''; // Xóa nội dung cũ
+
+        if (vouchers.length === 0) {
+            container.innerHTML = '<p>Không có voucher phù hợp.</p>';
+            return;
+        }
+
+        vouchers.forEach(voucher => {
+            const voucherItem = `
+            <div class="voucher-item d-flex align-items-center">
+                <div class="voucher-logo">
+                    <img src="/images/logoSPSV2.png" alt="Voucher Logo" class="img-fluid" />
+                </div>
+                <div class="voucher-content ms-3">
+                    <p class="voucher-title fw-bold">${voucher.name}</p>
+                    <p>
+                        <span class="text-danger">Giảm: </span>
+                        <span>${voucher.discountValue.toLocaleString()} VND</span>
+                    </p>
+                    <p>HSD: <span>${voucher.endDate}</span></p>
+                </div>
+                <div class="ms-auto">
+                    <input type="radio" name="selectedVoucher" value="${voucher.id}" onchange="selectVoucher(this.value)" />
+                </div>
+            </div>
+        `;
+            container.insertAdjacentHTML('beforeend', voucherItem);
+        });
+    }
+
+
+    // Hàm áp dụng mã giảm giá
+    function applyDiscount() {
+        var discountCode = document.getElementById("discountCode").value.trim();
+
+        // Kiểm tra và áp dụng giảm giá
+        if (discountCode === "DISCOUNT10") {
+            var discount = 0.1 * parseFloat(document.getElementById("totalPayment").value.replace(' VND', '').replace(',', ''));
+            document.getElementById("discountAmount").value = discount.toFixed(0);
+        } else {
+            document.getElementById("discountAmount").value = 0;
+        }
+
+        // Sau khi áp dụng mã giảm giá, tính lại tổng tiền
+        calculateTotal();
+    }
+
+    // Hàm xử lý chuyển đổi giữa các phương thức thanh toán
+    function toggleSwitch(selected, other) {
+        // Nếu chọn 'TraSau', bạn có thể thay đổi cách tính phí vận chuyển
+        if (selected === 'TraSau') {
+            document.getElementById("shippingFee").value = "50000"; // Phí vận chuyển cho "Tra sau"
+        } else {
+            document.getElementById("shippingFee").value = "0"; // Nếu chọn "Giao hang", không có phí vận chuyển
+        }
+
+        // Sau khi thay đổi, tính lại tổng tiền
+        calculateTotal();
+    }
+
+    // Gọi hàm tính tổng tiền khi tài liệu tải xong
+    document.addEventListener('DOMContentLoaded', function () {
+        calculateTotal();  // Tính lại tổng tiền ngay khi trang tải xong
+
+        // Gắn sự kiện vào checkbox khi tài liệu tải xong
+        const checkboxes = document.querySelectorAll('input[name="selectedProducts"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', calculateTotal);  // Gọi lại tính toán khi checkbox thay đổi
+        });
+    });
+</script>
+
+<script>
+    // Hàm kiểm tra trạng thái checkbox
+    function toggleButton() {
+        // Lấy danh sách tất cả các checkbox
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        // Kiểm tra nếu có ít nhất một checkbox được chọn
+        const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+        // Bật hoặc tắt nút dựa trên trạng thái checkbox
+        const confirmButton = document.getElementById('btn-confirm');
+        confirmButton.disabled = !anyChecked;
+    }
+
+    // Gắn sự kiện 'change' cho tất cả các checkbox khi DOM sẵn sàng
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', toggleButton);
+        });
+    });
+</script>
+
+<script>
+    function selectAddress(button) {
+        // Lấy nội dung địa chỉ từ danh sách
+        const address = button.parentElement.querySelector('span').innerText;
+        // Gán địa chỉ vào ô nhập liệu
+        document.querySelector('input[name="address"]').value = address;
+        // Đóng modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('addressModal'));
+        modal.hide();
+    }
+</script>
+
+<script>
+    function toggleSwitch(activeId, otherId) {
+        // Lấy checkbox đang được thao tác
+        const activeCheckbox = document.getElementById(activeId);
+        const otherCheckbox = document.getElementById(otherId);
+
+        // Nếu checkbox được bật, thì tắt checkbox còn lại
+        if (activeCheckbox.checked) {
+            otherCheckbox.checked = false;
+        }
+    }
+
+
+    function increaseQuantity(id, giaTien, idSanPhamChiTiet) {
+        const quantityInput = document.querySelector(`#quantity-${id}`);
+        const totalPriceElement = document.querySelector(`#total-price-${id}`);
+
+        if (quantityInput) {
+            let currentQuantity = parseInt(quantityInput.value, 10);
+            currentQuantity += 1;
+
+            // Gửi yêu cầu cập nhật số lượng đến server
+            updateServerQuantity(id, currentQuantity, idSanPhamChiTiet)
+                .then(response => {
+                    if (response.ok) {
+                        quantityInput.value = currentQuantity;
+                        const totalPrice = currentQuantity * giaTien;
+                        if (totalPriceElement) {
+                            totalPriceElement.textContent = totalPrice.toLocaleString("vi-VN") + ' VND';
+                        }
+                    } else {
+                        response.json().then(data => alert(data.error));
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        }
+    }
+
+    function decreaseQuantity(id, giaTien, idSanPhamChiTiet) {
+        const quantityInput = document.querySelector(`#quantity-${id}`);
+        const totalPriceElement = document.querySelector(`#total-price-${id}`);
+
+        if (quantityInput) {
+            let currentQuantity = parseInt(quantityInput.value, 10);
+            if (currentQuantity > 1) {
+                currentQuantity -= 1;
+
+                // Gửi yêu cầu cập nhật số lượng đến server
+                updateServerQuantity(id, currentQuantity, idSanPhamChiTiet)
+                    .then(response => {
+                        if (response.ok) {
+                            quantityInput.value = currentQuantity;
+                            const totalPrice = currentQuantity * giaTien;
+                            if (totalPriceElement) {
+                                totalPriceElement.textContent = totalPrice.toLocaleString("vi-VN") + ' VND';
+                            }
+                        } else {
+                            response.json().then(data => alert(data.error));
+                        }
+                    })
+                    .catch(error => console.error("Error:", error));
+            }
+        }
+    }
+
+    function updateServerQuantity(id, newQuantity, idSanPhamChiTiet) {
+        return fetch('/mua-sam-SportShopV2/update-quantity', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({id: id, soLuong: newQuantity, idSPCT: idSanPhamChiTiet})
+        });
+    }
+
+    const errorMessageElement = document.getElementById('error-message');
+    response.json().then(data => {
+        errorMessageElement.textContent = data.error;
+    });
+
+
+    function selectVoucher(id) {
+        fetch(`/mua-sam-SportShopV2/voucher/details/${id}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch voucher details");
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Gán giá trị vào input khi có phản hồi từ server
+                document.getElementById('discountAmount').value =
+                    `${new Intl.NumberFormat('vi-VN', {
+                        style: 'decimal',
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                    }).format(data.idPhieuGiamGia.discountValue)} VND`;
+
+                document.getElementById('discountCode').value = `${data.idPhieuGiamGia.voucherCode}`;
+                calculateTotal();
+
+                // Sử dụng setTimeout để đảm bảo radio button được cập nhật đúng
+                setTimeout(() => {
+                    // Chọn radio button tương ứng với voucher đã chọn
+                    document.querySelectorAll('input[name="selectedVoucher"]').forEach(radio => {
+                        if (radio.value === id) {
+                            radio.checked = true; // Đánh dấu radio button là checked
+                        } else {
+                            radio.checked = false; // Bỏ chọn các radio khác
+                        }
+                    });
+                }, 100); // Thử trì hoãn 100ms để đảm bảo DOM đã được cập nhật
+            })
+            .catch(error => console.error("Error:", error));
+    }
+
+
+
+    function deleteProduct(id) {
+        fetch(`/mua-sam-SportShopV2/xoa-san-pham-gio-hang/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Sản phẩm đã được xóa!');
+                    location.reload(); // Reload the page to reflect changes
+                } else {
+                    alert('Lỗi khi xóa sản phẩm');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            const alertBox = document.querySelector('.custom-alert');
+            if (alertBox) {
+                alertBox.style.display = 'none';
+            }
+        }, 5000); // 5000ms = 5 giây
+    });
+</script>
+
+</body>
+</html>

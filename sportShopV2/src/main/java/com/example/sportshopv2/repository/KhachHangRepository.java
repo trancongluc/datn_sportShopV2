@@ -9,19 +9,40 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface KhachHangRepository extends JpaRepository<User, Integer> {
 
 
-
-    @Query("SELECT u FROM User u JOIN u.account a LEFT JOIN FETCH u.addresses  WHERE  a.role = 'Customer' AND u.deleted = false")
+    @Query("SELECT u FROM User u JOIN u.account a LEFT JOIN FETCH u.addresses  WHERE  a.role = 'Employee' AND u.deleted = false")
     Page<User> findAllCustomers(Pageable pageable);
-    @Query("SELECT u FROM User u JOIN u.account a LEFT JOIN FETCH u.addresses  WHERE  a.role = 'Customer' AND u.deleted = false")
+
+    @Query("SELECT u FROM User u " +
+            "JOIN u.account a " +
+            "LEFT JOIN FETCH u.addresses " +
+            "WHERE a.role = 'Employee' AND u.deleted = false " +
+            "ORDER BY u.createdAt DESC")
     List<User> findAllKhachHang();
-    @Query("SELECT u FROM User u JOIN u.account a LEFT JOIN FETCH u.addresses WHERE a.role = 'Customer' AND " +
+
+
+    @Query("SELECT u FROM User u JOIN u.account a LEFT JOIN FETCH u.addresses WHERE a.role = 'Employee' AND " +
             "(u.fullName LIKE %:keyword% OR u.phoneNumber LIKE %:keyword% OR u.email LIKE %:keyword%)")
     Page<User> searchCustomers(@Param("keyword") String keyword, Pageable pageable);
+
+    @Query("SELECT u "
+            + "FROM User u "
+            + "JOIN u.account a "
+            + "WHERE u.id = :userId AND a.role = 'Employee'")
+    User getKhachHangById(@Param("userId") Integer userId);
+
+    // Tìm kiếm người dùng theo số điện thoại
+    Optional<User> findByPhoneNumber(String phoneNumber);
+
+    // Tìm kiếm người dùng theo email
+    Optional<User> findByEmail(String email);
+
+
 
 
 }

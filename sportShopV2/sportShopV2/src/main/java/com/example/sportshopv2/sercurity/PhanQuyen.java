@@ -38,7 +38,11 @@ public class PhanQuyen {
 
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
+<<<<<<< HEAD
 <<<<<<< HEAD:sportShopV2/src/main/java/com/example/sportshopv2/sercurity/PhanQuyen.java
+=======
+<<<<<<<< HEAD:sportShopV2/src/main/java/com/example/sportshopv2/sercurity/PhanQuyen.java
+>>>>>>> bc94182350061e80f18a55466277feff1b836616
                         // Quyền truy cập cho Admin
                         .requestMatchers("/khach-hang/**", "/san-pham", "/san-pham/**", "/san-pham-chi-tiet/**",
                                 "/san-pham-chi-tiet", "/anh-san-pham/**", "/the-loai/**", "/nhanvien/**", "/bill/**",
@@ -48,12 +52,20 @@ public class PhanQuyen {
                         .requestMatchers("/bill/**").hasAuthority("Staff")
 
                         // Quyền truy cập cho Employee
+<<<<<<< HEAD
 =======
+=======
+========
+>>>>>>> bc94182350061e80f18a55466277feff1b836616
                         .requestMatchers("/khach-hang/**", "/san-pham", "/san-pham/**", "/san-pham-chi-tiet/**",
                                 "/san-pham-chi-tiet", "/anh-san-pham/**",
                                 "/nhanvien/**", "/bill/**", "/ban-hang-tai-quay/**").hasAuthority("Admin")
                         .requestMatchers("/bill/**", "/buy/**").hasAuthority("Staff")
+<<<<<<< HEAD
 >>>>>>> bc94182350061e80f18a55466277feff1b836616:sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/sercurity/PhanQuyen.java
+=======
+>>>>>>>> bc94182350061e80f18a55466277feff1b836616:sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/sercurity/PhanQuyen.java
+>>>>>>> bc94182350061e80f18a55466277feff1b836616
                         .requestMatchers("/buy/**").hasAuthority("Employee")
 
                         // Cho phép truy cập công cộng
@@ -72,6 +84,7 @@ public class PhanQuyen {
 
                             // Chuyển hướng theo vai trò người dùng
                             if ("Admin".equals(role) || "Staff".equals(role)) {
+<<<<<<< HEAD
 <<<<<<< HEAD:sportShopV2/src/main/java/com/example/sportshopv2/sercurity/PhanQuyen.java
                                 targetUrl = "/ban-hang-tai-quay";  // Admin và Staff vào trang bán hàng tại quầy
                             } else if ("Employee".equals(role)) {
@@ -79,6 +92,15 @@ public class PhanQuyen {
 =======
                                 targetUrl = "/ban-hang-tai-quay";
 >>>>>>> bc94182350061e80f18a55466277feff1b836616:sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/sercurity/PhanQuyen.java
+=======
+<<<<<<<< HEAD:sportShopV2/src/main/java/com/example/sportshopv2/sercurity/PhanQuyen.java
+                                targetUrl = "/ban-hang-tai-quay";  // Admin và Staff vào trang bán hàng tại quầy
+                            } else if ("Employee".equals(role)) {
+                                targetUrl = "/mua-sam-SportShopV2/trang-chu";// Employee vào trang mua sắm
+========
+                                targetUrl = "/ban-hang-tai-quay";
+>>>>>>>> bc94182350061e80f18a55466277feff1b836616:sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/sercurity/PhanQuyen.java
+>>>>>>> bc94182350061e80f18a55466277feff1b836616
                             } else {
                                 targetUrl = "/ban-hang/mua-sam";  // Default page nếu không có vai trò hợp lệ
                             }

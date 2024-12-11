@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -29,34 +30,33 @@ public class HoaDon {
     @Column(name = "user_name")
     private String user_name;
 
-    @NotBlank(message = "{message.phonenumber}")
     @Column(name = "phone_number")
     private String phone_number;
 
-    @NotNull(message = "{message.totalmoney}")
+
     @Column(name = "total_money")
     private Float total_money;
-    @NotNull(message = "{message.totalmoney}")
+
     @Column(name = "money_reduced")
     private Float money_reduced;
 
-    @NotBlank(message = "{message.status}")
+
     @Column(name = "status")
     private String status;
-    @Column(name="address")
+    @Column(name = "address")
     private String address;
 
     @Column(name = "ship_date")
-    private String ship_date;
+    private LocalDateTime ship_date;
 
     @Column(name = "receive_date")
-    private String receive_date;
+    private LocalDateTime receive_date;
 
     @Column(name = "confirmation_date")
-    private String confirmation_date;
+    private LocalDateTime confirmation_date;
 
     @Column(name = "desire_date")
-    private String desire_date;
+    private LocalDateTime desire_date;
     @Column(name = "value_point")
 
     private Integer value_point;
@@ -73,10 +73,10 @@ public class HoaDon {
     private String pay_status;
 
     @Column(name = "bill_code")
-    private String bill_code;
+    private String billCode;
 
     @Column(name = "transaction_date")
-    private String transaction_date;
+    private LocalDateTime transaction_date;
     @Column(name = "email")
     private String email;
     @Column(name = "type")
@@ -85,38 +85,55 @@ public class HoaDon {
     private String note;
 
     @Column(name = "create_at")
-    private LocalDateTime create_at;
+    private LocalDateTime createAt;
 
     @Column(name = "create_by")
     private String create_by;
 
     @Column(name = "update_at")
-    private LocalDateTime update_at;
+    private LocalDateTime updateAt;
 
     @Column(name = "update_by")
     private String update_by;
     @Column(name = "deleted")
     private Boolean deleted;
+
+    @OneToMany(mappedBy = "hoaDon", fetch = FetchType.LAZY)
+    private List<HoaDonChiTiet> billDetails;
+
     public String getStatusDisplay() {
         switch (status) {
-            case "ORDERED": return "Chờ xác nhận";
-            case "CONFIRMED": return "Đã xác nhận";
-            case "SHIPPING": return "Chờ giao hàng";
-            case "SHIPPED": return "Đang vận chuyển";
-            case "COMPLETE": return "Hoàn thành";
-            default: return "Chưa rõ";
+            case "Chờ xác nhận":
+                return "Chờ xác nhận";
+            case "Đã xác nhận":
+                return "Đã xác nhận";
+            case "Chờ vận chuyển":
+                return "Chờ vận chuyển";
+            case "Đang vận chuyển":
+                return "Đang vận chuyển";
+            case "Hoàn thành":
+                return "Hoàn thành";
+            default:
+                return "Chưa rõ";
         }
     }
 
     public int getStatusProgress() {
         switch (status) {
-            case "ORDERED": return 25;
-            case "CONFIRMED": return 50;
-            case "SHIPPING": return 75;
-            case "SHIPPED": return 90;
-            case "COMPLETE": return 100;
-            default: return 0;
+            case "Chờ xác nhận":
+                return 25;
+            case "Đã xác nhận":
+                return 50;
+            case "Chờ vận chuyển":
+                return 75;
+            case "Đang vận chuyển":
+                return 90;
+            case "Hoàn thành":
+                return 100;
+            default:
+                return 0;
         }
     }
+
 
 }

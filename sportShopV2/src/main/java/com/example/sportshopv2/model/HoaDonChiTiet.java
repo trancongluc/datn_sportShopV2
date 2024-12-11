@@ -1,5 +1,6 @@
 package com.example.sportshopv2.model;
 
+import com.example.sportshopv2.dto.SanPhamChiTietDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,12 +23,12 @@ public class HoaDonChiTiet {
     private Integer quantity;
 
     @ManyToOne
-    @JoinColumn(name = "id_bill")
+    @JoinColumn(name = "id_bill" , nullable = false)
     private HoaDon hoaDon;
 
     @ManyToOne
     @JoinColumn(name = "id_product_detail")
-    private SanPhamChiTiet sanPhamChiTiet;
+    private SPCT sanPhamChiTiet;
 
     private Float price;
 

@@ -10,5 +10,5 @@ public interface HoaDonChiTietRepo extends JpaRepository<HoaDonChiTiet, Integer>
     HoaDonChiTiet findAllById(Integer id);
     List<HoaDonChiTiet> findAllByHoaDon_Id(Integer id);
     List<HoaDonChiTiet> findAllByHoaDon_Type(String type);
-//    List<HoaDonChiTiet> findAllByHoaDon_Bill_code(String billCode);
+    List<HoaDonChiTiet> findAllBySanPhamChiTiet_Id(Integer id);
 }

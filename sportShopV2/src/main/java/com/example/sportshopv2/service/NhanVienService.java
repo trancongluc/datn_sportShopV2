@@ -1,5 +1,7 @@
 package com.example.sportshopv2.service;
 
+import com.example.sportshopv2.dto.UserDTO;
+import com.example.sportshopv2.dto.UserNhanVienDTO;
 import com.example.sportshopv2.model.Account;
 import com.example.sportshopv2.model.User;
 import com.example.sportshopv2.repository.NhanVienRepo;
@@ -63,7 +65,7 @@ public class NhanVienService {
         nvRepository.deleteById(id); // Delete the customer by ID
     }
 
-    private final String UPLOAD_DIR = "C:\\Users\\panha\\OneDrive\\Documents\\GitHub\\datn_sportShopV2\\sportShopV2\\src\\main\\resources\\static\\uploads\\";
+    private final String UPLOAD_DIR = "D:\\demoMergeCodeDatn\\sportShopV2\\src\\main\\resources\\static\\uploads";
 
     public User addnv(User NhanVien, MultipartFile imageFile, String role, String username, String password) throws IOException {
         // Lưu tệp hình ảnh
@@ -98,6 +100,11 @@ public class NhanVienService {
         String fileName = imageFile.getOriginalFilename();
         imageFile.transferTo(new File(UPLOAD_DIR + fileName));
         NhanVien.setImageFileName(fileName);
+    }
+    public UserNhanVienDTO getNVById(Integer id) {
+        User user = nvRepository.getNhanVienById(id);
+        UserNhanVienDTO nvDTO = User.toNVDTO(user,nvRepository);
+        return nvDTO;
     }
 
 }

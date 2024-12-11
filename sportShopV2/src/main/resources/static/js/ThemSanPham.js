@@ -53,7 +53,7 @@ function addBrand(event) {
 }
 
 function updateBrandList() {
-    fetch('thuong-hieu/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
+    fetch('/thuong-hieu/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
         .then(response => response.json())
         .then(data => {
             const brandSelect = document.getElementById('idThuongHieu');
@@ -97,13 +97,13 @@ function addTheLoai(event) {
 }
 
 function updateCboTheLoai() {
-    fetch('the-loai/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
+    fetch('/the-loai/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
         .then(response => response.json())
         .then(data => {
             const brandSelect = document.getElementById('category');
             brandSelect.innerHTML = ''; // Xóa các tùy chọn hiện tại
             brandSelect.innerHTML += '<option value="" disabled selected hidden>Chọn thể loại</option>'; // Thêm tùy chọn mặc định
-
+            console.log(data);
             data.forEach(theLoai => {
                 brandSelect.innerHTML += `<option value="${theLoai.id}">${theLoai.tenTheLoai}</option>`;
             });
@@ -141,7 +141,7 @@ function addChatLieu(event) {
 }
 
 function updateCboChatLieu() {
-    fetch('chat-lieu/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
+    fetch('/chat-lieu/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
         .then(response => response.json())
         .then(data => {
             const brandSelect = document.getElementById('idChatLieu');
@@ -183,7 +183,7 @@ function addCoGiay(event) {
 }
 
 function updateCboCoGiay() {
-    fetch('co-giay/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
+    fetch('/co-giay/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
         .then(response => response.json())
         .then(data => {
             const brandSelect = document.getElementById('collar');
@@ -225,7 +225,7 @@ function addDeGiay(event) {
 }
 
 function updateCboDeGiay() {
-    fetch('de-giay/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
+    fetch('/de-giay/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
         .then(response => response.json())
         .then(data => {
             const brandSelect = document.getElementById('sole');
@@ -258,15 +258,82 @@ function showNotification(message) {
     }, 3000);
 }
 
-//Chọn size
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+    const progressBar = document.getElementById('progress-bar');
 
-let selectedSizes = []; // Mảng lưu trữ kích cỡ đã chọn
+    // Kiểm tra xem các phần tử có tồn tại không
+    if (!toast || !toastMessage || !progressBar) {
+        console.error("Một trong các phần tử không tồn tại.");
+        return; // Dừng hàm nếu không tìm thấy phần tử
+    }
+
+    // Cập nhật nội dung thông báo
+    toastMessage.textContent = message;
+
+    // Hiển thị thông báo
+    toast.classList.remove('hide');
+    toast.classList.add('show');
+
+    // Đặt chiều rộng thanh tiến trình về 100%
+    progressBar.style.width = '100%';
+
+    // Sau 3 giây, thay đổi chiều rộng thanh tiến trình về 0
+    setTimeout(() => {
+        progressBar.style.width = '0'; // Đặt lại chiều rộng thanh tiến trình về 0
+    }, 2000); // Sau 3 giây
+
+    // Ẩn toast sau 3.3 giây
+    setTimeout(() => {
+        toast.classList.remove('show');
+        toast.classList.add('hide');
+    }, 2000); // Thêm chút thời gian cho hiệu ứng ẩn
+}
+
+let selectedColors = [];
+let selectedSizes = [];
+let selectedColorsUpdate = [];
+let selectedSizesUpdate = [];// Mảng lưu trữ kích cỡ đã chọn
+let selectedSPCTsUpdate = [];
+
+function loadSelectedValues() {
+    // Lấy các kích cỡ đã chọn từ HTML và lưu vào mảng
+    document.querySelectorAll('.selected-size').forEach(sizeElement => {
+        const sizeId = sizeElement.getAttribute('data-id'); // Lấy id của kích cỡ từ thuộc tính data-id
+        const sizeName = sizeElement.innerText; // Lấy tên kích cỡ từ nội dung
+        selectedSizesUpdate.push({id: sizeId, name: sizeName}); // Lưu cả id và tên vào mảng
+    });
+
+    // Lấy các màu sắc đã chọn từ HTML và lưu vào mảng
+    document.querySelectorAll('.selected-color').forEach(colorElement => {
+        const colorId = colorElement.getAttribute('data-id'); // Lấy id của màu sắc từ thuộc tính data-id
+        const colorCode = colorElement.style.backgroundColor || colorElement.getAttribute('data-color'); // Lấy mã màu từ backgroundColor hoặc data-color
+        selectedColorsUpdate.push({id: colorId, code: colorCode}); // Lưu cả id và mã màu vào mảng
+    });
+    // Lấy các idSPCT từ mỗi dòng trong bảng và lưu vào mảng
+    document.querySelectorAll('tr[data-id]').forEach(row => {
+        const spctId = row.getAttribute('data-id'); // Lấy giá trị id từ thuộc tính data-id của dòng
+        if (spctId) {
+            selectedSPCTsUpdate.push({id: spctId}); // Lưu idSPCT vào mảng
+        }
+    });
+    console.log('Sizes in database:', selectedSizesUpdate);
+    console.log('Colors in database:', selectedColorsUpdate);
+    console.log('idSPCT in database:', selectedSPCTsUpdate);
+}
+
+
+// Gọi hàm loadSelectedValues khi trang được tải
+document.addEventListener('DOMContentLoaded', loadSelectedValues);
+
+//Chọn size
 
 function selectSize(button) {
     const size = button.textContent; // Lấy tên kích cỡ
     const sizeId = button.getAttribute('data-size'); // Lấy ID kích cỡ
 
-    const sizeObj = {id: sizeId, name: size}; // Tạo đối tượng với tên và ID
+    const sizeObj = {id: sizeId, name: size}; // Tạo đối tượng kích cỡ
 
     if (selectedSizes.some(s => s.id === sizeId)) {
         // Nếu kích cỡ đã được chọn, xóa nó khỏi mảng
@@ -277,35 +344,40 @@ function selectSize(button) {
         selectedSizes.push(sizeObj);
         button.classList.add('active');
     }
-    updateProductTable();
+
+    updateProductTable(); // Cập nhật bảng sản phẩm
+    updateSelectedSizes(); // Cập nhật giao diện hiển thị các kích cỡ đã chọn
+
     console.log('Kích cỡ đã chọn:', selectedSizes); // In ra mảng chứa kích cỡ đã chọn
 }
 
 function updateSelectedSizes() {
     const selectedSizesElement = document.getElementById('selected-sizes');
-    selectedSizesElement.innerHTML = ''; // Xóa nội dung cũ
+    selectedSizesElement.innerHTML = ''; // Xóa tất cả phần tử hiện tại trong selected-sizes
 
+    // Duyệt qua các kích cỡ đã chọn và hiển thị chúng
     selectedSizes.forEach(size => {
-        const span = document.createElement('span');
-        span.className = 'selected-size';
-        span.textContent = size.name; // Hiển thị tên kích cỡ
-        span.onclick = () => removeSize(size.id); // Thêm sự kiện để xóa kích cỡ khi nhấp
-        selectedSizesElement.appendChild(span);
+        // Kiểm tra nếu phần tử đã được tạo cho size này chưa
+        let span = document.getElementById(`size-${size.id}`);
+        if (!span) {
+            // Nếu chưa, tạo mới
+            span = document.createElement('span');
+            span.className = 'selected-size';
+            span.id = `size-${size.id}`; // Gán id duy nhất cho từng kích cỡ
+            span.textContent = size.name; // Hiển thị tên kích cỡ
+            span.onclick = () => removeSize(size.id); // Xử lý khi bỏ chọn kích cỡ
+            selectedSizesElement.appendChild(span);
+        }
     });
 }
 
 function removeSize(sizeId) {
-    // Xóa kích cỡ khỏi mảng và cập nhật lại
+    // Xóa kích cỡ khỏi mảng selectedSizes
     selectedSizes = selectedSizes.filter(s => s.id !== sizeId);
-    updateSelectedSizes(); // Cập nhật hiển thị bên ngoài modal
 
-    // Cập nhật trạng thái của các nút trong modal
-    const sizeButtons = document.querySelectorAll('.size-button');
-    sizeButtons.forEach(button => {
-        if (button.getAttribute('data-size') === sizeId) {
-            button.classList.remove('active'); // Bỏ chọn nút tương ứng trong modal
-        }
-    });
+    // Cập nhật lại giao diện
+    updateSelectedSizes(); // Cập nhật hiển thị sau khi bỏ chọn
+    updateProductTable();
 }
 
 function confirmSelectedSizes() {
@@ -313,20 +385,6 @@ function confirmSelectedSizes() {
     closeModal('sizeModal');
 
 }
-
-// function updateModalState() {
-//     const sizeButtons = document.querySelectorAll('.size-button');
-//     sizeButtons.forEach(button => {
-//         const sizeId = button.getAttribute('data-size');
-//         // Đánh dấu các nút trong modal là active nếu chúng có trong selectedSizes
-//         if (selectedSizes.some(size => size.id === sizeId)) {
-//             button.classList.add('active');
-//         } else {
-//             button.classList.remove('active');
-//         }
-//     });
-// }
-let selectedColors = [];
 
 function selectedColor(colorButton) {
     // Lấy mã màu và ID từ nút
@@ -346,6 +404,20 @@ function selectedColor(colorButton) {
 
     console.log('Các màu sắc đã chọn:', selectedColors);
     updateProductTable();
+}
+
+function rgbToHex(rgb) {
+    // Loại bỏ "rgb(" và ")" rồi tách các giá trị r, g, b
+    const rgbValues = rgb.match(/\d+/g);
+    if (!rgbValues || rgbValues.length !== 3) return null;
+
+    // Chuyển đổi từng giá trị thành mã Hex
+    const r = parseInt(rgbValues[0]).toString(16).padStart(2, '0');
+    const g = parseInt(rgbValues[1]).toString(16).padStart(2, '0');
+    const b = parseInt(rgbValues[2]).toString(16).padStart(2, '0');
+
+    // Trả về mã Hex đầy đủ
+    return `#${r}${g}${b}`;
 }
 
 function confirmSelectedColors() {
@@ -393,7 +465,7 @@ function addKichThuoc(event) {
     })
         .then(response => {
             if (response.ok) {
-                updateSizeList(); // Cập nhật danh sách thương hiệu trong combobox
+                updateSizeList();
                 closeModal('sizeAddModal'); // Đóng modal
                 document.getElementById('sizeForm').reset(); // Reset form
                 showNotification("Thành Công!");
@@ -484,45 +556,111 @@ function formatPrice(input) {
     }
 }
 
+function getNumericPrice(input) {
+    // Xóa " VND" và dấu chấm để lấy giá trị số
+    let value = input.replace(/ VND/g, '').replace(/\./g, '');
+    // Chuyển đổi sang số nguyên
+    let numericValue = parseInt(value, 10);
+    return isNaN(numericValue) ? 0 : numericValue; // Trả về giá trị số hoặc 0 nếu không hợp lệ
+}
+
 //Tự động tạo ra row trong table
 function updateProductTable() {
     const tableBody = document.querySelector('table tbody');
     tableBody.innerHTML = ''; // Xóa các hàng hiện có
-
     const productName = document.getElementById('tenSanPham').value || 'Tên sản phẩm'; // Tên mặc định nếu không được nhập
+    const productRows = {}; // Lưu trữ các hàng theo key (tên sản phẩm và màu sắc)
 
-    const productRows = {};
+    // Lấy tất cả các size và màu (gồm cả danh sách hiện tại và trước đó)
+    const allSizes = [...new Set([...selectedSizes, ...selectedSizesUpdate])];
+    const allColors = [...new Set([...selectedColors, ...selectedColorsUpdate])];
 
-    selectedColors.forEach(color => {
+    // 1. Trường hợp chỉ chọn size
+    if (selectedSizes.length > 0 && selectedColors.length === 0) {
         selectedSizes.forEach(size => {
-            const rowKey = `${productName} [${size.name} - ${color.code}]`;
-            if (!productRows[rowKey]) {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><input type="checkbox" class="selectItem"></td>
-                    <td>${tableBody.rows.length + 1}</td>
-                     <td data-size-id="${size.id}" data-color-id="${color.id}">
-                        ${productName} [${size.name} - <span style="display:inline-block; width: 20px; height: 20px; background-color: ${color.code}; border: 1px solid #000;"></span>]
-                    </td>
-                    <td><input type="number" value="1" style="width: 50px;"></td>
-                    <td><input type="text" class="price" value="0 VNĐ" style="width: 180px;" onblur="formatPrice(this)"></td>
-                   <td class="action-buttons">
-                        <div class="action-buttons-container">
-                        <i class="fas fa-trash-alt" onclick="removeRow(this)"></i>
-                    </div>
-                        </td>
-                    <td>
+            selectedColorsUpdate.forEach(color => {
+                createRow(size, color, productName, productRows, tableBody);
+            });
+        });
+    }
+
+    // 2. Trường hợp chỉ chọn màu
+    if (selectedColors.length > 0 && selectedSizes.length === 0) {
+        selectedColors.forEach(color => {
+            selectedSizesUpdate.forEach(size => {
+                createRow(size, color, productName, productRows, tableBody);
+            });
+        });
+    }
+
+    // 3. Trường hợp chọn cả size và màu
+    if (selectedSizes.length > 0 && selectedColors.length > 0) {
+        // Kết hợp size với màu hiện tại
+        selectedSizes.forEach(size => {
+            selectedColors.forEach(color => {
+                createRow(size, color, productName, productRows, tableBody);
+            });
+        });
+
+        // Kết hợp size với màu đã chọn trước đó
+        selectedSizes.forEach(size => {
+            selectedColorsUpdate.forEach(color => {
+                createRow(size, color, productName, productRows, tableBody);
+            });
+        });
+
+        // Kết hợp màu với size đã chọn trước đó
+        selectedColors.forEach(color => {
+            selectedSizesUpdate.forEach(size => {
+                createRow(size, color, productName, productRows, tableBody);
+            });
+        });
+    }
+
+}
+
+function createRow(size, color, productName, productRows, tableBody) {
+    const rowKey = `${productName} [${size.name} - ${color.code}]`; // Khóa duy nhất cho sản phẩm
+
+    // Kiểm tra xem dòng này đã được tạo chưa
+    if (productRows[rowKey]) {
+        return; // Nếu đã có, bỏ qua việc tạo thêm dòng mới
+    }
+
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td><input type="checkbox" class="selectItem"></td>
+        <td>${tableBody.rows.length + 1}</td>
+        <td data-size-id="${size.id}" data-color-id="${color.id}">
+            ${productName} [${size.name} - 
+            <span style="display:inline-block; width: 20px; height: 20px; background-color: ${color.code}; border: 1px solid #000;"></span> 
+            <span class="color-name" id="color-name-${color.id}">${color.code}</span>]
+        </td>
+        <td><input type="number" value="1" style="width: 50px;"></td>
+        <td><input type="text" class="price" value="0 VNĐ" style="width: 180px;" onblur="formatPrice(this)"></td>
+        <td class="action-buttons">
+            <div class="action-buttons-container">
+                <i class="fas fa-trash-alt" onclick="removeRow(this)"></i>
+            </div>
+        </td>
+        <td>
                         <div class="upload-button" onclick="triggerFileInput(this, '${rowKey}')"><i class="fas fa-plus"></i> Tải lên</div>
                         <input type="file" class="fileInput" style="display:none;" multiple onchange="handleFileSelect(this, '${rowKey}')">
                         <div class="uploaded-images"></div>
                     </td>
-                `;
-                productRows[rowKey] = row;
-                tableBody.appendChild(row);
-            }
-        });
-    });
+    `;
+    productRows[rowKey] = row;
+    tableBody.appendChild(row);
+    const colorNameElement = row.querySelector(`#color-name-${color.id}`);
+    getColorName(color.code, colorNameElement);
 }
+
+document.getElementById('selectAll').addEventListener('change', function () {
+    const checkboxes = document.querySelectorAll('.selectItem');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = this.checked; // Chọn hoặc bỏ chọn tất cả các checkbox
+    });
+});
 
 function triggerFileInput(button, rowKey) {
     const fileInput = button.nextElementSibling;
@@ -664,9 +802,81 @@ async function themSPCT() {
     const idDeGiay = document.getElementById('sole').value;
     const idCoGiay = document.getElementById('collar').value;
 
+    resetBorders();
+
+    // Kiểm tra validate cho các trường
+    if (!sanPhamNew.trim()) {
+        showToast('Tên sản phẩm không được để trống!');
+        document.getElementById('tenSanPham').style.border = '1px solid red'; // Bo viền đỏ
+        return;
+    }
+    const sanPhamAll = await fetch(`san-pham/list`).then(handleResponse);
+    console.log(sanPhamAll);
+    const isDuplicate = sanPhamAll.some(product => product.tenSanPham.trim().toLowerCase() === sanPhamNew.toLowerCase());
+    if (isDuplicate) {
+        showToast('Tên sản phẩm đã tồn tại!');
+        document.getElementById('tenSanPham').style.border = '1px solid red'; // Bỏ viền đỏ
+        return;
+    }
+    if (!moTa.trim()) {
+        showToast('Mô tả không được để trống!');
+        document.getElementById('description').style.border = '1px solid red'; // Bo viền đỏ
+        return;
+    }
+    if (!gioiTinh) {
+        showToast('Vui lòng chọn giới tính!');
+        document.getElementById('gender').style.border = '1px solid red'; // Bo viền đỏ
+        return;
+    }
+    if (!idThuongHieu) {
+        showToast('Vui lòng chọn thương hiệu!');
+        document.getElementById('idThuongHieu').style.border = '1px solid red'; // Bo viền đỏ
+        return;
+    }
+    if (!idTheLoai) {
+        showToast('Vui lòng chọn thể loại!');
+        document.getElementById('category').style.border = '1px solid red'; // Bo viền đỏ
+        return;
+    }
+    if (!idChatLieu) {
+        showToast('Vui lòng chọn chất liệu!');
+        document.getElementById('idChatLieu').style.border = '1px solid red'; // Bo viền đỏ
+        return;
+    }
+    if (!idDeGiay) {
+        showToast('Vui lòng chọn đế giày!');
+        document.getElementById('sole').style.border = '1px solid red'; // Bo viền đỏ
+        return;
+    }
+    if (!idCoGiay) {
+        showToast('Vui lòng chọn cổ giày!');
+        document.getElementById('collar').style.border = '1px solid red'; // Bo viền đỏ
+        return;
+    }
+
+    // Kiểm tra thông tin chi tiết sản phẩm
+    const productDetails = getInfoTable();
+    if (productDetails.length === 0) {
+        showToast('Vui lòng chọn màu sắc và kích thước!');
+        return;
+    }
+    const uploadedImageElements = document.querySelectorAll('.uploaded-images');
+    let hasImages = false;
+
+    uploadedImageElements.forEach(uploadedImagesDiv => {
+        const imageContainers = uploadedImagesDiv.querySelectorAll('.image-container');
+        if (imageContainers.length > 0) {
+            hasImages = true; // Nếu có ảnh, gán true
+        }
+    });
+
+    if (!hasImages) {
+        showToast('Mỗi sản phẩm phải có ít nhất một ảnh!');
+        return; // Dừng thực hiện nếu không có ảnh
+    }
     try {
         // Thêm sản phẩm chính
-        const sanPhamResponse = await fetch('san-pham/them-san-pham', {
+        const sanPhamResponse = await fetch('/san-pham/them-san-pham', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -732,14 +942,194 @@ async function themSPCT() {
     } catch (error) {
         console.log('Có lỗi xảy ra: ' + error.message);
     }
+
+}
+
+async function capNhatSPCT() {
+    const sanPhamNew = document.getElementById('tenSanPham').value;
+    const moTa = document.getElementById('description').value;
+    const gioiTinh = document.getElementById('gender').value;
+    const idThuongHieu = document.getElementById('idThuongHieu').value;
+    const idTheLoai = document.getElementById('category').value;
+    const idChatLieu = document.getElementById('idChatLieu').value;
+    const idDeGiay = document.getElementById('sole').value;
+    const idCoGiay = document.getElementById('collar').value;
+    resetBorders();
+
+    // Kiểm tra validate cho các trường
+    if (!sanPhamNew.trim()) {
+        showToast('Tên sản phẩm không được để trống!');
+        document.getElementById('tenSanPham').style.border = '1px solid red';
+        return;
+    }
+    if (!moTa.trim()) {
+        showToast('Mô tả không được để trống!');
+        document.getElementById('description').style.border = '1px solid red';
+        return;
+    }
+
+    const path = window.location.pathname;
+    const segments = path.split("/");
+    const sanPhamId = segments[segments.length - 1]; // Lấy idSP từ URL
+
+    try {
+        // Lấy thông tin sản phẩm chi tiết hiện tại từ server
+        const spctInfoPromises = selectedSPCTsUpdate.map(detail => {
+            return fetch(`/san-pham-chi-tiet/thong-tin-spct/${detail.id}`)
+                .then(response => response.json())
+                .then(data => {
+                    return {
+                        id: detail.id,
+                        idSanPham: sanPhamId,
+                        idKichThuoc: data.idKichThuoc,
+                        idMauSac: data.idMauSac,
+                        idThuongHieu: data.idThuongHieu,
+                        idDeGiay: data.idDeGiay,
+                        idTheLoai: data.idTheLoai,
+                        idCoGiay: data.idCoGiay,
+                        idChatLieu: data.idChatLieu,
+                        moTa: data.moTa,
+                        gioiTinh: data.gioiTinh,
+                        soLuong: data.soLuong,
+                        gia: data.gia
+                    };
+                });
+        });
+
+        const spctInfoList = await Promise.all(spctInfoPromises);
+        // Cập nhật `soLuong` và `gia` từ bảng HTML
+        spctInfoList.forEach(detail => {
+            const row = document.querySelector(`tr[data-id="${detail.id}"]`); // Lấy hàng tương ứng theo ID
+            const giaInput = row.querySelector('#gia'); // Lấy ô input giá
+            const soLuongInput = row.querySelector('#soLuong'); // Lấy ô input số lượng
+            const giaThuc = parseCurrency(giaInput.value);
+            detail.gia = giaThuc; // Cập nhật giá từ ô input
+            detail.soLuong = parseInt(soLuongInput.value, 10); // Cập nhật số lượng từ ô input
+        });
+
+        console.log(spctInfoList);
+        // Cập nhật sản phẩm chính
+        const sanPhamResponse = await fetch(`/san-pham/update/${sanPhamId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                tenSanPham: sanPhamNew
+            })
+        });
+
+        if (!sanPhamResponse.ok) {
+            const errorText = await sanPhamResponse.text();
+            throw new Error(`Lỗi khi cập nhật sản phẩm: ${errorText}`);
+        }
+
+        // Cập nhật thông tin chi tiết của từng SPCT từ danh sách spctInfoList
+        const updateSPCTPromises  = spctInfoList.map(detail => {
+            return fetch(`/san-pham-chi-tiet/update/${detail.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+                    idSanPham: sanPhamId,
+                    idKichThuoc: detail.idKichThuoc,
+                    idMauSac: detail.idMauSac,
+                    idThuongHieu: idThuongHieu,
+                    idDeGiay: idDeGiay,
+                    idTheLoai: idTheLoai,
+                    idCoGiay: idCoGiay,
+                    idChatLieu: idChatLieu,
+                    moTa: moTa,
+                    gioiTinh: gioiTinh,
+                    soLuong: detail.soLuong,
+                    gia: detail.gia
+                })
+            });
+        });
+
+        const updateResponses = await Promise.all(updateSPCTPromises);
+        updateResponses.forEach((res, index) => {
+            if (!res.ok) {
+                console.error(`Lỗi cập nhật SPCT ID ${spctInfoList[index].id}`);
+            }
+        });
+        const productDetails = getInfoTable(); // Giả sử hàm này trả về mảng thông tin
+
+        // Tạo các sản phẩm chi tiết mới
+        const addSPCTPromises = productDetails.map((detail) =>
+            fetch(`/san-pham-chi-tiet/them-san-pham-chi-tiet`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    idSanPham: sanPhamId,
+                    idKichThuoc: detail.sizeId,
+                    idMauSac: detail.colorId,
+                    idThuongHieu,
+                    idDeGiay,
+                    idTheLoai,
+                    idCoGiay,
+                    idChatLieu,
+                    moTa,
+                    gioiTinh,
+                    soLuong: detail.quantity,
+                    gia: detail.price,
+                }),
+            })
+        );
+
+        const addResponses = await Promise.all(addSPCTPromises);
+        const newIds = [];
+        for (let res of addResponses) {
+            if (!res.ok) {
+                throw new Error('Lỗi khi thêm sản phẩm chi tiết!');
+            }
+            const data = await res.json();
+            newIds.push(data.id); // Lưu ID của sản phẩm mới
+        }
+        if (newIds.length > 0) {
+            await saveProductImages(newIds);
+        }
+        window.location.href = '/san-pham';
+        // Hiển thị thông báo thành công
+        localStorage.setItem('notification', showNotification("Cập nhật Thành Công"));
+
+    } catch (error) {
+        console.log('Có lỗi xảy ra: ' + error.message);
+    }
+}
+
+function handleResponse(response) {
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
+    }
+    return response.json();
+}
+
+function resetBorders() {
+    const inputFields = [
+        'tenSanPham', 'description', 'gender', 'idThuongHieu', 'category',
+        'idChatLieu', 'sole', 'collar'
+    ];
+    inputFields.forEach(id => {
+        document.getElementById(id).style.border = ''; // Reset viền về mặc định
+    });
 }
 
 async function saveProductImages(idSPCTs) {
     const uploadedImageElements = document.querySelectorAll('.uploaded-images');
 
     const images = [];
+    let allImagesUploaded = true; // Biến kiểm tra nếu tất cả sản phẩm đều có ảnh
+
     uploadedImageElements.forEach((uploadedImagesDiv, index) => {
         const imageContainers = uploadedImagesDiv.querySelectorAll('.image-container');
+        if (imageContainers.length === 0) {
+            // Nếu không có ảnh cho sản phẩm này, đánh dấu là chưa có ảnh
+            allImagesUploaded = false;
+        }
+
         imageContainers.forEach(container => {
             const imgTag = container.querySelector('img');
             const fileName = container.dataset.fileName; // Lấy tên file từ data attribute
@@ -751,6 +1141,12 @@ async function saveProductImages(idSPCTs) {
             });
         });
     });
+
+    // Kiểm tra nếu không có ảnh nào được tải lên
+    if (!allImagesUploaded) {
+        showToast('Mỗi sản phẩm phải có ít nhất một ảnh!');
+        return; // Dừng hàm nếu không có ảnh
+    }
 
     // Gửi ảnh đến server
     const response = await fetch('/anh-san-pham/upload', {
@@ -776,9 +1172,8 @@ function getInfoTable() {
         // Lấy số lượng và giá tiền
         const quantity = row.querySelector('input[type="number"]').value;
         const priceText = row.querySelector('.price').value;
-
+        const priceNumber = getNumericPrice(priceText);
         // Chuyển đổi giá tiền sang số
-        const priceNumber = parseFloat(priceText.replace(/[^\d.-]/g, '')) || 0;
 
         // Lấy ID từ thuộc tính dữ liệu
         const sizeId = row.cells[2].getAttribute('data-size-id');
@@ -800,3 +1195,98 @@ function getInfoTable() {
     console.log('Chi tiết sản phẩm:', details);
     return details;
 }
+
+function applyQuantityAndPrice() {
+    const soLuongChung = document.getElementById('soLuongChung').value.trim();
+    const giaChung = document.getElementById('giaChung').value.trim();
+
+    if (!soLuongChung || !giaChung) {
+        alert('Vui lòng nhập đầy đủ số lượng và giá!');
+        return;
+    }
+
+    const selectedRows = document.querySelectorAll('table tr .selectItem:checked');
+
+    if (selectedRows.length === 0) {
+        showToast('Vui lòng chọn ít nhất một sản phẩm!');
+        return;
+    }
+
+    selectedRows.forEach(checkbox => {
+        const row = checkbox.closest('tr');
+        const quantityInput = row.querySelector('input[type="number"]');
+        const priceInput = row.querySelector('.price');
+
+        // Cập nhật số lượng và giá cho hàng được chọn
+        quantityInput.value = soLuongChung;
+        priceInput.value = formatCurrency(giaChung);
+    });
+
+    // Đóng modal sau khi áp dụng
+    closeModal('slAndGia');
+}
+
+/*function formatCurrency(value) {
+    const number = parseInt(value.replace(/\D/g, ''), 10);
+    return number.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
+}*/
+
+
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
+}
+
+function parseCurrency(currencyStr) {
+    // Loại bỏ ký tự không phải số và dấu chấm phân cách
+    const numberStr = currencyStr
+        .replace(/[^\d,-]/g, '') // Loại bỏ các ký tự không phải số, dấu phẩy hoặc dấu trừ
+        .replaceAll('.', '') // Loại bỏ dấu chấm phân cách
+        .replace(',', '.'); // Thay dấu phẩy (phân cách thập phân) bằng dấu chấm
+    return parseFloat(numberStr); // Chuyển sang số thực
+}
+
+document.querySelectorAll('.price').forEach(function (el) {
+    el.textContent = formatCurrency(el.textContent);
+});
+document.addEventListener('DOMContentLoaded', function () {
+    // Lấy tất cả các phần tử chứa mã màu
+    document.querySelectorAll('.color-name').forEach(function (el) {
+        const colorHex = el.innerText.trim(); // Lấy mã hex từ nội dung của phần tử span
+        if (colorHex.startsWith('#')) { // Kiểm tra mã có hợp lệ không
+            getColorName(colorHex, el); // Gọi hàm để lấy tên màu từ API
+        } else {
+            el.textContent = "Tên màu không hợp lệ"; // Nếu mã không hợp lệ, hiển thị thông báo lỗi
+        }
+    });
+    const priceElements = document.querySelectorAll('.price');
+
+    priceElements.forEach(function (priceElement) {
+        let price = parseFloat(priceElement.value);
+        if (!isNaN(price)) {
+            priceElement.value = formatCurrency(price);
+        }
+    });
+});
+
+// Hàm gọi API để lấy tên màu
+function getColorName(colorCode, el) {
+    // Nếu colorCode là RGB, chuyển sang Hex
+    const hexCode = colorCode.startsWith('#') ? colorCode : rgbToHex(colorCode);
+
+    if (!hexCode) {
+        el.textContent = "Không xác định được mã màu";
+        return;
+    }
+
+    fetch(`https://www.thecolorapi.com/id?hex=${hexCode.substring(1)}`)
+        .then(response => response.json())
+        .then(data => {
+            el.textContent = data.name.value; // Cập nhật tên màu vào phần tử span
+        })
+        .catch(error => {
+            console.error("Lỗi khi gọi API lấy tên màu:", error);
+            el.textContent = "Không tìm thấy tên màu"; // Hiển thị lỗi nếu không lấy được tên màu
+        });
+}
+
+//cập nhật màu sắc và size để updateSPct

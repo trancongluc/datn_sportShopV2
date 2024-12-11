@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Menu}">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Application</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .chat-box {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            height: 400px;
+            overflow-y: auto;
+            display: none; /* Hide all chatboxes initially */
+        }
+
+        .chat-box.active {
+            display: block; /* Only show the selected chatbox */
+        }
+
+        .message.client {
+            background-color: #007bff;
+            color: white;
+            text-align: left; /* Align client messages to the left */
+            border-radius: 15px;
+            padding: 10px;
+            margin-bottom: 5px;
+            max-width: 75%;
+            margin-right: auto; /* Align to the left */
+        }
+
+        .message.shop {
+            background-color: grey;
+            color: white;
+            text-align: right; /* Align shop messages to the right */
+            border-radius: 15px;
+            padding: 10px;
+            margin-bottom: 5px;
+            max-width: 75%;
+            margin-left: auto; /* Align to the right */
+        }
+
+        .timestamp {
+            font-size: 0.75rem;
+            color: white;
+            margin-top: 2px;
+        }
+
+        /* Notification dot */
+        .notification-dot {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            display: none; /* Hidden by default */
+        }
+    </style>
+</head>
+<body>
+<main layout:fragment="main1">
+    <h1 class="text-start mb-4">Chat Hỗ Trợ Khách Hàng</h1>
+    <hr>
+    <br>
+    <div class="row">
+        <!-- Left chatbox list -->
+        <div class="col-md-4">
+            <div class="list-group">
+                <a href="javascript:void(0);" class="list-group-item list-group-item-action position-relative"
+                   th:each="chatBox : ${chatBoxes}"
+                   th:data-id="${chatBox.id}"
+                   onclick="showChat(this)">
+                    <div class="d-flex align-items-center">
+                        <div class="avatar rounded-circle text-center d-flex align-items-center justify-content-center flex-shrink-0"
+                             style="width: 50px; height: 50px; background-color: #007bff; color: white;">
+                            <span th:text="${chatBox.name.substring(0, 1).toUpperCase()}"></span>
+                        </div>
+                        <div class="ms-3 flex-grow-1">
+                            <strong th:text="${chatBox.name}" style="color: black">ChatBox Name</strong>
+                            <br>
+                            <small class="text-muted">Nhấn để mở chat</small>
+                        </div>
+                        <div class="notification-dot" id="notification-dot-${chatBox.id}"></div> <!-- Notification dot -->
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!-- Right message area -->
+        <div class="col-md-8">
+            <div id="chat-title" class="mb-3">
+                <h5>Chọn một ChatBox để hiển thị nội dung</h5>
+            </div>
+            <div id="chat-container">
+                <div th:each="chatBox : ${chatBoxes}"
+                     th:id="'chat-box-' + ${chatBox.id}"
+                     class="chat-box">
+                    <div th:each="message : ${messagesByChatBox.get(chatBox.id)}">
+                        <div th:classappend="${message.role == 'shop' ? 'shop' : 'client'}"
+                             class="message p-2 mb-2">
+                            <span th:text="${message.content}">Tin nhắn</span>
+                            <div class="timestamp" th:text="${message.timestamp}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="messageForm" class="mt-3 d-flex">
+                <input type="hidden" id="chatBoxId" th:value="${chatBox != null ? chatBox.id : ''}">
+                <input type="hidden" id="accountId" th:value="${accountId}">
+                <input type="text" id="content" placeholder="Nhập tin nhắn..." required class="form-control me-2">
+                <button id="sendButton" class="btn btn-success">Gửi</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.2/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <script>
+        function showChat(element) {
+            const chatBoxId = element.getAttribute('data-id');
+            const allChatBoxes = document.querySelectorAll('.chat-box');
+            const chatTitle = document.getElementById('chat-title');
+
+            allChatBoxes.forEach(box => {
+                box.classList.remove('active');
+                const notificationDot = document.getElementById(`notification-dot-${box.id.split('-')[2]}`);
+                if (notificationDot) {
+                    notificationDot.style.display = 'none'; // Hide notification dot
+                }
+            });
+
+            const selectedChatBox = document.getElementById(`chat-box-${chatBoxId}`);
+            if (selectedChatBox) {
+                selectedChatBox.classList.add('active');
+                chatTitle.innerHTML = `<h5>ChatBox: ${element.textContent.trim()}</h5>`;
+            }
+
+            const chatBoxIdInput = document.getElementById('chatBoxId');
+            if (chatBoxIdInput) {
+                chatBoxIdInput.value = chatBoxId;
+            }
+        }
+
+        let stompClient = null;
+
+        function connect() {
+            const socket = new SockJS('http://localhost:8080/chat');
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, function () {
+                console.log("Connected to WebSocket");
+                stompClient.subscribe('/topic/messages', function (message) {
+                    const data = JSON.parse(message.body);
+                    appendMessage(data.chatBox.id, data.role, data.content, data.timestamp);
+                });
+            });
+        }
+
+        document.getElementById('sendButton').addEventListener('click', function (event) {
+            event.preventDefault();
+
+            const chatBoxId = document.getElementById('chatBoxId').value;
+            const accountId = document.getElementById('accountId').value;
+            const content = document.getElementById('content').value;
+
+            const message = {
+                chatBox: { id: chatBoxId },
+                role: 'shop',
+                content: content
+            };
+
+            fetch('/sendMessage', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    chatBoxId: chatBoxId,
+                    accountId: accountId,
+                    content: content
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to send message');
+                    }
+                    return response.json();
+                })
+                .then(() => {
+                    stompClient.send('/app/sendMessage', {}, JSON.stringify(message));
+                    document.getElementById('content').value = '';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        const displayedMessages = new Map();
+
+        function appendMessage(chatBoxId, role, content, timestamp) {
+            const chatBox = document.getElementById(`chat-box-${chatBoxId}`);
+
+            if (!chatBox || displayedMessages.has(chatBoxId + content)) {
+                return;
+            }
+
+            displayedMessages.set(chatBoxId + content, true);
+
+            const messageDiv = document.createElement('div');
+
+            if (role === 'client') {
+                messageDiv.className = 'message client';
+            } else if (role === 'shop') {
+                messageDiv.className = 'message shop';
+            } else {
+                console.error(`Unknown role: ${role}`);
+                return;
+            }
+
+            messageDiv.innerHTML = `
+                <span>${content}</span>
+                <div class="timestamp">${formatTimestamp(timestamp)}</div>
+            `;
+
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
+
+            // Show notification dot if chat box is not active
+            if (!chatBox.classList.contains('active')) {
+                const notificationDot = document.getElementById(`notification-dot-${chatBoxId}`);
+                if (notificationDot) {
+                    notificationDot.style.display = 'block'; // Show notification dot
+                }
+            }
+        }
+
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}`; // Format to YYYY-MM-DD HH:MM
+        }
+
+        connect(); // Connect to WebSocket on page load
+    </script>
+</main>
+</body>
+</html>

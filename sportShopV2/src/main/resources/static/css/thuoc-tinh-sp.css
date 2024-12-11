@@ -50,6 +50,9 @@ body {
 .status.active {
     background-color: #28a745;
 }
+.status.inactive {
+    background-color: #bf3737; /* Màu cho trạng thái "Hết hàng" */
+}
 .actions i {
     margin-right: 10px;
     cursor: pointer;

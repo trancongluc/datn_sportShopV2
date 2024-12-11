@@ -4,204 +4,512 @@
 <!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
 <!--      layout:decorate="~{Menu}">-->
 <!--<head>-->
-<!-- <meta charset="UTF-8">-->
-<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!-- <title>Quản lý trả hàng</title>-->
-<!-- <link rel="stylesheet" href="/css/DoiTraChiTiet.css">-->
-<!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Quản lý trả hàng</title>-->
+<!--    <link rel="stylesheet" href="/css/DoiTraChiTiet.css">-->
+<!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>-->
 <!--</head>-->
 <!--<body>-->
 <!--<main layout:fragment="main1">-->
-<!-- <div class="container">-->
-<!--  <div class="header">-->
-<!--   <img src="/images/img.png" width="20px" height="20px">-->
-<!--   <h1>Quản lý trả hàng</h1>-->
-<!--  </div>-->
+<!--    <div class="container">-->
+<!--        <div class="header">-->
+<!--            <img src="/images/img.png" width="20px" height="20px">-->
+<!--            <h1>Quản lý trả hàng</h1>-->
+<!--        </div>-->
 
-<!--  &lt;!&ndash; Thông tin khách hàng &ndash;&gt;-->
-<!--  <div class="section">-->
-<!--   <h2><i class="fas fa-info-circle"></i> Thông tin khách hàng</h2>-->
-<!--   <div class="customer-info">-->
-<!--    <div>-->
-<!--     <p><span>Tên khách hàng:</span> </p>-->
-<!--     <p><span>Số điện thoại:</span> 1234567890</p>-->
-<!--     <p><span>Địa chỉ:</span> </p>-->
-<!--     <p><span>Ghi chú:</span></p>-->
+<!--        &lt;!&ndash; Thông tin khách hàng &ndash;&gt;-->
+<!--        <div class="section">-->
+<!--            <h2><i class="fas fa-info-circle"></i> Thông tin khách hàng</h2>-->
+<!--            <div class="customer-info">-->
+<!--                <div>-->
+<!--                    <p><span>Tên khách hàng:</span></p>-->
+<!--                    <p><span>Số điện thoại:</span> 1234567890</p>-->
+<!--                    <p><span>Địa chỉ:</span></p>-->
+<!--                    <p><span>Ghi chú:</span></p>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                    <p><span>Ngày giao hàng:</span></p>-->
+<!--                    <p><span>Ngày nhận hàng:</span></p>-->
+<!--                    <div class="status-buttons">-->
+<!--                        <button class="success">Thành công</button>-->
+<!--                        <button class="online">ONLINE</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Thông tin đơn hàng &ndash;&gt;-->
+<!--        <div class="section">-->
+<!--            <h2>Thông tin đơn hàng</h2>-->
+<!--            <table class="order-table">-->
+<!--                <thead>-->
+<!--                <tr>-->
+<!--                    <th>STT</th>-->
+<!--                    <th>Ảnh</th>-->
+<!--                    <th>Thông tin sản phẩm</th>-->
+<!--                    <th>Màu Sắc</th>-->
+<!--                    <th>Số lượng</th>-->
+<!--                    <th>Tổng tiền</th>-->
+<!--                    <th>Trạng thái</th>-->
+<!--                    <th>Hành động</th>-->
+<!--                </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                <tr>-->
+<!--                    <td>1</td>-->
+<!--                    <td><img-->
+<!--                            src="https://storage.googleapis.com/a1aa/image/4TiPev4yK9V2J6xm3Hvl4ohnV85Z76QHL90wLZf6klVq3tnTA.jpg"-->
+<!--                            alt="Product image with 10% discount label"/></td>-->
+<!--                    <td>-->
+<!--                        <p>KAPPA GIÀY SNEAKERS 123[ 36 - Maroon ]</p>-->
+<!--                        <p style="color: red; font-weight: bold;">4.500.000 VND</p>-->
+<!--                        <p style="text-decoration: line-through;">5.000.000 VND</p>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <div style="background-color: maroon; width: 25px; height: 25px; border-radius: 50%;"></div>-->
+<!--                    </td>-->
+<!--                    <td>1</td>-->
+<!--                    <td>4.500.000 VND</td>-->
+<!--                    <td>-->
+<!--                        <div class="status">Thành công</div>-->
+<!--                    </td>-->
+<!--                    <td class="action">-->
+<!--                        <button><i class="fas fa-undo"></i></button>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                </tbody>-->
+<!--            </table>-->
+
+<!--            &lt;!&ndash; Nút trả hàng tất cả &ndash;&gt;-->
+<!--            <div class="return-all">-->
+<!--                <button>Trả hàng tất cả</button>-->
+<!--            </div>-->
+<!--        </div>-->
 <!--    </div>-->
-<!--    <div>-->
-<!--     <p><span>Ngày giao hàng:</span> </p>-->
-<!--     <p><span>Ngày nhận hàng:</span> </p>-->
-<!--     <div class="status-buttons">-->
-<!--      <button class="success">Thành công</button>-->
-<!--      <button class="online">ONLINE</button>-->
-<!--     </div>-->
-<!--    </div>-->
-<!--   </div>-->
-<!--  </div>-->
-
-<!--  &lt;!&ndash; Thông tin đơn hàng &ndash;&gt;-->
-<!--  <div class="section">-->
-<!--   <h2>Thông tin đơn hàng</h2>-->
-<!--   <table class="order-table">-->
-<!--    <thead>-->
-<!--    <tr>-->
-<!--     <th>STT</th>-->
-<!--     <th>Ảnh</th>-->
-<!--     <th>Thông tin sản phẩm</th>-->
-<!--     <th>Màu Sắc</th>-->
-<!--     <th>Số lượng</th>-->
-<!--     <th>Tổng tiền</th>-->
-<!--     <th>Trạng thái</th>-->
-<!--     <th>Hành động</th>-->
-<!--    </tr>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    <tr>-->
-<!--     <td>1</td>-->
-<!--     <td><img src="https://storage.googleapis.com/a1aa/image/4TiPev4yK9V2J6xm3Hvl4ohnV85Z76QHL90wLZf6klVq3tnTA.jpg" alt="Product image with 10% discount label" /></td>-->
-<!--     <td>-->
-<!--      <p>KAPPA GIÀY SNEAKERS 123[ 36 - Maroon ]</p>-->
-<!--      <p style="color: red; font-weight: bold;">4.500.000 VND</p>-->
-<!--      <p style="text-decoration: line-through;">5.000.000 VND</p>-->
-<!--     </td>-->
-<!--     <td>-->
-<!--      <div style="background-color: maroon; width: 25px; height: 25px; border-radius: 50%;"></div>-->
-<!--     </td>-->
-<!--     <td>1</td>-->
-<!--     <td>4.500.000 VND</td>-->
-<!--     <td><div class="status">Thành công</div></td>-->
-<!--     <td class="action"><button><i class="fas fa-undo"></i></button></td>-->
-<!--    </tr>-->
-<!--    </tbody>-->
-<!--   </table>-->
-
-<!--   &lt;!&ndash; Nút trả hàng tất cả &ndash;&gt;-->
-<!--   <div class="return-all">-->
-<!--    <button>Trả hàng tất cả</button>-->
-<!--   </div>-->
-<!--  </div>-->
-<!-- </div>-->
-<!-- <div class="container2">-->
-<!--  <table class="cart-table">-->
-<!--   <thead>-->
-<!--   <tr>-->
-<!--    <th>-->
-<!--     STT-->
-<!--    </th>-->
-<!--    <th>-->
-<!--     Ảnh-->
-<!--    </th>-->
-<!--    <th>-->
-<!--     Tên sản phẩm-->
-<!--    </th>-->
-<!--    <th>-->
-<!--     Màu Sắc-->
-<!--    </th>-->
-<!--    <th>-->
-<!--     Số lượng-->
-<!--    </th>-->
-<!--    <th>-->
-<!--     Giá tiền-->
-<!--    </th>-->
-<!--    <th>-->
-<!--     Tổng tiền-->
-<!--    </th>-->
-<!--    <th>-->
-<!--     Hành động-->
-<!--    </th>-->
-<!--   </tr>-->
-<!--   </thead>-->
-<!--   <tbody>-->
-<!--   <tr>-->
-<!--    <td>-->
-<!--     1-->
-<!--    </td>-->
-<!--    <td>-->
-<!--     <img alt="Image of a black running shoe" height="50" src="https://storage.googleapis.com/a1aa/image/DenA334sR31LY6TnvMNYyEwUOfHsavICDmuAUFQQAmVgiunTA.jpg" width="50"/>-->
-<!--    </td>-->
-<!--    <td>-->
-<!--     Giày Chạy Nam Adidas Ultraboost Cc_1 Dna FZ2545[ 42 - black ]-->
-<!--    </td>-->
-<!--    <td>-->
-<!--     Black-->
-<!--    </td>-->
-<!--    <td>-->
-<!--     <input min="1" style="width: 50px;" type="number" value="1"/>-->
-<!--    </td>-->
-<!--    <td>-->
-<!--     2.500.000 VND-->
-<!--    </td>-->
-<!--    <td>-->
-<!--     2.500.000 VND-->
-<!--    </td>-->
-<!--    <td>-->
-<!--     <i class="fas fa-trash delete-btn">-->
-<!--     </i>-->
-<!--    </td>-->
-<!--   </tr>-->
-<!--   </tbody>-->
-<!--  </table>-->
-<!--  <div class="summary">-->
-<!--   <p>-->
-<!--    Tổng giá hàng gốc:-->
-<!--    <span>-->
+<!--    <div class="container2">-->
+<!--        <table class="cart-table">-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th>-->
+<!--                    STT-->
+<!--                </th>-->
+<!--                <th>-->
+<!--                    Ảnh-->
+<!--                </th>-->
+<!--                <th>-->
+<!--                    Tên sản phẩm-->
+<!--                </th>-->
+<!--                <th>-->
+<!--                    Màu Sắc-->
+<!--                </th>-->
+<!--                <th>-->
+<!--                    Số lượng-->
+<!--                </th>-->
+<!--                <th>-->
+<!--                    Giá tiền-->
+<!--                </th>-->
+<!--                <th>-->
+<!--                    Tổng tiền-->
+<!--                </th>-->
+<!--                <th>-->
+<!--                    Hành động-->
+<!--                </th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            <tr>-->
+<!--                <td>-->
+<!--                    1-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <img alt="Image of a black running shoe" height="50"-->
+<!--                         src="https://storage.googleapis.com/a1aa/image/DenA334sR31LY6TnvMNYyEwUOfHsavICDmuAUFQQAmVgiunTA.jpg"-->
+<!--                         width="50"/>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    Giày Chạy Nam Adidas Ultraboost Cc_1 Dna FZ2545[ 42 - black ]-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    Black-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <input min="1" style="width: 50px;" type="number" value="1"/>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    2.500.000 VND-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    2.500.000 VND-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <i class="fas fa-trash delete-btn">-->
+<!--                    </i>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--        <div class="summary">-->
+<!--            <p>-->
+<!--                Tổng giá hàng gốc:-->
+<!--                <span>-->
 <!--      9.500.000 VND-->
 <!--     </span>-->
-<!--   </p>-->
-<!--   <p>-->
-<!--    Voucher đã sử dụng:-->
-<!--    <span>-->
+<!--            </p>-->
+<!--            <p>-->
+<!--                Voucher đã sử dụng:-->
+<!--                <span>-->
 <!--      150.000 VND-->
 <!--     </span>-->
-<!--   </p>-->
-<!--   <p>-->
-<!--    Tiền ship:-->
-<!--    <span>-->
+<!--            </p>-->
+<!--            <p>-->
+<!--                Tiền ship:-->
+<!--                <span>-->
 <!--      0 VND-->
 <!--     </span>-->
-<!--   </p>-->
-<!--   <p>-->
-<!--    Điểm sử dụng (0):-->
-<!--    <span>-->
+<!--            </p>-->
+<!--            <p>-->
+<!--                Điểm sử dụng (0):-->
+<!--                <span>-->
 <!--      0 VND-->
 <!--     </span>-->
-<!--   </p>-->
-<!--   <p class="total">-->
-<!--    Tổng tiền thanh toán:-->
-<!--    <span>-->
+<!--            </p>-->
+<!--            <p class="total">-->
+<!--                Tổng tiền thanh toán:-->
+<!--                <span>-->
 <!--      9.350.000 VND-->
 <!--     </span>-->
-<!--   </p>-->
-<!--   <p>-->
-<!--    Tổng giá hàng trả:-->
-<!--    <span>-->
+<!--            </p>-->
+<!--            <p>-->
+<!--                Tổng giá hàng trả:-->
+<!--                <span>-->
 <!--      2.500.000 VND-->
 <!--     </span>-->
-<!--   </p>-->
-<!--   <p>-->
-<!--    Voucher mới:-->
-<!--    <span>-->
+<!--            </p>-->
+<!--            <p>-->
+<!--                Voucher mới:-->
+<!--                <span>-->
 <!--      150.000 VND-->
 <!--     </span>-->
-<!--   </p>-->
-<!--   <hr/>-->
-<!--   <p class="total">-->
-<!--    Tổng tiền trả khách:-->
-<!--    <span>-->
+<!--            </p>-->
+<!--            <hr/>-->
+<!--            <p class="total">-->
+<!--                Tổng tiền trả khách:-->
+<!--                <span>-->
 <!--      2.500.000 VND-->
 <!--     </span>-->
-<!--   </p>-->
-<!--   <div class="return">-->
-<!--    <p>-->
-<!--     * Mô tả:-->
-<!--    </p>-->
-<!--    <textarea placeholder="Nhập mô tả"></textarea>-->
-<!--    <button>-->
-<!--     Trả hàng-->
-<!--    </button>-->
-<!--   </div>-->
-<!--  </div>-->
-<!-- </div>-->
+<!--            </p>-->
+<!--            <div class="return">-->
+<!--                <p>-->
+<!--                    * Mô tả:-->
+<!--                </p>-->
+<!--                <textarea placeholder="Nhập mô tả"></textarea>-->
+<!--                <button>-->
+<!--                    Trả hàng-->
+<!--                </button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
 <!--</main>-->
 <!--</body>-->
 <!--</html>-->
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Menu}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý trả hàng</title>
+    <link rel="stylesheet" href="/css/DoiTraChiTiet.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <script>
+        let currentProduct = '';
+        let currentProductRow = null;
+        let currentProductPrice = 0;
+
+        function openModal(productName, row) {
+            console.log('Modal mở cho sản phẩm:', productName);
+            currentProduct = productName;
+            currentProductRow = row;
+            currentProductPrice = parseFloat(row.cells[4].innerText.replace(' đ', '').replace(',', '')); // Lấy giá sản phẩm
+            currentProductColor = row.cells[2].querySelector('div').style.backgroundColor; // Lấy màu sắc sản phẩm
+
+            document.getElementById('myModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('myModal').style.display = 'none';
+        }
+
+        function addItem() {
+            const quantity = parseInt(document.getElementById('quantity').value);
+            if (quantity && currentProductRow) {
+                const currentQuantityCell = currentProductRow.cells[3];
+                const currentQuantity = parseInt(currentQuantityCell.innerText);
+
+                if (quantity > currentQuantity) {
+                    alert('Số lượng nhập không được lớn hơn số lượng hiện có.');
+                    return;
+                }
+
+                // Cập nhật số lượng còn lại
+                const newQuantity = currentQuantity - quantity;
+                currentQuantityCell.innerText = newQuantity;
+
+                // Thêm sản phẩm vào bảng trả hàng
+                const table = document.getElementById('return-items');
+                const totalPrice = currentProductPrice * quantity;
+                const row = table.insertRow();
+                row.innerHTML = `
+                <td>${table.rows.length}</td>
+                <td>${currentProduct}</td>
+                <td><span style="display:inline-block; width: 20px; height: 20px; border-radius: 50%; background-color: ${currentProductColor};"></span></td>
+                <td>${quantity}</td>
+                <td>${currentProductPrice} đ</td>
+                <td>${totalPrice} đ</td>
+                <td><button onclick="removeItem(this)">Xóa</button></td>
+                `;
+                closeModal();
+                showSummary();
+            } else {
+                alert('Vui lòng nhập số lượng');
+            }
+        }
+
+        function showSummary() {
+
+            const summary = document.getElementById('summary');
+            summary.style.display = 'block';
+        }
+
+        window.onload = function () {
+            document.getElementById('summary').style.display = 'none';
+            updateOrderInfo();
+        }
+
+        function removeItem(button) {
+            const row = button.parentNode.parentNode;
+            if (!row) {
+                console.error('Không tìm thấy hàng để xóa');
+                return;
+            }
+
+            // Lấy thông tin sản phẩm
+            const quantityCell = row.cells[3];
+            const priceCell = row.cells[5];
+            const productQuantity = parseInt(quantityCell.innerText);
+            const totalPrice = parseFloat(priceCell.innerText.replace(' đ', '').replace(',', ''));
+
+            if (confirm('Bạn có chắc chắn muốn hoàn trả sản phẩm này không?')) {
+                // Khôi phục lại thông tin đơn hàng
+                const orderTable = document.querySelector('.order-table tbody');
+
+                // Tìm hàng trong bảng đơn hàng và cập nhật lại
+                const originalQuantityCell = row.cells[3];
+                const originalTotalCell = row.cells[4];
+
+                // Cập nhật lại số lượng trong bảng đơn hàng
+                const originalQuantity = parseInt(originalQuantityCell.innerText);
+                const newQuantity = originalQuantity + productQuantity;
+                originalQuantityCell.innerText = newQuantity;
+
+                // Tính lại tổng tiền
+                const originalPrice = parseFloat(originalTotalCell.innerText.replace(' đ', '').replace(',', ''));
+                const newTotalPrice = originalPrice + totalPrice;
+                originalTotalCell.innerText = newTotalPrice + ' đ';
+
+                // Xóa hàng trong bảng trả hàng
+                row.parentNode.removeChild(row);
+                console.log('Hàng đã được hoàn trả:', row);
+                // showSummary();
+            }
+        }
+
+        window.onclick = function (event) {
+            const modal = document.getElementById('myModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+        function updateOrderInfo() {
+            const orderTable = document.querySelector('.order-table tbody');
+            let totalQuantity = 0;
+            let totalOrderPrice = 0;
+
+
+            Array.from(orderTable.rows).forEach(row => {
+                const quantityCell = row.cells[3];
+                const priceCell = row.cells[4];
+
+                const quantity = parseInt(quantityCell.innerText);
+                const price = parseFloat(priceCell.innerText.replace(' đ', '').replace(',', ''));
+
+                totalQuantity += quantity;
+                totalOrderPrice += price;
+            });
+
+
+            document.getElementById('totalQuantity').innerText = totalQuantity.toString();
+            document.getElementById('totalPaymentDisplay').innerText = totalOrderPrice + ' đ';
+        }
+    </script>
+</head>
+
+<body>
+<main layout:fragment="main1">
+    <div class="container">
+        <div class="header">
+            <img src="/images/doitra.png" width="50px" height="50px">
+            <h1>Quản lý trả hàng</h1>
+        </div>
+
+        <!-- Thông tin khách hàng -->
+        <div class="section">
+            <h2><i class="fas fa-info-circle"></i> Thông tin khách hàng</h2>
+            <div class="customer-info">
+                <div>
+                    <p><span>Tên khách hàng:</span> <span th:text="${hoaDon.user_name}"></span></p>
+                    <p><span>Số điện thoại:</span> <span th:text="${hoaDon.phone_number}"></span></p>
+                    <p><span>Địa chỉ:</span> <span th:text="${hoaDon.address}"></span></p>
+                    <p><span>Ghi chú:</span> <span th:text="${hoaDon.note}"></span></p>
+                </div>
+                <div>
+                    <p><span>Ngày giao hàng:</span> <span th:text="${hoaDon.ship_date}"></span></p>
+                    <p><span>Ngày nhận hàng:</span> <span th:text="${hoaDon.receive_date}"></span></p>
+                    <div class="status-buttons">
+                        <button class="success"><span th:text="${hoaDon.status}"></span></button>
+                        <button class="online"><span th:text="${hoaDon.type}"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Thông tin đơn hàng</h2>
+            <table class="order-table">
+                <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Thông tin sản phẩm</th>
+                    <th>Màu Sắc</th>
+                    <th>Số lượng</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item, iterStat : ${hoaDon.billDetails}">
+                    <td th:text="${iterStat.index + 1}"></td>
+                    <td>
+                        <p th:text="${item.sanPhamChiTiet.idSanPham.tenSanPham}"></p>
+                        <p style="color: red; font-weight: bold;" th:text="${item.sanPhamChiTiet.gia} + ' đ'"></p>
+                        <p style="color: red; font-weight: bold;" th:text="${item.sanPhamChiTiet.gia} + ' VND'"></p>
+                    </td>
+                    <td>
+                        <div th:style="'width: 25px; height: 25px; border-radius: 50%; background-color: ' + ${item.sanPhamChiTiet.idMauSac.tenMauSac}"></div>
+                    </td>
+                    <td id="totalQuantity" th:text="${item.quantity}"></td>
+                    <td id="totalPayment" th:text="${item.quantity}*${item.sanPhamChiTiet.gia} + ' đ'"></td>
+                    <td>
+                        <div class="status" th:text="${item.sanPhamChiTiet.trangThai}"></div>
+                    </td>
+                    <td class="action">
+                        <button th:data-product-name="${item.sanPhamChiTiet.idSanPham.tenSanPham}"
+                                onclick="openModal(this.dataset.productName, this.parentNode.parentNode)">
+                            <i class="fas fa-undo"></i>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- Nút trả hàng tất cả -->
+            <div class="return-all">
+                <button>Trả hàng tất cả</button>
+            </div>
+        </div>
+    </div>
+    <div class="container2">
+        <table class="cart-table">
+            <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên sản phẩm</th>
+                <th>Màu Sắc</th>
+                <th>Số lượng</th>
+                <th>Giá tiền</th>
+                <th>Tổng tiền</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody id="return-items">
+
+            </tbody>
+        </table>
+
+        <div class="summary" id="summary" th:each="item, iterStat : ${hoaDon.billDetails}" style="display: none;">
+            <!--            <p>-->
+            <!--                Tổng giá hàng gốc:-->
+            <!--                <span th:text="${item.sanPhamChiTiet.gia} + ' VND'"></span>-->
+            <!--            </p>-->
+            <!--&lt;!&ndash;            <p>&ndash;&gt;-->
+            <!--&lt;!&ndash;                Voucher đã sử dụng:&ndash;&gt;-->
+            <!--&lt;!&ndash;                <span th:text="${hoaDon.voucher} + ' VND'"></span>&ndash;&gt;-->
+            <!--&lt;!&ndash;            </p>&ndash;&gt;-->
+            <!--            <p>-->
+            <!--                Tiền ship:-->
+            <!--                <span th:text="${hoaDon.money_ship} + ' VND'"></span>-->
+            <!--            </p>-->
+            <!--&lt;!&ndash;            <p>&ndash;&gt;-->
+            <!--&lt;!&ndash;                Điểm sử dụng (0):&ndash;&gt;-->
+            <!--&lt;!&ndash;                <span th:text="${hoaDon.point_use} + ' VND'"></span>&ndash;&gt;-->
+            <!--&lt;!&ndash;            </p>&ndash;&gt;-->
+            <!--            <p class="total">-->
+            <!--                Tổng tiền thanh toán:-->
+            <!--                <span th:text="${hoaDon.total_money} + ' VND'"></span>-->
+            <!--&lt;!&ndash;                <span id="totalPayment">0 VND</span>&ndash;&gt;-->
+            <!--            </p>-->
+            <!--            <p>-->
+            <!--                Tổng giá hàng trả:-->
+            <!--                <span th:text="${item.price} + ' VND'"></span>-->
+            <!--            </p>-->
+            <!--            &lt;!&ndash;                    <p>&ndash;&gt;-->
+            <!--            &lt;!&ndash;                        Voucher mới:&ndash;&gt;-->
+            <!--            &lt;!&ndash;                        <span th:text="${hoaDon.voucherMoi} + ' VND'"></span>&ndash;&gt;-->
+            <!--            &lt;!&ndash;                    </p>&ndash;&gt;-->
+            <!--            <hr/>-->
+            <p class="total">
+                Tổng tiền trả khách:
+                <span th:text="${hoaDon.total_money} + ' đ'"></span>
+            </p>
+            <div class="return">
+                <p>* Mô tả:</p>
+                <textarea placeholder="Nhập mô tả" th:placeholder="'Nhập mô tả'"></textarea>
+                <form th:action="@{/doi-tra/cap-nhat}" method="get">
+                    <input type="hidden" name="maHoaDon" th:value="${hoaDon.id}"/>
+                    <button type="submit">Đổi trả</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+    <div id="myModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Thêm sản phẩm</h2>
+            <form onsubmit="event.preventDefault(); addItem();">
+                <label for="quantity">Số lượng:</label>
+                <input type="number" id="quantity" min="1" required>
+                <button type="submit">Thêm</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

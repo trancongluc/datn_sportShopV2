@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Menu}"
+>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Cập Nhật Giảm Giá</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+        .main-content {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-section {
+            width: 65%;
+        }
+        .form-box {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .form-box h2 {
+            font-size: 18px;
+            margin: 0 0 10px 0;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+        .form-group input[type="date"], .form-group input[type="datetime-local"] {
+            padding: 5px;
+        }
+        .form-columns {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-column {
+            width: 48%;
+        }
+        .preview-section {
+            width: 30%;
+        }
+        .preview-box {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+        }
+        .preview-card {
+            display: flex;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        .preview-card .discount {
+            background-color: #007bff;
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+        .preview-card .details {
+            flex-grow: 1;
+            padding: 10px;
+        }
+        .save-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .back-button button {
+            background-color: #007bff; /* Màu nền */
+            color: #fff; /* Màu chữ */
+            padding: 10px 20px; /* Khoảng cách nội dung */
+            border: none; /* Không viền border-radius: 5px; /* Bo góc */
+            cursor: pointer; /* Con trỏ chuột khi hover */
+            display: inline-flex; /* Để căn giữa văn bản và biểu tượng */
+            align-items: center; /* Căn giữa theo chiều dọc */
+            transition: background-color 0.3s, transform 0.2s; /* Hiệu ứng chuyển tiếp */
+        }
+        .back-button button:hover {
+            background-color: #727cf5; /* Màu nền khi hover */
+            transform: scale(1.05); /* Hiệu ứng phóng to khi hover */
+            text-decoration: none; /* Bỏ gạch chân */
+        }
+    </style>
+    <script>
+        function updatePreview() {
+            var tenPhieu = document.getElementById('ten-phieu').value || 'VCXXXXX';
+            var giaTriDonHang = document.getElementById('gia-tri-don-hang').value || '0';
+            var giamToiDa = document.getElementById('giam-toi-da').value || '0';
+            var soLuong = document.getElementById('so-luong').value || '0';
+            var phanTramGiam = document.getElementById('phan-tram-giam').value || '0';
+            var ngayKetThuc = document.getElementById('ngay-ket-thuc').value || 'dd/mm/yyyy';
+
+            var conditionText = 'Điều kiện: Áp dụng cho đơn hàng từ ' + giaTriDonHang + 'đ';
+            var maxText = 'Tối Đa: ' + giamToiDa + 'đ/Khách Hàng';
+            var quantityText = 'Số Lượng: ' + soLuong;
+            var discountText = tenPhieu;
+            var expiryText = 'Hạn Đến: ' + ngayKetThuc;
+
+            document.querySelectorAll('.preview-code').forEach(function(element) {
+                element.innerText = tenPhieu;
+            });
+            document.querySelectorAll('.preview-condition').forEach(function(element) {
+                element.innerText = conditionText;
+            });
+            document.querySelectorAll('.preview-max').forEach(function(element) {
+                element.innerText = maxText;
+            });
+            document.querySelectorAll('.preview-quantity').forEach(function(element) {
+                element.innerText = quantityText;
+            });
+            document.querySelectorAll('.preview-discount').forEach(function(element) {
+                element.innerText = discountText;
+            });
+            document.querySelectorAll('.preview-expiry').forEach(function(element) {
+                element.innerText = expiryText;
+            });
+        }
+    </script>
+</head>
+<body>
+<main layout:fragment="main1">
+    <div class="container">
+        <div class="header">
+            <h1>Cập Nhật Phiếu Giảm Giá</h1>
+            <div class="back-button">
+                <button><a href="/giam-gia/view" style="text-decoration: none; color: black">Trở Về</a></button>
+            </div>
+        </div>
+        <form th:action="@{/giam-gia/update}" th:object="${giamGia}" method="post">
+            <input type="hidden" th:field="*{id}"/>
+            <div class="main-content">
+                <div class="form-section">
+                    <div class="form-box">
+                        <h2>Thông Tin Phiếu Giảm Giá</h2>
+                        <div class="form-columns">
+                            <div class="form-column">
+                                <div class="form-group">
+                                    <label for="ma-phieu">Mã Phiếu</label>
+                                    <input type="hidden" id="ma-phieu" th:field="*{voucherCode}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ten-phieu">Tên Phiếu</label>
+                                    <input type="text" id="ten-phieu" th:field="*{name}" placeholder="Giảm 10K" oninput="updatePreview()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="gia-tri-don-hang">Giá Trị Đơn Hàng</label>
+                                    <input type="text" id="gia-tri-don-hang" th:field="*{minimumValue}" placeholder="Điều kiện áp dụng..." oninput="updatePreview()">
+                                    <span class="currency">VND</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ngay-bat-dau">Ngày Bắt Đầu</label>
+                                    <input type="datetime-local" id="ngay-bat-dau" th:field="*{startDate}" oninput="updatePreview() ">
+                                </div>
+                                <div class="form-group">
+                                    <label for="so-luong">Số Lượng</label>
+                                    <input type="number" id="so-luong" th:field="*{quantity}" placeholder="Số lượng phiếu..." oninput="updatePreview()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="mo-ta">Mô Tả (Optional)</label>
+                                    <textarea id="mo-ta" placeholder="Giảm tối đa..." oninput="updatePreview()"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-column">
+                                <div class="form-group">
+                                    <label for="loai-phieu">Loại Phiếu</label>
+                                    <select id="loai-phieu" th:field="*{formVoucher}" oninput="updatePreview()">
+                                        <option value="Percentage">Phần Trăm</option>
+                                        <option value="Fixed">Cố Định</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phan-tram-giam">Số Tiền Giảm</label>
+                                    <input type="number" id="phan-tram-giam" th:field="*{discountValue}" placeholder="Phần trăm giảm giá..." oninput="updatePreview()">
+                                    <span class="currency">VND</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ngay-ket-thuc">Ngày Kết Thúc</label>
+                                    <input type="datetime-local" id="ngay-ket-thuc" th:field="*{endDate}" oninput="updatePreview()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="giam-toi-da">Giảm Tối Đa</label>
+                                    <input type="number" id="giam-toi-da" th:field="*{minimumValue}" placeholder="Giảm tối đa..." oninput="updatePreview()">
+                                    <span class="currency">VND</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="preview-section">
+                    <div class="preview-box">
+                        <h2>Xem Trước Mã</h2>
+                        <div class="preview-card">
+                            <div class="discount preview-discount">Tên Phiếu</div>
+                            <div class="details">
+                                <p class="code preview-code">VCXXXXX</p>
+                                <p class="preview-condition">Điều kiện: Áp dụng cho đơn hàng từ 0đ</p>
+                                <p class="preview-max">Tối Đa: 0đ/Khách Hàng</p>
+                                <p class="preview-quantity">Số Lượng: 0</p>
+                                <p class="preview-expiry">Hạn Đến: dd/mm/yyyy</p>
+                            </div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="discount preview-discount">Tên Phiếu</div>
+                            <div class="details">
+                                <p class="code preview-code">VCXXXXX</p>
+                                <p class="preview-condition">Điều kiện: Áp dụng cho đơn hàng từ 0đ</p>
+                                <p class="preview-max">Tối Đa: 0đ/Khách Hàng</p>
+                                <p class="preview-quantity">Số Lượng: 0</p>
+                                <p class="preview-expiry">Hạn Đến: dd/mm/yyyy</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="save-button">Cập Nhật</button>
+        </form>
+    </div>
+</main>
+</body>
+</html>

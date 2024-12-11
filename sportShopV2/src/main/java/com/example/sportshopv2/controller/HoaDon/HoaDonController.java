@@ -1,13 +1,25 @@
 package com.example.sportshopv2.controller.HoaDon;
 
+import com.example.sportshopv2.model.AnhSanPham;
 import com.example.sportshopv2.model.HoaDon;
+import com.example.sportshopv2.model.HoaDonChiTiet;
+import com.example.sportshopv2.repository.HoaDonChiTietRepo;
+import com.example.sportshopv2.repository.HoaDonRepo;
+import com.example.sportshopv2.service.HoaDonService;
+import com.example.sportshopv2.repository.AnhSanPhamRepository;
+import com.example.sportshopv2.service.impl.HoaDonServiceImp;
 import com.itextpdf.text.pdf.BaseFont;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-//import org.apache.pdfbox.pdmodel.PDDocument;
-//import org.apache.pdfbox.pdmodel.PDPage;
-//import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -15,26 +27,19 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import com.example.sportshopv2.model.HoaDonChiTiet;
-import com.example.sportshopv2.repository.HoaDonChiTietRepo;
-import com.example.sportshopv2.repository.HoaDonRepo;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
@@ -45,37 +50,105 @@ public class HoaDonController {
     private HoaDonChiTietRepo hdctrepo;
     @Autowired
     private HoaDonRepo hdrepo;
+    private AnhSanPhamRepository anhSanPhamRepository;
     @Autowired
     private TemplateEngine templateEngine;
 
     @Autowired
     private ServletContext servletContext;
+    @Autowired
+    private HoaDonService hdService;
+    private Map<Integer, String> tongTienHD;
+    private Map<Integer, String> tongTienGiamGia;
 
+    public HoaDonController(AnhSanPhamRepository anhSanPhamRepository,
+                            HoaDonChiTietRepo hdctrepo,
+                            HoaDonRepo hdrepo) {
+        this.anhSanPhamRepository = anhSanPhamRepository;
+        this.hdctrepo = hdctrepo;
+        this.hdrepo = hdrepo;
+    }
 
     @RequestMapping("/view")
     public String view(Model model) {
-        List<HoaDonChiTiet> hdctList = hdctrepo.findAll();
-        model.addAttribute("hdctList", hdctList);
+        List<HoaDon> hdList = hdrepo.findAllByStatusNotOrderByCreateAtDesc("Hóa đơn chờ");
+        Map<Integer, String> tongTienHoaDon = hdList.stream().collect(Collectors.toMap(
+                HoaDon::getId, // Key là ID của hóa đơn
+                hd -> {
+                    // Tính tổng tiền của hóa đơn
+                    BigDecimal total = hdctrepo.findAllByHoaDon_Id(hd.getId()).stream()
+                            .map(hdct -> new BigDecimal(hdct.getHoaDon().getTotal_money()).multiply(BigDecimal.valueOf(hdct.getQuantity())))
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                    // Làm tròn tổng tiền đến 2 chữ số thập phân
+                    total = total.setScale(2, RoundingMode.HALF_UP); // Sử dụng RoundingMode.HALF_UP để làm tròn
+                    // Định dạng tổng tiền
+                    return NumberFormat.getCurrencyInstance(new Locale("vi", "VN")).format(total);
+                }
+        ));
+        Map<Integer, String> tongTienGiam = hdList.stream().collect(Collectors.toMap(
+                HoaDon::getId, // Key là ID của hóa đơn
+                hd -> {
+                    BigDecimal tienGiam = hdctrepo.findAllByHoaDon_Id(hd.getId()).stream()
+                            .map(hdct -> new BigDecimal(hdct.getHoaDon().getMoney_reduced()).multiply(BigDecimal.valueOf(hdct.getQuantity())))
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                    tienGiam = tienGiam.setScale(2, RoundingMode.HALF_UP);
+                    return NumberFormat.getCurrencyInstance(new Locale("vi", "VN")).format(tienGiam);
+                }
+        ));
+        tongTienHD = tongTienHoaDon;
+        tongTienGiamGia = tongTienGiam;
+        model.addAttribute("hdList", hdList);
+        model.addAttribute("tongTienHoaDon", tongTienHoaDon);
+        model.addAttribute("tienGiam", tongTienGiam);
         model.addAttribute("tab", "all");
+        model.addAttribute("countChoXacNhan", hdService.countByStatus("Chờ xác nhận"));
+        model.addAttribute("countDaXacNhan", hdService.countByStatus("Đã xác nhận"));
+        model.addAttribute("countChoVanChuyen", hdService.countByStatus("Chờ vận chuyển"));
+        model.addAttribute("countDangVanChuyen", hdService.countByStatus("Đang vận chuyển"));
+        model.addAttribute("countHoanThanh", hdService.countByStatus("Hoàn thành"));
+        model.addAttribute("countHuy", hdService.countByStatus("Hủy"));
+        model.addAttribute("countHoanTra", hdService.countByStatus("Hoàn trả"));
         return "HoaDon/HoaDon";
     }
 
     @GetMapping("/tab")
-    public String tab(Model model, @RequestParam("status") String status) {
-        List<HoaDonChiTiet> hdctList = hdctrepo.findAllByHoaDon_Status(status);
-        model.addAttribute("hdctList", hdctList);
+    public String tab(Model model, @RequestParam(value = "status", defaultValue = "defaultStatus") String status) {
+        List<HoaDon> hdctList = hdrepo.findAllByStatusLikeOrderByCreateAtDesc(status);
+        model.addAttribute("hdList", hdctList);
         model.addAttribute("tab", status);
+        model.addAttribute("tongTienHoaDon", tongTienHD);
+        model.addAttribute("tienGiam", tongTienGiamGia);
+        model.addAttribute("countChoXacNhan", hdService.countByStatus("Chờ xác nhận"));
+        model.addAttribute("countDaXacNhan", hdService.countByStatus("Đã xác nhận"));
+        model.addAttribute("countChoVanChuyen", hdService.countByStatus("Chờ vận chuyển"));
+        model.addAttribute("countDangVanChuyen", hdService.countByStatus("Đang vận chuyển"));
+        model.addAttribute("countHoanThanh", hdService.countByStatus("Hoàn thành"));
+        model.addAttribute("countHuy", hdService.countByStatus("Hủy"));
         return "HoaDon/HoaDon";
     }
+
 
     @GetMapping("/detail")
     public String detail(Model model, @RequestParam("id") Integer id) {
         List<HoaDonChiTiet> hoaDonDetail = hdctrepo.findAllByHoaDon_Id(id);
         HoaDon hoaDon = hdrepo.findAllById(id);
+        List<AnhSanPham> anhSanPhams = hoaDonDetail.stream()
+                .map(hdct -> anhSanPhamRepository.findByIdSPCT(hdct.getSanPhamChiTiet().getId())) // Lấy id từ SanPhamChiTiet
+                .flatMap(List::stream) // Gộp danh sách ảnh từ từng sản phẩm thành một danh sách duy nhất
+                .collect(Collectors.toList());
+
+        if (anhSanPhams.isEmpty()) {
+            System.out.println("Danh sách hình ảnh rỗng.");
+        }
+
+// Kiểm tra và truyền dữ liệu
         model.addAttribute("list", hoaDonDetail);
+        model.addAttribute("listImage", anhSanPhams);
+
         model.addAttribute("hoaDon", hoaDon);
         return "HoaDon/ThongTinHoaDon";
     }
+
 
 
     @GetMapping("/pdf")
@@ -87,6 +160,7 @@ public class HoaDonController {
     @GetMapping("/export/excel")
     public ResponseEntity<byte[]> exportToExcel() throws IOException {
         List<HoaDonChiTiet> billList = hdctrepo.findAll(); // Lấy toàn bộ dữ liệu từ database
+        List<HoaDon> billList2 = hdrepo.findAll();
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Danh sách hóa đơn");
 
@@ -104,10 +178,10 @@ public class HoaDonController {
         int rowIndex = 1;
         for (HoaDonChiTiet bill : billList) {
             Row row = sheet.createRow(rowIndex++);
-            row.createCell(0).setCellValue(bill.getHoaDon().getBill_code().toString());
-            row.createCell(1).setCellValue(bill.getHoaDon().getCreate_at());
+            row.createCell(0).setCellValue(bill.getHoaDon().getBillCode().toString());
+            row.createCell(1).setCellValue(bill.getHoaDon().getCreateAt());
             row.createCell(2).setCellValue(bill.getHoaDon().getCreate_by());
-            row.createCell(3).setCellValue(bill.getHoaDon().getUpdate_at());
+            row.createCell(3).setCellValue(bill.getHoaDon().getUpdateAt());
             row.createCell(4).setCellValue(bill.getHoaDon().getUpdate_by());
             row.createCell(5).setCellValue(bill.getHoaDon().getStatus());
             row.createCell(6).setCellValue(bill.getSanPhamChiTiet().getId());
@@ -146,11 +220,11 @@ public class HoaDonController {
             Context context = new Context();
             context.setVariable("hoaDon", bill);
             context.setVariable("items", billDetail);
-            context.setVariable("productCount", billDetail.size()); // Total number of products
-            context.setVariable("discount", bill.getMoney_reduced()); // Assuming there is a discount method
-            context.setVariable("total", billDetail.stream().mapToDouble(HoaDonChiTiet::getPrice).sum()); // Replace with appropriate logic
-            context.setVariable("totalQuantity", billDetail.stream().mapToInt(HoaDonChiTiet::getQuantity).sum()); // Assuming you can get quantity from HoaDonChiTiet
-            context.setVariable("totalPayment", bill.getTotal_money()); // Replace with appropriate logic
+            context.setVariable("productCount", billDetail.size());
+            context.setVariable("discount", bill.getMoney_reduced());
+            context.setVariable("total", billDetail.stream().mapToDouble(HoaDonChiTiet::getPrice).sum());
+            context.setVariable("totalQuantity", billDetail.stream().mapToInt(HoaDonChiTiet::getQuantity).sum());
+            context.setVariable("totalPayment", bill.getTotal_money());
 
             String htmlContent = templateEngine.process("HoaDon/HinhAnhHoaDon", context);
 
@@ -182,34 +256,79 @@ public class HoaDonController {
         return "HoaDon/ThongTinHoaDon"; // Assuming this is the template name for the bill details
     }
 
-    // Cập nhật trạng thái hóa đơn
     @PostMapping("/status/update")
-    public String updateStatus(@RequestParam Integer id, @RequestParam String status) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+    public String updateStatus(@RequestParam Integer id, @RequestParam String status,@RequestParam(required = false) String confirmation_date) {
+        /*Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();*/
 
         Optional<HoaDon> hoaDonOptional = hdrepo.findById(id);
         if (hoaDonOptional.isPresent()) {
             HoaDon hoaDon = hoaDonOptional.get();
             hoaDon.setStatus(status);
-            hoaDon.setUpdate_at(LocalDateTime.now());
-            hoaDon.setUpdate_by(username);
+            hoaDon.setUpdateAt(LocalDateTime.now());
+            hoaDon.setUpdate_by("username");
+            if (confirmation_date != null && !confirmation_date.isEmpty()) {
+                // Loại bỏ 'Z' và tạo DateTimeFormatter để phân tích chuỗi
+                DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+                if (confirmation_date.endsWith("Z")) {
+                    confirmation_date = confirmation_date.substring(0, confirmation_date.length() - 1); // Loại bỏ 'Z'
+                }
+                LocalDateTime confirmationDate = LocalDateTime.parse(confirmation_date, formatter);
+                hoaDon.setConfirmation_date(confirmationDate);
+            }
+            if (status.equals("Chờ vận chuyển")) {
+                LocalDateTime desireDate = LocalDateTime.now();
+                hoaDon.setDesire_date(desireDate);
+            }
+
+            if (status.equals("Đang vận chuyển") ) {
+                LocalDateTime shipDate = LocalDateTime.now();
+                hoaDon.setShip_date(shipDate);
+            }
+
+            if (status.equals("Hoàn thành") ) {
+                LocalDateTime receiveDate = LocalDateTime.now();
+                hoaDon.setReceive_date(receiveDate);
+                hoaDon.setTransaction_date(receiveDate);
+            }
+
             hdrepo.save(hoaDon);
         }
         return "redirect:/bill/detail?id=" + id;
     }
 
-
-
     @GetMapping("/search")
-    public String search(Model model, @RequestParam("Type") String Type) {
-        List<HoaDonChiTiet> list = hdctrepo.findAllByHoaDon_Type(Type);
-        model.addAttribute("hdctList", list);
+    public String search(Model model,
+                         @RequestParam(value = "maHoaDon", required = false, defaultValue = "") String maHoaDon,
+                         @RequestParam(value = "Type", required = false, defaultValue = "") String Type,
+                         @RequestParam(value = "createAt", required = false, defaultValue = "01/01/1900") String createAt,
+                         @RequestParam(value = "updateAt", required = false, defaultValue = "31/12/9999") String updateAt) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDateTime startDate = LocalDate.parse(createAt, formatter).atStartOfDay();
+        LocalDateTime endDate = LocalDate.parse(updateAt, formatter).atTime(23, 59, 59);
+
+        List<HoaDon> hdList = hdrepo.searchHoaDon(
+                maHoaDon.isBlank() ? null : maHoaDon,
+                Type.isBlank() ? null : Type,
+                startDate,
+                endDate
+        );
+        model.addAttribute("tongTienHoaDon", tongTienHD);
+
+        model.addAttribute("hdList", hdList);
         return "HoaDon/HoaDon";
     }
+
 
     @GetMapping("/doitra/detail")
     public String viewDTCT(Model model) {
         return "DoiTra/DoiTraChiTiet";
+    }
+
+    @GetMapping("/list-hd-cho")
+    @ResponseBody
+    public List<HoaDon> listHoaDonCho() {
+        return hdService.getHoaDonTaiQuay();
     }
 }
