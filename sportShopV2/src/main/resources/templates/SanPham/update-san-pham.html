@@ -443,11 +443,11 @@
                     <span class="color-name" id="color-name-${spct.id}" th:text="${spct.mauSac.tenMauSac}"></span>
                     ]
                 </td>
-                <td><input type="number" value="1" style="width: 50px;" th:value="${spct.soLuong}" id="soLuong" ></td>
+                <td><input type="number" value="1" style="width: 50px;" th:value="${spct.soLuong}" id="soLuong" min="0" ></td>
                 <td>
-                    <input type="text" class="price"
-                           th:value="${spct.gia}"
-                           style="width: 180px;" id="gia">
+                    <input type="text" style="width: 180px;" id="gia" th:value="${spct.gia}" class="price"
+                           oninput="this.value = validatePriceInput(this.value)">
+
                 </td>
                 <td class="action-buttons">
                     <div class="action-buttons-container">
@@ -624,8 +624,8 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('slAndGia')">&times;</span>
             <h2>Chỉnh sửa số lượng và giá</h2>
-            <input type="text" id="soLuongChung" placeholder="Nhập số lượng" required>
-            <input type="text" id="giaChung" placeholder="Nhập giá" required>
+            <input type="number" id="soLuongChung" placeholder="Nhập số lượng" min="0" oninput="this.value = this.value < 0 ? 0 : this.value" required>
+            <input type="text" id="giaChung" placeholder="Nhập giá" class="price" oninput="this.value = validatePriceInput(this.value)" required  >
             <div class="buttons">
                 <button type="button" class="cancel-button" onclick="closeModal('slAndGia')">Hủy</button>
                 <button class="add-button" type="submit" onclick="applyQuantityAndPrice()">Thêm</button>
@@ -638,6 +638,12 @@
     </div>
     <script src="/js/ThemSanPham.js"></script>
     <script>
+        function validatePriceInput(value) {
+            // Loại bỏ các ký tự không phải số
+            const numericValue = parseInt(value.replace(/\D/g, ''), 10) || 0;
+            // Trả về giá trị hợp lệ với định dạng VNĐ
+            return numericValue < 0 ? '0 VNĐ' : numericValue.toLocaleString('vi-VN') + ' VNĐ';
+        }
 
 
     </script>

@@ -38,7 +38,6 @@ public class SanPhamChiTietService {
 
     public SanPhamChiTiet addSPCT(SanPhamChiTiet spct) {
         spct.setCreateBy("NV1");
-        spct.setTrangThai("Đang hoạt động");
         return sanPhamChiTietRepository.save(spct);
     }
 
@@ -160,6 +159,7 @@ public class SanPhamChiTietService {
         sanPhamChiTiet.setSoLuong(spct.getSoLuong());
         sanPhamChiTiet.setGia(spct.getGia());
         sanPhamChiTiet.setGioiTinh(spct.getGioiTinh());
+        sanPhamChiTiet.setTrangThai(spct.getTrangThai());
 
         // Lưu thông tin cập nhật vào database
         return sanPhamChiTietRepository.save(sanPhamChiTiet);
