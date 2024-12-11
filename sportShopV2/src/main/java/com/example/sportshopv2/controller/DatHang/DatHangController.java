@@ -4,11 +4,16 @@ import com.example.sportshopv2.dto.SanPhamChiTietDTO;
 import com.example.sportshopv2.model.*;
 import com.example.sportshopv2.repository.*;
 import com.example.sportshopv2.service.*;
+import com.example.sportshopv2.service.impl.HoaDonServiceImp;
 import com.example.sportshopv2.service.impl.PhieuGiamGiaServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -69,9 +74,22 @@ public class DatHangController {
     @Autowired
     private PhieuGiamGiaServiceImpl phieuGiamGiaService;
 
+    @Autowired
+    private HoaDonServiceImp hoaDonServiceImp;
+    @Autowired
+    private AnhService anhService;
     private Integer idTK = null;
     private List<Long> dsSPCT = null;
     private Integer idVC = null;
+
+    @Autowired
+    private ChatService chatService;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private ChatBoxRepository chatBoxRepository;
+    @Autowired
+    private MessageRepository messageRepository;
 
     @RequestMapping("/trang-chu")
     public String trangChu(Model model) {
@@ -87,6 +105,7 @@ public class DatHangController {
 
         // Lấy tên người dùng đã đăng nhập
         String username = authentication.getName();
+
 
         // Lấy thông tin tài khoản
         TaiKhoan taiKhoan = taiKhoanRepo.findTaiKhoanByUsername(username);
@@ -107,6 +126,33 @@ public class DatHangController {
                 .map(anh -> anh.getTenAnh() != null ? "/images/" + anh.getTenAnh() : "/images/giayMau.png")
                 .collect(Collectors.toList());
 
+        // Lấy accountId từ UserService
+        int accountId = chatService.getAccountIdFromUsername(username);
+        int getName = chatService.getNameFromIDUser(username);
+        Optional<NguoiDung> name = chatService.getName(getName);
+
+        model.addAttribute("accountId", accountId);
+        // Lấy danh sách tất cả chatboxes
+// Kiểm tra xem accountId đã có chatBox hay chưa
+        List<message> message = chatService.getMesByAccountId(accountId);
+
+        if (message.isEmpty()) {
+            // Nếu không tìm thấy ChatBox, tạo mới ChatBox với tên đặt theo tên người dùng
+            chatBox newChatBox = new chatBox();
+            newChatBox.setName(name.get().getFull_name()); // Đặt tên ChatBox theo tên người dùng
+            newChatBox.setCreateAt(LocalDateTime.now());
+            newChatBox.setCreateBy(accountId);
+            // Lưu ChatBox mới vào cơ sở dữ liệu
+            chatService.saveChatBox(newChatBox);
+        }
+        /*chatBox cb = chatService.findChatBoxByAccountId(accountId);
+        // Lấy danh sách tin nhắn của ChatBox
+        List<message> messages = chatService.getMessagesByChatBoxId(cb.getId());
+
+        // Thêm ChatBox và tin nhắn vào Model để gửi ra view
+        model.addAttribute("chatBox", cb.getId());
+        model.addAttribute("messages", messages);*/
+        model.addAttribute("accountId", accountId);
         model.addAttribute("imageUrls", imageUrls);
         model.addAttribute("listspct", AllProductDetail);
         model.addAttribute("listImage", anhSanPhams);
@@ -293,6 +339,43 @@ public class DatHangController {
         }
     }
 
+    @PostMapping("/product-quantity")
+    public ResponseEntity<?> productQuantity(@RequestBody Map<String, Object> payload, RedirectAttributes redirectAttributes) {
+        try {
+            // Kiểm tra giá trị đầu vào
+            if (payload.get("id") == null || payload.get("soLuong") == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("error", "Missing required fields: id or soLuong"));
+            }
+
+            Integer soLuong = Integer.parseInt(payload.get("soLuong").toString());
+            Integer idSPCT = Integer.parseInt(payload.get("idSPCT").toString());
+
+            SanPhamChiTietDTO sanPham = sanPhamChiTietService.getByID(idSPCT);
+
+            // Kiểm tra số lượng sản phẩm
+            if (sanPham.getSoLuong() < soLuong) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "Số lượng không hợp lệ!!!"));
+            }
+
+            // Xử lý logic nếu dữ liệu hợp lệ
+            return ResponseEntity.ok(Map.of(
+                    "message", "Số lượng hợp lệ",
+                    "idSPCT", idSPCT,
+                    "soLuong", soLuong
+            ));
+        } catch (NumberFormatException e) {
+            // Trường hợp lỗi format
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Invalid data format for id or soLuong."));
+        } catch (Exception e) {
+            // Bắt lỗi chung
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "An unexpected error occurred."));
+        }
+    }
+
     @RequestMapping("/get-product-price")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getProductPrice(@RequestParam("id") Integer id,
@@ -461,5 +544,61 @@ public class DatHangController {
         return ResponseEntity.ok(vouchers);
     }
 
+    @GetMapping("/tra-cuu-don-hang")
+    public String traCuuDonHang() {
+
+        return "MuaHang/TraCuuDonHang"; // Trả về JSON
+    }
+
+    @GetMapping("/theo-doi-hoa-don")
+    public String getHoaDonDetail(@RequestParam("tenHoaDon") String tenHoaDon, Model model) {
+
+        HoaDon hoaDon = hoaDonServiceImp.getBillDetailByBillCode(tenHoaDon);
+        List<HoaDonChiTiet> listSPCT = hoaDon.getBillDetails();
+        for (HoaDonChiTiet hdct : listSPCT) {
+            AnhSanPham anhSanPham = anhService.anhSanPhamByIDSPCT(hdct.getSanPhamChiTiet().getId());
+            model.addAttribute("anhSP", anhSanPham);
+        }
+        if (hoaDon == null) {
+            // Xử lý trường hợp không tìm thấy hóa đơn
+            model.addAttribute("error", "Không tìm thấy hóa đơn với mã: " + tenHoaDon);
+            return "redirect:/doi-tra/view";
+        }
+        model.addAttribute("hoaDon", hoaDon);
+
+        return "MuaHang/TheoDoiHoaDon";
+    }
+
+    //Chat Functions
+
+    @MessageMapping("client/sendMessage")
+    @SendTo("client/topic/messages")
+    public message sendMessage(@Payload message message) {
+        //Log test tin nhắn nhận được phía Client
+        System.out.println("Received message: " + message);
+        // Lưu tin nhắn vào cơ sở dữ liệu hoặc xử lý thêm
+        return message; // Trả về tin nhắn để gửi lại cho tất cả người subscribe
+    }
+
+    @PostMapping("/sendMessage")
+    public ResponseEntity<message> sendMessage(@RequestParam("chatBoxId") int chatBoxId,
+                                               @RequestParam("accountId") int accountId,
+                                               @RequestParam("content") String content) {
+        // Lưu tin nhắn vào cơ sở dữ liệu
+        message savedMessage = chatService.saveMessage(chatBoxId, accountId, "client", content);
+
+        // Gửi tin nhắn đến các subscriber thông qua STOMP
+        messagingTemplate.convertAndSend("/topic/messages", savedMessage);
+
+        // Trả về thông tin tin nhắn đã lưu
+        return ResponseEntity.ok(savedMessage);
+    }
+
+    // API để lấy danh sách tin nhắn theo chatbox
+    @GetMapping("/messages/{chatBoxId}")
+    @ResponseBody
+    public List<message> getMessagesByChatBoxId(@PathVariable int chatBoxId) {
+        return chatService.getMessagesByChatBoxId(chatBoxId);
+    }
 }
 

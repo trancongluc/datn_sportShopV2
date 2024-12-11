@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import java.util.List;
@@ -58,5 +59,11 @@ public class HoaDonService {
     public int countByStatus(String status) {
         return hdRepo.countByStatus(status);
     }
+    public int getTotalQuantityForCurrentMonth() {
+        LocalDate now = LocalDate.now();
+        int currentMonth = now.getMonthValue();
+        int currentYear = now.getYear();
 
+        return hdRepo.getTotalQuantityForMonthAndYear(currentMonth,currentYear);
+    }
 }

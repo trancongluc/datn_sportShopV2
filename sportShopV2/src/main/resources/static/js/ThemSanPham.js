@@ -53,7 +53,7 @@ function addBrand(event) {
 }
 
 function updateBrandList() {
-    fetch('thuong-hieu/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
+    fetch('/thuong-hieu/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
         .then(response => response.json())
         .then(data => {
             const brandSelect = document.getElementById('idThuongHieu');
@@ -97,13 +97,13 @@ function addTheLoai(event) {
 }
 
 function updateCboTheLoai() {
-    fetch('the-loai/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
+    fetch('/the-loai/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
         .then(response => response.json())
         .then(data => {
             const brandSelect = document.getElementById('category');
             brandSelect.innerHTML = ''; // Xóa các tùy chọn hiện tại
             brandSelect.innerHTML += '<option value="" disabled selected hidden>Chọn thể loại</option>'; // Thêm tùy chọn mặc định
-
+            console.log(data);
             data.forEach(theLoai => {
                 brandSelect.innerHTML += `<option value="${theLoai.id}">${theLoai.tenTheLoai}</option>`;
             });
@@ -141,7 +141,7 @@ function addChatLieu(event) {
 }
 
 function updateCboChatLieu() {
-    fetch('chat-lieu/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
+    fetch('/chat-lieu/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
         .then(response => response.json())
         .then(data => {
             const brandSelect = document.getElementById('idChatLieu');
@@ -183,7 +183,7 @@ function addCoGiay(event) {
 }
 
 function updateCboCoGiay() {
-    fetch('co-giay/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
+    fetch('/co-giay/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
         .then(response => response.json())
         .then(data => {
             const brandSelect = document.getElementById('collar');
@@ -225,7 +225,7 @@ function addDeGiay(event) {
 }
 
 function updateCboDeGiay() {
-    fetch('de-giay/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
+    fetch('/de-giay/combobox')  // Đường dẫn API để lấy danh sách thương hiệu
         .then(response => response.json())
         .then(data => {
             const brandSelect = document.getElementById('sole');
@@ -296,6 +296,7 @@ let selectedSizes = [];
 let selectedColorsUpdate = [];
 let selectedSizesUpdate = [];// Mảng lưu trữ kích cỡ đã chọn
 let selectedSPCTsUpdate = [];
+
 function loadSelectedValues() {
     // Lấy các kích cỡ đã chọn từ HTML và lưu vào mảng
     document.querySelectorAll('.selected-size').forEach(sizeElement => {
@@ -943,6 +944,7 @@ async function themSPCT() {
     }
 
 }
+
 async function capNhatSPCT() {
     const sanPhamNew = document.getElementById('tenSanPham').value;
     const moTa = document.getElementById('description').value;
@@ -989,12 +991,22 @@ async function capNhatSPCT() {
                         moTa: data.moTa,
                         gioiTinh: data.gioiTinh,
                         soLuong: data.soLuong,
-                        gia: data.price
+                        gia: data.gia
                     };
                 });
         });
 
         const spctInfoList = await Promise.all(spctInfoPromises);
+        // Cập nhật `soLuong` và `gia` từ bảng HTML
+        spctInfoList.forEach(detail => {
+            const row = document.querySelector(`tr[data-id="${detail.id}"]`); // Lấy hàng tương ứng theo ID
+            const giaInput = row.querySelector('#gia'); // Lấy ô input giá
+            const soLuongInput = row.querySelector('#soLuong'); // Lấy ô input số lượng
+            const giaThuc = parseCurrency(giaInput.value);
+            detail.gia = giaThuc; // Cập nhật giá từ ô input
+            detail.soLuong = parseInt(soLuongInput.value, 10); // Cập nhật số lượng từ ô input
+        });
+
         console.log(spctInfoList);
         // Cập nhật sản phẩm chính
         const sanPhamResponse = await fetch(`/san-pham/update/${sanPhamId}`, {
@@ -1013,12 +1025,13 @@ async function capNhatSPCT() {
         }
 
         // Cập nhật thông tin chi tiết của từng SPCT từ danh sách spctInfoList
-        const chiTietPromises = spctInfoList.map(detail => {
+        const updateSPCTPromises  = spctInfoList.map(detail => {
             return fetch(`/san-pham-chi-tiet/update/${detail.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
+
                 body: JSON.stringify({
                     idSanPham: sanPhamId,
                     idKichThuoc: detail.idKichThuoc,
@@ -1030,29 +1043,63 @@ async function capNhatSPCT() {
                     idChatLieu: idChatLieu,
                     moTa: moTa,
                     gioiTinh: gioiTinh,
-                    soLuong: soLuong || detail.soLuong,
-                    gia: gia || detail.gia
+                    soLuong: detail.soLuong,
+                    gia: detail.gia
                 })
             });
         });
 
-        const chiTietResponses = await Promise.all(chiTietPromises);
-
-        chiTietResponses.forEach((response, index) => {
-            if (!response.ok) {
-                console.error(`Lỗi khi cập nhật SPCT với ID ${spctInfoList[index].id}`);
-            } else {
-                console.log(`Cập nhật SPCT với ID ${spctInfoList[index].id} thành công!`);
+        const updateResponses = await Promise.all(updateSPCTPromises);
+        updateResponses.forEach((res, index) => {
+            if (!res.ok) {
+                console.error(`Lỗi cập nhật SPCT ID ${spctInfoList[index].id}`);
             }
         });
+        const productDetails = getInfoTable(); // Giả sử hàm này trả về mảng thông tin
 
+        // Tạo các sản phẩm chi tiết mới
+        const addSPCTPromises = productDetails.map((detail) =>
+            fetch(`/san-pham-chi-tiet/them-san-pham-chi-tiet`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    idSanPham: sanPhamId,
+                    idKichThuoc: detail.sizeId,
+                    idMauSac: detail.colorId,
+                    idThuongHieu,
+                    idDeGiay,
+                    idTheLoai,
+                    idCoGiay,
+                    idChatLieu,
+                    moTa,
+                    gioiTinh,
+                    soLuong: detail.quantity,
+                    gia: detail.price,
+                }),
+            })
+        );
+
+        const addResponses = await Promise.all(addSPCTPromises);
+        const newIds = [];
+        for (let res of addResponses) {
+            if (!res.ok) {
+                throw new Error('Lỗi khi thêm sản phẩm chi tiết!');
+            }
+            const data = await res.json();
+            newIds.push(data.id); // Lưu ID của sản phẩm mới
+        }
+        if (newIds.length > 0) {
+            await saveProductImages(newIds);
+        }
+        window.location.href = '/san-pham';
         // Hiển thị thông báo thành công
         localStorage.setItem('notification', showNotification("Cập nhật Thành Công"));
-        window.location.href = '/san-pham';
+
     } catch (error) {
         console.log('Có lỗi xảy ra: ' + error.message);
     }
 }
+
 function handleResponse(response) {
     if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
@@ -1189,6 +1236,15 @@ function formatCurrency(amount) {
     return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
 }
 
+function parseCurrency(currencyStr) {
+    // Loại bỏ ký tự không phải số và dấu chấm phân cách
+    const numberStr = currencyStr
+        .replace(/[^\d,-]/g, '') // Loại bỏ các ký tự không phải số, dấu phẩy hoặc dấu trừ
+        .replaceAll('.', '') // Loại bỏ dấu chấm phân cách
+        .replace(',', '.'); // Thay dấu phẩy (phân cách thập phân) bằng dấu chấm
+    return parseFloat(numberStr); // Chuyển sang số thực
+}
+
 document.querySelectorAll('.price').forEach(function (el) {
     el.textContent = formatCurrency(el.textContent);
 });
@@ -1202,7 +1258,14 @@ document.addEventListener('DOMContentLoaded', function () {
             el.textContent = "Tên màu không hợp lệ"; // Nếu mã không hợp lệ, hiển thị thông báo lỗi
         }
     });
+    const priceElements = document.querySelectorAll('.price');
 
+    priceElements.forEach(function (priceElement) {
+        let price = parseFloat(priceElement.value);
+        if (!isNaN(price)) {
+            priceElement.value = formatCurrency(price);
+        }
+    });
 });
 
 // Hàm gọi API để lấy tên màu

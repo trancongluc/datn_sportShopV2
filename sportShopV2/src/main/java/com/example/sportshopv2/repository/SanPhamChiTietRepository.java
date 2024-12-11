@@ -24,7 +24,7 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
 
     @Query("SELECT h FROM SanPhamChiTiet h WHERE h.id IN " +
             "(SELECT MIN(hd.id) FROM SanPhamChiTiet hd WHERE hd.deleted = false GROUP BY hd.id)")
-    List<SanPhamChiTiet> findDistinctByIdId();
+    List<SanPhamChiTiet> findDistinctByIdProduct();
 
     List<SanPhamChiTiet> findByIdIn(List<Long> ids);
 

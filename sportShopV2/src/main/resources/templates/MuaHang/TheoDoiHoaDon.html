@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <title>Theo Dõi Hóa Đơn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        max-width: 900px; /* Thu hẹp chiều rộng */
+        width: 100%;
+        padding: 20px;
+        background: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        font-size: 2.5rem; /* Tăng kích thước chữ */
+        font-weight: bold; /* In đậm */
+        text-align: center; /* Căn giữa */
+        margin-bottom: 20px; /* Khoảng cách dưới */
+        color: #333; /* Màu chữ */
+    }
+    .progress {
+        background: #e9ecef;
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .progress-bar {
+        height: 30px;
+        line-height: 30px;
+        background: #007BFF;
+        color: #fff;
+        text-align: center;
+        border-radius: 20px 0 0 20px;
+        transition: width 0.3s ease;
+    }
+
+    .bg-white {
+        background-color: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    .table-auto {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table-auto th,
+    .table-auto td {
+        border: 1px solid #e0e0e0;
+        padding: 10px;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .table-auto th {
+        background-color: #ff9800;
+        color: #ffffff;
+        font-weight: bold;
+    }
+
+    .table-auto tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+
+    .table-auto tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007BFF;
+        color: #fff;
+        text-align: center;
+        border-radius: 25px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+        background-color: #0056b3;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    p {
+        margin: 5px 0;
+        font-size: 14px;
+    }
+</style>
+<body>
+<main>
+    <nav><a th:href="@{/mua-sam-SportShopV2/trang-chu}">
+        <button class="btn btn-info">Trở lại</button>
+    </a></nav>
+    <h2 class="text-xl font-bold mb-4">Trạng Thái Hóa Đơn</h2>
+    <div class="container">
+        <div class="progress">
+            <div class="progress-bar" role="progressbar"
+                 th:style="'width:' + ${hoaDon.statusProgress} + '%;'"
+                 th:text="${hoaDon.statusDisplay}">Trạng thái tiến trình
+            </div>
+        </div>
+
+        <!-- Status Update Form -->
+        <div class="bg-white p-6">
+            <h2 class="text-xl font-bold mb-4" th:text="${hoaDon.billCode}">Mã Hóa Đơn</h2>
+            <div class="grid">
+                <div>
+                    <p><span class="font-semibold">Trạng thái:</span>
+                        <button class="button"
+                                th:text="${hoaDon.status}">Trạng Thái
+                        </button>
+                    </p>
+                    <p><span class="font-semibold">Loại:</span>
+                        <button class="button bg-purple-500"
+                                th:text="${hoaDon.type}">Loại
+                        </button>
+                    </p>
+                    <p><span class="font-semibold">Địa chỉ:</span>
+                        <span th:text="${hoaDon.address}">Địa chỉ</span>
+                    </p>
+                </div>
+                <div>
+                    <p><span class="font-semibold">Tên khách hàng:</span>
+                        <span th:text="${hoaDon.id_account.nguoiDung.full_name}">Tên Khách Hàng</span>
+                    </p>
+                    <p><span class="font-semibold">Số điện thoại:</span>
+                        <span th:text="${hoaDon.phone_number}">Số Điện Thoại</span>
+                    </p>
+                    <p><span class="font-semibold">Ghi chú:</span>
+                        <span th:text="${hoaDon.note}">Ghi Chú</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Information -->
+        <div class="bg-white p-6">
+            <h2 class="text-xl font-bold mb-4">Thông Tin Sản Phẩm Đã Mua</h2>
+            <table class="table-auto">
+                <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Ảnh Sản Phẩm</th>
+                    <th>Thông Tin Sản Phẩm</th>
+                    <th>Màu Sắc</th>
+                    <th>Số Lượng</th>
+                    <th>Tổng Tiền</th>
+                    <th>Trạng Thái</th>
+                </tr>
+                </thead>
+                <tbody th:each="item, index: ${hoaDon.billDetails}">
+                <tr>
+                    <td th:text="${index.index + 1}"></td>
+                    <td >
+                        <!-- Hình ảnh sản phẩm -->
+                        <img th:src="@{/images/{tenAnh}(tenAnh=${anhSP.tenAnh})}
+                        " alt="Ảnh sản phẩm" style="width: 50px; height: auto;"/>
+                    </td>
+                    <td>
+                        <p th:text="${item.sanPhamChiTiet.idSanPham.tenSanPham}"></p>
+                        <p style="color: red; font-weight: bold;" th:text="${item.sanPhamChiTiet.gia} + ' VND'"></p>
+                    </td>
+                    <td>
+                        <div th:style="'width: 40px; height: 40px; background-color:' + ${item.sanPhamChiTiet.idMauSac.tenMauSac}"></div>
+                    </td>
+                    <td th:text="${item.quantity}"></td>
+                    <td th:text="${item.quantity} * ${item.sanPhamChiTiet.gia} + ' đ'"></td>
+                    <td th:text="${item.sanPhamChiTiet.trangThai}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+</body>
+</html>

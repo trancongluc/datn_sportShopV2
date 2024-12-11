@@ -224,13 +224,144 @@
     <title>Quản lý trả hàng</title>
     <link rel="stylesheet" href="/css/DoiTraChiTiet.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-    <!--    <script src="/js/DoiTra.js"></script>-->
+    <script>
+        let currentProduct = '';
+        let currentProductRow = null;
+        let currentProductPrice = 0;
+
+        function openModal(productName, row) {
+            console.log('Modal mở cho sản phẩm:', productName);
+            currentProduct = productName;
+            currentProductRow = row;
+            currentProductPrice = parseFloat(row.cells[4].innerText.replace(' đ', '').replace(',', '')); // Lấy giá sản phẩm
+            currentProductColor = row.cells[2].querySelector('div').style.backgroundColor; // Lấy màu sắc sản phẩm
+
+            document.getElementById('myModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('myModal').style.display = 'none';
+        }
+
+        function addItem() {
+            const quantity = parseInt(document.getElementById('quantity').value);
+            if (quantity && currentProductRow) {
+                const currentQuantityCell = currentProductRow.cells[3];
+                const currentQuantity = parseInt(currentQuantityCell.innerText);
+
+                if (quantity > currentQuantity) {
+                    alert('Số lượng nhập không được lớn hơn số lượng hiện có.');
+                    return;
+                }
+
+                // Cập nhật số lượng còn lại
+                const newQuantity = currentQuantity - quantity;
+                currentQuantityCell.innerText = newQuantity;
+
+                // Thêm sản phẩm vào bảng trả hàng
+                const table = document.getElementById('return-items');
+                const totalPrice = currentProductPrice * quantity;
+                const row = table.insertRow();
+                row.innerHTML = `
+                <td>${table.rows.length}</td>
+                <td>${currentProduct}</td>
+                <td><span style="display:inline-block; width: 20px; height: 20px; border-radius: 50%; background-color: ${currentProductColor};"></span></td>
+                <td>${quantity}</td>
+                <td>${currentProductPrice} đ</td>
+                <td>${totalPrice} đ</td>
+                <td><button onclick="removeItem(this)">Xóa</button></td>
+                `;
+                closeModal();
+                showSummary();
+            } else {
+                alert('Vui lòng nhập số lượng');
+            }
+        }
+
+        function showSummary() {
+
+            const summary = document.getElementById('summary');
+            summary.style.display = 'block';
+        }
+
+        window.onload = function () {
+            document.getElementById('summary').style.display = 'none';
+            updateOrderInfo();
+        }
+
+        function removeItem(button) {
+            const row = button.parentNode.parentNode;
+            if (!row) {
+                console.error('Không tìm thấy hàng để xóa');
+                return;
+            }
+
+            // Lấy thông tin sản phẩm
+            const quantityCell = row.cells[3];
+            const priceCell = row.cells[5];
+            const productQuantity = parseInt(quantityCell.innerText);
+            const totalPrice = parseFloat(priceCell.innerText.replace(' đ', '').replace(',', ''));
+
+            if (confirm('Bạn có chắc chắn muốn hoàn trả sản phẩm này không?')) {
+                // Khôi phục lại thông tin đơn hàng
+                const orderTable = document.querySelector('.order-table tbody');
+
+                // Tìm hàng trong bảng đơn hàng và cập nhật lại
+                const originalQuantityCell = row.cells[3];
+                const originalTotalCell = row.cells[4];
+
+                // Cập nhật lại số lượng trong bảng đơn hàng
+                const originalQuantity = parseInt(originalQuantityCell.innerText);
+                const newQuantity = originalQuantity + productQuantity;
+                originalQuantityCell.innerText = newQuantity;
+
+                // Tính lại tổng tiền
+                const originalPrice = parseFloat(originalTotalCell.innerText.replace(' đ', '').replace(',', ''));
+                const newTotalPrice = originalPrice + totalPrice;
+                originalTotalCell.innerText = newTotalPrice + ' đ';
+
+                // Xóa hàng trong bảng trả hàng
+                row.parentNode.removeChild(row);
+                console.log('Hàng đã được hoàn trả:', row);
+                // showSummary();
+            }
+        }
+
+        window.onclick = function (event) {
+            const modal = document.getElementById('myModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+        function updateOrderInfo() {
+            const orderTable = document.querySelector('.order-table tbody');
+            let totalQuantity = 0;
+            let totalOrderPrice = 0;
+
+
+            Array.from(orderTable.rows).forEach(row => {
+                const quantityCell = row.cells[3];
+                const priceCell = row.cells[4];
+
+                const quantity = parseInt(quantityCell.innerText);
+                const price = parseFloat(priceCell.innerText.replace(' đ', '').replace(',', ''));
+
+                totalQuantity += quantity;
+                totalOrderPrice += price;
+            });
+
+
+            document.getElementById('totalQuantity').innerText = totalQuantity.toString();
+            document.getElementById('totalPaymentDisplay').innerText = totalOrderPrice + ' đ';
+        }
+    </script>
 </head>
+
 <body>
 <main layout:fragment="main1">
     <div class="container">
         <div class="header">
-            <img src="/images/img.png" width="20px" height="20px">
+            <img src="/images/doitra.png" width="50px" height="50px">
             <h1>Quản lý trả hàng</h1>
         </div>
 
@@ -246,7 +377,7 @@
                 </div>
                 <div>
                     <p><span>Ngày giao hàng:</span> <span th:text="${hoaDon.ship_date}"></span></p>
-                    <p><span>Ngày nhận hàng:</span> <span th:text="${hoaDon.desire_date}"></span></p>
+                    <p><span>Ngày nhận hàng:</span> <span th:text="${hoaDon.receive_date}"></span></p>
                     <div class="status-buttons">
                         <button class="success"><span th:text="${hoaDon.status}"></span></button>
                         <button class="online"><span th:text="${hoaDon.type}"></span></button>
@@ -255,14 +386,12 @@
             </div>
         </div>
 
-
         <div class="section">
             <h2>Thông tin đơn hàng</h2>
             <table class="order-table">
                 <thead>
                 <tr>
                     <th>STT</th>
-                    <!--                    <th>Ảnh</th>-->
                     <th>Thông tin sản phẩm</th>
                     <th>Màu Sắc</th>
                     <th>Số lượng</th>
@@ -274,23 +403,22 @@
                 <tbody>
                 <tr th:each="item, iterStat : ${hoaDon.billDetails}">
                     <td th:text="${iterStat.index + 1}"></td>
-                    <!--                    <td><img th:src="@{/images/${item.sanPhamChiTiet.anhSP}}" alt="Product Image"/></td>-->
                     <td>
-                        <p th:text="${item.sanPhamChiTiet.sanPham.tenSanPham}"></p>
+                        <p th:text="${item.sanPhamChiTiet.idSanPham.tenSanPham}"></p>
+                        <p style="color: red; font-weight: bold;" th:text="${item.sanPhamChiTiet.gia} + ' đ'"></p>
                         <p style="color: red; font-weight: bold;" th:text="${item.sanPhamChiTiet.gia} + ' VND'"></p>
-                        <!--                        <p style="text-decoration: line-through;" th:text="${item.giaGoc} + ' VND'"></p>-->
                     </td>
                     <td>
-                        <div th:style="'width: 25px; height: 25px; border-radius: 50%; background-color: ' + ${item.sanPhamChiTiet.mauSac.tenMauSac}"></div>
+                        <div th:style="'width: 25px; height: 25px; border-radius: 50%; background-color: ' + ${item.sanPhamChiTiet.idMauSac.tenMauSac}"></div>
                     </td>
-                    <td th:text="${item.sanPhamChiTiet.soLuong}"></td>
-                    <td th:text="${item.sanPhamChiTiet.soLuong}*${item.sanPhamChiTiet.gia} + ' VND'"></td>
+                    <td id="totalQuantity" th:text="${item.quantity}"></td>
+                    <td id="totalPayment" th:text="${item.quantity}*${item.sanPhamChiTiet.gia} + ' đ'"></td>
                     <td>
                         <div class="status" th:text="${item.sanPhamChiTiet.trangThai}"></div>
                     </td>
                     <td class="action">
-                        <button th:data-product-name="${item.sanPhamChiTiet.sanPham.tenSanPham}"
-                                onclick="openModal(this.dataset.productName)">
+                        <button th:data-product-name="${item.sanPhamChiTiet.idSanPham.tenSanPham}"
+                                onclick="openModal(this.dataset.productName, this.parentNode.parentNode)">
                             <i class="fas fa-undo"></i>
                         </button>
                     </td>
@@ -309,7 +437,6 @@
             <thead>
             <tr>
                 <th>STT</th>
-                <th>Ảnh</th>
                 <th>Tên sản phẩm</th>
                 <th>Màu Sắc</th>
                 <th>Số lượng</th>
@@ -322,103 +449,67 @@
 
             </tbody>
         </table>
-        <!--        <div class="summary">-->
-        <!--            <p>-->
-        <!--                Tổng giá hàng gốc:-->
-        <!--                <span th:text="${hoaDon.tongGiaGoc} + ' VND'"></span>-->
-        <!--            </p>-->
-        <!--            <p>-->
-        <!--                Voucher đã sử dụng:-->
-        <!--                <span th:text="${hoaDon.voucherDaSuDung} + ' VND'"></span>-->
-        <!--            </p>-->
-        <!--            <p>-->
-        <!--                Tiền ship:-->
-        <!--                <span th:text="${hoaDon.tienShip} + ' VND'"></span>-->
-        <!--            </p>-->
-        <!--            <p>-->
-        <!--                Điểm sử dụng (0):-->
-        <!--                <span th:text="${hoaDon.diemSuDung} + ' VND'"></span>-->
-        <!--            </p>-->
-        <!--            <p class="total">-->
-        <!--                Tổng tiền thanh toán:-->
-        <!--                <span th:text="${hoaDon.tongTienThanhToan} + ' VND'"></span>-->
-        <!--            </p>-->
-        <!--            <p>-->
-        <!--                Tổng giá hàng trả:-->
-        <!--                <span th:text="${hoaDon.tongGiaHangTra} + ' VND'"></span>-->
-        <!--            </p>-->
-        <!--            <p>-->
-        <!--                Voucher mới:-->
-        <!--                <span th:text="${hoaDon.voucherMoi} + ' VND'"></span>-->
-        <!--            </p>-->
-        <!--            <hr/>-->
-        <!--            <p class="total">-->
-        <!--                Tổng tiền trả khách:-->
-        <!--                <span th:text="${hoaDon.tongTienTraKhach} + ' VND'"></span>-->
-        <!--            </p>-->
-        <!--            <div class="return">-->
-        <!--                <p>* Mô tả:</p>-->
-        <!--                <textarea placeholder="Nhập mô tả" th:placeholder="'Nhập mô tả'"></textarea>-->
-        <!--                <button>Trả hàng</button>-->
-        <!--            </div>-->
-        <!--        </div>-->
+
+        <div class="summary" id="summary" th:each="item, iterStat : ${hoaDon.billDetails}" style="display: none;">
+            <!--            <p>-->
+            <!--                Tổng giá hàng gốc:-->
+            <!--                <span th:text="${item.sanPhamChiTiet.gia} + ' VND'"></span>-->
+            <!--            </p>-->
+            <!--&lt;!&ndash;            <p>&ndash;&gt;-->
+            <!--&lt;!&ndash;                Voucher đã sử dụng:&ndash;&gt;-->
+            <!--&lt;!&ndash;                <span th:text="${hoaDon.voucher} + ' VND'"></span>&ndash;&gt;-->
+            <!--&lt;!&ndash;            </p>&ndash;&gt;-->
+            <!--            <p>-->
+            <!--                Tiền ship:-->
+            <!--                <span th:text="${hoaDon.money_ship} + ' VND'"></span>-->
+            <!--            </p>-->
+            <!--&lt;!&ndash;            <p>&ndash;&gt;-->
+            <!--&lt;!&ndash;                Điểm sử dụng (0):&ndash;&gt;-->
+            <!--&lt;!&ndash;                <span th:text="${hoaDon.point_use} + ' VND'"></span>&ndash;&gt;-->
+            <!--&lt;!&ndash;            </p>&ndash;&gt;-->
+            <!--            <p class="total">-->
+            <!--                Tổng tiền thanh toán:-->
+            <!--                <span th:text="${hoaDon.total_money} + ' VND'"></span>-->
+            <!--&lt;!&ndash;                <span id="totalPayment">0 VND</span>&ndash;&gt;-->
+            <!--            </p>-->
+            <!--            <p>-->
+            <!--                Tổng giá hàng trả:-->
+            <!--                <span th:text="${item.price} + ' VND'"></span>-->
+            <!--            </p>-->
+            <!--            &lt;!&ndash;                    <p>&ndash;&gt;-->
+            <!--            &lt;!&ndash;                        Voucher mới:&ndash;&gt;-->
+            <!--            &lt;!&ndash;                        <span th:text="${hoaDon.voucherMoi} + ' VND'"></span>&ndash;&gt;-->
+            <!--            &lt;!&ndash;                    </p>&ndash;&gt;-->
+            <!--            <hr/>-->
+            <p class="total">
+                Tổng tiền trả khách:
+                <span th:text="${hoaDon.total_money} + ' đ'"></span>
+            </p>
+            <div class="return">
+                <p>* Mô tả:</p>
+                <textarea placeholder="Nhập mô tả" th:placeholder="'Nhập mô tả'"></textarea>
+                <form th:action="@{/doi-tra/cap-nhat}" method="get">
+                    <input type="hidden" name="maHoaDon" th:value="${hoaDon.id}"/>
+                    <button type="submit">Đổi trả</button>
+                </form>
+            </div>
+        </div>
+    </div>
     </div>
 
 
-    <div id="myModal" style="display:none;">
-        <div>
-            <span onclick="closeModal()" style="cursor:pointer;">&times;</span>
+    <div id="myModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
             <h2>Thêm sản phẩm</h2>
-            <label for="quantity">Số lượng:</label>
-            <input type="number" id="quantity" min="1">
-            <button onclick="addItem()">Thêm</button>
+            <form onsubmit="event.preventDefault(); addItem();">
+                <label for="quantity">Số lượng:</label>
+                <input type="number" id="quantity" min="1" required>
+                <button type="submit">Thêm</button>
+            </form>
         </div>
     </div>
 </main>
 
-<script>
-    let currentProduct = '';
-
-    function openModal(productName) {
-        console.log('Modal mở cho sản phẩm:', productName); // Thêm dòng này
-        currentProduct = productName; // Lưu tên sản phẩm
-        document.getElementById('myModal').style.display = 'block';
-    }
-
-    function closeModal() {
-        document.getElementById('myModal').style.display = 'none';
-    }
-
-    function addItem() {
-        const quantity = document.getElementById('quantity').value;
-        if (quantity) {
-            const table = document.getElementById('return-items');
-            const row = table.insertRow();
-            row.innerHTML = `
-                <td>${table.rows.length}</td>
-                <td>${currentProduct}</td>
-                <td>${quantity}</td>
-                <td><!-- Giá tiền --></td>
-                <td><!-- Tổng tiền --></td>
-                <td><button onclick="removeItem(this)">Xóa</button></td>
-            `;
-            closeModal();
-        } else {
-            alert('Vui lòng nhập số lượng');
-        }
-    }
-
-        function removeItem(button) {
-            const row = button.parentNode.parentNode;
-            row.parentNode.removeChild(row);
-        }
-
-        window.onclick = function(event) {
-            const modal = document.getElementById('myModal');
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
-        }
-</script>
 </body>
 </html>

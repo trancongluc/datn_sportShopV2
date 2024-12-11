@@ -7,6 +7,7 @@ import com.example.sportshopv2.repository.HoaDonChiTietRepo;
 import com.example.sportshopv2.repository.HoaDonRepo;
 import com.example.sportshopv2.service.HoaDonService;
 import com.example.sportshopv2.repository.AnhSanPhamRepository;
+import com.example.sportshopv2.service.impl.HoaDonServiceImp;
 import com.itextpdf.text.pdf.BaseFont;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -106,6 +107,7 @@ public class HoaDonController {
         model.addAttribute("countDangVanChuyen", hdService.countByStatus("Đang vận chuyển"));
         model.addAttribute("countHoanThanh", hdService.countByStatus("Hoàn thành"));
         model.addAttribute("countHuy", hdService.countByStatus("Hủy"));
+        model.addAttribute("countHoanTra", hdService.countByStatus("Hoàn trả"));
         return "HoaDon/HoaDon";
     }
 
@@ -148,6 +150,7 @@ public class HoaDonController {
     }
 
 
+
     @GetMapping("/pdf")
     public String pdf(Model model, @RequestParam("id") Integer id) {
 //        model.addAttribute("list", hdctrepo.findAllById(id));
@@ -157,7 +160,7 @@ public class HoaDonController {
     @GetMapping("/export/excel")
     public ResponseEntity<byte[]> exportToExcel() throws IOException {
         List<HoaDonChiTiet> billList = hdctrepo.findAll(); // Lấy toàn bộ dữ liệu từ database
-        List<HoaDon> billList2 =  hdrepo.findAll();
+        List<HoaDon> billList2 = hdrepo.findAll();
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Danh sách hóa đơn");
 
@@ -254,7 +257,7 @@ public class HoaDonController {
     }
 
     @PostMapping("/status/update")
-    public String updateStatus(@RequestParam Integer id, @RequestParam String status) {
+    public String updateStatus(@RequestParam Integer id, @RequestParam String status,@RequestParam(required = false) String confirmation_date) {
         /*Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();*/
 
@@ -264,6 +267,31 @@ public class HoaDonController {
             hoaDon.setStatus(status);
             hoaDon.setUpdateAt(LocalDateTime.now());
             hoaDon.setUpdate_by("username");
+            if (confirmation_date != null && !confirmation_date.isEmpty()) {
+                // Loại bỏ 'Z' và tạo DateTimeFormatter để phân tích chuỗi
+                DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+                if (confirmation_date.endsWith("Z")) {
+                    confirmation_date = confirmation_date.substring(0, confirmation_date.length() - 1); // Loại bỏ 'Z'
+                }
+                LocalDateTime confirmationDate = LocalDateTime.parse(confirmation_date, formatter);
+                hoaDon.setConfirmation_date(confirmationDate);
+            }
+            if (status.equals("Chờ vận chuyển")) {
+                LocalDateTime desireDate = LocalDateTime.now();
+                hoaDon.setDesire_date(desireDate);
+            }
+
+            if (status.equals("Đang vận chuyển") ) {
+                LocalDateTime shipDate = LocalDateTime.now();
+                hoaDon.setShip_date(shipDate);
+            }
+
+            if (status.equals("Hoàn thành") ) {
+                LocalDateTime receiveDate = LocalDateTime.now();
+                hoaDon.setReceive_date(receiveDate);
+                hoaDon.setTransaction_date(receiveDate);
+            }
+
             hdrepo.save(hoaDon);
         }
         return "redirect:/bill/detail?id=" + id;

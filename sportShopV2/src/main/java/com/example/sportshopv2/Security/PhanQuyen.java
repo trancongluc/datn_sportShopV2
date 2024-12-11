@@ -1,4 +1,4 @@
-package com.example.sportshopv2.sercurity;
+package com.example.sportshopv2.Security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -67,7 +67,7 @@ public class PhanQuyen {
                             if ("Admin".equals(role) || "Staff".equals(role)) {
                                 targetUrl = "/ban-hang-tai-quay";  // Admin và Staff vào trang bán hàng tại quầy
                             } else if ("Employee".equals(role)) {
-                                targetUrl = "/mua-sam-SportShopV2/trang-chu";  // Employee vào trang mua sắm
+                                targetUrl = "/mua-sam-SportShopV2/trang-chu";// Employee vào trang mua sắm
                             } else {
                                 targetUrl = "/ban-hang/mua-sam";  // Default page nếu không có vai trò hợp lệ
                             }

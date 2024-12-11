@@ -7,20 +7,19 @@ import com.example.sportshopv2.repository.ChatBoxRepository;
 import com.example.sportshopv2.repository.MessageRepository;
 import com.example.sportshopv2.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDateTime;
+
 import java.util.*;
 
 @Controller
@@ -49,6 +48,10 @@ public class ChatController {
         model.addAttribute("accountId", accountId);
         // Lấy danh sách tất cả chatboxes
         List<chatBox> chatBoxes = chatService.getActiveChatBoxes();
+
+        // Sắp xếp chatboxes theo thời gian tạo (mới nhất lên đầu)
+        chatBoxes.sort((cb1, cb2) -> cb2.getCreateAt().compareTo(cb1.getCreateAt()));
+
         model.addAttribute("chatBoxes", chatBoxes);
 
         // Lấy tin nhắn cho từng chatbox
@@ -64,8 +67,25 @@ public class ChatController {
 
     @MessageMapping("/sendMessage")
     @SendTo("/topic/messages")
-    public message sendMessage(message message) {
-        // Lưu tin nhắn vào cơ sở dữ liệu hoặc xử lý thêm
+    public message sendMessage(@Payload message message, SimpMessageHeaderAccessor headerAccessor) {
+        // Kiểm tra nếu id = 0
+        if (message.getId() == 0) {
+            System.out.println("Processing message with ID = 0. Skipping duplicate checks.");
+            return message; // Chấp nhận luôn tin nhắn
+        }
+
+        // Kiểm tra tin nhắn lặp bằng cách lưu ID tin nhắn cuối cùng trong session
+        String lastMessageId = (String) headerAccessor.getSessionAttributes().get("lastMessageId");
+
+        if (lastMessageId != null && lastMessageId.equals(String.valueOf(message.getId()))) {
+            System.out.println("Duplicate message detected. Ignoring...");
+            return null; // Bỏ qua nếu trùng
+        }
+
+        // Lưu lại ID tin nhắn vào session
+        headerAccessor.getSessionAttributes().put("lastMessageId", String.valueOf(message.getId()));
+
+
         return message; // Trả về tin nhắn để gửi lại cho tất cả người subscribe
     }
 

@@ -413,20 +413,64 @@
             updateCartLink();
         }
 
-        function increaseValue() {
-            const input = document.getElementById("quantity");
-            let currentValue = parseInt(input.value);
-            input.value = currentValue + 1;
-            updateCartLink(); // Gọi lại để cập nhật URL
+        function increaseQuantity(id, giaTien, idSanPhamChiTiet) {
+            const quantityInput = document.querySelector(`#quantity-${id}`);
+            const totalPriceElement = document.querySelector(`#total-price-${id}`);
+
+            if (quantityInput) {
+                let currentQuantity = parseInt(quantityInput.value, 10);
+                currentQuantity += 1;
+
+                // Gửi yêu cầu cập nhật số lượng đến server
+                updateServerQuantity(id, currentQuantity, idSanPhamChiTiet)
+                    .then(response => {
+                        if (response.ok) {
+                            quantityInput.value = currentQuantity;
+                            const totalPrice = currentQuantity * giaTien;
+                            if (totalPriceElement) {
+                                totalPriceElement.textContent = totalPrice.toLocaleString("vi-VN") + ' VND';
+                            }
+                        } else {
+                            response.json().then(data => alert(data.error));
+                        }
+                    })
+                    .catch(error => console.error("Error:", error));
+            }
         }
 
-        function decreaseValue() {
-            const input = document.getElementById("quantity");
-            let currentValue = parseInt(input.value);
-            if (currentValue > 1) { // Giới hạn giá trị tối thiểu là 1
-                input.value = currentValue - 1;
-                updateCartLink(); // Gọi lại để cập nhật URL
+        function decreaseQuantity(id, giaTien, idSanPhamChiTiet) {
+            const quantityInput = document.querySelector(`#quantity-${id}`);
+            const totalPriceElement = document.querySelector(`#total-price-${id}`);
+
+            if (quantityInput) {
+                let currentQuantity = parseInt(quantityInput.value, 10);
+                if (currentQuantity > 1) {
+                    currentQuantity -= 1;
+
+                    // Gửi yêu cầu cập nhật số lượng đến server
+                    updateServerQuantity(id, currentQuantity, idSanPhamChiTiet)
+                        .then(response => {
+                            if (response.ok) {
+                                quantityInput.value = currentQuantity;
+                                const totalPrice = currentQuantity * giaTien;
+                                if (totalPriceElement) {
+                                    totalPriceElement.textContent = totalPrice.toLocaleString("vi-VN") + ' VND';
+                                }
+                            } else {
+                                response.json().then(data => alert(data.error));
+                            }
+                        })
+                        .catch(error => console.error("Error:", error));
+                }
             }
+        }
+
+        function updateServerQuantity(id, newQuantity, idSanPhamChiTiet) {
+            return fetch('/mua-sam-SportShopV2/product-quantity', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id: id, soLuong: newQuantity, idSPCT: idSanPhamChiTiet})
+            });
         }
 
         function updateCartLink() {
@@ -549,10 +593,19 @@
       <span>
        Số Lượng
       </span>
-                <div>
-                    <button onclick="decreaseValue()">-</button>
-                    <input type="text" id="quantity" name="soLuong" value="1" readonly/>
-                    <button onclick="increaseValue()">+</button>
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <button type="button"
+                            th:attr="onclick='decreaseQuantity(' + ${listProduct.id} + ', ' + ${listProduct.gia} + ',' + ${listProduct.sanPham.id} + ')'"
+                            class="quantity-btn quantity-btn-decrease" name="idSanPhamChiTiet"
+                            th:value="${listProduct.id}">-
+                    </button>
+                    <input type="text" th:id="'quantity-' + ${listProduct.id}" th:data-id="${listProduct.id}"
+                           value="1" name="soLuongSanPham" readonly class="quantity-input"/>
+                    <button type="button"
+                            th:attr="onclick='increaseQuantity(' + ${listProduct.id} + ', ' + ${listProduct.gia} + ',' + ${listProduct.sanPham.id} + ')'"
+                            class="quantity-btn quantity-btn-increase" name="idSanPhamChiTiet"
+                            th:value="${listProduct.id}">+
+                    </button>
                 </div>
             </div>
             <div class="product-actions">
