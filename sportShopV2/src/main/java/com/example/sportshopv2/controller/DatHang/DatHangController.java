@@ -441,15 +441,11 @@ public class DatHangController {
 
         GioHangChiTiet productInCart = gioHangChiTietRepo.findById(id).orElse(null);
 
-        // Kiểm tra nếu không tìm thấy sản phẩm
         if (productInCart == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sản phẩm không tồn tại trong giỏ hàng");
         }
 
-        // Xóa sản phẩm
         gioHangChiTietRepo.delete(productInCart);
-
-        // Trả về đối tượng đã bị xóa
         return productInCart;
     }
 

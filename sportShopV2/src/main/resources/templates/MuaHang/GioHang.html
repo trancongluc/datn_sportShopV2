@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="dynamic(view)">
 <head>
     <meta charset="UTF-8">
     <title>Khách hàng</title>
@@ -13,6 +13,7 @@
 
 
     <style>
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -266,6 +267,39 @@
     </style>
 </head>
 <body>
+<div class="navbar">
+    <div class="logo">
+        <img th:src="@{/images/logoSPSV2.png}" alt="SportShopLogo" height="40" width="40">
+        <span>SportShopV2</span>
+
+    </div>
+    <div style="margin-left: 50px">
+        <a th:href="@{/mua-sam-SportShopV2/gio-hang-khach-hang(id=${thongTinKhachHang.id})}">
+            <img th:src="@{/images/img_3.png}" width="40" height="40">
+        </a>
+        <a th:href="@{/login/home}">
+            <img th:src="@{/images/img_4.png}" width="40" height="40">
+        </a>
+    </div>
+</div>
+
+<div class="menu">
+    <a class="active" href="/mua-sam">
+        TRANG CHỦ
+    </a>
+    <a href="/san-pham">
+        SẢN PHẨM
+    </a>
+    <a href="#">
+        TRA CỨU
+    </a>
+    <a href="#">
+        LIÊN HỆ
+    </a>
+    <a href="#">
+        THÔNG TIN
+    </a>
+</div>
 <nav><a th:href="@{/mua-sam-SportShopV2/trang-chu}">
     <button class="btn btn-info">Trở lại</button>
 </a></nav>
@@ -810,7 +844,6 @@
             })
             .catch(error => console.error("Error:", error));
     }
-
 
 
     function deleteProduct(id) {
