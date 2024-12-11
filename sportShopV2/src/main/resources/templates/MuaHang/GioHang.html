@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <meta charset="UTF-8">
     <title>Khách hàng</title>
@@ -266,6 +266,7 @@
     </style>
 </head>
 <body>
+<main layout:fragment="main2"></main>
 <nav><a th:href="@{/mua-sam-SportShopV2/trang-chu}">
     <button class="btn btn-info">Trở lại</button>
 </a></nav>
@@ -808,9 +809,9 @@
                         style: 'decimal',
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 0
-                    }).format(data.idPhieuGiamGia.discountValue)} VND`;
+                    }).format(data.discountValue)} VND`;
 
-                document.getElementById('discountCode').value = `${data.idPhieuGiamGia.voucherCode}`;
+                document.getElementById('discountCode').value = `${data.voucherCode}`;
                 calculateTotal();
 
                 // Sử dụng setTimeout để đảm bảo radio button được cập nhật đúng
@@ -827,8 +828,6 @@
             })
             .catch(error => console.error("Error:", error));
     }
-
-
 
     function deleteProduct(id) {
         fetch(`/mua-sam-SportShopV2/xoa-san-pham-gio-hang/${id}`, {

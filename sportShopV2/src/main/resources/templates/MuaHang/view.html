@@ -1,281 +1,93 @@
-<html>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Menu}">
+<html lang="en">
 <head>
-    <title>
-        Khách hàng
-    </title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <title>Trang Chủ</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
+        .navbar {
             display: flex;
             justify-content: space-between;
-        }
-        .left, .right {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .left {
-            width: 60%;
-        }
-        .right {
-            width: 35%;
-        }
-        h2 {
-            margin-top: 0;
-        }
-        input[type="text"], input[type="email"], input[type="tel"], select, textarea {
+            align-items: center;
+            background-color: white;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            top: 0;
+            transition: top 0.3s;
+            z-index: 1000;
         }
-        .note {
-            display: flex;
-            align-items: center;
-            margin-top: 20px;
-        }
-        .note img {
-            width: 50px;
-            margin-right: 10px;
-        }
-        .note span {
-            font-size: 14px;
-            color: #666;
-        }
-        .right .section {
-            margin-bottom: 20px;
-        }
-        .right .section label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        .right .section input[type="text"] {
-            width: calc(100% - 100px);
-            display: inline-block;
-        }
-        .right .section button {
-            width: 80px;
-            padding: 10px;
-            margin-left: 10px;
-            background-color: #f5f5f5;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .right .section .toggle-switch {
+
+        .navbar .logo {
             display: flex;
             align-items: center;
         }
-        .right .section .toggle-switch input {
+
+        .navbar .logo img {
+            height: 40px;
             margin-right: 10px;
         }
-        .right .section .total {
-            font-size: 18px;
+
+        .navbar .logo span {
+            font-size: 20px;
             font-weight: bold;
-            color: red;
         }
-        .right .section .confirm-button {
-            width: 100%;
-            padding: 15px;
-            background-color: black;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+
+        .navbar .menu {
+            display: flex;
+            gap: 20px;
+            margin: 0 auto;
+        }
+
+        .navbar .menu a {
+            text-decoration: none;
+            color: black;
             font-size: 16px;
+            font-weight: bold;
+            padding: 5px 10px;
+            position: relative;
+        }
+
+        .navbar .menu a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #ff4e00;
+        }
+
+        .navbar .icons {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .icons i {
+            margin-left: 15px;
+            font-size: 20px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-<div class="navbar">
-    <div class="logo">
-        <img alt="SportShopLogo" height="40" src="images/logo.jpg" width="40"/>
-        <span>
-     SportShopV2
-    </span>
-    </div>
-    <div class="menu">
-        <a class="active" href="ban-hang/mua-sam">
-            TRANG CHỦ
-        </a>
-        <a href="/ban-hang/san-pham">
-            SẢN PHẨM
-        </a>
-        <a href="#">
-            TRA CỨU
-        </a>
-        <a href="#">
-            LIÊN HỆ
-        </a>
-        <a href="/chat">
-            CHAT VỚI SHOP
-        </a>
-        <a href="#">
-            THÔNG TIN
-        </a>
-    </div>
-    <div class="icons">
-        <i class="bi bi-search">
-        </i>
-        <i class="bi bi-cart">
-        </i>
-    </div>
-</div>
-<div class="carousel slide" data-bs-ride="carousel" id="carouselExampleAutoplaying">
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img alt="..." class="d-block w-100" src="images/snk1.png"/>
-            <div class="carousel-caption">
-                <h1>
-                    Bộ sưu tập Thu Đông 2030
-                </h1>
-                <p>
-                    Một nhãn hiệu chuyên tạo ra những sản phẩm thiết yếu và sang trọng.
-                </p>
-            </div>
+<main layout:fragment="main2">
+    <div class="navbar">
+        <div class="logo">
+            <img th:src="@{/images/logoSPSV2.png}" alt="SportShopLogo" height="40" width="40">
+            <span>SportShopV2</span>
         </div>
-        <div class="carousel-item">
-            <img alt="..." class="d-block w-100" src="images/snk2.png"/>
-            <div class="carousel-caption">
-                <h1>
-                    Bộ sưu tập Thu Đông 2040
-                </h1>
-                <p>
-                    Một nhãn hiệu chuyên tạo ra những sản phẩm hot trend, đi trước xu hướng
-                </p>
-            </div>
-        </div>
-        <div class="carousel-item">
-            <img alt="..." class="d-block w-100" src="images/snk3.png"/>
-            <div class="carousel-caption">
-                <h1>
-                    Bộ sưu tập Thu Đông 2050
-                </h1>
-                <p>
-                    Quan tâm trải nghiệm khách hàng, chất liệu sản phẩm để không ai bị bỏ lại
-                </p>
-            </div>
+        <div style="margin-left: 50px">
+            <a th:href="@{/mua-sam-SportShopV2/gio-hang-khach-hang(id=${thongTinKhachHang.id})}">
+                <img th:src="@{/images/img_3.png}" width="40" height="40">
+            </a>
+            <a th:href="@{/login/home}">
+                <img th:src="@{/images/img_4.png}" width="40" height="40">
+            </a>
         </div>
     </div>
-    <button class="carousel-control-prev" data-bs-slide="prev" data-bs-target="#carouselExampleAutoplaying" type="button">
-        <span aria-hidden="true" class="carousel-control-prev-icon">
-        </span>
-        <span class="visually-hidden">
-            Previous
-        </span>
-    </button>
-    <button class="carousel-control-next" data-bs-slide="next" data-bs-target="#carouselExampleAutoplaying" type="button">
-        <span aria-hidden="true" class="carousel-control-next-icon">
-        </span>
-        <span class="visually-hidden">
-            Next
-        </span>
-    </button>
-</div>
-
-<div class="container">
-    <div class="left">
-        <h2>
-            Khách hàng
-        </h2>
-        <input placeholder="Nguyễn Hà Nhật Nam" type="text"/>
-        <input placeholder="0378538888" type="tel"/>
-        <input placeholder="vinhnguyen.dev@gmail.com" type="email"/>
-        <input placeholder="10 Trung Dương Thanh" type="text"/>
-        <div style="display: flex; justify-content: space-between;">
-            <select>
-                <option>
-                    Bình Dương
-                </option>
-            </select>
-            <select>
-                <option>
-                    Huyện Dầu Tiếng
-                </option>
-            </select>
-            <select>
-                <option>
-                    Xã Minh Hoà
-                </option>
-            </select>
-        </div>
-        <textarea placeholder="Ghi chú"></textarea>
-        <div class="note">
-            <img alt="GHN Express logo" height="50" src="https://storage.googleapis.com/a1aa/image/EjcVS2MxCj75FFC4qvqZuAEQcr4huuZ3KGfQSrmTIEaDdI5JA.jpg" width="50"/>
-            <span>
-      Thời gian nhận hàng dự kiến: 27/12/2023
-     </span>
-        </div>
-    </div>
-    <div class="right">
-        <h2>
-            Thông tin thanh toán
-        </h2>
-        <div class="section">
-            <label>
-                Khách thanh toán
-            </label>
-            <input readonly="" type="text" value="0 VND"/>
-        </div>
-        <div class="section">
-            <label>
-                Mã giảm giá:
-            </label>
-            <input type="text" value="VC73483058 - HANGNT169"/>
-            <button>
-                Chọn mã
-            </button>
-        </div>
-        <div class="section toggle-switch">
-            <input id="tra-sau" type="checkbox"/>
-            <label for="tra-sau">
-                Trả Sau
-            </label>
-        </div>
-        <div class="section toggle-switch">
-            <input checked="" id="giao-hang" type="checkbox"/>
-            <label for="giao-hang">
-                Giao Hàng
-            </label>
-        </div>
-        <div class="section">
-            <label>
-                Tiền hàng:
-            </label>
-            <input readonly="" type="text" value="9.500.000 VND"/>
-        </div>
-        <div class="section">
-            <label>
-                Phí vận chuyển:
-            </label>
-            <input type="text" value="0 VND"/>
-        </div>
-        <div class="section">
-            <label>
-                Giảm giá:
-            </label>
-            <input readonly="" type="text" value="300.000 VND"/>
-        </div>
-        <div class="section">
-            <label>
-                Điểm hiện tại là 430:
-            </label>
-        </div>
-        <div class="section total">
-            Tổng tiền: 9.200.000 VND
-        </div>
-        <button class="confirm-button">
-            Xác nhận đặt hàng
-        </button>
-    </div>
-</div>
+</main>
 </body>
 </html>

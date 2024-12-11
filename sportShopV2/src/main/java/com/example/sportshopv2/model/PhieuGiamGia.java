@@ -54,8 +54,8 @@ public class PhieuGiamGia {
     @Column(name = "end_date")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime endDate;
-    
-
+    @Column(name = "deleted")
+    private Boolean deleted;
 
 
     public boolean isActive() {
