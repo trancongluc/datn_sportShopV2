@@ -48,4 +48,8 @@ public class AnhService {
         // Lưu thông tin vào repository sau khi lưu ảnh
         anhSanPhamRepository.saveAll(images);
     }
+    public AnhSanPham anhSanPhamByIDSPCT(Integer idSPCT){
+        return anhSanPhamRepository.findByIdSPCT(idSPCT).get(0);
+
+    }
 }

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch Sử Đơn Hàng Đã Quản Lý</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container my-5">
+    <h2 class="mb-4">Lịch Sử Đơn Hàng Đã Quản Lý</h2>
+
+    <!-- Bộ lọc và tìm kiếm -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <input type="text" class="form-control" placeholder="Tìm mã đơn hàng hoặc tên khách hàng...">
+        </div>
+        <div class="col-md-2">
+            <select class="form-select">
+                <option value="all">Tất cả trạng thái</option>
+                <option value="processing">Đang xử lý</option>
+                <option value="completed">Đã hoàn thành</option>
+                <option value="canceled">Đã hủy</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <input type="date" class="form-control" placeholder="Ngày bắt đầu">
+        </div>
+        <div class="col-md-2">
+            <input type="date" class="form-control" placeholder="Ngày kết thúc">
+        </div>
+        <div class="col-md-3">
+            <button class="btn btn-primary w-100">Tìm kiếm</button>
+        </div>
+    </div>
+
+    <!-- Danh sách đơn hàng -->
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>Mã Đơn Hàng</th>
+            <th>Khách Hàng</th>
+            <th>Ngày Đặt</th>
+            <th>Trạng Thái</th>
+            <th>Tổng Tiền</th>
+            <th>Hành Động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Lặp qua danh sách đơn hàng -->
+        <tr th:each="order, index : ${his}">
+            <td th:text="${index.count}">1</td>
+            <td th:text="${order.id}" ></td>
+            <td th:text="${order.user_name}">Nguyễn Văn A</td>
+            <td id="datetime" onchange="removeTimePart()" th:text="${order.create_at}"></td>
+            <td>
+<span th:classappend="${order.status == 'Completed' ? 'bg-success' : (order.status == 'Pending' ? 'bg-warning' : (order.status == 'Delivered' ? 'bg-info' : 'bg-danger'))}"
+      class="badge"
+      th:text="${order.status == 'Completed' ? 'Đã hoàn thành' : (order.status == 'Pending' ? 'Chờ xử lý' : (order.status == 'Delivered' ? 'Đã gửi' : 'Đã hủy'))}"></span>
+            </td>
+            <td th:text="${order.total_money}" id="totalMoney"></td>
+            <td>
+                <!-- Nút bấm mở modal -->
+
+                <button
+                        class="btn btn-info btn-sm view-detail-btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#orderDetailModal"
+                        data-order-code="[[${order.orderCode}]]"
+                        data-customer-name="[[${order.customerName}]]"
+                        data-address="[[${order.address}]]"
+                        data-status="[[${order.status}]]"
+                        data-items="[[${#objects.stringify(order.items)}]]"
+                        data-total="[[${order.totalAmount}]]">
+                    Xem chi tiết
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<!--th:href="@{/nhanvien/product/{id}(id=${order.id})}"-->
+<!-- Modal Chi Tiết Đơn Hàng -->
+<div th:each="order : ${his}" class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="orderDetailModalLabel">Chi Tiết Đơn Hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Mã đơn hàng:</strong> <span id="orderCode" th:text="${order.id}"></span></p>
+                <p><strong>Khách hàng:</strong> <span id="customerName" th:text="${order.user_name}"></span></p>
+                <p><strong>Địa chỉ:</strong> <span id="address" th:text="${order.address}"></span></p>
+                <p><strong>Trạng thái:</strong> <span id="status" th:text="${order.status == 'Completed' ? 'Đã hoàn thành' : (order.status == 'Pending' ? 'Chờ xử lý' : (order.status == 'Delivered' ? 'Đã gửi' : 'Đã hủy'))}"></span></p>
+                <hr>
+                <h6>Sản phẩm</h6>
+                <ul id="itemsList" class="list-group list-group-flush">
+                    <li th:text="${order.tenSanPham}"></li>
+                </ul>
+                <hr>
+                <p class="fw-bold">Tổng tiền: <span id="totalAmount" th:text="${order.total_money}"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Hàm để cắt bỏ phần giờ phút giây
+    function removeTimePart() {
+        var datetimeStr = document.getElementById("datetime").innerText;
+        const dateOnly = datetimeStr.split('T')[0].split(',')[0]; // Corrected split method usage // Lấy phần ngày
+        document.getElementById("datetime").innerText = dateOnly; // Cập nhật lại nội dung
+    }
+
+    // Gọi hàm ngay khi trang được tải
+    window.onload = removeTimePart;
+
+    async function viewOrderHistory(orderId) {
+        try {
+            const response = await fetch(`/order_history/${orderId}`);
+            const history = await response.text(); // Giả sử bạn trả về HTML từ viewHistory
+
+            // Hiển thị lịch sử đơn hàng trong một modal mới hoặc cập nhật nội dung trong modal hiện tại
+            const historyModal = new bootstrap.Modal(document.getElementById('historyModal')); // Tạo modal mới cho lịch sử
+            document.getElementById('historyContent').innerHTML = history; // Cập nhật nội dung modal
+            historyModal.show();
+        } catch (error) {
+            console.error('Error fetching order history:', error);
+        }
+    }
+
+    const totalMoneyElement = document.getElementById('totalMoney');
+    const totalMoney = parseFloat(totalMoneyElement.textContent);
+
+    const formattedMoney = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    }).format(totalMoney);
+
+    totalMoneyElement.textContent = formattedMoney;
+
+
+</script>
+</body>
+</html>

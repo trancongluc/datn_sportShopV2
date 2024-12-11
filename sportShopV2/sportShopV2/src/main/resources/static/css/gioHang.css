@@ -1,0 +1,54 @@
+.container {
+    width: 100%;        /* Chiếm 100% không gian màn hình */
+    margin: 0 auto;     /* Căn giữa trang */
+    padding: 0 10px;    /* Giữ khoảng cách 10px từ hai bên để nội dung không sát mép */
+    max-width: none;
+}
+/* Đặt chiều cao cố định và bật cuộn dọc */
+.scroll-container {
+    max-height: 700px; /* Chiều cao cố định */
+    overflow-y: auto; /* Bật cuộn dọc */
+}
+
+.cart-empty {
+    text-align: center;
+    padding: 50px 0;
+}
+
+.coupon-input {
+    margin-top: 15px;
+}
+
+.btn-apply-coupon {
+    margin-top: 5px;
+}
+
+.txt {
+    background-color: #00CCFF;
+    font-weight: bold;
+    padding-left: 10px;
+    color: white;
+    border-radius: 5px;
+}
+
+h1 {
+    text-align: left;
+    margin-bottom: 20px;
+}
+.card:hover {
+    background-color: #f8f9fa; /* Màu nền mới */
+    transform: scale(1.02); /* Hiệu ứng phóng to */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Bóng đổ */
+    transition: all 0.3s ease; /* Hiệu ứng chuyển động */
+
+}
+p{
+    color: black;
+}
+
+h5{
+    color: black;
+}
+h4{
+    color: black;
+}

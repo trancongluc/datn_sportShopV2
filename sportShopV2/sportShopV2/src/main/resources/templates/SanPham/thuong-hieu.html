@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Menu}"
+>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="/css/thuoc-tinh-sp.css"/>
+    <title>Quản Lý Thương Hiệu</title>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Phần nội dung của modal */
+        .modal-content {
+            position: relative;
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Form styling */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .form-group button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .form-group button:hover {
+            background-color: #218838;
+        }
+
+        /* Notification styling */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            display: none;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .notification .icon {
+            color: #4CAF50;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        .notification .message {
+            flex-grow: 1;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .notification .close {
+            color: #999;
+            cursor: pointer;
+        }
+
+        .notification .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: #4CAF50;
+            animation: progress 3s linear forwards;
+        }
+
+        @keyframes progress {
+            from {
+                width: 100%;
+            }
+            to {
+                width: 0;
+            }
+        }
+
+        /* Confirmation Modal */
+        #confirmationModal .modal-content {
+            background-color: #ffffff;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            margin: 10% auto;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        #confirmationModal .modal-message {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        /* Button group styling */
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        /* Button styling */
+        #confirmationModal .modal-button,
+        #confirmationModal .cancel-button {
+            padding: 10px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            min-width: 100px;
+        }
+
+        /* OK button */
+        #confirmationModal .modal-button {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+
+        #confirmationModal .modal-button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Cancel button */
+        #confirmationModal .cancel-button {
+            background-color: #6c757d;
+            color: #ffffff;
+        }
+
+        #confirmationModal .cancel-button:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        /* Close button styling */
+        #confirmationModal .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+        }
+
+        #confirmationModal .close:hover {
+            color: #333;
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+<main layout:fragment="main1">
+    <div>
+        <div class="header">
+            <i class="fas fa-box"></i>
+            Quản lý thương hiệu
+        </div>
+        <div class="filter-section">
+            <div class="form-row align-items-end">
+                <div class="form-group col-md-3">
+                    <label for="filter" class="font-weight-bold">Bộ lọc</label>
+                    <input type="text" class="form-control" id="filter" placeholder="Tìm kiếm">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="status" class="font-weight-bold">Trạng thái</label>
+                    <select id="status" class="form-control">
+                        <option value="all">Tất cả</option>
+                    </select>
+                </div>
+                <div class="filter-buttons">
+                    <button class="btn btn-primary mr-2">Tìm kiếm</button>
+                    <button class="btn btn-danger">Làm mới bộ lọc</button>
+                </div>
+            </div>
+        </div>
+        <div class="table-section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="header">
+                    <i class="fas fa-list"></i>
+                    Danh sách thương hiệu
+                </div>
+                <button class="btn btn-primary add-btn" onclick="showModal('add')">+ Thêm</button>
+            </div>
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên Thương Hiệu</th>
+                    <th>Ngày cập nhật</th>
+                    <th>Trạng Thái</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="thuongHieu,iterStat  : ${thuongHieu}">
+                    <td th:text="${iterStat.index + 1}"></td>
+                    <td th:text="${thuongHieu.tenThuongHieu}"></td>
+                    <td th:text="${thuongHieu.updateAt}"></td>
+                    <td><span class="status active" th:text="${thuongHieu.trangThai}"></span></td>
+                    <td class="actions">
+                        <i class="fas fa-eye" th:data-row-id="${thuongHieu.id}"
+                           onclick="showModal('view', this.dataset.rowId)"></i>
+                        <i class="fas fa-edit" th:data-row-id="${thuongHieu.id}"
+                           onclick="showModal('edit', this.dataset.rowId)"></i>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+            <!-- Pagination -->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{/thuong-hieu(page=${currentPage - 1})}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a class="page-link" th:href="@{/thuong-hieu(page=${i})}" th:text="${i + 1}"></a>
+                    </li>
+
+                    <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{/thuong-hieu(page=${currentPage + 1})}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('#myModal')">&times;</span>
+            <h2>Thương Hiệu</h2>
+            <input type="hidden" id="actionType" name="actionType" value="add">
+            <form id="thuongHieuForm">
+                <input type="hidden" id="thuongHieuId" name="thuongHieuId" value="">
+                <div class="form-group">
+                    <label for="tenThuongHieu">Tên Thương Hiệu</label>
+                    <input type="text" id="tenThuongHieu" name="tenThuongHieu" required>
+                </div>
+                <div class="form-group">
+                    <label for="trangThai">Trạng Thái</label>
+                    <select id="trangThai" name="trangThai" required>
+                        <option value="Đang hoạt động">Đang hoạt động</option>
+                        <option value="Không hoạt động">Không hoạt động</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Message -->
+    <div class="notification">
+        <i class="icon fas fa-check-circle"></i>
+        <div class="message">Thành Công!</div>
+        <i class="close fas fa-times" onclick="document.querySelector('.notification').style.display='none'"></i>
+        <div class="progress-bar"></div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('#confirmationModal')">&times;</span>
+            <p id="modalMessage"></p>
+            <div class="button-group">
+                <button class="modal-button" onclick="confirmAction()">OK</button>
+                <button class="cancel-button" onclick="closeModal('#confirmationModal')">Hủy</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="/js/ThuongHieu.js"></script>
+</main>
+</body>
+</html>

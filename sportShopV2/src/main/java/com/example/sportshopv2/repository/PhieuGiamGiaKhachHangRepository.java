@@ -1,5 +1,6 @@
 package com.example.sportshopv2.repository;
 
+import com.example.sportshopv2.model.GioHangChiTiet;
 import com.example.sportshopv2.model.PhieuGiamGiaKhachHang;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -9,4 +10,5 @@ public interface PhieuGiamGiaKhachHangRepository extends JpaRepository<PhieuGiam
     List<PhieuGiamGiaKhachHang> findAllByIdTaiKhoan_IdAndDeleted(Integer id, Boolean deleted);
 
     PhieuGiamGiaKhachHang findByIdPhieuGiamGia_Id(Integer id);
+
 }

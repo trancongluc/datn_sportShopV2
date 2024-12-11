@@ -70,8 +70,8 @@ $(document).ready(function () {
                     } else {
                         $("#ship").val(new Intl.NumberFormat('vi-VN', {
                             style: 'decimal',
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0
                         }).format(fee) + "VND");
                         calculateTotal();
                     }

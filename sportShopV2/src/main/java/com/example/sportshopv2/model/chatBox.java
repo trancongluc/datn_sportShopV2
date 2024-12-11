@@ -1,6 +1,9 @@
 package com.example.sportshopv2.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
 @Table(name = "ChatBox")
 public class chatBox {
@@ -38,7 +42,7 @@ public class chatBox {
 
     @Column
     private boolean deleted = false;
-    @JsonBackReference
+    //@JsonBackReference
     @OneToMany(mappedBy = "chatBox", cascade = CascadeType.ALL)
     private List<message> messages = new ArrayList<>();
 
