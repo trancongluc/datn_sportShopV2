@@ -91,9 +91,7 @@ public class ChatService {
     public List<chatBox> getActiveChatBoxes() {
         return chatBoxRepository.findAll(); // Hoặc tùy thuộc vào logic bạn cần
     }
-    public Optional<chatBox> getChatBoxById(int id) {
-        return chatBoxRepository.findById(id); // Hoặc tùy thuộc vào logic bạn cần
-    }
+
 
     public List<message> getMesByAccountId(int accountId) {
         return messageRepository.findByAccountId(accountId);

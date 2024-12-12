@@ -18,4 +18,7 @@ public interface ChatBoxRepository extends JpaRepository<chatBox, Integer> {
     List<chatBox> findWithMessagesByDeletedFalse();
 
     chatBox findByCreateBy(Integer accountId);
+
+    @Query(value = "SELECT * FROM ChatBox WHERE name LIKE 'noname';", nativeQuery = true)
+    List<chatBox> findAllCB();
 }

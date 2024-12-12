@@ -89,6 +89,8 @@ public class DatHangController {
     @Autowired
     private MessageRepository messageRepository;
 
+    String username;
+
     @RequestMapping("/trang-chu")
     public String trangChu(Model model) {
         // Lấy thông tin người dùng hiện tại
@@ -102,7 +104,7 @@ public class DatHangController {
         }
 
         // Lấy tên người dùng đã đăng nhập
-        String username = authentication.getName();
+        username = authentication.getName();
 
 
         // Lấy thông tin tài khoản
@@ -124,32 +126,25 @@ public class DatHangController {
                 .map(anh -> anh.getTenAnh() != null ? "/images/" + anh.getTenAnh() : "/images/giayMau.png")
                 .collect(Collectors.toList());
 
-        // Lấy accountId từ UserService
+        List<message> messages = new ArrayList<>(); // Khởi tạo danh sách rỗng để tránh NullPointerException
         int accountId = chatService.getAccountIdFromUsername(username);
-        int getName = chatService.getNameFromIDUser(username);
-        Optional<NguoiDung> name = chatService.getName(getName);
 
-        model.addAttribute("accountId", accountId);
-        // Lấy danh sách tất cả chatboxes
-// Kiểm tra xem accountId đã có chatBox hay chưa
-        List<message> message = chatService.getMesByAccountId(accountId);
+        // Tìm ChatBox dựa trên accountId
+        chatBox cb = chatService.findChatBoxByAccountId(accountId);
 
-        if (message.isEmpty()) {
-            // Nếu không tìm thấy ChatBox, tạo mới ChatBox với tên đặt theo tên người dùng
-            chatBox newChatBox = new chatBox();
-            newChatBox.setName(name.get().getFull_name()); // Đặt tên ChatBox theo tên người dùng
-            newChatBox.setCreateAt(LocalDateTime.now());
-            newChatBox.setCreateBy(accountId);
-            // Lưu ChatBox mới vào cơ sở dữ liệu
-            chatService.saveChatBox(newChatBox);
+        if (cb != null) {
+            // Nếu ChatBox tồn tại, lấy toàn bộ tin nhắn
+            messages = chatService.getMessagesByChatBoxId(cb.getId());
+        } else {
+            // Nếu ChatBox không tồn tại, tạo mới hoặc trả về ChatBox rỗng
+            cb = new chatBox();
+            cb.setId(0); // ChatBox rỗng để tránh lỗi null
+            cb.setName("noname");
         }
-        /*chatBox cb = chatService.findChatBoxByAccountId(accountId);
-        // Lấy danh sách tin nhắn của ChatBox
-        List<message> messages = chatService.getMessagesByChatBoxId(cb.getId());
 
         // Thêm ChatBox và tin nhắn vào Model để gửi ra view
         model.addAttribute("chatBox", cb.getId());
-        model.addAttribute("messages", messages);*/
+        model.addAttribute("messages", messages);
         model.addAttribute("accountId", accountId);
         model.addAttribute("imageUrls", imageUrls);
         model.addAttribute("listspct", AllProductDetail);
@@ -491,14 +486,15 @@ public class DatHangController {
 
         return "MuaHang/TraCuuDonHang"; // Trả về JSON
     }
+
     @GetMapping("/theo-doi-hoa-don")
     public String getHoaDonDetail(@RequestParam("tenHoaDon") String tenHoaDon, Model model) {
 
         HoaDon hoaDon = hoaDonServiceImp.getBillDetailByBillCode(tenHoaDon);
         List<HoaDonChiTiet> listSPCT = hoaDon.getBillDetails();
-        for (HoaDonChiTiet hdct:listSPCT){
+        for (HoaDonChiTiet hdct : listSPCT) {
             AnhSanPham anhSanPham = anhService.anhSanPhamByIDSPCT(hdct.getSanPhamChiTiet().getId());
-            model.addAttribute("anhSP",anhSanPham);
+            model.addAttribute("anhSP", anhSanPham);
         }
         if (hoaDon == null) {
             // Xử lý trường hợp không tìm thấy hóa đơn
@@ -523,10 +519,29 @@ public class DatHangController {
 
     @PostMapping("/sendMessage")
     public ResponseEntity<message> sendMessage(@RequestParam("chatBoxId") int chatBoxId,
-                                               @RequestParam("accountId") int accountId,
-                                               @RequestParam("content") String content) {
+                                               @RequestParam("accountId") int accountIds,
+                                               @RequestParam("content") String content, Model model) {
+        // Lấy accountId từ UserService
+        int accountId = chatService.getAccountIdFromUsername(username);
+        int getName = chatService.getNameFromIDUser(username);
+        Optional<NguoiDung> name = chatService.getName(getName);
+
+        model.addAttribute("accountId", accountId);
+        // Lấy danh sách tất cả chatboxes
+        // Kiểm tra xem accountId đã có chatBox hay chưa
+        List<message> message = chatService.getMesByAccountId(accountId);
+
+        if (message.isEmpty()) {
+            // Nếu không tìm thấy ChatBox, tạo mới ChatBox với tên đặt theo tên người dùng
+            chatBox newChatBox = new chatBox();
+            newChatBox.setName(name.get().getFull_name()); // Đặt tên ChatBox theo tên người dùng
+            newChatBox.setCreateAt(LocalDateTime.now());
+            newChatBox.setCreateBy(accountId);
+            // Lưu ChatBox mới vào cơ sở dữ liệu
+            chatService.saveChatBox(newChatBox);
+        }
         // Lưu tin nhắn vào cơ sở dữ liệu
-        message savedMessage = chatService.saveMessage(chatBoxId, accountId, "client", content);
+        message savedMessage = chatService.saveMessage(chatBoxId, accountIds, "client", content);
 
         // Gửi tin nhắn đến các subscriber thông qua STOMP
         messagingTemplate.convertAndSend("/topic/messages", savedMessage);
