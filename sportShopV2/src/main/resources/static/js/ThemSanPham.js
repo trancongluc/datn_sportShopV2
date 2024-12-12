@@ -1087,7 +1087,7 @@ async function capNhatSPCT() {
 
         // Tạo các sản phẩm chi tiết mới
         const addSPCTPromises = productDetails.map(detail => {
-            const trangThai = detail.quantity === 0 ? "Không hoạt động" : "Hoạt động"; // Kiểm tra số lượng để đặt trạng thái
+            const trangThai = detail.quantity === 0 ? "Không hoạt động" : "Đang hoạt động"; // Kiểm tra số lượng để đặt trạng thái
 
             return fetch(`/san-pham-chi-tiet/them-san-pham-chi-tiet`, {
                 method: 'POST',
@@ -1216,11 +1216,11 @@ function getInfoTable() {
             details.push({
                 sizeId: sizeId, // ID kích cỡ
                 colorId: colorId, // ID màu sắc
-                quantity: parseInt(quantity, 10),
+                quantity: parseCurrency(priceNumber),
                 price: priceNumber
             });
         } else {
-            console.log('Không tìm thấy ID kích cỡ hoặc màu sắc.');
+            showToast('Không tìm thấy ID kích cỡ hoặc màu sắc.');
         }
     });
 

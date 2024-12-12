@@ -267,14 +267,10 @@ public class HoaDonController {
             hoaDon.setStatus(status);
             hoaDon.setUpdateAt(LocalDateTime.now());
             hoaDon.setUpdate_by("username");
-            if (confirmation_date != null && !confirmation_date.isEmpty()) {
+            if (status.equals("Đã xác nhận")) {
                 // Loại bỏ 'Z' và tạo DateTimeFormatter để phân tích chuỗi
-                DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-                if (confirmation_date.endsWith("Z")) {
-                    confirmation_date = confirmation_date.substring(0, confirmation_date.length() - 1); // Loại bỏ 'Z'
-                }
-                LocalDateTime confirmationDate = LocalDateTime.parse(confirmation_date, formatter);
-                hoaDon.setConfirmation_date(confirmationDate);
+                LocalDateTime ConfirmationDate = LocalDateTime.now();
+                hoaDon.setConfirmation_date(ConfirmationDate);
             }
             if (status.equals("Chờ vận chuyển")) {
                 LocalDateTime desireDate = LocalDateTime.now();
