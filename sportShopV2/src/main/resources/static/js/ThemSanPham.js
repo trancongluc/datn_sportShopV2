@@ -636,23 +636,45 @@ function createRow(size, color, productName, productRows, tableBody) {
             <span style="display:inline-block; width: 20px; height: 20px; background-color: ${color.code}; border: 1px solid #000;"></span> 
             <span class="color-name" id="color-name-${color.id}">${color.code}</span>]
         </td>
-        <td><input type="number" value="1" style="width: 50px;"></td>
-        <td><input type="text" class="price" value="0 VNĐ" style="width: 180px;" onblur="formatPrice(this)"></td>
+        <td><input type="number" value="1" style="width: 50px;" class="quantity-input" min="0"></td>
+        <td><input type="text" class="price" value="0 VNĐ" style="width: 180px;" ></td>
         <td class="action-buttons">
             <div class="action-buttons-container">
                 <i class="fas fa-trash-alt" onclick="removeRow(this)"></i>
             </div>
         </td>
         <td>
-                        <div class="upload-button" onclick="triggerFileInput(this, '${rowKey}')"><i class="fas fa-plus"></i> Tải lên</div>
-                        <input type="file" class="fileInput" style="display:none;" multiple onchange="handleFileSelect(this, '${rowKey}')">
-                        <div class="uploaded-images"></div>
-                    </td>
+            <div class="upload-button" onclick="triggerFileInput(this, '${rowKey}')"><i class="fas fa-plus"></i> Tải lên</div>
+            <input type="file" class="fileInput" style="display:none;" multiple onchange="handleFileSelect(this, '${rowKey}')">
+            <div class="uploaded-images"></div>
+        </td>
     `;
+
     productRows[rowKey] = row;
     tableBody.appendChild(row);
+
+    // Lấy phần tử cột màu để gọi hàm lấy tên màu
     const colorNameElement = row.querySelector(`#color-name-${color.id}`);
     getColorName(color.code, colorNameElement);
+
+    // Ràng buộc sự kiện để ngăn giá trị âm
+    const quantityInput = row.querySelector('.quantity-input');
+    quantityInput.addEventListener('input', () => {
+        if (quantityInput.value < 0) {
+            quantityInput.value = 0; // Không cho phép số âm
+        }
+    });
+
+    const priceInput = row.querySelector('.price');
+    priceInput.addEventListener('input', () => {
+        let value = parseInt(priceInput.value.replace(/\D/g, ''), 10) || 0; // Lấy số từ chuỗi
+        if (value < 0) {
+            value = 0; // Nếu giá trị âm, đặt lại về 0
+        }
+        priceInput.value = value.toLocaleString() + ' VNĐ'; // Định dạng giá trị
+    });
+
+
 }
 
 document.getElementById('selectAll').addEventListener('change', function () {
@@ -899,6 +921,7 @@ async function themSPCT() {
         console.log('Thông tin chi tiết sản phẩm:', productDetails);
         // Tạo mảng các yêu cầu thêm chi tiết sản phẩm
         const chiTietPromises = productDetails.map(detail => {
+            const trangThai = detail.quantity === 0 ? "Không hoạt động" : "Đang hoạt động"; // Kiểm tra số lượng để đặt trạng thái
             return fetch('san-pham-chi-tiet/them-san-pham-chi-tiet', {
                 method: 'POST',
                 headers: {
@@ -916,7 +939,8 @@ async function themSPCT() {
                     moTa: moTa,
                     gioiTinh: gioiTinh,
                     soLuong: detail.quantity, // Số lượng
-                    gia: detail.price // Giá tiền
+                    gia: detail.price, // Giá tiền
+                    trangThai: trangThai
                 })
             });
         });
@@ -991,7 +1015,8 @@ async function capNhatSPCT() {
                         moTa: data.moTa,
                         gioiTinh: data.gioiTinh,
                         soLuong: data.soLuong,
-                        gia: data.gia
+                        gia: data.gia,
+                        trangThai: data.trangThai
                     };
                 });
         });
@@ -1005,6 +1030,7 @@ async function capNhatSPCT() {
             const giaThuc = parseCurrency(giaInput.value);
             detail.gia = giaThuc; // Cập nhật giá từ ô input
             detail.soLuong = parseInt(soLuongInput.value, 10); // Cập nhật số lượng từ ô input
+
         });
 
         console.log(spctInfoList);
@@ -1026,6 +1052,7 @@ async function capNhatSPCT() {
 
         // Cập nhật thông tin chi tiết của từng SPCT từ danh sách spctInfoList
         const updateSPCTPromises  = spctInfoList.map(detail => {
+            const trangThai = detail.soLuong === 0 ? "Không hoạt động" : "Đang hoạt động";
             return fetch(`/san-pham-chi-tiet/update/${detail.id}`, {
                 method: 'PUT',
                 headers: {
@@ -1044,7 +1071,8 @@ async function capNhatSPCT() {
                     moTa: moTa,
                     gioiTinh: gioiTinh,
                     soLuong: detail.soLuong,
-                    gia: detail.gia
+                    gia: detail.gia,
+                    trangThai: trangThai
                 })
             });
         });
@@ -1058,8 +1086,10 @@ async function capNhatSPCT() {
         const productDetails = getInfoTable(); // Giả sử hàm này trả về mảng thông tin
 
         // Tạo các sản phẩm chi tiết mới
-        const addSPCTPromises = productDetails.map((detail) =>
-            fetch(`/san-pham-chi-tiet/them-san-pham-chi-tiet`, {
+        const addSPCTPromises = productDetails.map(detail => {
+            const trangThai = detail.quantity === 0 ? "Không hoạt động" : "Hoạt động"; // Kiểm tra số lượng để đặt trạng thái
+
+            return fetch(`/san-pham-chi-tiet/them-san-pham-chi-tiet`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -1075,9 +1105,11 @@ async function capNhatSPCT() {
                     gioiTinh,
                     soLuong: detail.quantity,
                     gia: detail.price,
+                    trangThai: trangThai // Thêm trạng thái vào body
                 }),
-            })
-        );
+            });
+        });
+
 
         const addResponses = await Promise.all(addSPCTPromises);
         const newIds = [];
@@ -1198,7 +1230,7 @@ function getInfoTable() {
 
 function applyQuantityAndPrice() {
     const soLuongChung = document.getElementById('soLuongChung').value.trim();
-    const giaChung = document.getElementById('giaChung').value.trim();
+    const giaChung = parseCurrency(document.getElementById('giaChung').value.trim());
 
     if (!soLuongChung || !giaChung) {
         alert('Vui lòng nhập đầy đủ số lượng và giá!');

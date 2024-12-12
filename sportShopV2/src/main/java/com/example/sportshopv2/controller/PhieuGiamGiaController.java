@@ -33,7 +33,6 @@ public class PhieuGiamGiaController {
     private PhieuGiamGiaService phieuGiamGiaService;
     @GetMapping("/view")
     public String GiamGia(Model model) {
-        model.addAttribute("listVCCT", vcctRepo.findAll());
         model.addAttribute("listVC", vcRepo.findAll());
         return "PhieuGiamGia/giamGia";
     }
@@ -79,7 +78,11 @@ public class PhieuGiamGiaController {
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");
         return "redirect:/giam-gia/view";
     }
-
+    @PutMapping("/update")
+    @ResponseBody
+    public boolean updateSoLuongGiamGia(@RequestBody PhieuGiamGia phieuGiamGia) {
+        return phieuGiamGiaService.update(phieuGiamGia);
+    }
     @PostMapping("/delete/{id}")
     public String deleteVoucher(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         if (phieuGiamGiaService.delete(id)) {

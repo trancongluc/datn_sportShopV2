@@ -25,6 +25,4 @@ public interface SanPhamRepository extends JpaRepository<SanPham, Integer> {
             "(u.trangThai LIKE %:status% OR :status = 'all')")
     Page<SanPham> searchSP(@Param("keyword") String keyword, @Param("status") String status, Pageable pageable);
 
-
-
 }
