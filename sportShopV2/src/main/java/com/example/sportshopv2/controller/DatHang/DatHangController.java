@@ -335,7 +335,7 @@ public class DatHangController {
                     .body(Map.of("error", "Invalid data format for id or soLuong."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "An unexpected error occurred."));
+                    .body(Map.of("error", "Sản phẩm hiện đã hết hàng."));
         }
     }
 
@@ -414,9 +414,34 @@ public class DatHangController {
         }
         System.out.println(orderTotal);
         if (orderTotal == null || orderTotal.equals("0VND")) {
-            redirectAttributes.addFlashAttribute("message", "Vui lòng chọn sản phẩm để có thể mua hàng");
+            redirectAttributes.addFlashAttribute("error", "Vui lòng chọn sản phẩm để có thể mua hàng");
             return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
         }
+        // Lấy danh sách sản phẩm từ repository
+        List<SPCT> spctList = sanPhamChiTietRepo.findByIdIn(selectedProducts);
+
+        List<String> outOfStockProducts = new ArrayList<>();
+
+        for (SPCT spct : spctList) {
+            if (spct.getSoLuong() <= 0) {
+                // Thêm tên sản phẩm hết hàng vào danh sách
+                outOfStockProducts.add(spct.getIdSanPham().getTenSanPham());
+                // Xóa sản phẩm khỏi repository
+                spct.setTrangThai("Không hoạt động");
+                spct.setDeleted(true);
+                sanPhamChiTietRepo.save(spct);
+            }
+        }
+
+        if (!outOfStockProducts.isEmpty()) {
+            // Gộp tên sản phẩm thành một chuỗi thông báo
+            String message = "Các sản phẩm sau đã hết hàng, vui lòng chọn sản phẩm khác: "
+                    + String.join(", ", outOfStockProducts);
+            // Thêm thông báo vào redirectAttributes
+            redirectAttributes.addFlashAttribute("error", message);
+            return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
+        }
+
         Float ship = 0.0f;
         Float voucher = 0.0f;
         TaiKhoan tk = new TaiKhoan();
@@ -464,7 +489,6 @@ public class DatHangController {
             }
         }
         // Assuming you have a list of product details (dsSPCT) to create bill details
-        List<SPCT> spctList = sanPhamChiTietRepo.findByIdIn(selectedProducts);  // Ensure dsSPCT is populated
         List<GioHangChiTiet> gioHangChiTiets = gioHangChiTietRepo.findAllBySanPhamChiTiet_IdIn(selectedProducts);
 
         // Create HoaDonChiTiet for each SanPhamChiTiet and associate it with the HoaDon

@@ -393,6 +393,8 @@
         let selectedSizeId = null;
 
         function toggleActive(element, type) {
+            let selectedSizeId = null;
+            let selectedColorId = null;
             // Remove 'active' class from all siblings
             var siblings = element.parentNode.children;
             for (var i = 0; i < siblings.length; i++) {
@@ -411,6 +413,16 @@
 
             // Update the cart link if both color and size are selected
             updateCartLink();
+            if (type === 'size') {
+                selectedSizeId = element.getAttribute('data-size-id');
+            } else if (type === 'color') {
+                selectedColorId = element.getAttribute('data-color-id');
+            }
+
+            // Gửi yêu cầu đến backend nếu cả size và màu đã được chọn
+            if (selectedSizeId && selectedColorId) {
+                fetchProductPrice(selectedSizeId, selectedColorId);
+            }
         }
 
         function increaseQuantity(id, giaTien, idSanPhamChiTiet) {
