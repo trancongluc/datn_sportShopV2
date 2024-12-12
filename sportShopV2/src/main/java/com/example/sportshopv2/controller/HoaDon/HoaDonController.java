@@ -1,11 +1,13 @@
 package com.example.sportshopv2.controller.HoaDon;
 
+import com.example.sportshopv2.dto.SanPhamChiTietDTO;
 import com.example.sportshopv2.model.AnhSanPham;
 import com.example.sportshopv2.model.HoaDon;
 import com.example.sportshopv2.model.HoaDonChiTiet;
+import com.example.sportshopv2.model.SanPhamChiTiet;
 import com.example.sportshopv2.repository.HoaDonChiTietRepo;
 import com.example.sportshopv2.repository.HoaDonRepo;
-import com.example.sportshopv2.service.HoaDonService;
+import com.example.sportshopv2.service.*;
 import com.example.sportshopv2.repository.AnhSanPhamRepository;
 import com.example.sportshopv2.service.impl.HoaDonServiceImp;
 import com.itextpdf.text.pdf.BaseFont;
@@ -58,8 +60,13 @@ public class HoaDonController {
     private ServletContext servletContext;
     @Autowired
     private HoaDonService hdService;
+    @Autowired
+    private SanPhamChiTietService spctService;
+
+
     private Map<Integer, String> tongTienHD;
     private Map<Integer, String> tongTienGiamGia;
+
 
     public HoaDonController(AnhSanPhamRepository anhSanPhamRepository,
                             HoaDonChiTietRepo hdctrepo,
@@ -77,7 +84,7 @@ public class HoaDonController {
                 hd -> {
                     // Tính tổng tiền của hóa đơn
                     BigDecimal total = hdctrepo.findAllByHoaDon_Id(hd.getId()).stream()
-                            .map(hdct -> new BigDecimal(hdct.getHoaDon().getTotal_money()).multiply(BigDecimal.valueOf(hdct.getQuantity())))
+                            .map(hdct -> new BigDecimal(hdct.getHoaDon().getTotal_money()))
                             .reduce(BigDecimal.ZERO, BigDecimal::add);
                     // Làm tròn tổng tiền đến 2 chữ số thập phân
                     total = total.setScale(2, RoundingMode.HALF_UP); // Sử dụng RoundingMode.HALF_UP để làm tròn
@@ -89,7 +96,7 @@ public class HoaDonController {
                 HoaDon::getId, // Key là ID của hóa đơn
                 hd -> {
                     BigDecimal tienGiam = hdctrepo.findAllByHoaDon_Id(hd.getId()).stream()
-                            .map(hdct -> new BigDecimal(hdct.getHoaDon().getMoney_reduced()).multiply(BigDecimal.valueOf(hdct.getQuantity())))
+                            .map(hdct -> new BigDecimal(hdct.getHoaDon().getMoney_reduced()))
                             .reduce(BigDecimal.ZERO, BigDecimal::add);
                     tienGiam = tienGiam.setScale(2, RoundingMode.HALF_UP);
                     return NumberFormat.getCurrencyInstance(new Locale("vi", "VN")).format(tienGiam);
@@ -150,7 +157,6 @@ public class HoaDonController {
     }
 
 
-
     @GetMapping("/pdf")
     public String pdf(Model model, @RequestParam("id") Integer id) {
 //        model.addAttribute("list", hdctrepo.findAllById(id));
@@ -206,6 +212,11 @@ public class HoaDonController {
     @GetMapping("/export/pdf")
     public void viewInvoice(HttpServletRequest request, HttpServletResponse response, @RequestParam Integer id) {
         List<HoaDonChiTiet> billDetail = hdctrepo.findAllByHoaDon_Id(id);
+        Map<Integer, SanPhamChiTietDTO> spctMap = new HashMap<>();
+        for (HoaDonChiTiet hdct: billDetail){
+            SanPhamChiTietDTO spct = spctService.findSPCTDtoById(hdct.getSanPhamChiTiet().getId());
+            spctMap.put(spct.getId(), spct);
+        }
         HoaDon bill = hdrepo.findAllById(id);
         if (bill == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -220,8 +231,10 @@ public class HoaDonController {
             Context context = new Context();
             context.setVariable("hoaDon", bill);
             context.setVariable("items", billDetail);
+            context.setVariable("spct", spctMap);
             context.setVariable("productCount", billDetail.size());
             context.setVariable("discount", bill.getMoney_reduced());
+            context.setVariable("tienShip", bill.getMoney_ship());
             context.setVariable("total", billDetail.stream().mapToDouble(HoaDonChiTiet::getPrice).sum());
             context.setVariable("totalQuantity", billDetail.stream().mapToInt(HoaDonChiTiet::getQuantity).sum());
             context.setVariable("totalPayment", bill.getTotal_money());
@@ -257,7 +270,7 @@ public class HoaDonController {
     }
 
     @PostMapping("/status/update")
-    public String updateStatus(@RequestParam Integer id, @RequestParam String status,@RequestParam(required = false) String confirmation_date) {
+    public String updateStatus(@RequestParam Integer id, @RequestParam String status, @RequestParam(required = false) String confirmation_date) {
         /*Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();*/
 
@@ -269,20 +282,20 @@ public class HoaDonController {
             hoaDon.setUpdate_by("username");
             if (status.equals("Đã xác nhận")) {
                 // Loại bỏ 'Z' và tạo DateTimeFormatter để phân tích chuỗi
-                LocalDateTime ConfirmationDate = LocalDateTime.now();
-                hoaDon.setConfirmation_date(ConfirmationDate);
+                LocalDateTime desireDate = LocalDateTime.now();
+                hoaDon.setConfirmation_date(desireDate);
             }
             if (status.equals("Chờ vận chuyển")) {
                 LocalDateTime desireDate = LocalDateTime.now();
                 hoaDon.setDesire_date(desireDate);
             }
 
-            if (status.equals("Đang vận chuyển") ) {
+            if (status.equals("Đang vận chuyển")) {
                 LocalDateTime shipDate = LocalDateTime.now();
                 hoaDon.setShip_date(shipDate);
             }
 
-            if (status.equals("Hoàn thành") ) {
+            if (status.equals("Hoàn thành")) {
                 LocalDateTime receiveDate = LocalDateTime.now();
                 hoaDon.setReceive_date(receiveDate);
                 hoaDon.setTransaction_date(receiveDate);

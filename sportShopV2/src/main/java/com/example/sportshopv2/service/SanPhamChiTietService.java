@@ -62,7 +62,11 @@ public class SanPhamChiTietService {
         SanPhamChiTiet spct = sanPhamChiTietRepository.findByIdAndDeleted(idSPCT, false);
         return spct;
     }
+    public SanPhamChiTietDTO findSPCTDtoById(Integer idSPCT) {
+        SanPhamChiTiet spct = sanPhamChiTietRepository.findByIdAndDeleted(idSPCT, false);
 
+        return spct.toDTO(spct, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo);
+    }
     public List<SanPhamChiTietDTO> getAllSPCT() {
         List<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndTrangThaiOrderByCreateAtDesc(false, "Đang hoạt động");
         return listSPCT.stream().map(sanPhamChiTiet ->
