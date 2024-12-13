@@ -10,6 +10,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,8 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @RequestMapping("/dot-giam-gia")
@@ -27,105 +28,193 @@ public class DotGiamGiaController {
     private SanPhamChiTietService spctService;
     @Autowired
     private DotGiamGiaRepo dotGiamGiaRepo;
-
     @Autowired
     private DotGiamGiaServiceImp dotGiamGiaServiceImp;
-
     @Autowired
     private SanPhamRepository sanPhamRep;
-
     @Autowired
     private SanPhamChiTietRepository SPCTRep;
 
+    @Autowired
+    private DotGiamGiaService dotGiamGiaService;
+
     @GetMapping("/view")
     public String DotGiamGia(Model model) {
-        model.addAttribute("listDotGiamGia", dotGiamGiaRepo.findAll());
+        model.addAttribute("listDotGiamGia", dotGiamGiaRepo.findAll(Sort.by(Sort.Direction.DESC, "id")));
         return "DotGiamGia/dotGiamGia";
     }
 
     @GetMapping("/add-dot-giam-gia")
-    public String showAddGiamGiaForm(Model model) {
+    public String showAddGiamGiaForm(Model model,
+                                     @RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = "3") int size) {
         model.addAttribute("dotGiamGia", new DotGiamGia());
-        model.addAttribute("listSanPham", sanPhamRep.findAll());
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<SanPham> sanPhamPage = sanPhamRep.findAll(pageable);
+        model.addAttribute("sanPhamPage", sanPhamPage);
 
         List<SanPhamChiTietDTO> listSPCTDto = spctService.getAllSPCT();
         model.addAttribute("spctDto", listSPCTDto);
 
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", sanPhamPage.getTotalPages());
+        model.addAttribute("totalItems", sanPhamPage.getTotalElements());
+
         return "DotGiamGia/addDotGiamGia";
     }
 
+    private Map<Long, Float> originalPricesCache = new HashMap<>();
+
+
 
     @PostMapping("/save")
-    public String saveDotGiamGia(@RequestParam("discountValue") String discountValue,
-                                 @ModelAttribute DotGiamGia dotGiamGia,
-                                 RedirectAttributes redirectAttributes) {
-        try {
-            BigDecimal discount = new BigDecimal(discountValue);
-            dotGiamGia.setDiscount(discount);
-            dotGiamGiaRepo.save(dotGiamGia);
-            redirectAttributes.addFlashAttribute("successMessage", "Lưu đợt giảm giá thành công!");
-        } catch (NumberFormatException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Giá trị giảm không hợp lệ!");
-            return "redirect:/dot-giam-gia/add-dot-giam-gia";
+    public String saveDotGiamGia(
+            @RequestParam List<Long> selectedProducts,
+            @ModelAttribute DotGiamGia dotGiamGia,
+            RedirectAttributes redirectAttributes) {
+
+
+        List<SanPhamChiTiet> updatedProducts = new ArrayList<>();
+
+        // Lưu giá gốc vào cache và cập nhật giá sản phẩm
+        for (Long productId : selectedProducts) {
+            Optional<SanPhamChiTiet> sanPhamChiTietOpt = SPCTRep.findActiveById(productId.intValue());
+            sanPhamChiTietOpt.ifPresent(sanPhamChiTiet -> {
+
+                originalPricesCache.put(productId, sanPhamChiTiet.getGia());
+
+                float newPrice = sanPhamChiTiet.getGia() - dotGiamGia.getDiscount().floatValue();
+                sanPhamChiTiet.setGia(newPrice);
+
+                updatedProducts.add(sanPhamChiTiet);
+            });
         }
 
+        // Lưu đợt giảm giá
+        dotGiamGiaRepo.save(dotGiamGia);
+
+        // Lưu các sản phẩm đã cập nhật
+        SPCTRep.saveAll(updatedProducts);
+
+        redirectAttributes.addFlashAttribute("successMessage", "Lưu đợt giảm giá thành công!");
         return "redirect:/dot-giam-gia/view";
-    }
-    @GetMapping("/product/details/{id}")
-    @ResponseBody
-    public ResponseEntity<SanPhamChiTietDTO> getProductDetails(@PathVariable Integer id) {
-        try {
-            SanPhamChiTietDTO productDetails = spctService.getProductDetailsById(id);
-            return ResponseEntity.ok(productDetails);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
     }
 
     @GetMapping("/detail/{id}")
-    public String showDetail(@PathVariable Integer id, Model model, RedirectAttributes redirectAttributes) {
+    public String showDetail(@PathVariable Integer id, Model model, RedirectAttributes redirectAttributes,
+                             @RequestParam(defaultValue = "0") int page,
+                             @RequestParam(defaultValue = "3") int size,
+                             @RequestParam(required = false) List<Integer> selectedProductIds) { // Nhận danh sách ID sản phẩm đã chọn từ request
+
+        // Lấy danh sách sản phẩm
         model.addAttribute("listSanPham", sanPhamRep.findAll());
+
+        // Kiểm tra ID
         if (id == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "ID không hợp lệ!");
             return "redirect:/dot-giam-gia/view";
         }
 
-        DotGiamGia dotGiamGia = dotGiamGiaRepo.findById(id).orElse(null);
+        // Tìm đợt giảm giá
+        DotGiamGia dotGiamGia = dotGiamGiaServiceImp.findByID(id); // Sử dụng service để tìm đợt giảm giá
         if (dotGiamGia == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy đợt giảm giá!");
             return "redirect:/dot-giam-gia/view";
         }
+
+        // Thêm đợt giảm giá vào model
         model.addAttribute("dotGiamGia", dotGiamGia);
+
+        // Phân trang cho danh sách sản phẩm
+        Pageable pageable = PageRequest.of(page, size);
+        Page<SanPham> sanPhamPage = sanPhamRep.findAll(pageable);
+        model.addAttribute("sanPhamPage", sanPhamPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", sanPhamPage.getTotalPages());
+        model.addAttribute("totalItems", sanPhamPage.getTotalElements());
+
+        // Nếu selectedProductIds là null, khởi tạo nó là một danh sách rỗng
+        if (selectedProductIds == null) {
+            selectedProductIds = new ArrayList<>();
+        }
+        model.addAttribute("selectedProductIds", selectedProductIds);
+
         return "DotGiamGia/detail";
     }
 
     @PostMapping("/update")
-    public String updateDotGiamGia(@ModelAttribute DotGiamGia dotGiamGia, RedirectAttributes redirectAttributes) {
+    public String updateDotGiamGia(@ModelAttribute DotGiamGia dotGiamGia, RedirectAttributes redirectAttributes,
+                                   @RequestParam List<Long> selectedProducts) {
         if (dotGiamGia.getId() == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "ID không hợp lệ!");
             return "redirect:/dot-giam-gia/view";
         }
-        dotGiamGiaRepo.save(dotGiamGia);
-        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");
+
+        try {
+            dotGiamGiaService.update(dotGiamGia); // Sử dụng service để cập nhật
+
+            BigDecimal discountValue = dotGiamGia.getDiscount();
+            float discountFloat = discountValue.floatValue();
+
+            List<SanPhamChiTiet> updatedProducts = new ArrayList<>();
+
+            for (Long productId : selectedProducts) {
+                Optional<SanPhamChiTiet> sanPhamChiTietOpt = SPCTRep.findActiveById(productId.intValue());
+                sanPhamChiTietOpt.ifPresent(sanPhamChiTiet -> {
+                    float oldPrice = sanPhamChiTiet.getGia();
+                    float newPrice = oldPrice - discountFloat;
+                    sanPhamChiTiet.setGia(newPrice);
+                    updatedProducts.add(sanPhamChiTiet);
+                });
+            }
+
+            if (!updatedProducts.isEmpty()) {
+                SPCTRep.saveAll(updatedProducts);
+            }
+
+            redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");
+        } catch (NumberFormatException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Giá trị giảm không hợp lệ!");
+            return "redirect:/dot-giam-gia/view";
+        }
+
         return "redirect:/dot-giam-gia/view";
     }
+
 
     @PostMapping("/delete/{id}")
     public String deleteDotGiamGia(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         if (dotGiamGiaRepo.existsById(id)) {
-            dotGiamGiaRepo.deleteById(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Xóa đợt giảm giá thành công!");
+            // Lấy đợt giảm giá để lấy danh sách sản phẩm liên quan
+            DotGiamGia dotGiamGia = dotGiamGiaRepo.findById(id).orElse(null);
+            if (dotGiamGia != null) {
+                List<DotGiamGiaChiTiet> dotGiamGiaChiTietList = dotGiamGia.getDotGiamGiaChiTietList(); // Lấy danh sách sản phẩm liên quan
+
+                List<SanPhamChiTiet> updatedProducts = new ArrayList<>();
+
+                for (DotGiamGiaChiTiet chiTiet : dotGiamGiaChiTietList) {
+                    SanPhamChiTiet sanPhamChiTiet = chiTiet.getSpct();
+                    // Khôi phục giá gốc từ cache
+                    Float originalPrice = originalPricesCache.get(sanPhamChiTiet.getId());
+                    if (originalPrice != null) {
+                        sanPhamChiTiet.setGia(originalPrice);
+                        updatedProducts.add(sanPhamChiTiet); // Thêm sản phẩm đã cập nhật vào danh sách
+                    }
+                }
+
+                // Lưu các sản phẩm đã cập nhật
+                if (!updatedProducts.isEmpty()) {
+                    SPCTRep.saveAll(updatedProducts);
+                }
+
+                // Xóa đợt giảm giá
+                dotGiamGiaRepo.deleteById(id);
+                redirectAttributes.addFlashAttribute("successMessage", "Xóa đợt giảm giá thành công và giá sản phẩm đã được khôi phục!");
+            }
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy đợt giảm giá để xóa!");
         }
         return "redirect:/dot-giam-gia/view";
     }
-
-//    private String generateUniqueVoucherCode() {
-//        String code;
-//        do {
-//            code = "Sale" + UUID.randomUUID().toString().substring(0, 5).toUpperCase();
-//        } while (dotGiamGiaRepo.existsBySaleCode(code));
-//        return code;
-//    }
 }

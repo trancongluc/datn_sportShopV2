@@ -57,4 +57,6 @@ public class Address {
 //    @ManyToOne
 //    @JoinColumn(name = "id_User")
 //    private NguoiDung diaChi;
+
+
 }

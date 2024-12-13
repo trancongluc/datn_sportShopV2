@@ -68,8 +68,8 @@ public class PhieuGiamGiaServiceImpl implements PhieuGiamGiaService {
     private String generateUniqueVoucherCode() {
         String code;
         do {
-            code = "VC" + UUID.randomUUID().toString().substring(0, 5).toUpperCase(); // Tạo mã ngẫu nhiên
-        } while (phieuGiamGiaRepo.existsByVoucherCode(code)); // Kiểm tra xem mã đã tồn tại chưa
+            code = "VC" + UUID.randomUUID().toString().substring(0, 5).toUpperCase();
+        } while (phieuGiamGiaRepo.existsByVoucherCode(code));
         return code;
     }
 }

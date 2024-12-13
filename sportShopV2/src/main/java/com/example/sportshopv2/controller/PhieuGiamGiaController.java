@@ -8,11 +8,15 @@ import com.example.sportshopv2.repository.PhieuGiamGiaResponsitory;
 import com.example.sportshopv2.service.PhieuGiamGiaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -33,7 +37,9 @@ public class PhieuGiamGiaController {
     private PhieuGiamGiaService phieuGiamGiaService;
     @GetMapping("/view")
     public String GiamGia(Model model) {
-        model.addAttribute("listVC", vcRepo.findAll());
+        List<PhieuGiamGia> vouchers = vcRepo.findAll(Sort.by(Sort.Direction.DESC, "createAt"));
+        model.addAttribute("listVCCT", vcctRepo.findAll());
+        model.addAttribute("listVC", vouchers);
         return "PhieuGiamGia/giamGia";
     }
 
@@ -43,15 +49,75 @@ public class PhieuGiamGiaController {
         return "PhieuGiamGia/add";
     }
 
-
     @PostMapping("/save")
-    public String saveVoucher(@ModelAttribute PhieuGiamGia voucher) {
-        String uniqueVoucherCode = generateUniqueVoucherCode();
-        voucher.setVoucherCode(uniqueVoucherCode); // Gán mã voucher vào đối tượng
+    public String saveVoucher(@ModelAttribute PhieuGiamGia voucher, RedirectAttributes redirectAttributes) {
+        if (!isValidVoucher(voucher, redirectAttributes)) {
+            return "redirect:/giam-gia/add-giam-gia";
+        }
 
+        String uniqueVoucherCode = generateUniqueVoucherCode();
+        voucher.setVoucherCode(uniqueVoucherCode);
+        voucher.setCreateAt(LocalDateTime.now());
         voucherService.create(voucher);
         return "redirect:/giam-gia/view";
     }
+
+    @PostMapping("/update")
+    public String updateGiamGia(@ModelAttribute PhieuGiamGia phieuGiamGia, RedirectAttributes redirectAttributes) {
+        if (!isValidVoucher(phieuGiamGia, redirectAttributes)) {
+            return "redirect:/giam-gia/detail/" + phieuGiamGia.getId();
+        }
+
+        phieuGiamGiaService.update(phieuGiamGia);
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");
+        return "redirect:/giam-gia/view";
+    }
+
+    private boolean isValidVoucher(PhieuGiamGia voucher, RedirectAttributes redirectAttributes) {
+
+        boolean isValid = true;
+
+        LocalDateTime startDate = voucher.getStartDate();
+        LocalDateTime endDate = voucher.getEndDate();
+
+
+        if (startDate != null && endDate != null) {
+            if (endDate.isBefore(startDate)) {
+                redirectAttributes.addFlashAttribute("errorEndDate", "Ngày kết thúc không được trước ngày bắt đầu!");
+                isValid = false;
+            }
+        } else {
+            if (startDate == null) {
+                redirectAttributes.addFlashAttribute("errorStartDate", "Ngày bắt đầu không được để trống!");
+                isValid = false;
+            }
+            if (endDate == null) {
+                redirectAttributes.addFlashAttribute("errorEndDate", "Ngày kết thúc không được để trống!");
+                isValid = false;
+            }
+        }
+
+
+        if (voucher.getQuantity() < 0) {
+            redirectAttributes.addFlashAttribute("errorQuantity", "Số lượng không được âm!");
+            isValid = false;
+        }
+
+
+        BigDecimal minimumValue = voucher.getMinimumValue();
+        if (minimumValue != null && minimumValue.compareTo(BigDecimal.ZERO) < 0) {
+            redirectAttributes.addFlashAttribute("errorMinimumValue", "Giá trị không được âm!");
+            isValid = false;
+        }
+
+        BigDecimal discountAmount = voucher.getDiscountValue(); // Assuming getter is defined
+        if (discountAmount != null && discountAmount.compareTo(BigDecimal.ZERO) < 0) {
+            redirectAttributes.addFlashAttribute("errorDiscountAmount", "Số tiền giảm không được âm!");
+            isValid = false;
+        }
+        return isValid;
+    }
+
     @GetMapping("/detail/{id}")
     public String showDetail(@PathVariable Integer id, Model model, RedirectAttributes redirectAttributes) {
         if (id == null) {
@@ -68,16 +134,7 @@ public class PhieuGiamGiaController {
         return "PhieuGiamGia/detail";
     }
 
-    @PostMapping("/update")
-    public String updateGiamGia(@ModelAttribute PhieuGiamGia phieuGiamGia, RedirectAttributes redirectAttributes) {
-        if (phieuGiamGia.getId() == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "ID không hợp lệ!");
-            return "redirect:/giam-gia/view";
-        }
-        phieuGiamGiaService.update(phieuGiamGia);
-        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");
-        return "redirect:/giam-gia/view";
-    }
+
     @PutMapping("/update")
     @ResponseBody
     public boolean updateSoLuongGiamGia(@RequestBody PhieuGiamGia phieuGiamGia) {
@@ -92,6 +149,7 @@ public class PhieuGiamGiaController {
         }
         return "redirect:/giam-gia/view";
     }
+
     private String generateUniqueVoucherCode() {
         // Logic để tạo mã voucher duy nhất
         // Có thể kiểm tra trong cơ sở dữ liệu để đảm bảo không trùng lặp
