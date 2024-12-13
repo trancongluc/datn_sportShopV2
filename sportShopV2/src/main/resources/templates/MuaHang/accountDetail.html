@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trang Đơn Hàng</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap JS và Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         .profile-pic {
             width: 80px;
@@ -62,86 +69,115 @@
             border-radius: 50%;
             object-fit: cover;
         }
+
+        /* Custom CSS for Address section */
+        .address-section {
+            float: left; /* Move the address section to the right */
+            width: 50%; /* Adjust width to fit your design */
+            margin-left: 20px; /* Add some space to the left */
+            height: 100%; /* Set height to 100% */
+            min-height: 100%; /* Ensure minimum height matches content area */
+            display: flex;
+            flex-direction: column; /* Keep elements stacked vertically */
+            justify-content: space-between; /* Space out elements evenly */
+        }
+
+        .address-card {
+            border: 1px solid #ddd; /* Light gray border */
+            border-radius: 5px; /* Rounded corners */
+            margin-bottom: 15px; /* Space between addresses */
+            padding: 10px; /* Add padding inside each address box */
+            background-color: #f9f9f9; /* Light background for the card */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
+        }
+
+        .address-card p {
+            margin: 0 0 10px; /* Space between lines of text */
+        }
     </style>
 </head>
 <body>
 <div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <aside class="col-md-3 sidebar">
-            <div class="text-center mb-4">
-                <div class="image-upload" style="margin-left: 150px">
-                    <label for="file-input">
-                        <img alt="placeholder image" id="image-preview">
-                    </label>
-                    <input id="file-input" type="file" accept="image/*" name="imageFile" onchange="loadImage(event)">
-                    <!-- Thêm name -->
+    <form th:action="@{/mua-sam-SportShopV2/customer/update/{id}(id=${customer.id})}"
+          method="post"
+          enctype="multipart/form-data"><!-- Cập nhật action -->
+        <div class="row">
+            <!-- Sidebar -->
+            <aside class="col-md-3 sidebar">
+                <div class="text-center mb-4">
+                    <div class="image-upload" style="margin-left: 150px">
+                        <label for="file-input">
+                            <img th:src="@{/uploads/{imageFileName}(imageFileName=${customer.imageFileName})}"
+                                 alt="placeholder image" id="image-preview">
+                        </label>
+                        <input id="file-input" type="file" accept="image/*" name="imageFile"
+                               onchange="loadImage(event)">
+                        <!-- Thêm name -->
+                    </div>
+                    <h5 th:text="${customer.fullName}"></h5>
+                    <a href="#" class="btn btn-link" onclick="showProfileForm()">Sửa hồ sơ</a>
                 </div>
-                <h5>Đinh Khắc Điềm</h5>
-                <a href="#" class="btn btn-link" onclick="showProfileForm()">Sửa hồ sơ</a>
-            </div>
-            <hr>
-            <ul class="nav flex-column" style="margin-left: 150px">
-                <li class="nav-item">
-                    <a class="nav-link active active-link" href="#" onclick="showProfileForm()">Tài khoản của tôi</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="showOrderList()">Đơn mua</a>
-                </li>
-            </ul>
-        </aside>
+                <hr>
+                <ul class="nav flex-column" style="margin-left: 145px">
+                    <li class="nav-item">
+                        <a class="nav-link active active-link" href="#" onclick="showProfileForm()">Tài khoản của
+                            tôi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showOrderList()">Đơn mua</a>
+                    </li>
+                </ul>
+            </aside>
 
-        <!-- Nội dung chính -->
-        <main class="col-md-9" id="main-content">
-            <!-- Danh sách đơn hàng mặc định -->
-            <div id="order-list">
-                <div class="d-flex mb-4">
-                    <button class="btn btn-light mr-2">Tất cả</button>
-                    <button class="btn btn-light mr-2">Chờ xác nhận</button>
-                    <button class="btn btn-light mr-2">Chờ vận chuyển</button>
-                    <button class="btn btn-light mr-2">Vận chuyển</button>
-                    <button class="btn btn-light mr-2">Hoàn thành</button>
-                    <button class="btn btn-light">Đã hủy</button>
-                </div>
+            <!-- Nội dung chính -->
+            <main class="col-md-9" id="main-content">
+                <!-- Danh sách đơn hàng mặc định -->
+                <div id="order-list">
+                    <div class="d-flex mb-4">
+                        <button class="btn btn-light mr-2">Tất cả</button>
+                        <button class="btn btn-light mr-2">Chờ xác nhận</button>
+                        <button class="btn btn-light mr-2">Chờ vận chuyển</button>
+                        <button class="btn btn-light mr-2">Vận chuyển</button>
+                        <button class="btn btn-light mr-2">Hoàn thành</button>
+                        <button class="btn btn-light">Đã hủy</button>
+                    </div>
 
-                <!-- Mẫu đơn hàng -->
-                <div class="order-list border-top mt-3">
-                    <div class="d-flex align-items-center justify-content-between border-bottom py-2">
-                        <img src="nike-shoe.png" alt="Giày Nike" class="product-image">
-                        <div class="flex-grow-1 ml-3">
-                            <h6>Giày Thể Thao Nam Nike Dbreak-Type</h6>
-                            <p>40 - màu đen</p>
-                            <p>x1 <span class="emoji">😊</span></p>
+                    <!-- Mẫu đơn hàng -->
+                    <div class="order-list border-top mt-3">
+                        <div class="d-flex align-items-center justify-content-between border-bottom py-2">
+                            <img src="nike-shoe.png" alt="Giày Nike" class="product-image">
+                            <div class="flex-grow-1 ml-3">
+                                <h6>Giày Thể Thao Nam Nike Dbreak-Type</h6>
+                                <p>40 - màu đen</p>
+                                <p>x1 <span class="emoji">😊</span></p>
+                            </div>
+                            <div class="product-price">2.500.000 VND</div>
+                            <button class="btn btn-primary ml-2">Chờ xác nhận</button>
                         </div>
-                        <div class="product-price">2.500.000 VND</div>
-                        <button class="btn btn-primary ml-2">Chờ xác nhận</button>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between border-bottom py-2">
-                        <img src="adidas-shoe.png" alt="Giày Adidas" class="product-image">
-                        <div class="flex-grow-1 ml-3">
-                            <h6>Giày Chạy Nam Adidas Ultraboost Cc_1 Dna FZ2545</h6>
-                            <p>42 - màu đen</p>
-                            <p>x1</p>
+                        <div class="d-flex align-items-center justify-content-between border-bottom py-2">
+                            <img src="adidas-shoe.png" alt="Giày Adidas" class="product-image">
+                            <div class="flex-grow-1 ml-3">
+                                <h6>Giày Chạy Nam Adidas Ultraboost Cc_1 Dna FZ2545</h6>
+                                <p>42 - màu đen</p>
+                                <p>x1</p>
+                            </div>
+                            <div class="product-price">2.500.000 VND</div>
                         </div>
-                        <div class="product-price">2.500.000 VND</div>
+                    </div>
+
+                    <!-- Tóm tắt đơn hàng -->
+                    <div class="d-flex justify-content-between mt-3">
+                        <p>Thành tiền: <span>5.000.000 VND</span></p>
+                        <div>
+                            <button class="btn btn-danger">Hủy đơn</button>
+                            <button class="btn btn-info">Xem đơn hàng</button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Tóm tắt đơn hàng -->
-                <div class="d-flex justify-content-between mt-3">
-                    <p>Thành tiền: <span>5.000.000 VND</span></p>
-                    <div>
-                        <button class="btn btn-danger">Hủy đơn</button>
-                        <button class="btn btn-info">Xem đơn hàng</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Form thông tin người dùng -->
-            <div id="profile-form" style="display:none;">
-                <h4>Sửa Hồ Sơ</h4>
-                <form th:action="@{/khach-hang/customer/update/{id}(id=${customer.id})}" method="post"
-                      enctype="multipart/form-data"> <!-- Cập nhật action -->
+                <!-- Form thông tin người dùng -->
+                <div id="profile-form" style="display:none;">
+                    <h4>Sửa Hồ Sơ</h4>
                     <div class="col-md-8">
                         <div class="row mb-3">
                             <div class="col-md-6">
@@ -192,173 +228,170 @@
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Cập Nhật</button>
-                </form>
-                <hr>
-                <div class="address-section flex-fill ms-2 p-3 border rounded bg-light" style="color: black">
-                    <h3>Địa Chỉ</h3>
-                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal"
-                       style="margin-bottom: 15px">Thêm Địa Chỉ</a>
-                    <div th:each="address : ${customer.addresses}">
-                        <div class="address-card">
-                            <button style="margin-left:550px" href="#"
-                                    th:href="@{/khach-hang/customer/select-address/{customerId}/{addressId}(customerId=${customer.id}, addressId=${address.id})}"
-                                    class="btn btn-primary"
-                            >
-                                <!--                                    class="star-icon"-->
-                                <!--                                    <i class="far fa-star" id="star-[[${address.id}]]"></i>-->
-                                Chọn
-                            </button>
-                            <p>Địa chỉ: <span th:text="${address.tinh}">Tỉnh</span>,
-                                <span th:text="${address.quan}">Quận</span>,
-                                <span th:text="${address.phuong}">Phường</span> -
-                                <span th:text="${address.line}">Địa chỉ chi tiết</span>
-                            </p>
-                            <a href="#"
-                               th:href="@{/khach-hang/customer/delete-address/{customerId}/{addressId}(customerId=${customer.id}, addressId=${address.id})}">
-                                <i class="fas fa-trash-can"></i></a>
+
+    </form>
+    <hr>
+    <div class="address-section flex-fill ms-2 p-3 border rounded bg-light" style="color: black">
+        <h3>Địa Chỉ</h3>
+        <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal"
+           style="margin-bottom: 15px">Thêm Địa Chỉ</a>
+        <div th:each="address : ${customer.addresses}">
+            <div class="address-card">
+                <button  href="#"
+                        th:href="@{/mua-sam-SportShopV2/customer/select-address/{customerId}/{addressId}(customerId=${customer.id}, addressId=${address.id})}"
+                        class="btn btn-primary">
+                    Chọn
+                </button>
+                <br>
+                <p>Địa chỉ: <span th:text="${address.tinh}">Tỉnh</span>,
+                    <span th:text="${address.quan}">Quận</span>,
+                    <span th:text="${address.phuong}">Phường</span> -
+                    <span th:text="${address.line}">Địa chỉ chi tiết</span>
+                </p>
+                <a href="#"
+                   th:href="@{/mua-sam-SportShopV2/customer/delete-address/{customerId}/{addressId}(customerId=${customer.id}, addressId=${address.id})}">
+                    <i class="fas fa-trash-can"></i></a>
 
 
-                            <a href="#" data-bs-toggle="modal"
-                               data-bs-target="#updateAddressModal"
-                               th:data-id="${address.id}"
-                               th:data-tinh="${address.tinh}"
-                               th:data-quan="${address.quan}"
-                               th:data-phuong="${address.phuong}"
-                               th:data-line="${address.line}"
-                               class="update-address-btn">
-                                <i class="fas fa-pen-to-square"></i>
-                            </a>
+                <a href="#" data-bs-toggle="modal"
+                   data-bs-target="#updateAddressModal"
+                   th:data-id="${address.id}"
+                   th:data-tinh="${address.tinh}"
+                   th:data-quan="${address.quan}"
+                   th:data-phuong="${address.phuong}"
+                   th:data-line="${address.line}"
+                   class="update-address-btn">
+                    <i class="fas fa-pen-to-square"></i>
+                </a>
 
+
+            </div>
+
+
+            <!-- Modal để thêm địa chỉ mới -->
+            <div class="modal fade" id="addAddressModal" tabindex="-1" role="dialog"
+                 aria-labelledby="addAddressModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addAddressModalLabel">Thêm Địa Chỉ Mới</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
 
                         </div>
-
-
-                        <!-- Modal để thêm địa chỉ mới -->
-                        <div class="modal fade" id="addAddressModal" tabindex="-1" role="dialog"
-                             aria-labelledby="addAddressModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="addAddressModalLabel">Thêm Địa Chỉ Mới</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-
-                                    </div>
-                                    <div class="modal-body">
-                                        <form action="#"
-                                              th:action="@{/khach-hang/addAddress/{customerId}(customerId=${customer.id})}"
-                                              method="post">
-                                            <div class="form-group">
-                                                <label for="tinh" class="form-label">Tỉnh</label>
-                                                <select class="form-select" id="tinh" name="tinh"
-                                                        onchange="document.getElementsByName('tinh_name')[0].value = this.options[this.selectedIndex].text;">
-                                                    <option value="0" hidden>Tỉnh Thành</option>
-                                                    <!-- Các lựa chọn tỉnh thành -->
-                                                </select>
-                                                <input type="hidden" name="tinh_name" value="">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="quan" class="form-label">Huyện</label>
-                                                <select class="form-select" id="quan" name="quan"
-                                                        onchange="document.getElementsByName('quan_name')[0].value = this.options[this.selectedIndex].text;">
-                                                    <option value="0" hidden>Quận Huyện</option>
-                                                </select>
-                                                <input type="hidden" name="quan_name" value="">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="phuong" class="form-label">Phường</label>
-                                                <select class="form-select" id="phuong" name="phuong"
-                                                        onchange="document.getElementsByName('phuong_name')[0].value = this.options[this.selectedIndex].text;">
-                                                    <option value="0" hidden>Phường Xã</option>
-                                                </select>
-                                                <input type="hidden" name="phuong_name" value="">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="line">Số nhà </label>
-                                                <input type="text" class="form-control" id="line" name="line" required>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary" style="margin-top: 15px">Lưu
-                                            </button>
-                                        </form>
-                                    </div>
+                        <div class="modal-body">
+                            <form action="#"
+                                  th:action="@{/mua-sam-SportShopV2/addAddress/{customerId}(customerId=${customer.id})}"
+                                  method="post">
+                                <div class="form-group">
+                                    <label for="tinh" class="form-label">Tỉnh</label>
+                                    <select class="form-select" id="tinh" name="tinh"
+                                            onchange="document.getElementsByName('tinh_name')[0].value = this.options[this.selectedIndex].text;">
+                                        <option value="0" hidden>Tỉnh Thành</option>
+                                        <!-- Các lựa chọn tỉnh thành -->
+                                    </select>
+                                    <input type="hidden" name="tinh_name" value="">
                                 </div>
-                            </div>
-                        </div>
-
-
-                        <!-- Modal để cập nhật địa chỉ -->
-                        <div class="modal fade" id="updateAddressModal" tabindex="-1" role="dialog"
-                             aria-labelledby="updateAddressModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="updateAddressModalLabel">Cập Nhật Địa Chỉ</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-
-                                    </div>
-                                    <div class="modal-body">
-                                        <form th:action="@{/khach-hang/customer/update-address/{customerId}(customerId=${customer.id})}"
-
-                                              method="post">
-                                            <input type="hidden" id="addressId" name="addressId"
-                                                   th:value="${address.id}">
-
-                                            <div class="form-group">
-                                                <label for="tinha" class="form-label">Tỉnh</label>
-                                                <select class="form-select" id="tinha" name="tinh"
-                                                        onchange="document.getElementsByName('tinhName')[0].value = this.options[this.selectedIndex].text;"
-                                                >
-                                                    <option th:value="${address.tinh}" th:text="${address.tinh}"
-                                                            selected></option>
-                                                </select>
-                                                <input type="hidden" name="tinhName" th:value="${address.tinh}">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="quana" class="form-label">Huyện</label>
-                                                <select class="form-select" id="quana" name="quan"
-                                                        onchange="document.getElementsByName('quanName')[0].value = this.options[this.selectedIndex].text;"
-                                                >
-                                                    <option th:value="${address.quan}" th:text="${address.quan}" hidden>
-                                                        Quận
-                                                        Huyện
-                                                    </option>
-                                                </select>
-                                                <input type="hidden" name="quanName" th:value="${address.quan}">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="phuonga" class="form-label">Phường</label>
-                                                <select class="form-select" id="phuonga" name="phuong"
-                                                        onchange="document.getElementsByName('phuongName')[0].value = this.options[this.selectedIndex].text;"
-                                                >
-                                                    <option th:value="${address.phuong}" th:text="${address.phuong}"
-                                                            hidden>
-                                                        Phường Xã
-                                                    </option>
-                                                </select>
-                                                <input type="hidden" name="phuongName" th:value="${address.phuong}">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="linea">Số nhà</label>
-                                                <input type="text" class="form-control" id="linea" name="line"
-                                                       th:value="${address.line}">
-                                            </div>
-                                            <button type="submit" class="btn btn-primary" style="margin-top: 15px">Cập
-                                                nhật
-                                            </button>
-                                        </form>
-                                    </div>
+                                <div class="form-group">
+                                    <label for="quan" class="form-label">Huyện</label>
+                                    <select class="form-select" id="quan" name="quan"
+                                            onchange="document.getElementsByName('quan_name')[0].value = this.options[this.selectedIndex].text;">
+                                        <option value="0" hidden>Quận Huyện</option>
+                                    </select>
+                                    <input type="hidden" name="quan_name" value="">
                                 </div>
-                            </div>
+                                <div class="form-group">
+                                    <label for="phuong" class="form-label">Phường</label>
+                                    <select class="form-select" id="phuong" name="phuong"
+                                            onchange="document.getElementsByName('phuong_name')[0].value = this.options[this.selectedIndex].text;">
+                                        <option value="0" hidden>Phường Xã</option>
+                                    </select>
+                                    <input type="hidden" name="phuong_name" value="">
+                                </div>
+                                <div class="form-group">
+                                    <label for="line">Số nhà </label>
+                                    <input type="text" class="form-control" id="line" name="line" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="margin-top: 15px">Lưu
+                                </button>
+                            </form>
                         </div>
-
-
                     </div>
                 </div>
             </div>
-        </main>
+
+
+            <!-- Modal để cập nhật địa chỉ -->
+            <div class="modal fade" id="updateAddressModal" tabindex="-1" role="dialog"
+                 aria-labelledby="updateAddressModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="updateAddressModalLabel">Cập Nhật Địa Chỉ</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+
+                        </div>
+                        <div class="modal-body">
+                            <form th:action="@{/mua-sam-SportShopV2/customer/update-address/{customerId}(customerId=${customer.id})}"
+
+                                  method="post">
+                                <input type="hidden" id="addressId" name="addressId" th:value="${address.id}">
+
+                                <div class="form-group">
+                                    <label for="tinha" class="form-label">Tỉnh</label>
+                                    <select class="form-select" id="tinha" name="tinh"
+                                            onchange="document.getElementsByName('tinhName')[0].value = this.options[this.selectedIndex].text;"
+                                    >
+                                        <option th:value="${address.tinh}" th:text="${address.tinh}"
+                                                selected></option>
+                                    </select>
+                                    <input type="hidden" name="tinhName" th:value="${address.tinh}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="quana" class="form-label">Huyện</label>
+                                    <select class="form-select" id="quana" name="quan"
+                                            onchange="document.getElementsByName('quanName')[0].value = this.options[this.selectedIndex].text;"
+                                    >
+                                        <option th:value="${address.quan}" th:text="${address.quan}" hidden>Quận
+                                            Huyện
+                                        </option>
+                                    </select>
+                                    <input type="hidden" name="quanName" th:value="${address.quan}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="phuonga" class="form-label">Phường</label>
+                                    <select class="form-select" id="phuonga" name="phuong"
+                                            onchange="document.getElementsByName('phuongName')[0].value = this.options[this.selectedIndex].text;"
+                                    >
+                                        <option th:value="${address.phuong}" th:text="${address.phuong}" hidden>
+                                            Phường Xã
+                                        </option>
+                                    </select>
+                                    <input type="hidden" name="phuongName" th:value="${address.phuong}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="linea">Số nhà</label>
+                                    <input type="text" class="form-control" id="linea" name="line"
+                                           th:value="${address.line}">
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="margin-top: 15px">Cập
+                                    nhật
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
     </div>
 </div>
+</div>
+</div>
+</main>
+
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
@@ -427,23 +460,23 @@
             event.preventDefault(); // Ngăn chặn submit nếu không hợp lệ
         }
     });
-
-    //tt dia chi
+</script>
+<script>
     // Hàm xử lý khi click vào icon sao
     document.querySelectorAll('.star-icon').forEach(item => {
         item.addEventListener('click', function () {
-            // Lấy id của địa chỉ từ thuộc tính id của icon sao
+// Lấy id của địa chỉ từ thuộc tính id của icon sao
             const starId = this.querySelector('i').id;
             const currentStar = document.getElementById(starId);
 
-            // Kiểm tra sao đã sáng chưa
+// Kiểm tra sao đã sáng chưa
             if (currentStar.classList.contains('fas')) {
-                // Nếu sao đã sáng, tắt nó đi (trở lại sao rỗng)
+// Nếu sao đã sáng, tắt nó đi (trở lại sao rỗng)
                 currentStar.classList.remove('fas');
                 currentStar.classList.add('far');
                 localStorage.removeItem('selectedStar'); // Xóa lưu trữ trạng thái
             } else {
-                // Nếu sao chưa sáng, tắt tất cả sao khác và bật sao này sáng
+// Nếu sao chưa sáng, tắt tất cả sao khác và bật sao này sáng
                 document.querySelectorAll('.star-icon i').forEach(star => {
                     star.classList.remove('fas');
                     star.classList.add('far');
@@ -467,8 +500,6 @@
 
 
 </script>
-
-
 <script>
     $(document).on('click', '.update-address-btn', function () {
         var addressId = this.getAttribute('data-id');
@@ -520,8 +551,11 @@
                     $('#phuonga').append('<option value="' + val_phuong.id + '" ' + selected + '>' + val_phuong.full_name + '</option>');
                 });
             });
+
         });
+
     });
+    <script src="/js/KhachHang.js"></script>
 </script>
 </body>
 </html>

@@ -577,21 +577,24 @@ public class DatHangController {
     }
 
 
-
     //TT khach hang
-//
+
     @GetMapping("/accountDetail")
-    public String getDetail() {
-        return "MuaHang/accountDetail";
-    }
+    public String viewCustomerDetails(Model model) {
+        int accountId = chatService.getAccountFromUsername(username);
+        User customer = userService.getCustomerById(accountId); // Add this method to UserService
+        // Kiểm tra lại customer đã có chưa
+        if (customer == null) {
+            model.addAttribute("errorMessage", "Không tìm thấy khách hàng.");
+            return "errorPage"; // Chuyển hướng nếu không tìm thấy khách hàng
+        }
 
-    @GetMapping("/customer/detail/{id}")
-    public String viewCustomerDetails(@PathVariable("id") Integer id, Model model, HttpSession session) {
-        User customer = userService.getCustomerById(id); // Add this method to UserService
-        model.addAttribute("customer", customer);
+        // Kiểm tra giá trị customer và id của nó trước khi truyền vào model
+        System.out.println("Customer: " + customer); // In ra để kiểm tra customer có giá trị không
+        System.out.println("Customer ID: " + customer.getId()); // In ra ID để kiểm tra
 
-
-        return "MuaHang/accountDetail"; // Create a new Thymeleaf template for details
+        model.addAttribute("customer", customer); // Thêm vào model
+        return "MuaHang/accountDetail"; // Trả về template
     }
 
     @GetMapping("/thong-tin-kh/{idKH}")
@@ -606,9 +609,7 @@ public class DatHangController {
     public String viewdiachi(@PathVariable("id") Integer id, Model model) {
         User customer = userService.getCustomerById(id); // Add this method to UserService
         model.addAttribute("customer", customer);
-
-
-        return "KhachHang/diachi"; // Create a new Thymeleaf template for details
+        return "MuaHang/accountDetail"; // Create a new Thymeleaf template for details
     }
 
 
@@ -620,8 +621,6 @@ public class DatHangController {
                                  @RequestParam("gender") String gender,
                                  @RequestParam("date") String date,
                                  @RequestParam("imageFile") MultipartFile imageFile,
-
-
                                  Model model) {
         try {
             User customer = userService.getCustomerById(id); // Fetch existing customer
@@ -640,7 +639,7 @@ public class DatHangController {
             // Nếu có lỗi, trả về trang chỉnh sửa
             if (model.containsAttribute("phoneError") || model.containsAttribute("emailError")) {
                 model.addAttribute("customer", customer); // Truyền dữ liệu khách hàng hiện tại vào form
-                return "KhachHang/khachhangdetail"; // Tên trang chỉnh sửa khách hàng
+                return "redirect:/mua-sam-SportShopV2/accountDetail"; // Tên trang chỉnh sửa khách hàng
             }
 
             customer.setFullName(fullName);
@@ -658,7 +657,7 @@ public class DatHangController {
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Cập nhật không thành công.");
         }
-        return "redirect:/khach-hang/list"; // Redirect back to the customer list
+        return "redirect:/mua-sam-SportShopV2/accountDetail"; // Redirect back to the customer list
     }
 
     @PostMapping("/addAddress/{id}")
@@ -690,7 +689,7 @@ public class DatHangController {
 
         // Hiển thị lại thông tin khách hàng và danh sách địa chỉ
         model.addAttribute("customer", customer);
-        return "KhachHang/diachi"; // Tên view để hiển thị lại chi tiết khách hàng
+        return "redirect:/mua-sam-SportShopV2/accountDetail"; // Tên view để hiển thị lại chi tiết khách hàng
     }
 
     @GetMapping("/customer/delete-address/{customerId}/{addressId}")
@@ -716,7 +715,7 @@ public class DatHangController {
 
         // Add the updated customer to the model and return to the customer's address page
         model.addAttribute("customer", customer);
-        return "KhachHang/diachi"; // Return to the page displaying the customer's addresses
+        return "redirect:/mua-sam-SportShopV2/accountDetail"; // Return to the page displaying the customer's addresses
     }
 
     @PostMapping("/them")
@@ -745,7 +744,7 @@ public class DatHangController {
         addressService.updateAddress(customerId, addressId, tinhName, quanName, phuongName, line);
 
         // Redirect back to the address view page
-        return "redirect:/khach-hang/customer/diachi/" + customerId;
+        return "redirect:/mua-sam-SportShopV2/accountDetail";
     }
 
 
@@ -754,7 +753,7 @@ public class DatHangController {
         // Lấy khách hàng và địa chỉ theo ID
         User customer = userService.findCustomerById(customerId);
         if (customer == null || customer.getAddresses() == null || customer.getAddresses().isEmpty()) {
-            return "redirect:/khach-hang/list";
+            return "redirect:/mua-sam-SportShopV2/accountDetail";
         }
         Address selectedAddress = userService.findAddressById(addressId);
         if (selectedAddress != null) {
@@ -762,7 +761,7 @@ public class DatHangController {
             session.setAttribute("selectedAddress_" + customerId, selectedAddress);
         }
         // Chuyển hướng đến trang danh sách khách hàng
-        return "redirect:/khach-hang/list";
+        return "redirect:/mua-sam-SportShopV2/accountDetail";
     }
 }
 

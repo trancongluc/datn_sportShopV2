@@ -30,7 +30,7 @@ public class ChatService {
     @Autowired
     private NguoiDungRepo user;
 
-    @Autowired
+
     private EntityManager entityManager;
 
     public ChatService(MessageRepository messageRepository) {
@@ -60,6 +60,17 @@ public class ChatService {
 
         if (account.isPresent()) {
             return account.get().getId(); // Trả về accountId nếu tìm thấy
+        } else {
+            throw new RuntimeException("User not found");
+        }
+    }
+
+    public int getAccountFromUsername(String username) {
+        // Tìm Account theo username
+        Optional<Account> account = accountRepository.findByUsername(username);
+
+        if (account.isPresent()) {
+            return account.get().getUser().getId(); // Trả về accountId nếu tìm thấy
         } else {
             throw new RuntimeException("User not found");
         }
