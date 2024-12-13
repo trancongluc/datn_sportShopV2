@@ -28,8 +28,7 @@ public class DoiTraController {
     @Autowired
     private HoaDonServiceImp hoaDonServiceImp;
 
-    @Autowired
-    private KhachhangService userService; // Dịch vụ để lấy thông tin người dùng
+
 
     @GetMapping("/view")
     public String DoiTraView() {

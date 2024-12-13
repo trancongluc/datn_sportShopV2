@@ -137,11 +137,32 @@
             font-size: 18px;
             color: #007bff;
             transition: color 0.3s;
+            display: inline-flex;
+            align-items: center;
         }
 
         .icon:hover {
-            color: #0056b3; /* Màu khi hover */
+            color: #0056b3;
             transform: scale(1.1);
+        }
+        button.icon {
+            visibility: visible;
+            opacity: 1;
+        }
+        .bg-yellow {
+            background-color: yellow;
+        }
+
+        .bg-red {
+            background-color: red;
+        }
+
+        .bg-green {
+            background-color: green;
+        }
+
+        .bg-gray {
+            background-color: gray;
         }
     </style>
 </head>
@@ -227,8 +248,8 @@
 <!--                    <td th:text="${dgg.updateAt}"></td> &lt;!&ndash; ngay cap nhat &ndash;&gt;-->
 
                     <td th:text="${dgg.description}"></td>
-                    <td>
-                        <span class="status-label" th:text="${dgg.status}"></span> <!-- trang thai -->
+                    <td th:class="${dgg.getStatus() == 'Chưa diễn ra' ? 'bg-yellow' : (dgg.getStatus() == 'Hết hạn' ? 'bg-red' : (dgg.getStatus() == 'Đang diễn ra' ? 'bg-green' : 'bg-gray'))}">
+                        <span style="color: black;">[[${dgg.getStatus()}]]</span>
                     </td>
                     <td>
                         <a th:href="@{/dot-giam-gia/detail/{id}(id=${dgg.id})}" title="Chỉnh sửa">
@@ -236,7 +257,7 @@
                         </a>
                         <form th:action="@{/dot-giam-gia/delete/{id}(id=${dgg.id})}" method="post" style="display:inline;">
                             <button type="submit" class="icon" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa đợt giảm giá này?');">
-                                <i class="fas fa-trash-alt"></i>
+                                <i class="fas fa-trash-alt"></i> <!-- Biểu tượng thùng rác -->
                             </button>
                         </form>
                     </td>

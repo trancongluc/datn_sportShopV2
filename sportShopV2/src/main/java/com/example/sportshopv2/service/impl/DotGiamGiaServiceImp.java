@@ -1,8 +1,7 @@
 package com.example.sportshopv2.service.impl;
 
-import com.example.sportshopv2.model.ChatLieu;
-import com.example.sportshopv2.model.DotGiamGia;
-import com.example.sportshopv2.model.PhieuGiamGia;
+import com.example.sportshopv2.dto.SanPhamGiamGiaDTO;
+import com.example.sportshopv2.model.*;
 import com.example.sportshopv2.repository.DotGiamGiaRepo;
 import com.example.sportshopv2.service.DotGiamGiaService;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,7 @@ public class DotGiamGiaServiceImp implements DotGiamGiaService {
             dotGiamGiaRepo.save(dotGiamGia);
             return true;
         } catch (Exception e) {
-            e.printStackTrace(); // Có thể thay thế bằng logger
+            e.printStackTrace();
             return false;
         }
     }
@@ -68,13 +67,10 @@ public class DotGiamGiaServiceImp implements DotGiamGiaService {
         dotGiamGiaRepo.save(dotGiamGia);
     }
 
-//    private String generateUniqueVoucherCode() {
-//        String code;
-//        do {
-//            code = "Sale" + UUID.randomUUID().toString().substring(0, 5).toUpperCase(); // Tạo mã ngẫu nhiên
-//        } while (dotGiamGiaRepo.existsBySaleCode(code)); // Kiểm tra xem mã đã tồn tại chưa
-//        return code;
-//    }
+    @Override
+    public List<SanPhamChiTiet> getSanPhamChiTietByDotGiamGiaId(Integer dotGiamGiaId) {
+        return dotGiamGiaRepo.findSanPhamChiTietByDotGiamGiaId(dotGiamGiaId);
+    }
 
 
 }
