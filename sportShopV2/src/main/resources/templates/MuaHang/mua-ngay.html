@@ -477,13 +477,13 @@
             }
         }
 
-        function updateServerQuantity(id, newQuantity, idSanPhamChiTiet) {
-            return fetch('/mua-sam-SportShopV2/product-quantity', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({id: id, soLuong: newQuantity, idSPCT: idSanPhamChiTiet})
-            });
-        }
+        // function updateServerQuantity(id, newQuantity, idSanPhamChiTiet) {
+        //     return fetch('/mua-sam-SportShopV2/product-quantity', {
+        //         method: 'POST',
+        //         headers: {'Content-Type': 'application/json'},
+        //         body: JSON.stringify({id: id, soLuong: newQuantity, idSPCT: idSanPhamChiTiet})
+        //     });
+        // }
 
         function updateCartLink() {
             const input = document.getElementById("quantity");

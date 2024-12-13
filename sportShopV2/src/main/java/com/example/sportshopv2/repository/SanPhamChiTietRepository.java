@@ -17,14 +17,14 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
     List<SanPhamChiTiet> findAllByDeletedAndTrangThaiOrderByCreateAtDesc(boolean deleted, String trangThai);
 
     List<SanPhamChiTiet> findAllByDeletedAndIdSanPham(boolean deleted, Integer idSP);
-
+    List<SanPhamChiTiet> findAllByDeletedAndIdSanPhamAndId(boolean deleted, Integer idSP, Integer IdSPCT);
     SanPhamChiTiet findByIdAndDeleted(Integer id, boolean delete);
 
     SanPhamChiTiet findAllByDeletedAndIdSanPhamAndIdKichThuocAndIdMauSac(boolean deleted, Integer idSP, Integer idKhichThuoc, Integer idMauSac);
 
     @Query("SELECT h FROM SanPhamChiTiet h WHERE h.id IN " +
-            "(SELECT MIN(hd.id) FROM SanPhamChiTiet hd WHERE hd.deleted = false GROUP BY hd.id)")
-    List<SanPhamChiTiet> findDistinctByIdProduct();
+            "(SELECT MIN(hd.id) FROM SanPhamChiTiet hd WHERE hd.deleted = false GROUP BY hd.idSanPham)")
+    List<SanPhamChiTiet> findDistinctByIdAndIdSanPham();
 
     List<SanPhamChiTiet> findByIdIn(List<Long> ids);
 
