@@ -99,27 +99,31 @@
                     <td th:text="${khachHang.gender}"></td>
 
                     <td>
+                        <!-- Hiển thị địa chỉ đã chọn -->
                         <div th:if="${session['selectedAddress_' + khachHang.id] != null}">
-                            <!-- Hiển thị địa chỉ đã chọn của khách hàng nếu có -->
-                            <span th:text="${session['selectedAddress_' + khachHang.id].tinh}"></span>,
-                            <span th:text="${session['selectedAddress_' + khachHang.id].quan}"></span>,
-                            <span th:text="${session['selectedAddress_' + khachHang.id].phuong}"></span>
-                            <br/>
+        <span th:each="address : ${khachHang.addresses}"
+              th:if="${address.id == session['selectedAddress_' + khachHang.id]}"
+              th:text="${address.tinh} + ', ' + ${address.quan} + ', ' + ${address.phuong}">
+        </span>
                         </div>
+
+                        <!-- Hiển thị địa chỉ mặc định nếu chưa chọn -->
                         <div th:if="${session['selectedAddress_' + khachHang.id] == null}">
                             <div th:if="${khachHang.addresses != null && !khachHang.addresses.isEmpty()}">
-                            <!-- Hiển thị địa chỉ đầu tiên của khách hàng nếu không có địa chỉ đã chọn -->
-                            <span th:text="${khachHang.addresses[0].tinh}"></span>,
-                            <span th:text="${khachHang.addresses[0].quan}"></span>,
-                            <span th:text="${khachHang.addresses[0].phuong}"></span>
+                                <span th:text="${khachHang.addresses[0].tinh}"></span>,
+                                <span th:text="${khachHang.addresses[0].quan}"></span>,
+                                <span th:text="${khachHang.addresses[0].phuong}"></span>
+
                             </div>
                             <div th:if="${khachHang.addresses == null || khachHang.addresses.isEmpty()}">
                                 <span>Không có địa chỉ</span>
                             </div>
                         </div>
-
-
                     </td>
+
+
+
+
 
 
                     <td>
@@ -145,13 +149,13 @@
                         </a>
 
 
-                        <a th:href="@{/khach-hang/order_history/{id}(id=${khachHang.id})}" class="icon btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-list" viewBox="0 0 16 16">
-                                <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"/>
-                                <path d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8m0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-1-5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0M4 8a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m0 2.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"/>
-                            </svg>
+<!--                        <a th:href="@{/khach-hang/order_history/{id}(id=${khachHang.id})}" class="icon btn">-->
+<!--                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-list" viewBox="0 0 16 16">-->
+<!--                                <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"/>-->
+<!--                                <path d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8m0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-1-5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0M4 8a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m0 2.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"/>-->
+<!--                            </svg>-->
 
-                        </a>
+<!--                        </a>-->
                     </td>
                 </tr>
                 </tbody>

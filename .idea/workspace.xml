@@ -5,324 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1cf1883e-5675-4e33-950b-148cfc47239c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/SportShopV2Application.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/config/ThymeleafConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/config/WSEventListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/config/WebConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/config/WebSocketConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/BanHangTaiQuayController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/Chat/ChatController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/DangNhap/DangKyController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/DangNhap/DangNhapController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/GioHangController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/HoaDon/HoaDonController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/KhachHang/khachhangController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/MuaSamController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/MyFontResolver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/NhanVienController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/PhieuGiamGiaController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/SanPham/SanPhamChiTietConTroller.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/SanPham/anhSanPhamController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/SanPham/chatLieuController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/SanPham/coGiayController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/SanPham/deGiayController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/SanPham/kichThuocController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/SanPham/mauSacController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/SanPham/sanPhamController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/SanPham/theLoaiController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/SanPham/thuongHieuController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/TheoDoiController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/ThongKeController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/controller/test.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/dto/HistoryDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/dto/SanPhamChiTietDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/Account.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/Address.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/AnhSanPham.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/BaseEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/ChatLieu.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/ChatMessage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/CoGiay.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/DeGiay.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/HoaDon.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/HoaDonChiTiet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/KichThuoc.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/MauSac.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/MessageType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/NguoiDung.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/PhieuGiamGia.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/PhieuGiamGiaChiTiet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/SanPham.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/SanPhamChiTiet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/TaiKhoan.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/TheLoai.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/ThuongHieu.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/chatBox.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/model/message.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/AddressRepo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/AddressRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/AnhSanPhamRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/ChatBoxRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/ChatLieuRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/CoGiayRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/DeGiayRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/HoaDonChiTietRepo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/HoaDonRepo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/KhachHangRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/KichThuocRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/MauSacRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/MessageRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/NguoiDungRepo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/NhanVienRepo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/PhieuGiamGiaChiTietResponsitory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/PhieuGiamGiaResponsitory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/SanPhamChiTietRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/SanPhamRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/TaiKhoanRepo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/TheLoaiRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/ThuongHieuRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/repository/WebSocketConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/sercurity/PhanQuyen.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/service/AddressService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/service/AnhService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/service/ChatLieuService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/service/ChatService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/service/CoGiayService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/service/DeGiayService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/service/KhachhangService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/service/KichThuocService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/service/MauSacService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/service/NhanVienService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/service/PhieuGiamGiaService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/service/SanPhamChiTietService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/service/SanPhamService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/service/TheLoaiService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/service/ThuongHieuService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/java/com/example/sportshopv2/service/impl/PhieuGiamGiaServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/fonts/Arial.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/css/Banhangtaiquay.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/css/DoiTra.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/css/DoiTraChiTiet.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/css/Menu.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/css/TheoDoi.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/css/giamGia.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/css/gioHang.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/css/hoaDon.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/css/khachHang.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/css/nhanVien.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/css/sanPhamKH.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/css/side-bar.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/css/them-san-pham.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/css/thuoc-tinh-sp.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/OIP.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/bo-suu-tap.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/giayMau.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/goc1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/goc2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/goc3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/goc4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/goc5.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/img.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/img_1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/img_2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/logo.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/logoSSV2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/pexels-photo-11135667.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/pexels-photo-14212624.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/pexels-photo-18155790.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/pexels-photo-18523476.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/pexels-photo-3261068.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/poster.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/san-pham-moi.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/snk1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/snk10.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/snk2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/snk3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/snk4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/snk5.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/snk6.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/snk7.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/snk8.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/snk9.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/th.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/images/uu-dai.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/js/Banhangtaiquay.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/js/ChatLieu.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/js/CoGiay.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/js/DeGiay.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/js/KhachHang.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/js/MenuScrip.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/js/TheLoai.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/js/ThemSanPham.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/js/ThongKe.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/js/ThuongHieu.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/js/chat.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/js/sanPhamKH.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/uploads/356570282_220520390940780_4837742446600307172_n.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/uploads/Screenshot 2024-11-07 222758.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/uploads/uploads0wlNlCd.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/uploads/uploads4VdrdG2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/uploads/uploads5TLYcPb.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/uploads/uploads5TiPJPF.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/uploads/uploadsIMG_2278.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/uploads/uploadsIMG_E2316.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/uploads/uploadsdây-treo-khung-ảnh.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/uploads/z4511194944751_4b0145d1b8dabe7d457d44f15cd52719.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/uploads356570282_220520390940780_4837742446600307172_n.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/uploadsuploads0wlNlCd.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/uploadsuploads4VdrdG2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/uploadsuploads5TLYcPb.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/uploadsuploads5TiPJPF.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/uploadsw.ảnh356815450_293914329848244_2816880981071027153_n.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/static/uploadsz4511194944751_4b0145d1b8dabe7d457d44f15cd52719.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/BanHangTaiQuay/BanHangTaiQuay.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/DangNhap/DangKy.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/DangNhap/DangNhap.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/DangNhap/TaiKhoanCaNhan.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/DangNhap/TruyCap.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/DoiTra/DoiTra.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/DoiTra/DoiTraChiTiet.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/GioHang/giohang.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/HoaDon/HinhAnhHoaDon.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/HoaDon/HoaDon.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/HoaDon/ThongTinHoaDon.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/HoaDon/TrangThaiHoaDon.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/KhachHang/diachi.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/KhachHang/khachhang.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/KhachHang/khachhangdetail.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/KhachHang/tao-khach-hang.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/Menu.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/MuaHang/chiTietSanPhamKH.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/MuaHang/mua-ngay.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/MuaHang/san-pham.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/MuaHang/sanPhamKH.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/MuaHang/view.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/NhanVien/QL-nhan-vien.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/NhanVien/detail.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/NhanVien/nhan-vien-add.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/NhanVien/order_history.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/PhieuGiamGia/add.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/PhieuGiamGia/addDotGiamGia.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/PhieuGiamGia/dotGiamGia.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/PhieuGiamGia/giamGia.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/PhieuGiamGiaKhachhang/PhieuGiamGiaKhachHang.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/SanPham/chat-lieu.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/SanPham/co-giay.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/SanPham/de-giay.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/SanPham/san-pham-chi-tiet.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/SanPham/san-pham.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/SanPham/the-loai.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/SanPham/them-san-pham.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/SanPham/thuong-hieu.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/TaiKhoanKhachHang/TaiKhoanKhachHang.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/TheoDoi/TheoDoi.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/ThongKe/ThongKe.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/main/resources/templates/TichDiem/TichDiemKhachHang.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/sportShopV2/src/test/java/com/example/sportshopv2/SportShopV2ApplicationTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/config/MVC_Config.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/config/SecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/Chat/ClientController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/MyFontResolver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/dto/MessageDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/ThongKeRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/ThongKeService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/chat.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/doitra.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/img.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/img_7.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/img_8.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/logo.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/san-pham-moi.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/snk1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/snk2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/snk3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/snk4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/snk5.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/snk6.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/snk7.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/snk8.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/uploads/uploads356570282_220520390940780_4837742446600307172_n.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/uploads/uploadsuploads0wlNlCd.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/uploads/uploadsuploads4VdrdG2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/uploads/uploadsuploads5TLYcPb.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/uploads/uploadsuploads5TiPJPF.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/uploads/uploadsw.ảnh356815450_293914329848244_2816880981071027153_n.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/uploads/uploadsz4511194944751_4b0145d1b8dabe7d457d44f15cd52719.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/TheoDoiHoaDon.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/TraCuuDonHang.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/clientChat.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/addDotGiamGia.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/dotGiamGia.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/Security/PhanQuyen.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/Security/PhanQuyen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/config/VNPAYService.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/config/VNPAYService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/config/WebConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/config/WebConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/config/WebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/config/WebSocketConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/Chat/ChatController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/Chat/ChatController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DatHang/DatHangController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DatHang/DatHangController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DoiTraController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DoiTraController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/HoaDon/HoaDonController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/HoaDon/HoaDonController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/SanPham/anhSanPhamController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/SanPham/anhSanPhamController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/ThongKeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/ThongKeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/Address.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/Address.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/HoaDon.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/HoaDon.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/chatBox.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/chatBox.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/message.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/message.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/ChatBoxRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/ChatBoxRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/GioHangChiTietRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/GioHangChiTietRepo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/HoaDonRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/HoaDonRepo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/MessageRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/MessageRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/PhieuGiamGiaKhachHangRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/PhieuGiamGiaKhachHangRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/AnhService.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/AnhService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/ChatService.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/ChatService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/HoaDonService.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/HoaDonService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/SanPhamChiTietService.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/SanPhamChiTietService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/impl/HoaDonServiceImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/impl/HoaDonServiceImp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/css/Banhangtaiquay.css" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/css/Banhangtaiquay.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/css/DoiTraChiTiet.css" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/css/DoiTraChiTiet.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/bo-suu-tap.png" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/bo-suu-tap.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-amanjakhar-2048548.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-amanjakhar-2048548.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-ashutoshsonwani-2016145.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-ashutoshsonwani-2016145.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-athul-adhu-186900-684152.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-athul-adhu-186900-684152.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-craytive-1503009.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-craytive-1503009.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-mnzoutfits-1598505.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-mnzoutfits-1598505.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-photo-11135667.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-photo-11135667.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-photo-12010216.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-photo-12010216.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-photo-13691726.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-photo-13691726.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-photo-2529147.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-photo-2529147.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-photo-9853347.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-photo-9853347.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-pixabay-267320.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-pixabay-267320.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-zaktech90-1027130.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/pexels-zaktech90-1027130.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/poster.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/poster.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/snk10.png" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/snk10.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/snk9.png" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/images/snk9.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/js/Banhangtaiquay.js" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/js/Banhangtaiquay.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/js/GioHang.js" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/js/GioHang.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/js/ThemSanPham.js" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/js/ThemSanPham.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/Chat/chat.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/Chat/chat.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/DoiTra/DoiTra.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/DoiTra/DoiTra.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/DoiTra/DoiTraChiTiet.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/DoiTra/DoiTraChiTiet.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/HoaDon/HoaDon.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/HoaDon/HoaDon.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/HoaDon/ThongTinHoaDon.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/HoaDon/ThongTinHoaDon.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/KhachHang/khachhangController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/KhachHang/khachhangController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/AddressService.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/AddressService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/KhachHang/diachi.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/KhachHang/diachi.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/KhachHang/khachhang.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/KhachHang/khachhang.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/GioHang.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/GioHang.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/TrangChu.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/TrangChu.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/sanPhamKH.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/sanPhamKH.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/test.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/view.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/view.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/ThongKe/ThongKe.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/ThongKe/ThongKe.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/KhachHang/khachhangdetail.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/KhachHang/khachhangdetail.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -361,22 +50,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "Spring Boot.SportShopV2Application.executor": "Run",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;Spring Boot.SportShopV2Application.executor&quot;: &quot;Run&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\testDATN\sportShopV2\src\main\resources\templates\MuaHang" />
@@ -494,6 +183,11 @@
       <workItem from="1733474070276" duration="3771000" />
       <workItem from="1733542400973" duration="5372000" />
       <workItem from="1733807393769" duration="500000" />
+      <workItem from="1733909894017" duration="2139000" />
+      <workItem from="1733920155091" duration="6959000" />
+      <workItem from="1733972198364" duration="5421000" />
+      <workItem from="1734054933586" duration="4470000" />
+      <workItem from="1734059450487" duration="587000" />
     </task>
     <servers />
   </component>

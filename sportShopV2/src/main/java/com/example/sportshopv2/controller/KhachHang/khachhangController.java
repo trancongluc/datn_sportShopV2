@@ -327,23 +327,38 @@ public class khachhangController {
         // Redirect back to the address view page
         return "redirect:/khach-hang/customer/diachi/" + customerId;
     }
+    @PostMapping("/select-address/{customerId}/{addressId}")
+    public String selectAddressForCustomer(
+            @PathVariable("customerId") Integer customerId,
+            @PathVariable("addressId") Integer addressId,
+            HttpSession session) {
+        // Fetch the selected address using the service
+        Address selectedAddress = addressService.getAddressById(addressId);
 
-
-    @GetMapping("/customer/select-address/{customerId}/{addressId}")
-    public String selectAddress(@PathVariable("customerId") Integer customerId, @PathVariable("addressId") Integer addressId, HttpSession session) {
-        // Lấy khách hàng và địa chỉ theo ID
-        User customer = userService.findCustomerById(customerId);
-        if (customer == null || customer.getAddresses() == null || customer.getAddresses().isEmpty()) {
-            return "redirect:/khach-hang/list";
-        }
-        Address selectedAddress = userService.findAddressById(addressId);
         if (selectedAddress != null) {
-            // Lưu địa chỉ đã chọn vào session
+            // Save the selected address to the session with a unique key per customer
             session.setAttribute("selectedAddress_" + customerId, selectedAddress);
         }
-        // Chuyển hướng đến trang danh sách khách hàng
+
+        // Redirect back to the customer list
         return "redirect:/khach-hang/list";
     }
+
+
+    @GetMapping("/chon-dia-chi/{customerId}/{addressId}")
+    public String chonDiaChi(
+                @PathVariable Integer customerId,
+                @PathVariable Integer addressId,
+                HttpSession session) {
+            // Lưu địa chỉ đã chọn vào session
+            session.setAttribute("selectedAddress_" + customerId, addressId);
+            return "redirect:/khach-hang/list";
+        }
+
+
+
+
+
 
 
 

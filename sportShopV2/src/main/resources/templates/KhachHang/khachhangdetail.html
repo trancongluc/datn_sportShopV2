@@ -102,50 +102,50 @@
                     </div>
 
 
-<!--                                                <div class="css_select_div">-->
+    <!--                                                <div class="css_select_div">-->
 
 
 
 
-<!--                                                        <div class="row mb-3">-->
-<!--                                                            <div class="col-md-4">-->
-<!--                                                                <label for="tinh" class="form-label">Tỉnh</label>-->
-<!--                                                                <select class="form-select" id="tinh" name="tinh" title="Chọn Tỉnh Thành"-->
-<!--                                                                        onchange="document.getElementsByName('tinh_name')[0].value = this.options[this.selectedIndex].text;" required>-->
-<!--                                                                    <option th:value="${customer.addresses[0].tinh}" th:text="${customer.addresses[0].tinh}" selected></option>-->
+    <!--                                                        <div class="row mb-3">-->
+    <!--                                                            <div class="col-md-4">-->
+    <!--                                                                <label for="tinh" class="form-label">Tỉnh</label>-->
+    <!--                                                                <select class="form-select" id="tinh" name="tinh" title="Chọn Tỉnh Thành"-->
+    <!--                                                                        onchange="document.getElementsByName('tinh_name')[0].value = this.options[this.selectedIndex].text;" required>-->
+    <!--                                                                    <option th:value="${customer.addresses[0].tinh}" th:text="${customer.addresses[0].tinh}" selected></option>-->
 
-<!--                                                                </select>-->
-<!--                                                                <input type="hidden" name="tinh_name" th:value="${customer.addresses[0].tinh}">-->
-<!--                                                            </div>-->
-<!--                                                            <div class="col-md-4">-->
-<!--                                                                <label for="quan" class="form-label">Huyện</label>-->
-<!--                                                                <select class="form-select" id="quan" name="quan" title="Chọn Quận Huyện"-->
-<!--                                                                        onchange="document.getElementsByName('quan_name')[0].value = this.options[this.selectedIndex].text;" required>-->
-<!--                                                                    <option th:value="${customer.addresses[0].quan}" th:text="${customer.addresses[0].quan}" hidden>Quận Huyện</option>-->
-<!--                                                                </select>-->
-<!--                                                                <input type="hidden" name="quan_name" th:value="${customer.addresses[0].quan}">-->
-<!--                                                            </div>-->
-<!--                                                            <div class="col-md-4">-->
-<!--                                                                <label for="phuong" class="form-label">Phường</label>-->
-<!--                                                                <select class="form-select" id="phuong" name="phuong" title="Chọn Phường Xã"-->
-<!--                                                                        onchange="document.getElementsByName('phuong_name')[0].value = this.options[this.selectedIndex].text;" required>-->
-<!--                                                                    <option th:value="${customer.addresses[0].phuong}" th:text="${customer.addresses[0].phuong}" hidden>Phường Xã</option>-->
-<!--                                                                </select>-->
-<!--                                                                <input type="hidden" name="phuong_name" th:value="${customer.addresses[0].phuong}">-->
-<!--                                                            </div>-->
-<!--                                                        </div>-->
+    <!--                                                                </select>-->
+    <!--                                                                <input type="hidden" name="tinh_name" th:value="${customer.addresses[0].tinh}">-->
+    <!--                                                            </div>-->
+    <!--                                                            <div class="col-md-4">-->
+    <!--                                                                <label for="quan" class="form-label">Huyện</label>-->
+    <!--                                                                <select class="form-select" id="quan" name="quan" title="Chọn Quận Huyện"-->
+    <!--                                                                        onchange="document.getElementsByName('quan_name')[0].value = this.options[this.selectedIndex].text;" required>-->
+    <!--                                                                    <option th:value="${customer.addresses[0].quan}" th:text="${customer.addresses[0].quan}" hidden>Quận Huyện</option>-->
+    <!--                                                                </select>-->
+    <!--                                                                <input type="hidden" name="quan_name" th:value="${customer.addresses[0].quan}">-->
+    <!--                                                            </div>-->
+    <!--                                                            <div class="col-md-4">-->
+    <!--                                                                <label for="phuong" class="form-label">Phường</label>-->
+    <!--                                                                <select class="form-select" id="phuong" name="phuong" title="Chọn Phường Xã"-->
+    <!--                                                                        onchange="document.getElementsByName('phuong_name')[0].value = this.options[this.selectedIndex].text;" required>-->
+    <!--                                                                    <option th:value="${customer.addresses[0].phuong}" th:text="${customer.addresses[0].phuong}" hidden>Phường Xã</option>-->
+    <!--                                                                </select>-->
+    <!--                                                                <input type="hidden" name="phuong_name" th:value="${customer.addresses[0].phuong}">-->
+    <!--                                                            </div>-->
+    <!--                                                        </div>-->
 
-<!--                                                        <div class="mb-3">-->
-<!--                                                            <label for="line" class="form-label">Số nhà</label>-->
-<!--                                                            <input type="line" class="form-control" id="line" name="line" th:value="${customer.addresses[0].line}" required>-->
-<!--                                                        </div>-->
-
-
+    <!--                                                        <div class="mb-3">-->
+    <!--                                                            <label for="line" class="form-label">Số nhà</label>-->
+    <!--                                                            <input type="line" class="form-control" id="line" name="line" th:value="${customer.addresses[0].line}" required>-->
+    <!--                                                        </div>-->
 
 
 
 
-<!--                                                </div>-->
+
+
+    <!--                                                </div>-->
 
                 </div>
             </div>
@@ -173,24 +173,26 @@
 
             // Đặt giá trị tối đa cho ngày sinh là ngày hiện tại
             const today = new Date().toISOString().split("T")[0];
-            ngaySinhInput.max = today;
+            ngaySinhInput.setAttribute("max", today);
 
-            // Kiểm tra ngày sinh khi người dùng thay đổi
+            // Thêm sự kiện thay đổi để kiểm tra tính hợp lệ của ngày sinh
             ngaySinhInput.addEventListener("change", validateBirthDate);
-        });
 
-        function validateBirthDate() {
-            const ngaySinhInput = document.getElementById('ngaySinh');
-            const selectedDate = new Date(ngaySinhInput.value);
-            const today = new Date();
+            // Hàm kiểm tra tính hợp lệ của ngày sinh
+            function validateBirthDate() {
+                const selectedDate = new Date(ngaySinhInput.value);
+                const today = new Date();
 
-            if (selectedDate > today) {
-                ngaySinhInput.setCustomValidity("Ngày sinh không được lớn hơn ngày hiện tại.");
-            } else {
-                ngaySinhInput.setCustomValidity("");
+                if (selectedDate > today) {
+                    ngaySinhInput.setCustomValidity("Ngày sinh không được lớn hơn ngày hiện tại.");
+                } else {
+                    ngaySinhInput.setCustomValidity(""); // Xóa thông báo lỗi nếu hợp lệ
+                }
             }
-        }
-
+        });
+        var formattedDate = formatDateString(bd);
+        console.log(formattedDateDate)
+        document.getElementById("ngaySinh").value = formattedDate;
 
 
         document.getElementById('soDienThoai').addEventListener('input', function() {
