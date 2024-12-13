@@ -6,12 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="1cf1883e-5675-4e33-950b-148cfc47239c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DatHang/DatHangController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DatHang/DatHangController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/ChatService.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/ChatService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/KhachhangService.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/KhachhangService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/accountDetail.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/accountDetail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/NhanVien/order_history.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/NhanVien/order_history.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
