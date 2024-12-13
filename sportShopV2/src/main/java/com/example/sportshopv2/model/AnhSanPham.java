@@ -28,12 +28,14 @@ public class AnhSanPham {
     private String trangThai;
 
     public byte[] getImageData() throws IOException {
-        // Xây dựng đường dẫn đầy đủ đến file ảnh
-        Path imagePath = Paths.get("D:\\demoMergeCodeDatn\\sportShopV2\\src\\main\\resources\\static\\images", tenAnh);
-        return Files.readAllBytes(imagePath);
-    }
+        // Xây dựng đường dẫn đầy đủ đến file ảnh từ thư mục resources
+        Path imagePath = Paths.get("D:/DATN/sportShopV2/src/main/resources/static/images", tenAnh);
 
-/*    @ManyToOne
-    @JoinColumn(name = "id_product_detail")
-    private SanPhamChiTiet sanPhamChiTiet;*/
+        // Kiểm tra xem file có tồn tại không
+        if (Files.exists(imagePath)) {
+            return Files.readAllBytes(imagePath);
+        } else {
+            throw new IOException("File ảnh không tồn tại: " + imagePath.toString());
+        }
+    }
 }

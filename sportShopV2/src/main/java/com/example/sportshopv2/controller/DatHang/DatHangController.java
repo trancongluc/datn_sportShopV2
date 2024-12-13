@@ -30,6 +30,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Controller
@@ -288,16 +289,40 @@ public class DatHangController {
 
     @RequestMapping("/mua-ngay")
     public String muaNgay(Model model, @RequestParam("id") Integer id) {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator(',');
+        symbols.setGroupingSeparator('.');
+        DecimalFormat formatter = new DecimalFormat("#,###", symbols);
         SanPham listSP = sanPhamService.findAllSanPhamById(id);
         SanPhamChiTietDTO listProductDetail = sanPhamChiTietService.getByID(id);
         List<AnhSanPham> anhSanPhams = listProductDetail.getAnhSanPham();
+
+        // Lấy danh sách size và màu liên quan
         List<SanPhamChiTietDTO> listSizeAndColor = sanPhamChiTietService
                 .findAllSPCTByIdSP(listProductDetail.getSanPham().getId());
-        model.addAttribute("listSizeAndColor", listSizeAndColor);
+
+        // Lọc danh sách kích thước duy nhất
+        List<KichThuoc> uniqueSizes = listSizeAndColor.stream()
+                .map(SanPhamChiTietDTO::getKichThuoc)
+                .filter(Objects::nonNull)
+                .distinct() // Loại bỏ phần tử trùng lặp
+                .collect(Collectors.toList());
+
+        // Lọc danh sách màu sắc duy nhất
+        List<MauSac> uniqueColors = listSizeAndColor.stream()
+                .map(SanPhamChiTietDTO::getMauSac)
+                .filter(Objects::nonNull)
+                .distinct() // Loại bỏ phần tử trùng lặp
+                .collect(Collectors.toList());
+
+        model.addAttribute("listSizes", uniqueSizes);
+        model.addAttribute("listColors", uniqueColors);
         model.addAttribute("listProduct", listProductDetail);
         model.addAttribute("listImage", anhSanPhams);
+        model.addAttribute("price", formatter.format(listProductDetail.getGia()) + "VND"); // Định dạng số tiền)
         return "MuaHang/mua-ngay";
     }
+
 
     @PostMapping("/update-quantity")
     public ResponseEntity<?> updateQuantity(@RequestBody Map<String, Object> payload, RedirectAttributes redirectAttributes) {
@@ -408,6 +433,7 @@ public class DatHangController {
         if (hoTen == null || hoTen.isEmpty()) {
             hoTen = "Unknown Customer";  // Set a default value if not provided
         }
+        List<GioHangChiTiet> gioHangChiTiets = gioHangChiTietRepo.findAllBySanPhamChiTiet_IdIn(selectedProducts);
         if (paystatus == null || paystatus.isEmpty()) {
             redirectAttributes.addFlashAttribute("message", "Phương thức thanh toán không được để trống!");
             return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
@@ -429,6 +455,7 @@ public class DatHangController {
                 // Xóa sản phẩm khỏi repository
                 spct.setTrangThai("Không hoạt động");
                 spct.setDeleted(true);
+
                 sanPhamChiTietRepo.save(spct);
             }
         }
@@ -439,6 +466,10 @@ public class DatHangController {
                     + String.join(", ", outOfStockProducts);
             // Thêm thông báo vào redirectAttributes
             redirectAttributes.addFlashAttribute("error", message);
+            for (GioHangChiTiet gioHangChiTiet : gioHangChiTiets
+            ) {
+                gioHangChiTietRepo.delete(gioHangChiTiet);
+            }
             return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
         }
 
@@ -478,18 +509,20 @@ public class DatHangController {
         hoaDon.setAddress(soNha + " " + phuong + " " + quan + " " + tinh);  // Add space between components
 
         hoaDonRepo.save(hoaDon);
-        PhieuGiamGia phieuGiamGia = phieuGiamGiaService.findByID(idVC);
-        if (phieuGiamGia.getQuantity() >= 1) {
-            phieuGiamGia.setQuantity(phieuGiamGia.getQuantity() - 1);
-            phieuGiamGiaService.save(phieuGiamGia);
-            if (phieuGiamGia.getQuantity() == 0) {
-                PhieuGiamGia hetPhieuGiamGia = phieuGiamGiaService.findByID(idVC);
-                hetPhieuGiamGia.setDeleted(true);
-                phieuGiamGiaService.save(hetPhieuGiamGia);
+        if (idVC != null) {
+            PhieuGiamGia phieuGiamGia = phieuGiamGiaService.findByID(idVC);
+            if (phieuGiamGia.getQuantity() >= 1) {
+                phieuGiamGia.setQuantity(phieuGiamGia.getQuantity() - 1);
+                phieuGiamGiaService.save(phieuGiamGia);
+                if (phieuGiamGia.getQuantity() == 0) {
+                    PhieuGiamGia hetPhieuGiamGia = phieuGiamGiaService.findByID(idVC);
+                    hetPhieuGiamGia.setDeleted(true);
+                    phieuGiamGiaService.save(hetPhieuGiamGia);
+                }
             }
         }
         // Assuming you have a list of product details (dsSPCT) to create bill details
-        List<GioHangChiTiet> gioHangChiTiets = gioHangChiTietRepo.findAllBySanPhamChiTiet_IdIn(selectedProducts);
+
 
         // Create HoaDonChiTiet for each SanPhamChiTiet and associate it with the HoaDon
         for (SPCT sanPhamChiTiet : spctList) {
@@ -516,10 +549,22 @@ public class DatHangController {
         }
         for (GioHangChiTiet gioHangChiTiet : gioHangChiTiets) {
             SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietService.findSPCTById(gioHangChiTiet.getSanPhamChiTiet().getId());
+
+            // Cập nhật số lượng
             sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - gioHangChiTiet.getSoLuong());
+
+            // Kiểm tra nếu số lượng = 0, cập nhật trạng thái deleted
+            if (sanPhamChiTiet.getSoLuong() == 0) {
+                sanPhamChiTiet.setDeleted(true);  // Giả sử bạn có thuộc tính 'deleted' trong SanPhamChiTiet
+            }
+
+            // Cập nhật lại thông tin sản phẩm chi tiết
             sanPhamChiTietService.updateSoLuongSanPhamChiTiet(sanPhamChiTiet.getId(), sanPhamChiTiet);
+
+            // Xóa Giỏ hàng chi tiết nếu không cần thiết nữa
             gioHangChiTietRepo.delete(gioHangChiTiet);
         }
+
         if (paystatus.equals("Thanh toán khi nhận hàng")) {
             redirectAttributes.addFlashAttribute("message", "Đặt hàng thành công!");
             return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
@@ -624,5 +669,21 @@ public class DatHangController {
     public List<message> getMessagesByChatBoxId(@PathVariable int chatBoxId) {
         return chatService.getMessagesByChatBoxId(chatBoxId);
     }
+
+    @GetMapping("/product-detail")
+    @ResponseBody
+    public ResponseEntity<SanPhamChiTietDTO> getProductDetail(
+            @RequestParam("id") Integer id,
+            @RequestParam("idcolor") Integer idcolor,
+            @RequestParam("idsize") Integer idsize) {
+        SanPhamChiTietDTO productDetail = sanPhamChiTietService.getSPCTByIDSPIDSIZEIDCOLOR(id, idsize, idcolor);
+        System.out.println(productDetail.getId());
+        if (productDetail != null) {
+            return ResponseEntity.ok(productDetail);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
 }
 
