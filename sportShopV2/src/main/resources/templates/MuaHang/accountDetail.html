@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Đơn Hàng</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+        }
+
+        .product-price {
+            color: #ff4500;
+        }
+
+        .emoji {
+            font-size: 24px;
+            margin-left: 10px;
+        }
+
+        .sidebar {
+            background-color: #f5f5f5;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .active-link {
+            color: #ff4500;
+        }
+
+        .image-upload {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            width: 200px;
+            border: 1px dashed #ccc;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .image-upload input {
+            opacity: 0;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .image-upload img {
+            height: 100%;
+            width: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <aside class="col-md-3 sidebar">
+            <div class="text-center mb-4">
+                <div class="image-upload" style="margin-left: 150px">
+                    <label for="file-input">
+                        <img alt="placeholder image" id="image-preview">
+                    </label>
+                    <input id="file-input" type="file" accept="image/*" name="imageFile" onchange="loadImage(event)">
+                    <!-- Thêm name -->
+                </div>
+                <h5>Đinh Khắc Điềm</h5>
+                <a href="#" class="btn btn-link" onclick="showProfileForm()">Sửa hồ sơ</a>
+            </div>
+            <hr>
+            <ul class="nav flex-column" style="margin-left: 150px">
+                <li class="nav-item">
+                    <a class="nav-link active active-link" href="#" onclick="showProfileForm()">Tài khoản của tôi</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showOrderList()">Đơn mua</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Nội dung chính -->
+        <main class="col-md-9" id="main-content">
+            <!-- Danh sách đơn hàng mặc định -->
+            <div id="order-list">
+                <div class="d-flex mb-4">
+                    <button class="btn btn-light mr-2">Tất cả</button>
+                    <button class="btn btn-light mr-2">Chờ xác nhận</button>
+                    <button class="btn btn-light mr-2">Chờ vận chuyển</button>
+                    <button class="btn btn-light mr-2">Vận chuyển</button>
+                    <button class="btn btn-light mr-2">Hoàn thành</button>
+                    <button class="btn btn-light">Đã hủy</button>
+                </div>
+
+                <!-- Mẫu đơn hàng -->
+                <div class="order-list border-top mt-3">
+                    <div class="d-flex align-items-center justify-content-between border-bottom py-2">
+                        <img src="nike-shoe.png" alt="Giày Nike" class="product-image">
+                        <div class="flex-grow-1 ml-3">
+                            <h6>Giày Thể Thao Nam Nike Dbreak-Type</h6>
+                            <p>40 - màu đen</p>
+                            <p>x1 <span class="emoji">😊</span></p>
+                        </div>
+                        <div class="product-price">2.500.000 VND</div>
+                        <button class="btn btn-primary ml-2">Chờ xác nhận</button>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between border-bottom py-2">
+                        <img src="adidas-shoe.png" alt="Giày Adidas" class="product-image">
+                        <div class="flex-grow-1 ml-3">
+                            <h6>Giày Chạy Nam Adidas Ultraboost Cc_1 Dna FZ2545</h6>
+                            <p>42 - màu đen</p>
+                            <p>x1</p>
+                        </div>
+                        <div class="product-price">2.500.000 VND</div>
+                    </div>
+                </div>
+
+                <!-- Tóm tắt đơn hàng -->
+                <div class="d-flex justify-content-between mt-3">
+                    <p>Thành tiền: <span>5.000.000 VND</span></p>
+                    <div>
+                        <button class="btn btn-danger">Hủy đơn</button>
+                        <button class="btn btn-info">Xem đơn hàng</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form thông tin người dùng -->
+            <div id="profile-form" style="display:none;">
+                <h4>Sửa Hồ Sơ</h4>
+                <form th:action="@{/khach-hang/customer/update/{id}(id=${customer.id})}" method="post"
+                      enctype="multipart/form-data"> <!-- Cập nhật action -->
+                    <div class="col-md-8">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="hoTen" class="form-label">Họ và tên</label>
+                                <input type="hoTen" class="form-control" id="hoTen" name="fullName"
+                                       th:value="${customer.fullName}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="ngaySinh" class="form-label">Ngày sinh</label>
+                                <input type="date" class="form-control" id="ngaySinh" name="date"
+                                       th:value="${customer.date}" required max="" onchange="validateBirthDate()">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">E-mail</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                       th:value="${customer.email}" required>
+                                <div th:if="${emailError != null}" class="text-danger">
+                                    <span th:text="${emailError}"></span>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <label for="gioiTinh" class="form-label">Giới tính</label>
+                                <select class="form-select" id="gioiTinh" name="gender" required>
+                                    <option th:value="${customer.gender}" th:text="${customer.gender}" hidden>Chọn giới
+                                        tính
+                                    </option>
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="soDienThoai" class="form-label">Số điện thoại</label>
+                            <input type="text" class="form-control" id="soDienThoai" name="phoneNumber"
+                                   th:value="${customer.phoneNumber}" required
+                                   pattern="^[0-9]{10,15}$"
+                                   title="Số điện thoại phải có từ 10 đến 15 chữ số">
+
+                            <div th:if="${phoneError != null}" class="text-danger">
+                                <span th:text="${phoneError}"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Cập Nhật</button>
+                </form>
+                <hr>
+                <div class="address-section flex-fill ms-2 p-3 border rounded bg-light" style="color: black">
+                    <h3>Địa Chỉ</h3>
+                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal"
+                       style="margin-bottom: 15px">Thêm Địa Chỉ</a>
+                    <div th:each="address : ${customer.addresses}">
+                        <div class="address-card">
+                            <button style="margin-left:550px" href="#"
+                                    th:href="@{/khach-hang/customer/select-address/{customerId}/{addressId}(customerId=${customer.id}, addressId=${address.id})}"
+                                    class="btn btn-primary"
+                            >
+                                <!--                                    class="star-icon"-->
+                                <!--                                    <i class="far fa-star" id="star-[[${address.id}]]"></i>-->
+                                Chọn
+                            </button>
+                            <p>Địa chỉ: <span th:text="${address.tinh}">Tỉnh</span>,
+                                <span th:text="${address.quan}">Quận</span>,
+                                <span th:text="${address.phuong}">Phường</span> -
+                                <span th:text="${address.line}">Địa chỉ chi tiết</span>
+                            </p>
+                            <a href="#"
+                               th:href="@{/khach-hang/customer/delete-address/{customerId}/{addressId}(customerId=${customer.id}, addressId=${address.id})}">
+                                <i class="fas fa-trash-can"></i></a>
+
+
+                            <a href="#" data-bs-toggle="modal"
+                               data-bs-target="#updateAddressModal"
+                               th:data-id="${address.id}"
+                               th:data-tinh="${address.tinh}"
+                               th:data-quan="${address.quan}"
+                               th:data-phuong="${address.phuong}"
+                               th:data-line="${address.line}"
+                               class="update-address-btn">
+                                <i class="fas fa-pen-to-square"></i>
+                            </a>
+
+
+                        </div>
+
+
+                        <!-- Modal để thêm địa chỉ mới -->
+                        <div class="modal fade" id="addAddressModal" tabindex="-1" role="dialog"
+                             aria-labelledby="addAddressModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="addAddressModalLabel">Thêm Địa Chỉ Mới</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="#"
+                                              th:action="@{/khach-hang/addAddress/{customerId}(customerId=${customer.id})}"
+                                              method="post">
+                                            <div class="form-group">
+                                                <label for="tinh" class="form-label">Tỉnh</label>
+                                                <select class="form-select" id="tinh" name="tinh"
+                                                        onchange="document.getElementsByName('tinh_name')[0].value = this.options[this.selectedIndex].text;">
+                                                    <option value="0" hidden>Tỉnh Thành</option>
+                                                    <!-- Các lựa chọn tỉnh thành -->
+                                                </select>
+                                                <input type="hidden" name="tinh_name" value="">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="quan" class="form-label">Huyện</label>
+                                                <select class="form-select" id="quan" name="quan"
+                                                        onchange="document.getElementsByName('quan_name')[0].value = this.options[this.selectedIndex].text;">
+                                                    <option value="0" hidden>Quận Huyện</option>
+                                                </select>
+                                                <input type="hidden" name="quan_name" value="">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="phuong" class="form-label">Phường</label>
+                                                <select class="form-select" id="phuong" name="phuong"
+                                                        onchange="document.getElementsByName('phuong_name')[0].value = this.options[this.selectedIndex].text;">
+                                                    <option value="0" hidden>Phường Xã</option>
+                                                </select>
+                                                <input type="hidden" name="phuong_name" value="">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="line">Số nhà </label>
+                                                <input type="text" class="form-control" id="line" name="line" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary" style="margin-top: 15px">Lưu
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Modal để cập nhật địa chỉ -->
+                        <div class="modal fade" id="updateAddressModal" tabindex="-1" role="dialog"
+                             aria-labelledby="updateAddressModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="updateAddressModalLabel">Cập Nhật Địa Chỉ</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <form th:action="@{/khach-hang/customer/update-address/{customerId}(customerId=${customer.id})}"
+
+                                              method="post">
+                                            <input type="hidden" id="addressId" name="addressId"
+                                                   th:value="${address.id}">
+
+                                            <div class="form-group">
+                                                <label for="tinha" class="form-label">Tỉnh</label>
+                                                <select class="form-select" id="tinha" name="tinh"
+                                                        onchange="document.getElementsByName('tinhName')[0].value = this.options[this.selectedIndex].text;"
+                                                >
+                                                    <option th:value="${address.tinh}" th:text="${address.tinh}"
+                                                            selected></option>
+                                                </select>
+                                                <input type="hidden" name="tinhName" th:value="${address.tinh}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="quana" class="form-label">Huyện</label>
+                                                <select class="form-select" id="quana" name="quan"
+                                                        onchange="document.getElementsByName('quanName')[0].value = this.options[this.selectedIndex].text;"
+                                                >
+                                                    <option th:value="${address.quan}" th:text="${address.quan}" hidden>
+                                                        Quận
+                                                        Huyện
+                                                    </option>
+                                                </select>
+                                                <input type="hidden" name="quanName" th:value="${address.quan}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="phuonga" class="form-label">Phường</label>
+                                                <select class="form-select" id="phuonga" name="phuong"
+                                                        onchange="document.getElementsByName('phuongName')[0].value = this.options[this.selectedIndex].text;"
+                                                >
+                                                    <option th:value="${address.phuong}" th:text="${address.phuong}"
+                                                            hidden>
+                                                        Phường Xã
+                                                    </option>
+                                                </select>
+                                                <input type="hidden" name="phuongName" th:value="${address.phuong}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="linea">Số nhà</label>
+                                                <input type="text" class="form-control" id="linea" name="line"
+                                                       th:value="${address.line}">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary" style="margin-top: 15px">Cập
+                                                nhật
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    //doi form
+    function showProfileForm() {
+        document.getElementById('order-list').style.display = 'none';
+        document.getElementById('profile-form').style.display = 'block';
+    }
+
+    function showOrderList() {
+        document.getElementById('order-list').style.display = 'block';
+        document.getElementById('profile-form').style.display = 'none';
+    }
+
+
+    //tt khach hang
+    function loadImage(event) {
+        const image = document.getElementById('image-preview');
+        image.src = URL.createObjectURL(event.target.files[0]);
+        image.onload = function () {
+            URL.revokeObjectURL(image.src) // free memory
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const ngaySinhInput = document.getElementById('ngaySinh');
+
+        // Đặt giá trị tối đa cho ngày sinh là ngày hiện tại
+        const today = new Date().toISOString().split("T")[0];
+        ngaySinhInput.max = today;
+
+        // Kiểm tra ngày sinh khi người dùng thay đổi
+        ngaySinhInput.addEventListener("change", validateBirthDate);
+    });
+
+    function validateBirthDate() {
+        const ngaySinhInput = document.getElementById('ngaySinh');
+        const selectedDate = new Date(ngaySinhInput.value);
+        const today = new Date();
+
+        if (selectedDate > today) {
+            ngaySinhInput.setCustomValidity("Ngày sinh không được lớn hơn ngày hiện tại.");
+        } else {
+            ngaySinhInput.setCustomValidity("");
+        }
+    }
+
+
+    document.getElementById('soDienThoai').addEventListener('input', function () {
+        const phoneNumber = this.value;
+
+        const regex = /^[0-9]{10,15}$/;
+
+        if (!regex.test(phoneNumber)) {
+            this.setCustomValidity('Số điện thoại phải có từ 10 đến 15 chữ số và chỉ chứa số.');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+
+    document.querySelector("form").addEventListener("submit", function (event) {
+        const phoneInput = document.getElementById('soDienThoai');
+        if (!phoneInput.checkValidity()) {
+            event.preventDefault(); // Ngăn chặn submit nếu không hợp lệ
+        }
+    });
+
+    //tt dia chi
+    // Hàm xử lý khi click vào icon sao
+    document.querySelectorAll('.star-icon').forEach(item => {
+        item.addEventListener('click', function () {
+            // Lấy id của địa chỉ từ thuộc tính id của icon sao
+            const starId = this.querySelector('i').id;
+            const currentStar = document.getElementById(starId);
+
+            // Kiểm tra sao đã sáng chưa
+            if (currentStar.classList.contains('fas')) {
+                // Nếu sao đã sáng, tắt nó đi (trở lại sao rỗng)
+                currentStar.classList.remove('fas');
+                currentStar.classList.add('far');
+                localStorage.removeItem('selectedStar'); // Xóa lưu trữ trạng thái
+            } else {
+                // Nếu sao chưa sáng, tắt tất cả sao khác và bật sao này sáng
+                document.querySelectorAll('.star-icon i').forEach(star => {
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                });
+                currentStar.classList.remove('far');
+                currentStar.classList.add('fas');
+                localStorage.setItem('selectedStar', starId); // Lưu trạng thái sao đã chọn vào localStorage
+            }
+        });
+    });
+
+    // Khi trang được tải lại, làm sao đã được chọn sáng
+    let selectedStar = localStorage.getItem('selectedStar');
+    if (selectedStar) {
+        const savedStar = document.getElementById(selectedStar);
+        if (savedStar) {
+            savedStar.classList.remove('far');
+            savedStar.classList.add('fas');
+        }
+    }
+
+
+</script>
+
+
+<script>
+    $(document).on('click', '.update-address-btn', function () {
+        var addressId = this.getAttribute('data-id');
+        var tinh = this.getAttribute('data-tinh');
+        var quan = this.getAttribute('data-quan');
+        var phuong = this.getAttribute('data-phuong');
+        var line = this.getAttribute('data-line');
+
+
+        // Xóa các tùy chọn trước đó
+        $('#tinha').empty();
+        $('#quana').empty();
+        $('#phuonga').empty();
+
+        // Đặt giá trị cho ô địa chỉ (line)
+        $('#addressId').val(addressId);
+        $('#linea').val(line);
+
+        // Lấy danh sách tỉnh và đặt tỉnh đã chọn
+        $.getJSON('https://esgoo.net/api-tinhthanh/1/0.htm', function (data_tinh) {
+
+            $.each(data_tinh.data, function (key_tinh, val_tinh) {
+                const selected = (val_tinh.full_name === tinh) ? 'selected' : '';
+                $('#tinha').append('<option value="' + val_tinh.id + '" ' + selected + '>' + val_tinh.full_name + '</option>');
+            });
+            $('#tinha').change();  // Kích hoạt sự kiện thay đổi để tải quận
+        });
+
+        // Thiết lập sự kiện thay đổi cho tỉnh để tải quận
+        $('#tinha').on('change', function () {
+            var provinceId = $(this).val();
+            $('#quana').empty(); // Xóa các tùy chọn quận trước đó
+            $.getJSON('https://esgoo.net/api-tinhthanh/2/' + provinceId + '.htm', function (data_quan) {
+                $.each(data_quan.data, function (key_quan, val_quan) {
+                    const selected = (val_quan.full_name === quan) ? 'selected' : '';
+                    $('#quana').append('<option value="' + val_quan.id + '" ' + selected + '>' + val_quan.full_name + '</option>');
+                });
+                $('#quana').change();  // Kích hoạt sự kiện thay đổi để tải phường
+            });
+        });
+
+        // Thiết lập sự kiện thay đổi cho quận để tải phường
+        $('#quana').on('change', function () {
+            var districtId = $(this).val();
+            $('#phuonga').empty(); // Xóa các tùy chọn phường trước đó
+            $.getJSON('https://esgoo.net/api-tinhthanh/3/' + districtId + '.htm', function (data_phuong) {
+                $.each(data_phuong.data, function (key_phuong, val_phuong) {
+                    const selected = (val_phuong.full_name === phuong) ? 'selected' : '';
+                    $('#phuonga').append('<option value="' + val_phuong.id + '" ' + selected + '>' + val_phuong.full_name + '</option>');
+                });
+            });
+        });
+    });
+</script>
+</body>
+</html>

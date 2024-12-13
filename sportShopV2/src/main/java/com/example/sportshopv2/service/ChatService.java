@@ -6,6 +6,8 @@ import com.example.sportshopv2.repository.AccountRepo;
 import com.example.sportshopv2.repository.ChatBoxRepository;
 import com.example.sportshopv2.repository.MessageRepository;
 import com.example.sportshopv2.repository.NguoiDungRepo;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,27 +30,21 @@ public class ChatService {
     @Autowired
     private NguoiDungRepo user;
 
+    @Autowired
+    private EntityManager entityManager;
+
     public ChatService(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
     }
-
-    public message saveMessage(int chatBoxId, int accountId, String role, String content) {
-        chatBox chatBox;
-
-        // Kiểm tra nếu chatBox tồn tại, nếu không tạo mới
-        if (chatBoxRepository.existsById(chatBoxId)) {
-            chatBox = chatBoxRepository.findById(chatBoxId).orElseThrow(() ->
-                    new RuntimeException("ChatBox not found"));
-        } else {
-            chatBox = new chatBox();
-            chatBox.setId(chatBoxId); // Thiết lập id nếu cần thiết
-            // Thiết lập các thuộc tính khác cho chatBox nếu cần
-            chatBoxRepository.save(chatBox);
+    @Transactional
+    public message saveMessage(chatBox cb, int accountId, String role, String content) {
+        // Tải lại cb vào ngữ cảnh Hibernate nếu cần
+        if (!entityManager.contains(cb)) {
+            cb = entityManager.merge(cb);
         }
-
         // Tạo mới đối tượng message
         message newMessage = new message();
-        newMessage.setChatBox(chatBox);  // Đảm bảo rằng chatBox đã tồn tại
+        newMessage.setChatBox(cb);  // Đảm bảo rằng chatBox đã tồn tại
         newMessage.setAccountId(accountId);
         newMessage.setRole(role);
         newMessage.setContent(content);
@@ -102,9 +98,20 @@ public class ChatService {
     }
 
 
-    public chatBox findChatBoxByAccountId(Integer accountId) {
-        return chatBoxRepository.findByCreateBy(accountId);
+    public Optional<chatBox> findChatBoxByAccountId(Integer accountId) {
+        // Truy vấn tất cả các ChatBox được tạo bởi accountId
+        List<chatBox> chatBoxes = chatBoxRepository.findAllByCreateBy(accountId);
+
+        if (chatBoxes.isEmpty()) {
+            return Optional.empty(); // Không có ChatBox nào
+        }
+
+        // Lọc ChatBox hợp lệ (bỏ qua ChatBox có tên "noname")
+        return chatBoxes.stream()
+                .filter(box -> !"noname".equals(box.getName())) // Điều kiện lọc
+                .findFirst(); // Trả về ChatBox hợp lệ đầu tiên nếu có
     }
+
 }
 
 

@@ -1,12 +1,14 @@
 package com.example.sportshopv2.controller.DatHang;
 
 import com.example.sportshopv2.dto.SanPhamChiTietDTO;
+import com.example.sportshopv2.dto.UserDTO;
 import com.example.sportshopv2.model.*;
 import com.example.sportshopv2.repository.*;
 import com.example.sportshopv2.service.*;
 import com.example.sportshopv2.service.impl.HoaDonServiceImp;
 import com.example.sportshopv2.service.impl.PhieuGiamGiaServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.example.sportshopv2.config.VNPAYService;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -89,7 +92,19 @@ public class DatHangController {
     @Autowired
     private MessageRepository messageRepository;
 
+    @Autowired
+    private KhachhangService userService;
+    @Autowired
+    private KhachHangRepository khachHangRepository;
+    @Autowired
+    private AddressRepository addressRepository;
+    @Autowired
+    private AddressService addressService;
+
     String username;
+    int flag = 0;
+    chatBox newChatBox = new chatBox();
+    List<message> messages;
 
     @RequestMapping("/trang-chu")
     public String trangChu(Model model) {
@@ -126,24 +141,24 @@ public class DatHangController {
                 .map(anh -> anh.getTenAnh() != null ? "/images/" + anh.getTenAnh() : "/images/giayMau.png")
                 .collect(Collectors.toList());
 
-        List<message> messages = new ArrayList<>(); // Khởi tạo danh sách rỗng để tránh NullPointerException
+
         int accountId = chatService.getAccountIdFromUsername(username);
 
-        // Tìm ChatBox dựa trên accountId
-        chatBox cb = chatService.findChatBoxByAccountId(accountId);
+        Optional<chatBox> optionalChatBox = chatService.findChatBoxByAccountId(accountId);
 
-        if (cb != null) {
-            // Nếu ChatBox tồn tại, lấy toàn bộ tin nhắn
+        if (optionalChatBox.isPresent()) {
+            messages = new ArrayList<>(); // Khởi tạo danh sách rỗng để tránh NullPointerException
+            chatBox cb = optionalChatBox.get();
+            // Thêm ID của ChatBox vào model
+            model.addAttribute("chatBox", cb.getId());
+
+            // Lấy danh sách tin nhắn
             messages = chatService.getMessagesByChatBoxId(cb.getId());
-        } else {
-            // Nếu ChatBox không tồn tại, tạo mới hoặc trả về ChatBox rỗng
-            cb = new chatBox();
-            cb.setId(0); // ChatBox rỗng để tránh lỗi null
-            cb.setName("noname");
+            // Tin nhắn rỗng vì ChatBox vừa được tạo
+            messages = Collections.emptyList();
         }
 
-        // Thêm ChatBox và tin nhắn vào Model để gửi ra view
-        model.addAttribute("chatBox", cb.getId());
+
         model.addAttribute("messages", messages);
         model.addAttribute("accountId", accountId);
         model.addAttribute("imageUrls", imageUrls);
@@ -518,9 +533,9 @@ public class DatHangController {
     }
 
     @PostMapping("/sendMessage")
-    public ResponseEntity<message> sendMessage(@RequestParam("chatBoxId") int chatBoxId,
-                                               @RequestParam("accountId") int accountIds,
+    public ResponseEntity<message> sendMessage(@RequestParam("accountId") int accountIds,
                                                @RequestParam("content") String content, Model model) {
+
         // Lấy accountId từ UserService
         int accountId = chatService.getAccountIdFromUsername(username);
         int getName = chatService.getNameFromIDUser(username);
@@ -533,15 +548,19 @@ public class DatHangController {
 
         if (message.isEmpty()) {
             // Nếu không tìm thấy ChatBox, tạo mới ChatBox với tên đặt theo tên người dùng
-            chatBox newChatBox = new chatBox();
+
             newChatBox.setName(name.get().getFull_name()); // Đặt tên ChatBox theo tên người dùng
             newChatBox.setCreateAt(LocalDateTime.now());
             newChatBox.setCreateBy(accountId);
             // Lưu ChatBox mới vào cơ sở dữ liệu
             chatService.saveChatBox(newChatBox);
+            flag++;
+        } else {
+
         }
+
         // Lưu tin nhắn vào cơ sở dữ liệu
-        message savedMessage = chatService.saveMessage(chatBoxId, accountIds, "client", content);
+        message savedMessage = chatService.saveMessage(newChatBox, accountIds, "client", content);
 
         // Gửi tin nhắn đến các subscriber thông qua STOMP
         messagingTemplate.convertAndSend("/topic/messages", savedMessage);
@@ -555,6 +574,195 @@ public class DatHangController {
     @ResponseBody
     public List<message> getMessagesByChatBoxId(@PathVariable int chatBoxId) {
         return chatService.getMessagesByChatBoxId(chatBoxId);
+    }
+
+
+
+    //TT khach hang
+//
+    @GetMapping("/accountDetail")
+    public String getDetail() {
+        return "MuaHang/accountDetail";
+    }
+
+    @GetMapping("/customer/detail/{id}")
+    public String viewCustomerDetails(@PathVariable("id") Integer id, Model model, HttpSession session) {
+        User customer = userService.getCustomerById(id); // Add this method to UserService
+        model.addAttribute("customer", customer);
+
+
+        return "MuaHang/accountDetail"; // Create a new Thymeleaf template for details
+    }
+
+    @GetMapping("/thong-tin-kh/{idKH}")
+    @ResponseBody
+    public User thongTinKH(@PathVariable("idKH") Integer id) {
+        UserDTO userKHDTO = userService.getKHById(id);
+        User user = User.of(userKHDTO);
+        return user;
+    }
+
+    @GetMapping("/customer/diachi/{id}")
+    public String viewdiachi(@PathVariable("id") Integer id, Model model) {
+        User customer = userService.getCustomerById(id); // Add this method to UserService
+        model.addAttribute("customer", customer);
+
+
+        return "KhachHang/diachi"; // Create a new Thymeleaf template for details
+    }
+
+
+    @PostMapping("/customer/update/{id}")
+    public String updateCustomer(@PathVariable("id") Integer id,
+                                 @RequestParam("fullName") String fullName,
+                                 @RequestParam("phoneNumber") String phoneNumber,
+                                 @RequestParam("email") String email,
+                                 @RequestParam("gender") String gender,
+                                 @RequestParam("date") String date,
+                                 @RequestParam("imageFile") MultipartFile imageFile,
+
+
+                                 Model model) {
+        try {
+            User customer = userService.getCustomerById(id); // Fetch existing customer
+
+            // Kiểm tra trùng số điện thoại và email
+            Optional<User> existingCustomerByPhone = userService.findByPhoneNumber(phoneNumber);
+            Optional<User> existingCustomerByEmail = userService.findByEmail(email);
+
+            if (existingCustomerByPhone.isPresent() && !existingCustomerByPhone.get().getId().equals(id)) {
+                model.addAttribute("phoneError", "Số điện thoại đã tồn tại.");
+            }
+            if (existingCustomerByEmail.isPresent() && !existingCustomerByEmail.get().getId().equals(id)) {
+                model.addAttribute("emailError", "Email đã tồn tại.");
+            }
+
+            // Nếu có lỗi, trả về trang chỉnh sửa
+            if (model.containsAttribute("phoneError") || model.containsAttribute("emailError")) {
+                model.addAttribute("customer", customer); // Truyền dữ liệu khách hàng hiện tại vào form
+                return "KhachHang/khachhangdetail"; // Tên trang chỉnh sửa khách hàng
+            }
+
+            customer.setFullName(fullName);
+            customer.setPhoneNumber(phoneNumber);
+            customer.setEmail(email);
+            customer.setGender(gender);
+            customer.setDate(date);
+
+            if (!imageFile.isEmpty()) {
+                userService.updateCustomerImage(customer, imageFile); // Add this method to UserService
+            }
+
+            userService.updateKhachHang(customer); // Create this method to save the updated customer
+            model.addAttribute("successMessage", "Khách hàng đã được cập nhật thành công!");
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Cập nhật không thành công.");
+        }
+        return "redirect:/khach-hang/list"; // Redirect back to the customer list
+    }
+
+    @PostMapping("/addAddress/{id}")
+    public String addAddress(@PathVariable("id") Integer id,
+                             @RequestParam("tinh_name") String tinh,
+                             @RequestParam("quan_name") String quan,
+                             @RequestParam("phuong_name") String phuong,
+                             @RequestParam("line") String line,
+                             Model model) {
+
+        // Tìm khách hàng theo id
+        User customer = userService.findById(id);
+
+        if (customer != null) {
+            // Tạo đối tượng Address mới và thêm vào khách hàng
+            Address newAddress = new Address();
+            newAddress.setTinh(tinh);
+            newAddress.setQuan(quan);
+            newAddress.setPhuong(phuong);
+            newAddress.setLine(line);
+
+
+            // Thêm địa chỉ vào khách hàng
+            customer.addAddress(newAddress);
+
+            // Lưu lại thay đổi
+            userService.save(customer);
+        }
+
+        // Hiển thị lại thông tin khách hàng và danh sách địa chỉ
+        model.addAttribute("customer", customer);
+        return "KhachHang/diachi"; // Tên view để hiển thị lại chi tiết khách hàng
+    }
+
+    @GetMapping("/customer/delete-address/{customerId}/{addressId}")
+    public String deleteAddress(@PathVariable("customerId") Integer customerId,
+                                @PathVariable("addressId") Integer addressId,
+                                Model model) {
+
+        // Find the customer by ID
+        User customer = userService.findById(customerId);
+
+        if (customer != null) {
+            // Find the address to delete by ID
+            Address addressToDelete = addressRepository.findById(addressId).orElse(null);
+
+            if (addressToDelete != null) {
+                // Remove the address from the customer's address list
+                customer.getAddresses().remove(addressToDelete);
+
+                // Save the updated customer
+                userService.save(customer);
+            }
+        }
+
+        // Add the updated customer to the model and return to the customer's address page
+        model.addAttribute("customer", customer);
+        return "KhachHang/diachi"; // Return to the page displaying the customer's addresses
+    }
+
+    @PostMapping("/them")
+    @ResponseBody
+    public NguoiDung createTaiKhoan(@RequestBody NguoiDung khachHang) {
+        return userService.saveKH(khachHang);
+    }
+
+    @GetMapping("/kh-cbo")
+    @ResponseBody
+    public List<NguoiDung> loadKHCombobox() {
+        return userService.getKHCbo();
+    }
+
+    @PostMapping("/customer/update-address/{customerId}")
+    public String updateAddress(@PathVariable("customerId") Integer customerId,
+                                @RequestParam("addressId") Integer addressId,
+                                @RequestParam("tinh") String tinh,
+                                @RequestParam("tinhName") String tinhName,
+                                @RequestParam("quan") String quan,
+                                @RequestParam("quanName") String quanName,
+                                @RequestParam("phuong") String phuong,
+                                @RequestParam("phuongName") String phuongName,
+                                @RequestParam("line") String line) {
+        // Update the address in the database with the provided details
+        addressService.updateAddress(customerId, addressId, tinhName, quanName, phuongName, line);
+
+        // Redirect back to the address view page
+        return "redirect:/khach-hang/customer/diachi/" + customerId;
+    }
+
+
+    @GetMapping("/customer/select-address/{customerId}/{addressId}")
+    public String selectAddress(@PathVariable("customerId") Integer customerId, @PathVariable("addressId") Integer addressId, HttpSession session) {
+        // Lấy khách hàng và địa chỉ theo ID
+        User customer = userService.findCustomerById(customerId);
+        if (customer == null || customer.getAddresses() == null || customer.getAddresses().isEmpty()) {
+            return "redirect:/khach-hang/list";
+        }
+        Address selectedAddress = userService.findAddressById(addressId);
+        if (selectedAddress != null) {
+            // Lưu địa chỉ đã chọn vào session
+            session.setAttribute("selectedAddress_" + customerId, selectedAddress);
+        }
+        // Chuyển hướng đến trang danh sách khách hàng
+        return "redirect:/khach-hang/list";
     }
 }
 
