@@ -116,7 +116,7 @@
                         <!-- Thêm name -->
                     </div>
                     <h5 th:text="${customer.fullName}"></h5>
-                    <a href="#" class="btn btn-link" onclick="showProfileForm()">Sửa hồ sơ</a>
+                    <a href="#" class="btn btn-warning" onclick="showProfileForm()">Sửa hồ sơ</a>
                 </div>
                 <hr>
                 <ul class="nav flex-column" style="margin-left: 145px">
@@ -128,6 +128,7 @@
                         <a class="nav-link" href="#" onclick="showOrderList()">Đơn mua</a>
                     </li>
                 </ul>
+                <a class="btn btn-danger" th:href="@{/mua-sam-SportShopV2/trang-chu}" style="margin-left: 160px; margin-top: 35px">Quay lại</a>
             </aside>
 
             <!-- Nội dung chính -->
@@ -177,8 +178,8 @@
                 </div>
 
                 <!-- Form thông tin người dùng -->
-                <div id="profile-form" style="display:none;">
-                    <h4>Sửa Hồ Sơ</h4>
+                <div id="profile-form" style="display:none; margin-top: 15px">
+                    <h3>Sửa Hồ Sơ</h3>
                     <div class="col-md-8">
                         <div class="row mb-3">
                             <div class="col-md-6">
