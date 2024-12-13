@@ -21,7 +21,7 @@
             <i class="fas fa-box"></i>
             Sản Phẩm Chi Tiết
         </div>
-        <div class="filter-section">
+        <!--<div class="filter-section">
             <div class="form-row align-items-end">
                 <div class="form-group col-md-3">
                     <label for="filter" class="font-weight-bold">Bộ lọc</label>
@@ -39,7 +39,7 @@
                     <label for="size" class="font-weight-bold">Kích Thước</label>
                     <select id="size" class="form-control">
                         <option value="all">Tất cả</option>
-                        <!-- Các kích thước được lấy từ server -->
+                        &lt;!&ndash; Các kích thước được lấy từ server &ndash;&gt;
                         <option th:each="size : ${kt}" th:value="${size.id}" th:text="${size.tenKichThuoc}"></option>
                     </select>
                 </div>
@@ -47,7 +47,7 @@
                     <label for="color" class="font-weight-bold">Màu Sắc</label>
                     <select id="color" class="form-control">
                         <option value="all">Tất cả</option>
-                        <!-- Các màu sắc được lấy từ server -->
+                        &lt;!&ndash; Các màu sắc được lấy từ server &ndash;&gt;
                         <option th:each="color : ${ms}" th:value="${color.id}" th:text="${color.tenMauSac}"></option>
                     </select>
                 </div>
@@ -55,7 +55,7 @@
                     <label for="brand" class="font-weight-bold">Thương Hiệu</label>
                     <select id="brand" class="form-control">
                         <option value="all">Tất cả</option>
-                        <!-- Các thương hiệu được lấy từ server -->
+                        &lt;!&ndash; Các thương hiệu được lấy từ server &ndash;&gt;
                         <option th:each="brand : ${th}" th:value="${brand.id}"
                                 th:text="${brand.tenThuongHieu}"></option>
                     </select>
@@ -64,7 +64,7 @@
                     <label for="category" class="font-weight-bold">Thể Loại</label>
                     <select id="category" class="form-control">
                         <option value="all">Tất cả</option>
-                        <!-- Các thể loại được lấy từ server -->
+                        &lt;!&ndash; Các thể loại được lấy từ server &ndash;&gt;
                         <option th:each="category : ${tl}" th:value="${category.id}"
                                 th:text="${category.tenTheLoai}"></option>
                     </select>
@@ -74,7 +74,7 @@
                     <button class="btn btn-danger">Làm mới bộ lọc</button>
                 </div>
             </div>
-        </div>
+        </div>-->
         <div class="table-section">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="header">

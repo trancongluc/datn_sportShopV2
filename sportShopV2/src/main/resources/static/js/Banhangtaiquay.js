@@ -931,7 +931,8 @@ async function capNhatHoaDon() {
 
     } catch (error) {
         console.error('Có lỗi xảy ra:', error);
-        showToast("Thêm hóa đơn thất bại!");
+        closeModal('confirmationModal');
+        showToast("Vui lòng điền đầy đủ thông tin!");
     }
 }
 

@@ -1269,13 +1269,48 @@ function formatCurrency(amount) {
 }
 
 function parseCurrency(currencyStr) {
-    // Loại bỏ ký tự không phải số và dấu chấm phân cách
-    const numberStr = currencyStr
-        .replace(/[^\d,-]/g, '') // Loại bỏ các ký tự không phải số, dấu phẩy hoặc dấu trừ
-        .replaceAll('.', '') // Loại bỏ dấu chấm phân cách
-        .replace(',', '.'); // Thay dấu phẩy (phân cách thập phân) bằng dấu chấm
-    return parseFloat(numberStr); // Chuyển sang số thực
+    // Kiểm tra đầu vào
+    if (typeof currencyStr !== 'string') {
+        console.error("Invalid input: currencyStr must be a string");
+        return NaN;
+    }
+
+    // Loại bỏ các ký tự không phải số, dấu chấm, dấu phẩy hoặc dấu âm
+    const sanitizedStr = currencyStr.replace(/[^\d.,-]/g, '');
+
+    // Thay đổi để xử lý định dạng `vi-VN`
+    let numberStr;
+    if (sanitizedStr.includes(',') && sanitizedStr.includes('.')) {
+        // Nếu chuỗi chứa cả ',' và '.', kiểm tra thứ tự
+        if (sanitizedStr.lastIndexOf('.') > sanitizedStr.lastIndexOf(',')) {
+            // Chuẩn Mỹ: '.' là thập phân
+            numberStr = sanitizedStr.replace(/,/g, '');
+        } else {
+            // Chuẩn Châu Âu/Việt Nam: ',' là thập phân
+            numberStr = sanitizedStr.replace(/\./g, '').replace(',', '.');
+        }
+    } else if (sanitizedStr.includes('.')) {
+        // Nếu chỉ có '.', xem như chuẩn Việt Nam
+        numberStr = sanitizedStr.replace(/\./g, '');
+    } else if (sanitizedStr.includes(',')) {
+        // Nếu chỉ có ',', xem như chuẩn Châu Âu
+        numberStr = sanitizedStr.replace(',', '.');
+    } else {
+        // Không có dấu phân cách nào
+        numberStr = sanitizedStr;
+    }
+
+    // Xử lý dấu âm
+    if (numberStr.includes('-') && numberStr.indexOf('-') !== 0) {
+        console.error("Invalid input: '-' must be at the start of the number");
+        return NaN;
+    }
+
+    // Chuyển đổi sang số thực
+    return parseFloat(numberStr);
 }
+
+
 
 document.querySelectorAll('.price').forEach(function (el) {
     el.textContent = formatCurrency(el.textContent);

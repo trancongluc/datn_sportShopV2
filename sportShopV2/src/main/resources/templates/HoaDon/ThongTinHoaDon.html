@@ -203,7 +203,7 @@
                     <div
                             th:style="'width: 40px; height: 40px;background-color: ' + ${listHdct.sanPhamChiTiet.idMauSac.tenMauSac}">
                     </div>
-                    <span th:text="${listHdct.sanPhamChiTiet.idMauSac == null}">Không có màu</span>
+                    <span class="color-name" id="color-name-${listHdct.sanPhamChiTiet.id}" th:text="${listHdct.sanPhamChiTiet.idMauSac.tenMauSac}">Không có màu</span>
                 </td>
                 <td class="border px-4 py-2 text-center" th:text="${list[index.index].sanPhamChiTiet.gia}" id="giaSP"></td>
                 <td class="border px-4 py-2 text-center" th:text="${list[index.index].quantity}"></td>
@@ -583,7 +583,36 @@
         document.querySelectorAll('#moneyShip, #moneyReduced, #totalMoney, #giaSP, #tongTienSP, #giaSPXuatHD, #tongTienSPXuatHD, #tienGiamXuatHD, #tienShipXuatHD, #tongTienXuatHD ').forEach(function(element) {
             element.innerText = formatCurrency(parseFloat(element.innerText));
         });
+        function getColorName(colorCode, el) {
+            // Nếu colorCode là RGB, chuyển sang Hex
+            const hexCode = colorCode.startsWith('#') ? colorCode : rgbToHex(colorCode);
 
+            if (!hexCode) {
+                el.textContent = "Không xác định được mã màu";
+                return;
+            }
+
+            fetch(`https://www.thecolorapi.com/id?hex=${hexCode.substring(1)}`)
+                .then(response => response.json())
+                .then(data => {
+                    el.textContent = data.name.value; // Cập nhật tên màu vào phần tử span
+                })
+                .catch(error => {
+                    console.error("Lỗi khi gọi API lấy tên màu:", error);
+                    el.textContent = "Không tìm thấy tên màu"; // Hiển thị lỗi nếu không lấy được tên màu
+                });
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            // Lấy tất cả các phần tử chứa mã màu
+            document.querySelectorAll('.color-name').forEach(function (el) {
+                const colorHex = el.innerText.trim(); // Lấy mã hex từ nội dung của phần tử span
+                if (colorHex.startsWith('#')) { // Kiểm tra mã có hợp lệ không
+                    getColorName(colorHex, el); // Gọi hàm để lấy tên màu từ API
+                } else {
+                    el.textContent = "Tên màu không hợp lệ"; // Nếu mã không hợp lệ, hiển thị thông báo lỗi
+                }
+            });
+        });
     </script>
 </main>
 </body>
