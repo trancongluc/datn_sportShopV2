@@ -17,7 +17,6 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
 
     HoaDon findAllById(Integer id);
 
-
     List<HoaDon> findAllByStatusNotOrderByCreateAtDesc(String status);
     Page<HoaDon> findAllByStatusNotOrderByCreateAtDesc(String status, Pageable pageable);
     List<HoaDon> findAllByType(String Type);
