@@ -95,7 +95,133 @@
         .address-card p {
             margin: 0 0 10px; /* Space between lines of text */
         }
+
+        /* Phần lọc trạng thái đơn hàng */
+        button[data-status] {
+            border: none;
+            background-color: #f8f9fa;
+            color: black;
+            font-weight: bold;
+            margin-right: 10px;
+            padding: 8px 16px;
+            border-radius: 5px;
+        }
+
+        button[data-status]:hover,
+        button[data-status]:focus {
+            background-color: #e2e6ea;
+            color: #007bff;
+            cursor: pointer;
+        }
+
+        button[data-status="Chờ xác nhận"] {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* Phần hiển thị chi tiết đơn hàng */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table tr {
+            border-bottom: 1px solid #ddd;
+        }
+
+        table td {
+            padding: 10px;
+            vertical-align: middle;
+        }
+
+        table img {
+            width: 80px;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        /* Tên sản phẩm và giá */
+        table p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        table p:first-child {
+            font-weight: bold;
+            color: #333;
+        }
+
+        table p:last-child {
+            color: red;
+            font-weight: bold;
+        }
+
+        /* Thành tiền */
+        #total-price {
+            font-size: 18px;
+            font-weight: bold;
+            color: red;
+            text-align: right;
+        }
+
+        #total-price::before {
+            content: "Thành tiền: ";
+            color: black;
+        }
+
+        /* Nút chức năng */
+        .d-flex button {
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-weight: bold;
+            border: none;
+        }
+
+        #cancel-order {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        #cancel-order:hover {
+            background-color: #c82333;
+            cursor: pointer;
+        }
+
+        #view-order {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            color: black;
+        }
+
+        #view-order:hover {
+            background-color: #e2e6ea;
+            color: black;
+            cursor: pointer;
+        }
+
     </style>
+    <script>
+        //loc sp
+        document.addEventListener('DOMContentLoaded', function () {
+            const buttons = document.querySelectorAll('#order-list .btn-light');
+            const rows = document.querySelectorAll('#order-list tbody tr');
+
+            buttons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const status = this.getAttribute('data-status');
+
+                    rows.forEach(row => {
+                        if (status === 'all' || row.getAttribute('data-status') === status) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 </head>
 <body>
 <div class="container-fluid">
@@ -128,54 +254,57 @@
                         <a class="nav-link" href="#" onclick="showOrderList()">Đơn mua</a>
                     </li>
                 </ul>
-                <a class="btn btn-danger" th:href="@{/mua-sam-SportShopV2/trang-chu}" style="margin-left: 160px; margin-top: 35px">Quay lại</a>
+                <a class="btn btn-danger" th:href="@{/mua-sam-SportShopV2/trang-chu}"
+                   style="margin-left: 160px; margin-top: 35px">Quay lại</a>
             </aside>
 
             <!-- Nội dung chính -->
             <main class="col-md-9" id="main-content">
                 <!-- Danh sách đơn hàng mặc định -->
                 <div id="order-list">
-                    <div class="d-flex mb-4">
-                        <button class="btn btn-light mr-2">Tất cả</button>
-                        <button class="btn btn-light mr-2">Chờ xác nhận</button>
-                        <button class="btn btn-light mr-2">Chờ vận chuyển</button>
-                        <button class="btn btn-light mr-2">Vận chuyển</button>
-                        <button class="btn btn-light mr-2">Hoàn thành</button>
-                        <button class="btn btn-light">Đã hủy</button>
+                    <div th:if="${hoaDon != null}">
+                        <!-- Danh sách hóa đơn -->
+                        <div th:each="hoaDon, index : ${hoaDon}" class="border rounded p-3 mb-4">
+                            <!-- Debug giá trị billCode -->
+                            <p th:text="'Bill Code: ' + ${hoaDon.billCode}"></p>
+
+                            <!-- Chi tiết sản phẩm -->
+                            <table class="table align-middle">
+                                <tbody th:each="item : ${hoaDon.billDetails}">
+                                <tr>
+                                    <td th:text="${index.index + 1}"></td>
+                                    <td>
+                                        <p th:text="${item.sanPhamChiTiet.idSanPham.tenSanPham}"></p>
+                                        <p class="text-danger font-weight-bold"
+                                           th:text="${item.sanPhamChiTiet.gia} + ' VND'"></p>
+                                    </td>
+                                    <td>
+                                        <div th:style="'width: 40px; height: 40px; background-color:' + ${item.sanPhamChiTiet.idMauSac.tenMauSac}"></div>
+                                    </td>
+                                    <td th:text="${item.quantity}"></td>
+                                    <td th:text="${item.quantity} * ${item.sanPhamChiTiet.gia} + ' đ'"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Nút chức năng -->
+                            <div class="d-flex justify-content-end mt-3">
+                                <!-- Hủy đơn -->
+                                <a th:href="@{/mua-sam-SportShopV2/deleteBill/{BillId}(BillId=${hoaDon.id})}"
+                                   class="btn btn-danger font-weight-bold mr-2" style="margin-right: 5px">Hủy đơn</a>
+
+                                <!-- Xem đơn hàng -->
+                                <form th:action="@{/mua-sam-SportShopV2/theo-doi-hoa-don}" method="get">
+                                    <!-- Gán giá trị mặc định nếu billCode null -->
+                                    <input type="hidden" name="tenHoaDon"
+                                           th:value="${hoaDon.billCode != null ? hoaDon.billCode : 'DefaultBillCode'}">
+                                    <button type="submit" class="btn btn-primary font-weight-bold">Xem đơn hàng</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Mẫu đơn hàng -->
-                    <div class="order-list border-top mt-3">
-                        <div class="d-flex align-items-center justify-content-between border-bottom py-2">
-                            <img src="" alt="Giày Nike" class="product-image">
-                            <div class="flex-grow-1 ml-3">
-                                <h6>Giày Thể Thao Nam Nike Dbreak-Type</h6>
-                                <p>40 - màu đen</p>
-                                <p>x1 <span class="emoji">😊</span></p>
-                            </div>
-                            <div class="product-price">2.500.000 VND</div>
-                            <button class="btn btn-primary ml-2">Chờ xác nhận</button>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-between border-bottom py-2">
-                            <img src="" alt="Giày Adidas" class="product-image">
-                            <div class="flex-grow-1 ml-3">
-                                <h6>Giày Chạy Nam Adidas Ultraboost Cc_1 Dna FZ2545</h6>
-                                <p>42 - màu đen</p>
-                                <p>x1</p>
-                            </div>
-                            <div class="product-price">2.500.000 VND</div>
-                        </div>
-                    </div>
 
-                    <!-- Tóm tắt đơn hàng -->
-                    <div class="d-flex justify-content-between mt-3">
-                        <p>Thành tiền: <span>5.000.000 VND</span></p>
-                        <div>
-                            <button class="btn btn-danger">Hủy đơn</button>
-                            <button class="btn btn-info">Xem đơn hàng</button>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Form thông tin người dùng -->
                 <div id="profile-form" style="display:none; margin-top: 15px">
@@ -546,6 +675,7 @@
                 });
             });
         });
+
     });
 </script>
 </main>

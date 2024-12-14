@@ -1,7 +1,6 @@
 package com.example.sportshopv2.controller.Chat;
 
 
-import com.example.sportshopv2.model.NguoiDung;
 import com.example.sportshopv2.model.chatBox;
 import com.example.sportshopv2.model.message;
 import com.example.sportshopv2.repository.ChatBoxRepository;
@@ -21,7 +20,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Controller
@@ -37,15 +35,12 @@ public class ChatController {
     @Autowired
     private MessageRepository messageRepository;
 
-    chatBox newChatBox = new chatBox();
-    String username;
-
     // Hiển thị giao diện chat chính
     @GetMapping("")
     public String showChatPage(Model model) {
         // Lấy thông tin người dùng từ Spring Security
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        username = authentication.getName(); // Tên người dùng
+        String username = authentication.getName(); // Tên người dùng
 
         // Lấy accountId từ UserService
         int accountId = chatService.getAccountIdFromUsername(username);
@@ -96,20 +91,10 @@ public class ChatController {
 
     @PostMapping("/sendMessage")
     public ResponseEntity<message> sendMessage(@RequestParam("chatBoxId") int chatBoxId,
-                                               @RequestParam("accountId") int accountIds,
-                                               @RequestParam("content") String content, Model model) {
-        // Lấy accountId từ UserService
-        int accountId = chatService.getAccountIdFromUsername(username);
-        int getName = chatService.getNameFromIDUser(username);
-        Optional<NguoiDung> name = chatService.getName(getName);
-
-        model.addAttribute("accountId", accountId);
-
-        newChatBox.setId(accountId);
-        newChatBox.setName(name.get().getFull_name());
-
+                                               @RequestParam("accountId") int accountId,
+                                               @RequestParam("content") String content) {
         // Lưu tin nhắn vào cơ sở dữ liệu
-        message savedMessage = chatService.saveMessage(newChatBox, accountIds, "shop", content);
+        message savedMessage = chatService.saveMessage(chatBoxId, accountId, "shop", content);
 
         // Gửi tin nhắn đến các subscriber thông qua STOMP
         messagingTemplate.convertAndSend("/topic/messages", savedMessage);
