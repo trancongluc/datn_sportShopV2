@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +28,7 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Random;
 
 
 @Controller
@@ -46,6 +49,9 @@ public class khachhangController {
     private HoaDonService  hoaDonService;
     @Autowired
     private HoaDonChiTietRepo hoaDonChiTietRepo;
+
+    String password = "";
+    String sendPassword ="";
 
     @GetMapping("/list")
     public String displayCustomers(@RequestParam(defaultValue = "0") int page,
@@ -73,7 +79,22 @@ public class khachhangController {
 
 
     @GetMapping("/add")
-    public String addCustomer(Model model) {
+    public String addCustomer(Model model, String matKhau) {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+        int length = 10;
+
+        Random rand = new Random();
+
+        for (int i = 0; i < length; i++) {
+            int index = rand.nextInt(characters.length());
+            char randomChar = characters.charAt(index);
+            password += randomChar;
+        }
+        sendPassword = password;
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        matKhau = ("{bcrypt}" + encoder.encode(password));
+        model.addAttribute("pass", matKhau);
+
         model.addAttribute("user", new User());
         return "KhachHang/tao-khach-hang";
     }
@@ -294,6 +315,7 @@ public class khachhangController {
                 // Save the updated customer
                 userService.save(customer);
             }
+
         }
 
         // Add the updated customer to the model and return to the customer's address page
