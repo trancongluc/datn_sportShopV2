@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1cf1883e-5675-4e33-950b-148cfc47239c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/KhachHang/khachhangController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/KhachHang/khachhangController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/NguoiDung.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/NguoiDung.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/HoaDon/HinhAnhHoaDon.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/HoaDon/HinhAnhHoaDon.html" afterDir="false" />
-    </list>
+    <list default="true" id="1cf1883e-5675-4e33-950b-148cfc47239c" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -188,6 +183,7 @@
       <workItem from="1734074002454" duration="4643000" />
       <workItem from="1734099143442" duration="403000" />
       <workItem from="1734100717638" duration="2355000" />
+      <workItem from="1734151836620" duration="434000" />
     </task>
     <servers />
   </component>
