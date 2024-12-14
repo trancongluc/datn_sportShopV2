@@ -48,7 +48,7 @@ public class SanPhamChiTietService {
     }
 
     public List<SanPhamChiTietDTO> getAllDISTINCTSPCT() {
-        List<SanPhamChiTiet> spct = sanPhamChiTietRepository.findDistinctByIdProduct();
+        List<SanPhamChiTiet> spct = sanPhamChiTietRepository.findDistinctByIdAndIdSanPham();
         return spct.stream().map(sanPhamChiTiet ->
                         SanPhamChiTiet.toDTO(sanPhamChiTiet, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo))
                 .collect(Collectors.toList());
