@@ -12,7 +12,7 @@
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <script src="https://esgoo.net/scripts/jquery.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         .profile-pic {
             width: 80px;
@@ -96,137 +96,128 @@
             margin: 0 0 10px; /* Space between lines of text */
         }
 
-        /* Phần lọc trạng thái đơn hàng */
-        button[data-status] {
-            border: none;
-            background-color: #f8f9fa;
-            color: black;
-            font-weight: bold;
-            margin-right: 10px;
-            padding: 8px 16px;
-            border-radius: 5px;
+        #order-list {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        button[data-status]:hover,
-        button[data-status]:focus {
-            background-color: #e2e6ea;
-            color: #007bff;
-            cursor: pointer;
-        }
-
-        button[data-status="Chờ xác nhận"] {
-            background-color: #007bff;
-            color: white;
-        }
-
-        /* Phần hiển thị chi tiết đơn hàng */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        table tr {
-            border-bottom: 1px solid #ddd;
-        }
-
-        table td {
-            padding: 10px;
-            vertical-align: middle;
-        }
-
-        table img {
-            width: 80px;
-            height: auto;
-            border-radius: 5px;
-        }
-
-        /* Tên sản phẩm và giá */
-        table p {
-            margin: 0;
-            font-size: 14px;
-        }
-
-        table p:first-child {
-            font-weight: bold;
+        .btn-light {
             color: #333;
-        }
-
-        table p:last-child {
-            color: red;
-            font-weight: bold;
-        }
-
-        /* Thành tiền */
-        #total-price {
-            font-size: 18px;
-            font-weight: bold;
-            color: red;
-            text-align: right;
-        }
-
-        #total-price::before {
-            content: "Thành tiền: ";
-            color: black;
-        }
-
-        /* Nút chức năng */
-        .d-flex button {
-            padding: 8px 16px;
-            border-radius: 5px;
-            font-weight: bold;
             border: none;
+            transition: background-color 0.3s;
         }
 
-        #cancel-order {
-            background-color: #dc3545;
-            color: white;
+        .btn-light:hover {
+            background-color: #d5d5d5;
         }
 
-        #cancel-order:hover {
-            background-color: #c82333;
-            cursor: pointer;
+        .order-list {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
         }
 
-        #view-order {
-            background-color: #f8f9fa;
-            border: 1px solid #ced4da;
-            color: black;
+        .product-image {
+            width: 60px; /* Kích thước hình ảnh */
+            height: 60px; /* Kích thước hình ảnh */
+            border-radius: 5px; /* Bo góc */
+            object-fit: cover; /* Cắt ảnh cho vừa khung */
         }
 
-        #view-order:hover {
-            background-color: #e2e6ea;
-            color: black;
-            cursor: pointer;
+        h6 {
+            font-weight: bold;
+            margin: 0; /* Bỏ margin mặc định */
         }
 
+        .product-price {
+            font-size: 1.2em;
+            color: #c0392b; /* Màu sắc giá tiền */
+            font-weight: bold;
+        }
+
+        .emoji {
+            font-size: 1.5em; /* Kích thước emoji */
+        }
+
+        .d-flex {
+            display: flex;
+            align-items: center;
+        }
+
+        .mt-3 {
+            margin-top: 1rem; /* Khoảng cách trên */
+        }
+
+        .mb-4 {
+            margin-bottom: 1.5rem; /* Khoảng cách dưới */
+        }
+
+        .py-2 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .border-bottom {
+            border-bottom: 1px solid #ddd; /* Đường viền dưới */
+        }
+
+        .border-top {
+            border-top: 1px solid #ddd; /* Đường viền trên */
+        }
+
+        .btn {
+            border-radius: 5px; /* Bo góc các nút */
+        }
+
+        .d-flex {
+            display: flex;
+            align-items: center; /* Căn giữa theo chiều dọc */
+        }
+
+        .product-image {
+            width: 60px; /* Kích thước hình ảnh */
+            height: 60px; /* Kích thước hình ảnh */
+            border-radius: 5px; /* Bo góc */
+            object-fit: cover; /* Cắt ảnh cho vừa khung */
+            margin-right: 10px; /* Khoảng cách bên phải của hình ảnh */
+        }
+
+        .flex-grow-1 {
+            margin-left: 30px; /* Khoảng cách bên trái cho tên sản phẩm */
+        }
+
+        .flex-column {
+            display: flex; /* Sử dụng Flexbox cho phần tử xếp dọc */
+            flex-direction: column; /* Xếp theo chiều dọc */
+        }
     </style>
     <script>
-        //loc sp
-        document.addEventListener('DOMContentLoaded', function () {
-            const buttons = document.querySelectorAll('#order-list .btn-light');
-            const rows = document.querySelectorAll('#order-list tbody tr');
+        function filterOrders(status) {
+            event.preventDefault();
+            // Lấy tất cả các đơn hàng
+            const orders = document.querySelectorAll('.order-list > div');
 
-            buttons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const status = this.getAttribute('data-status');
+            orders.forEach(order => {
+                const orderStatus = order.getAttribute('data-status'); // Lấy trạng thái của từng đơn hàng
 
-                    rows.forEach(row => {
-                        if (status === 'all' || row.getAttribute('data-status') === status) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    });
-                });
+                // Hiển thị tất cả nếu status = 'all', hoặc chỉ hiển thị đơn hàng có trạng thái khớp
+                if (status === 'all' || orderStatus === status) {
+                    order.style.display = 'block'; // Hiển thị đơn hàng
+                } else {
+                    order.style.display = 'none'; // Ẩn đơn hàng
+                }
             });
-        });
+        }
     </script>
 </head>
 <body>
 <div class="container-fluid">
-    <form th:action="@{/mua-sam-SportShopV2/customer/update/{id}(id=${customer.id})}"
-          method="post"
+    <form th:action="@{/mua-sam-SportShopV2/customer/update/{id}(id=${customer.id})}" method="post"
+          th:object="${customer}"
           enctype="multipart/form-data"><!-- Cập nhật action -->
         <div class="row">
             <!-- Sidebar -->
@@ -262,53 +253,78 @@
             <main class="col-md-9" id="main-content">
                 <!-- Danh sách đơn hàng mặc định -->
                 <div id="order-list">
-                    <div th:if="${hoaDon != null}">
-                        <!-- Danh sách hóa đơn -->
-                        <div th:each="hoaDon, index : ${hoaDon}" class="border rounded p-3 mb-4">
-                            <!-- Debug giá trị billCode -->
-                            <p th:text="'Bill Code: ' + ${hoaDon.billCode}"></p>
+                    <h4 class="fw-bold">Danh sách đơn hàng</h4>
+                    <hr>
+                    <p class="fw-bold"><i class="bi bi-funnel-fill"></i> Bộ lọc</p>
+                    <div class="d-flex mb-4">
+                        <button class="btn btn-light mr-2" onclick="filterOrders('all')">Tất cả</button>
+                        <button class="btn btn-light mr-2" onclick="filterOrders('Chờ xác nhận')">Chờ xác nhận</button>
+                        <button class="btn btn-light mr-2" onclick="filterOrders('Đã xác nhận')">Đã xác nhận</button>
+                        <button class="btn btn-light mr-2" onclick="filterOrders('Đang vận chuyển')">Đang vận chuyển
+                        </button>
+                        <button class="btn btn-light mr-2" onclick="filterOrders('Hoàn thành')">Hoàn thành</button>
+                        <button class="btn btn-light mr-2" onclick="filterOrders('Hoàn trả')">Hoàn trả</button>
+                        <button class="btn btn-light mr-2" onclick="filterOrders('Hủy')">Hủy</button>
+                    </div>
 
-                            <!-- Chi tiết sản phẩm -->
-                            <table class="table align-middle">
-                                <tbody th:each="item : ${hoaDon.billDetails}">
-                                <tr>
-                                    <td th:text="${index.index + 1}"></td>
-                                    <td>
-                                        <p th:text="${item.sanPhamChiTiet.idSanPham.tenSanPham}"></p>
-                                        <p class="text-danger font-weight-bold"
-                                           th:text="${item.sanPhamChiTiet.gia} + ' VND'"></p>
-                                    </td>
-                                    <td>
-                                        <div th:style="'width: 40px; height: 40px; background-color:' + ${item.sanPhamChiTiet.idMauSac.tenMauSac}"></div>
-                                    </td>
-                                    <td th:text="${item.quantity}"></td>
-                                    <td th:text="${item.quantity} * ${item.sanPhamChiTiet.gia} + ' đ'"></td>
-                                </tr>
-                                </tbody>
-                            </table>
+                    <!-- Mẫu đơn hàng -->
+                    <div class="order-list border-top mt-3">
+                        <div th:each="hoaDon, index : ${hoaDon}" th:attr="data-status=${hoaDon.status}">
+                            <div class="border rounded p-3 mb-4">
+                                <div class="d-flex">
+                                    <p th:text="${index.index + 1}" class="fw-bold"
+                                       style="margin-right: 50px; width: 30px; height: 30px; background-color: black; border-radius: 50%; color: white; text-align: center; display: flex; justify-content: center; align-items: center;">
+                                    </p>
+                                    <div>
+                                        <p class="fw-bold" th:text="'Mã ĐH: ' + ${hoaDon.billCode}"></p>
+                                        <p class="fw-bold order-display"
+                                           th:text="'Trạng thái: ' + ${hoaDon.status}"></p>
+                                        <!-- Các phần tử khác -->
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="d-flex align-items-center justify-content-between border-bottom py-2"
+                                     th:each="item : ${hoaDon.billDetails}">
+                                    <div>
+                                        <div class="d-flex align-items-center">
+                                            <!-- Hiển thị ảnh cho từng sản phẩm -->
+                                            <img th:src="@{|/images/${anhSPMap[item.sanPhamChiTiet.id]}|}"
+                                                 alt="Ảnh sản phẩm"
+                                                 style="width: 60px; height: 60px; object-fit: cover; margin-right: 30px; border-radius: 5px">
+                                            <div th:style="'border-radius: 10px; width: 30px; height: 30px; background-color:' + ${item.sanPhamChiTiet.idMauSac.tenMauSac}"></div>
+                                            <div class="flex-grow-1 ml-3">
+                                                <h6 th:text="${item.sanPhamChiTiet.idSanPham.tenSanPham}"></h6>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <p th:text="'Size: '+${item.sanPhamChiTiet.idKichThuoc.tenKichThuoc}"></p>
+                                        <p th:text="'Số lượng: '+${item.quantity}"></p>
+                                    </div>
+                                    <div class="product-price" th:text="${item.sanPhamChiTiet.gia} + ' VND'"></div>
+                                </div>
 
-                            <!-- Nút chức năng -->
-                            <div class="d-flex justify-content-end mt-3">
-                                <!-- Hủy đơn -->
-                                <a th:href="@{/mua-sam-SportShopV2/deleteBill/{BillId}(BillId=${hoaDon.id})}"
-                                   class="btn btn-danger font-weight-bold mr-2" style="margin-right: 5px">Hủy đơn</a>
-
-                                <!-- Xem đơn hàng -->
-                                <form th:action="@{/mua-sam-SportShopV2/theo-doi-hoa-don}" method="get">
-                                    <!-- Gán giá trị mặc định nếu billCode null -->
-                                    <input type="hidden" name="tenHoaDon"
-                                           th:value="${hoaDon.billCode != null ? hoaDon.billCode : 'DefaultBillCode'}">
-                                    <button type="submit" class="btn btn-primary font-weight-bold">Xem đơn hàng</button>
-                                </form>
+                                <!-- Tóm tắt đơn hàng -->
+                                <div class="d-flex justify-content-between mt-3">
+                                    <p class="fw-bold">Thành tiền: <span
+                                            th:text="${hoaDon.total_money} + ' VND'"></span></p>
+                                    <div>
+                                        <form th:action="@{/mua-sam-SportShopV2/theo-doi-hoa-don}" method="get">
+                                            <!-- Gán giá trị mặc định nếu billCode null -->
+                                            <input type="hidden" name="tenHoaDon"
+                                                   th:value="${hoaDon.billCode != null ? hoaDon.billCode : 'DefaultBillCode'}">
+                                            <button type="submit" class="btn btn-primary font-weight-bold">Xem đơn hàng
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-
+                </div>
 
                 <!-- Form thông tin người dùng -->
                 <div id="profile-form" style="display:none; margin-top: 15px">
-                    <h3>Sửa Hồ Sơ</h3>
+                    <h4>Sửa Hồ Sơ</h4>
                     <div class="col-md-8">
                         <div class="row mb-3">
                             <div class="col-md-6">
@@ -368,12 +384,13 @@
            style="margin-bottom: 15px">Thêm Địa Chỉ</a>
         <div th:each="address : ${customer.addresses}">
             <div class="address-card">
-                <button href="#"
+                <button style="margin-left:550px" href="#"
                         th:href="@{/mua-sam-SportShopV2/customer/select-address/{customerId}/{addressId}(customerId=${customer.id}, addressId=${address.id})}"
                         class="btn btn-primary">
+                    <!--                                    class="star-icon"-->
+                    <!--                                    <i class="far fa-star" id="star-[[${address.id}]]"></i>-->
                     Chọn
                 </button>
-                <br>
                 <p>Địa chỉ: <span th:text="${address.tinh}">Tỉnh</span>,
                     <span th:text="${address.quan}">Quận</span>,
                     <span th:text="${address.phuong}">Phường</span> -
@@ -467,7 +484,8 @@
                             <form th:action="@{/mua-sam-SportShopV2/customer/update-address/{customerId}(customerId=${customer.id})}"
 
                                   method="post">
-                                <input type="hidden" id="addressId" name="addressId" th:value="${address.id}">
+                                <input type="hidden" id="addressId" name="addressId"
+                                       th:value="${address.id}">
 
                                 <div class="form-group">
                                     <label for="tinha" class="form-label">Tỉnh</label>
@@ -484,7 +502,8 @@
                                     <select class="form-select" id="quana" name="quan"
                                             onchange="document.getElementsByName('quanName')[0].value = this.options[this.selectedIndex].text;"
                                     >
-                                        <option th:value="${address.quan}" th:text="${address.quan}" hidden>Quận
+                                        <option th:value="${address.quan}" th:text="${address.quan}" hidden>
+                                            Quận
                                             Huyện
                                         </option>
                                     </select>
@@ -495,7 +514,8 @@
                                     <select class="form-select" id="phuonga" name="phuong"
                                             onchange="document.getElementsByName('phuongName')[0].value = this.options[this.selectedIndex].text;"
                                     >
-                                        <option th:value="${address.phuong}" th:text="${address.phuong}" hidden>
+                                        <option th:value="${address.phuong}" th:text="${address.phuong}"
+                                                hidden>
                                             Phường Xã
                                         </option>
                                     </select>
@@ -521,7 +541,12 @@
 </div>
 </div>
 </div>
-<script src="/js/KhachHang.js"></script>
+</main>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     //doi form
     function showProfileForm() {
@@ -587,6 +612,8 @@
         }
     });
 
+    //tt dia chi
+
     // Hàm xử lý khi click vào icon sao
     document.querySelectorAll('.star-icon').forEach(item => {
         item.addEventListener('click', function () {
@@ -594,14 +621,14 @@
             const starId = this.querySelector('i').id;
             const currentStar = document.getElementById(starId);
 
-// Kiểm tra sao đã sáng chưa
+            // Kiểm tra sao đã sáng chưa
             if (currentStar.classList.contains('fas')) {
-// Nếu sao đã sáng, tắt nó đi (trở lại sao rỗng)
+                // Nếu sao đã sáng, tắt nó đi (trở lại sao rỗng)
                 currentStar.classList.remove('fas');
                 currentStar.classList.add('far');
                 localStorage.removeItem('selectedStar'); // Xóa lưu trữ trạng thái
             } else {
-// Nếu sao chưa sáng, tắt tất cả sao khác và bật sao này sáng
+                // Nếu sao chưa sáng, tắt tất cả sao khác và bật sao này sáng
                 document.querySelectorAll('.star-icon i').forEach(star => {
                     star.classList.remove('fas');
                     star.classList.add('far');
@@ -622,7 +649,6 @@
             savedStar.classList.add('fas');
         }
     }
-
 
     $(document).on('click', '.update-address-btn', function () {
         var addressId = this.getAttribute('data-id');
@@ -675,9 +701,7 @@
                 });
             });
         });
-
     });
 </script>
-</main>
 </body>
 </html>

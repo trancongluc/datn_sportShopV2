@@ -20,5 +20,9 @@ public interface KichThuocRepository extends JpaRepository<KichThuoc, Integer> {
             ")")
     List<KichThuoc> findSizesNotInProduct(@Param("productId") Integer productId);
 
+    @Query("SELECT k FROM KichThuoc k WHERE k = :kichThuoc")
+    KichThuoc findByIDKT(@Param("kichThuoc") KichThuoc kichThuoc);
+
+
 
 }

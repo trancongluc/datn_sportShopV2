@@ -105,9 +105,7 @@ public class DatHangController {
     private HoaDonService hdService;
 
     String username;
-    int flag = 0;
-    chatBox newChatBox = new chatBox();
-    List<message> messages;
+    KichThuoc size;
 
     @RequestMapping("/trang-chu")
     public String trangChu(Model model) {
@@ -581,6 +579,21 @@ public class DatHangController {
 
         List<HoaDon> hoaDon = hdService.getBillsByCustomerId(account_Id);
         model.addAttribute("hoaDon", hoaDon);
+
+        Map<Integer, String> anhSPMap = new HashMap<>();
+        for (HoaDon hDon : hoaDon) {
+            for (HoaDonChiTiet hdct : hDon.getBillDetails()) {
+                AnhSanPham anhSanPham = anhService.anhSanPhamByIDSPCT(hdct.getSanPhamChiTiet().getId());
+                if (anhSanPham != null) {
+                    anhSPMap.put(hdct.getSanPhamChiTiet().getId(), anhSanPham.getTenAnh());
+                } else {
+                    anhSPMap.put(hdct.getSanPhamChiTiet().getId(), "default.jpg"); // ảnh mặc định
+                }
+            }
+        }
+        model.addAttribute("anhSPMap", anhSPMap);
+        model.addAttribute("kt", size);
+
 
         // Kiểm tra giá trị customer và id của nó trước khi truyền vào model
         System.out.println("Customer: " + customer); // In ra để kiểm tra customer có giá trị không
