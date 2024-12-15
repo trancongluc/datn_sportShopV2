@@ -1,7 +1,9 @@
 package com.example.sportshopv2.service;
 
+import com.example.sportshopv2.dto.SanPhamGiamGiaDTO;
 import com.example.sportshopv2.model.DotGiamGia;
 import com.example.sportshopv2.model.PhieuGiamGia;
+import com.example.sportshopv2.model.SanPhamChiTiet;
 
 import java.util.List;
 
@@ -14,4 +16,6 @@ public interface DotGiamGiaService {
 
 
     void save(DotGiamGia dotGiamGia);
+
+    List<SanPhamChiTiet> getSanPhamChiTietByDotGiamGiaId(Integer dotGiamGiaId);
 }

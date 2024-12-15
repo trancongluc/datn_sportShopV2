@@ -1,5 +1,6 @@
 package com.example.sportshopv2.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -107,6 +108,7 @@ public class HoaDon {
     }
 
     @OneToMany(mappedBy = "hoaDon", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<HoaDonChiTiet> billDetails;
 
 

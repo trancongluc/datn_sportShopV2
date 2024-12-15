@@ -3,6 +3,7 @@ package com.example.sportshopv2.controller;
 import com.example.sportshopv2.dto.SanPhamChiTietDTO;
 import com.example.sportshopv2.dto.UserDTO;
 import com.example.sportshopv2.model.*;
+import com.example.sportshopv2.repository.HoaDonRepo;
 import com.example.sportshopv2.repository.KhachHangRepository;
 import com.example.sportshopv2.repository.NguoiDungRepo;
 import com.example.sportshopv2.repository.PhieuGiamGiaChiTietResponsitory;
@@ -25,6 +26,7 @@ public class BanHangTaiQuayController {
     private final SanPhamChiTietService spctService;
     private final KhachHangRepository khRepo;
     private final HoaDonService hoaDonService;
+    private final HoaDonRepo hdRepo;
     private final KhachhangService khachhangService;
     private final HoaDonChiTietService hdctService;
     private final TaiKhoanService tkService;
@@ -70,6 +72,7 @@ public class BanHangTaiQuayController {
     public HoaDon getHDById(@PathVariable("id") Integer id) {
         return hoaDonService.hoaDonById(id);
     }
+    // Đảm bảo trả về JSON hợp lệ
 
     @GetMapping("/voucher")
     @ResponseBody
@@ -82,7 +85,7 @@ public class BanHangTaiQuayController {
     public PhieuGiamGia getVoucherById(@PathVariable("idVC") Integer idVC) {
         return voucherService.findByID(idVC);
     }
-    @GetMapping("/voucher-detail/add")
+    @PostMapping("/voucher-detail/add")
     @ResponseBody
     public PhieuGiamGiaChiTiet getVoucherByGiaTriHD(@RequestBody PhieuGiamGiaChiTiet voucherDetail) {
         return voucherDetailService.save(voucherDetail);
@@ -117,4 +120,5 @@ public class BanHangTaiQuayController {
     public TaiKhoan createTaiKhoan(@RequestBody TaiKhoan taiKhoan) {
         return tkService.createTK(taiKhoan);
     }
+
 }

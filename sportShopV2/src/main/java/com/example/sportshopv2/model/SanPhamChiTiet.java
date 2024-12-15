@@ -97,5 +97,4 @@ public class SanPhamChiTiet extends BaseEntity {
         return SanPhamChiTietDTO.builder().id(spct.id).hoaDonChiTiet(danhSachHoaDonChiTiet).build();
     }
 
-
 }

@@ -13,6 +13,7 @@
     <title>Phiếu Giảm Giá</title>
     <link rel="stylesheet" href="/css/giamGia.css">
 </head>
+
 <body>
 <main layout:fragment="main1">
     <div class="container">
@@ -47,6 +48,7 @@
                     <th>TÊN PHIẾU</th>
                     <th>LOẠI PHIẾU</th>
                     <th>SỐ LƯỢNG</th>
+                    <th>GIÁ TRỊ GIẢM</th>
                     <th>GIÁ TRỊ TỐI THIỂU</th>
                     <th>NGÀY BẮT ĐẦU</th>
                     <th>NGÀY KẾT THÚC</th>
@@ -59,9 +61,10 @@
                     <td th:text="${iterStat.index + 1}"></td> <!-- STT -->
                     <td th:text="${vc.voucherCode}"></td> <!-- Mã -->
                     <td th:text="${vc.name}"></td> <!-- Tên phiếu -->
-                    <td th:text="${vc.formVoucher}"></td> <!-- Loại phiếu -->
+                    <td  th:text="${vc.formVoucher}"></td> <!-- Loại phiếu -->
                     <td th:text="${vc.quantity}"></td> <!-- Số lượng -->
-                    <td th:text="${vc.minimumValue}"></td> <!-- Giá trị tối thiểu -->
+                    <td class="discountValue" th:attr="data-form-voucher=${vc.formVoucher}" th:text="${vc.discountValue}"></td>
+                    <td class="minimumValue" th:text="${vc.minimumValue}"></td>
                     <td th:text="${vc.startDate}"></td> <!-- Ngày bắt đầu -->
                     <td th:text="${vc.endDate}"></td> <!-- Ngày kết thúc -->
                     <td th:class="${vc.getStatus() == 'Chưa diễn ra' ? 'bg-yellow' : (vc.getStatus() == 'Hết hạn' ? 'bg-red' : (vc.getStatus() == 'Đang diễn ra' ? 'bg-green' : 'bg-gray'))}">
@@ -82,6 +85,8 @@
             </table>
         </div>
     </div>
+    <script src="/js/GiamGia.js"></script>
 </main>
+
 </body>
 </html>

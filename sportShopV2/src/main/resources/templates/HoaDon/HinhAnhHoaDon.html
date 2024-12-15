@@ -53,7 +53,15 @@
     .summary td:first-child {
       text-align: left;
     }
+    @media print {
+      .currency {
+        font-family: 'Arial', sans-serif;
+        font-weight: bold;
+        color: black;
+      }
+    }
   </style>
+
 </head>
 <body>
 <main  th:object="${hoaDon}">
@@ -82,6 +90,8 @@
       <tr>
         <th>STT</th>
         <th>Tên</th>
+        <th>Màu</th>
+        <th>Size</th>
         <th>Giá</th>
         <th>Số lượng</th>
         <th>Trạng thái</th>
@@ -91,11 +101,18 @@
       <tbody>
       <tr th:each="item, iterStat : ${items}">
         <td th:text="${iterStat.index + 1}"></td>
-        <td th:text="${item.sanPhamChiTiet.idSanPham}"></td>
-        <td th:text="${item.sanPhamChiTiet.gia} + ' đ'"></td>
+        <td th:text="${spct[item.sanPhamChiTiet.id].sanPham.tenSanPham}"></td>
+        <td class="border px-4 py-2 text-center">
+          <div
+                  th:style="'width: 40px; height: 40px;background-color: ' + ${spct[item.sanPhamChiTiet.id].mauSac.tenMauSac}">
+          </div>
+          <span th:text="${spct[item.sanPhamChiTiet.id].mauSac.tenMauSac}">Không có màu</span>
+        </td>
+        <td th:text="${spct[item.sanPhamChiTiet.id].kichThuoc.tenKichThuoc}"></td>
+        <td id="giaSPCT" class="currency" th:text="${item.sanPhamChiTiet.gia} "></td>
         <td th:text="${item.quantity}"></td>
         <td th:text="${item.hoaDon.status}"></td>
-        <td th:text="${item.hoaDon.money_reduced} + ' đ'"></td>
+        <td id="tongTien" class="currency" th:text="${item.sanPhamChiTiet.gia} * ${item.quantity} "></td>
       </tr>
       </tbody>
     </table>
@@ -105,22 +122,36 @@
     <table>
       <tr>
         <td>Giảm giá:</td>
-        <td th:text="${discount} + ' đ'"></td>
+        <td id="tienGiam" class="currency" th:text="${discount}"></td>
+      </tr>
+      <tr>
+        <td>Tiền Ship:</td>
+        <td id="tienShip" class="currency" th:text="${tienShip}"></td>
       </tr>
       <tr>
         <td><strong>Tổng hóa đơn:</strong></td>
-        <td><strong th:text="${total} + ' đ'"></strong></td>
+        <td><strong id="tongTienThu" class="currency" th:text="${totalPayment} "></strong></td>
       </tr>
-      <tr>
-        <td>Tổng số lượng sản phẩm:</td>
-        <td th:text="${totalQuantity}"></td>
-      </tr>
-      <tr>
-        <td>Tổng thanh toán:</td>
-        <td th:text="${totalPayment} + ' đ'"></td>
-      </tr>
+
     </table>
   </div>
+  <script>
+    function formatCurrency(amount) {
+      if (isNaN(amount)) {
+        return amount;  // Trả về giá trị gốc nếu không phải số hợp lệ
+      }
+      return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    }
+
+    // Định dạng tất cả các giá trị tiền tệ trước khi in
+    document.querySelectorAll('.currency').forEach(function(element) {
+      let amount = parseFloat(element.innerText.replace(/[^\d.-]/g, ""));  // Loại bỏ ký tự không phải số
+      if (!isNaN(amount)) {
+        element.innerText = formatCurrency(amount);
+      }
+    });
+  </script>
+
 </main>
 </body>
 </html>

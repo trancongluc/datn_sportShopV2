@@ -54,9 +54,20 @@ public class PhieuGiamGia {
     @Column(name = "end_date")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime endDate;
+
+    @Column(name = "create_at")
+    private LocalDateTime createAt;
+
+    @Column(name = "create_by")
+    private String createBy;
+
+    @Column(name = "update_at")
+    private LocalDateTime updateAt;
+
+    @Column(name = "update_by")
+    private String updateBy;
     @Column(name = "deleted")
     private Boolean deleted;
-
 
 
     public boolean isActive() {
@@ -75,16 +86,19 @@ public class PhieuGiamGia {
     public String getStatus() {
         LocalDateTime now = LocalDateTime.now();
         String statusText;
-
         if (startDate != null && endDate != null) {
             if (startDate.isAfter(now)) {
                 statusText = "Chưa diễn ra";
             } else if (endDate.isBefore(now)) {
                 statusText = "Hết hạn";
-            } else {
+            }else if (quantity == 0) {
+                statusText = "Số lượng đã hết";
+            }
+            else {
                 statusText = "Đang diễn ra";
             }
-        } else {
+        }
+        else {
             statusText = "Không xác định";
         }
 

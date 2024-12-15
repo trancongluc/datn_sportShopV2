@@ -101,9 +101,10 @@ public class NhanVienService {
         imageFile.transferTo(new File(UPLOAD_DIR + fileName));
         NhanVien.setImageFileName(fileName);
     }
+
     public UserNhanVienDTO getNVById(Integer id) {
         User user = nvRepository.getNhanVienById(id);
-        UserNhanVienDTO nvDTO = User.toNVDTO(user,nvRepository);
+        UserNhanVienDTO nvDTO = User.toNVDTO(user, nvRepository);
         return nvDTO;
     }
 

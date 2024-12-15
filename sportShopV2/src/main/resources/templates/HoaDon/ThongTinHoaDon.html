@@ -97,7 +97,7 @@
     </form>
     <div class="bg-white p-6 rounded-lg shadow-md">
         <h2 class="text-xl font-bold mb-4" th:text="${hoaDon.billCode}">Mã Hóa Đơn</h2>
-        <div class="grid grid-cols-2 gap-4 mb-4">
+        <div class="grid grid-cols-3 gap-4 mb-4">
             <div>
                 <p class="mb-2">
                     <span class="font-semibold">Trạng thái:</span>
@@ -113,21 +113,35 @@
                 </p>
                 <p class="mb-2">
                     <span class="font-semibold">Địa chỉ:</span>
-                <p th:text="${hoaDon.address}">Địa chỉ</p>
+                <span th:text="${hoaDon.address}">Địa chỉ</span>
                 </p>
             </div>
             <div>
                 <p class="mb-2">
                     <span class="font-semibold">Tên khách hàng:</span>
-                <p th:text="${hoaDon.id_account.nguoiDung.full_name}">Tên Khách Hàng</p>
+                <span th:text="${hoaDon.id_account.nguoiDung.full_name}">Tên Khách Hàng</span>
                 </p>
                 <p class="mb-2">
                     <span class="font-semibold">Số điện thoại:</span>
-                <p th:text="${hoaDon.phone_number}">Số Điện Thoại</p>
+                <span th:text="${hoaDon.phone_number}">Số Điện Thoại</span>
                 </p>
                 <p class="mb-2">
                     <span class="font-semibold">Ghi chú:</span>
-                <p th:text="${hoaDon.note}">Ghi Chú</p>
+                <span th:text="${hoaDon.note}">Ghi Chú</span>
+                </p>
+            </div>
+            <div>
+                <p class="mb-2">
+                    <span class="font-semibold">Tiền Ship:</span>
+                <span id="moneyShip" th:text="${hoaDon.money_ship}">Tên Khách Hàng</span>
+                </p>
+                <p class="mb-2">
+                    <span class="font-semibold">Tiền giảm:</span>
+                <span id="moneyReduced" th:text="${hoaDon.money_reduced}">Số Điện Thoại</span>
+                </p>
+                <p class="mb-2">
+                    <span class="font-semibold">Thực thu:</span>
+                <span id="totalMoney" th:text="${hoaDon.total_money}">Ghi Chú</span>
                 </p>
             </div>
         </div>
@@ -164,6 +178,7 @@
                 <th class="px-4 py-2">Ảnh Sản Phẩm</th>
                 <th class="px-4 py-2">Thông tin sản phẩm</th>
                 <th class="px-4 py-2">Màu sắc</th>
+                <th class="px-4 py-2">Giá</th>
                 <th class="px-4 py-2">Số lượng</th>
                 <th class="px-4 py-2">Tổng tiền</th>
                 <th class="px-4 py-2">Trạng Thái</th>
@@ -188,12 +203,12 @@
                     <div
                             th:style="'width: 40px; height: 40px;background-color: ' + ${listHdct.sanPhamChiTiet.idMauSac.tenMauSac}">
                     </div>
-                    <span th:if="${listHdct.sanPhamChiTiet.idMauSac == null}">Không có màu</span>
+                    <span class="color-name" id="color-name-${listHdct.sanPhamChiTiet.id}" th:text="${listHdct.sanPhamChiTiet.idMauSac.tenMauSac}">Không có màu</span>
                 </td>
-
+                <td class="border px-4 py-2 text-center" th:text="${list[index.index].sanPhamChiTiet.gia}" id="giaSP"></td>
                 <td class="border px-4 py-2 text-center" th:text="${list[index.index].quantity}"></td>
                 <td class="border px-4 py-2 text-center"
-                    th:text="${list[index.index].quantity * list[index.index].price}" ></td>
+                    th:text="${list[index.index].quantity * list[index.index].sanPhamChiTiet.gia}" id="tongTienSP"></td>
                 <td class="border px-4 py-2 text-center" th:text="${list[index.index].hoaDon.status}">
                 </td>
             </tr>
@@ -384,7 +399,7 @@
                 <div class="header">
                     <!--    <img th:src="@{/images/logoSSV2.png}" alt="logo"/>-->
 
-                    <h1>Sport Shop</h1>
+                    <h1>SPORT SHOP V2</h1>
                     <p>Chương trình Phổ thông Cao đẳng FPT Polytechnic, Phường Canh, Từ Liêm, Hà Nội, Việt Nam</p>
                     <p>SĐT: 0822580083</p>
                     <p>Mã hóa đơn: <span th:text="${hoaDon.billCode}"></span></p>
@@ -417,10 +432,10 @@
                         <tr th:each="item, iterStat : ${list}">
                             <td th:text="${iterStat.index + 1}"></td>
                             <td th:text="${item.sanPhamChiTiet.idSanPham.tenSanPham}"></td>
-                            <td th:text="${item.sanPhamChiTiet.gia} + ' đ'"></td>
+                            <td id="giaSPXuatHD" th:text="${item.sanPhamChiTiet.gia}"></td>
                             <td th:text="${item.quantity}"></td>
                             <td th:text="${item.hoaDon.status}"></td>
-                            <td th:text="${item.quantity * item.price} + ' đ'"></td>
+                            <td id="tongTienSPXuatHD"  th:text="${item.quantity * item.sanPhamChiTiet.gia}"></td>
                         </tr>
                         </tbody>
                     </table>
@@ -430,19 +445,15 @@
                     <table>
                         <tr>
                             <td>Giảm giá:</td>
-                            <td th:text="${hoaDon.money_reduced} + ' đ'"></td>
+                            <td id="tienGiamXuatHD" th:text="${hoaDon.money_reduced} "></td>
                         </tr>
                         <tr>
-                            <td><strong>Tổng tiền hóa đơn:</strong></td>
-                            <td><strong th:text="${hoaDon.status} + ' đ'"></strong></td>
+                            <td>Tiền Ship:</td>
+                            <td id="tienShipXuatHD" th:text="${hoaDon.money_ship} "></td>
                         </tr>
                         <tr>
-                            <td>Tổng số lượng sản phẩm:</td>
-                            <td th:text="${hoaDon.money_reduced}"></td>
-                        </tr>
-                        <tr>
-                            <td>Tổng thanh toán:</td>
-                            <td th:text="${hoaDon.total_money} + ' đ'"></td>
+                            <td><strong>Tổng thanh toán:</strong></td>
+                            <td><strong id="tongTienXuatHD" th:text="${hoaDon.total_money}"></strong></td>
                         </tr>
                     </table>
                 </div>
@@ -569,6 +580,39 @@
         function formatCurrency(amount) {
             return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
         }
+        document.querySelectorAll('#moneyShip, #moneyReduced, #totalMoney, #giaSP, #tongTienSP, #giaSPXuatHD, #tongTienSPXuatHD, #tienGiamXuatHD, #tienShipXuatHD, #tongTienXuatHD ').forEach(function(element) {
+            element.innerText = formatCurrency(parseFloat(element.innerText));
+        });
+        function getColorName(colorCode, el) {
+            // Nếu colorCode là RGB, chuyển sang Hex
+            const hexCode = colorCode.startsWith('#') ? colorCode : rgbToHex(colorCode);
+
+            if (!hexCode) {
+                el.textContent = "Không xác định được mã màu";
+                return;
+            }
+
+            fetch(`https://www.thecolorapi.com/id?hex=${hexCode.substring(1)}`)
+                .then(response => response.json())
+                .then(data => {
+                    el.textContent = data.name.value; // Cập nhật tên màu vào phần tử span
+                })
+                .catch(error => {
+                    console.error("Lỗi khi gọi API lấy tên màu:", error);
+                    el.textContent = "Không tìm thấy tên màu"; // Hiển thị lỗi nếu không lấy được tên màu
+                });
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            // Lấy tất cả các phần tử chứa mã màu
+            document.querySelectorAll('.color-name').forEach(function (el) {
+                const colorHex = el.innerText.trim(); // Lấy mã hex từ nội dung của phần tử span
+                if (colorHex.startsWith('#')) { // Kiểm tra mã có hợp lệ không
+                    getColorName(colorHex, el); // Gọi hàm để lấy tên màu từ API
+                } else {
+                    el.textContent = "Tên màu không hợp lệ"; // Nếu mã không hợp lệ, hiển thị thông báo lỗi
+                }
+            });
+        });
     </script>
 </main>
 </body>

@@ -18,7 +18,7 @@
 
     <div class="container">
         <h1 class="txt">Quản lý nhân viên</h1>
-        <form th:action="@{/nhanvien}" method="get" class="shadow-lg p-3 mb-5 bg-body rounded">
+        <form th:action="@{/nhanvien/list}" method="get" class="shadow-lg p-3 mb-5 bg-body rounded">
             <div class="fw-bold" style="margin-bottom: 10px">Tìm kiếm nhân viên
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
                      viewBox="0 0 16 16">
@@ -36,7 +36,7 @@
                     </svg>
                     Search
                 </button>
-                <a href="/quan-ly-nhan-vien" class="btn btn-danger" style="margin-left: 10px; width: 150px" >
+                <a href="/nhanvien/list" class="btn btn-danger" style="margin-left: 10px; width: 150px" >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
@@ -139,45 +139,24 @@
 
                 </tbody>
             </table>
-        </div>
 
-<!--        <nav>-->
-<!--            <div class="d-flex justify-content-center">-->
-<!--                <div class="pagination">-->
-<!--                    <ul class="pagination">-->
-<!--                        <li th:if="${currentPage > 0}">-->
-<!--                            <a th:href="@{/quan-ly-nhan-vien(page=${currentPage - 1}, size=${size})}"-->
-<!--                               class="btn btn-secondary"><</a>-->
-<!--                        </li>-->
-<!--                        <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">-->
-<!--                            <a th:href="@{/quan-ly-nhan-vien(page=${i}, size=${size})}"-->
-<!--                               th:text="${i + 1}"-->
-<!--                               th:class="${i == currentPage} ? 'btn btn-primary' : 'btn btn-secondary'"></a>-->
-<!--                        </li>-->
-<!--                        <li th:if="${currentPage < totalPages - 1}">-->
-<!--                            <a th:href="@{/quan-ly-nhan-vien(page=${currentPage + 1}, size=${size})}"-->
-<!--                               class="btn btn-secondary">></a>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </nav>-->
-        <div aria-label="...">
-            <ul class="pagination">
-                <li class="page-item disabled" th:if="${currentPage > 0}">
-                    <span th:href="@{/quan-ly-nhan-vien(page=${currentPage - 1}, size=${size})}" class="btn page-link">Previous</span>
-                </li>
-                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-                    <a class="page-link" href="#"
-                       th:href="@{/quan-ly-nhan-vien(page=${i}, size=${size})}"
-                       th:text="${i + 1}"
-                       th:class="${i == currentPage} ? 'btn btn-primary' : 'btn btn-secondary'"></a>
-                </li>
-                <li class="page-item" th:if="${currentPage < totalPages - 1}">
-                    <a class="btn page-link" href="#" th:href="@{/quan-ly-nhan-vien(page=${currentPage + 1}, size=${size})}">Next</a>
-                </li>
-            </ul>
-        </div>
+
+            <div aria-label="Pagination">
+                <ul class="pagination">
+                    <li class="page-item" th:class="${currentPage == 0} ? 'disabled' : ''">
+                        <a class="page-link" th:href="@{/nhanvien/list(page=${currentPage - 1}, size=${size})}" th:if="${currentPage > 0}">Previous</a>
+                    </li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                        <a class="page-link" th:href="@{/nhanvien/list(page=${i}, size=${size})}"
+                           th:text="${i + 1}"
+                           th:class="${i == currentPage ? 'btn btn-primary' : 'btn btn-secondary'}"></a>
+                    </li>
+                    <li class="page-item" th:class="${currentPage == totalPages - 1} ? 'disabled' : ''">
+                        <a class="page-link" th:href="@{/nhanvien/list(page=${currentPage + 1}, size=${size})}" th:if="${currentPage < totalPages - 1}">Next</a>
+                    </li>
+                </ul>
+            </div>
+    </div>
 </main>
 </body>
 </html>

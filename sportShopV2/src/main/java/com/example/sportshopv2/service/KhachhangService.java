@@ -64,7 +64,7 @@ public class KhachhangService {
     }
 
 
-    private final String UPLOAD_DIR = "C:\\HOCTAP\\DATN\\sportShopV2\\sportShopV2\\src\\main\\resources\\static\\uploads";
+    private final String UPLOAD_DIR = "D:\\demoMergeCodeDatn\\sportShopV2\\src\\main\\resources\\static\\uploads";
 
     public User addKhachHang(User khachHang, MultipartFile imageFile) throws IOException {
 
@@ -83,7 +83,7 @@ public class KhachhangService {
 
 //            account.setUsername(username); // Hoặc bạn có thể thiết lập một username khác
 //            account.setPassword(password); // Thiết lập mật khẩu mặc định (bạn có thể mã hóa mật khẩu ở đây)
-        account.setStatus("Active");
+        account.setStatus("Đang hoạt động");
 
         khachHang.setAccount(account); // Gán tài khoản cho user
 

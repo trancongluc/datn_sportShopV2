@@ -132,7 +132,7 @@
                             sanPham.trangThai = "Không hoạt động"; // Cập nhật trạng thái sản phẩm
 
                             // Gọi API PUT để cập nhật trạng thái sản phẩm trên server
-                            const updateResponse = await fetch(`/san-pham/${idSP}`, {
+                            const updateResponse = await fetch(`/san-pham/update/${idSP}`, {
                                 method: "PUT",
                                 headers: {
                                     "Content-Type": "application/json"
