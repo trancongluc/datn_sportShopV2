@@ -139,9 +139,13 @@ public class PhieuGiamGiaController {
 
     @GetMapping("/view")
     public String GiamGia(Model model) {
+
         List<PhieuGiamGia> vouchers = vcRepo.findAll(Sort.by(Sort.Direction.DESC, "createAt"));
         model.addAttribute("listVCCT", vcctRepo.findAll());
         model.addAttribute("listVC", vouchers);
+
+        model.addAttribute("listVC", vcRepo.findAll());
+
         return "PhieuGiamGia/giamGia";
     }
 
@@ -235,6 +239,12 @@ public class PhieuGiamGiaController {
         }
         model.addAttribute("giamGia", giamGia);
         return "PhieuGiamGia/detail";
+    }
+
+    @PutMapping("/update")
+    @ResponseBody
+    public boolean updateSoLuongGiamGia(@RequestBody PhieuGiamGia phieuGiamGia) {
+        return phieuGiamGiaService.update(phieuGiamGia);
     }
 
     @PostMapping("/delete/{id}")

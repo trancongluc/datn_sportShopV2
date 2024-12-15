@@ -30,29 +30,29 @@ public class DotGiamGiaChiTiet {
     @Column(name = "status")
     private String status;
 
-    @Column(name = "update_at")
+    @Column(name = "updated_at")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime updateAt;
 
-    @Column(name = "create_at")
+    @Column(name = "created_at")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime createAt;
 
-    @Column(name = "create_by")
+    @Column(name = "created_by")
     private String createBy;
 
-    @Column(name = "update_by")
+    @Column(name = "updated_by")
     private String updateBy;
 
     @Column(name = "deleted")
     private Boolean deleted;
 
     @ManyToOne
-    @JoinColumn(name = "product_detail_id")
+    @JoinColumn(name = "product_detail_id" , nullable = false)
     private SanPhamChiTiet spct;
 
     @ManyToOne
-    @JoinColumn(name = "promotion_id")
+    @JoinColumn(name = "promotion_id" , nullable = false)
     private DotGiamGia dotGiamGia;
 
 }

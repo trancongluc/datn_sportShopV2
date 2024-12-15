@@ -31,6 +31,15 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
             "WHERE pd.idSanPham = :productId")
     Integer tongSoLuongSP(@Param("productId") Integer productId);
 
+
     @Query("SELECT s FROM SanPhamChiTiet s WHERE s.id = :id AND s.deleted = false")
     Optional<SanPhamChiTiet> findActiveById(@Param("id") Integer id);
+
+    @Query("SELECT DISTINCT ms.tenMauSac " +
+            "FROM SanPhamChiTiet pd " +
+            "JOIN MauSac ms ON ms.id = pd.idMauSac " +
+            "WHERE pd.idSanPham = :productId")
+    List<String> findDistinctColorsByProductId(@Param("productId") Integer productId);
+
+
 }

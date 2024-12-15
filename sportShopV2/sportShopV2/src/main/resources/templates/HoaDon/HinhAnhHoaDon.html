@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Hóa Đơn</title>
+  <style>
+    body {
+      font-family: "DejaVu Sans", Arial, sans-serif;
+      margin: 20px;
+      color: #333;
+    }
+    .header, .info, .order-details {
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 0;
+    }
+    .header p, .info p {
+      margin: 2px 0;
+    }
+    .order-details table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    .order-details table, .order-details th, .order-details td {
+      border: 1px solid #000;
+    }
+    .order-details th, .order-details td {
+      padding: 8px;
+      text-align: center;
+    }
+    .order-details th {
+      background-color: #f2f2f2;
+    }
+    .summary {
+      margin-top: 20px;
+      width: 100%;
+    }
+    .summary table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .summary td {
+      padding: 8px;
+      text-align: right;
+    }
+    .summary td:first-child {
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+<main  th:object="${hoaDon}">
+  <div class="header">
+<!--    <img th:src="@{/images/logoSSV2.png}" alt="logo"/>-->
+
+    <h1>Sport Shop</h1>
+    <p>Chương trình Phổ thông Cao đẳng FPT Polytechnic, Phường Canh, Từ Liêm, Hà Nội, Việt Nam</p>
+    <p>SĐT: 0822580083</p>
+    <p>Mã hóa đơn: <span th:text="${hoaDon.getBill_code()}"></span></p>
+    <p>
+      <span th:text="${hoaDon.create_at}"></span>
+    </p>
+  </div>
+
+  <div class="info">
+    <p>Khách hàng: <span th:text="${hoaDon.getId_account().getId_user().getFull_name()}"></span></p>
+    <p>Số điện thoại: <span th:text="${hoaDon.phone_number}"></span></p>
+    <p>Địa chỉ: <span th:text="${hoaDon.address}"></span></p>
+  </div>
+
+  <div class="order-details">
+    <p><strong>Nội dung đơn hàng (Tổng số lượng sản phẩm: <span th:text="${productCount}"></span>)</strong></p>
+    <table>
+      <thead>
+      <tr>
+        <th>STT</th>
+        <th>Tên</th>
+        <th>Giá</th>
+        <th>Số lượng</th>
+        <th>Trạng thái</th>
+        <th>Tổng</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="item, iterStat : ${items}">
+        <td th:text="${iterStat.index + 1}"></td>
+        <td th:text="${item.sanPhamChiTiet.id_product.tenSanPham}"></td>
+        <td th:text="${item.sanPhamChiTiet.price} + ' đ'"></td>
+        <td th:text="${item.quantity}"></td>
+        <td th:text="${item.hoaDon.status}"></td>
+        <td th:text="${item.hoaDon.status} + ' đ'"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="summary">
+    <table>
+      <tr>
+        <td>Giảm giá:</td>
+        <td th:text="${discount} + ' đ'"></td>
+      </tr>
+      <tr>
+        <td><strong>Tổng hóa đơn:</strong></td>
+        <td><strong th:text="${total} + ' đ'"></strong></td>
+      </tr>
+      <tr>
+        <td>Tổng số lượng sản phẩm:</td>
+        <td th:text="${totalQuantity}"></td>
+      </tr>
+      <tr>
+        <td>Tổng thanh toán:</td>
+        <td th:text="${totalPayment} + ' đ'"></td>
+      </tr>
+    </table>
+  </div>
+</main>
+</body>
+</html>

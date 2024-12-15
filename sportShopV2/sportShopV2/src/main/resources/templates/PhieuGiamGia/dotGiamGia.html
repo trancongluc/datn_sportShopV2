@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Menu}"
+>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Đợt Giảm Giá</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .filter-section, .discount-list {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .filter-section h2, .discount-list h2 {
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .filter-section .filter-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .filter-section .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        .filter-section .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .filter-section .form-group input,
+        .filter-section .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .filter-section .form-group .btn {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto 0;
+        }
+        .filter-section .form-group .btn:hover{
+            transform: scale(1.1);
+
+        }
+        .discount-list table td .btn-edit {
+            background-color: #28a745;
+        }
+        .discount-list table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .discount-list table th,
+        .discount-list table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .discount-list table th {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .discount-list table td button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .add-button {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .add-button button {
+            background-color: #71c664;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .add-button button:hover {
+            background-color: #5cb85c;
+            transform: scale(1.1);
+        }
+        .icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: #007bff;
+            transition: color 0.3s;
+        }
+
+        .icon:hover {
+            color: #0056b3; /* Màu khi hover */
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+<main layout:fragment="main1">
+    <div class="container">
+        <div class="header">
+            <h1>
+                <i class="fas fa-box"></i>
+                Quản lý đợt giảm giá
+            </h1>
+        </div>
+        <div class="filter-section">
+            <h2>
+                <i class="fas fa-filter"></i>
+                Bộ lọc
+            </h2>
+            <form class="filter-form">
+                <div class="form-group">
+                    <label for="ma-khuyen-mai">Mã khuyến mại:</label>
+                    <input id="ma-khuyen-mai" placeholder="Tìm kiếm" type="text"/>
+                </div>
+                <div class="form-group">
+                    <label for="gia-tri-giam">Giá trị giảm:</label>
+                    <input id="gia-tri-giam" placeholder="Tìm kiếm" type="text"/>
+                </div>
+                <div class="form-group">
+                    <label for="tu-ngay">Từ ngày:</label>
+                    <input id="tu-ngay" type="date"/>
+                </div>
+                <div class="form-group">
+                    <label for="ten-khuyen-mai">Tên khuyến mại:</label>
+                    <input id="ten-khuyen-mai" placeholder="Tìm kiếm" type="text"/>
+                </div>
+                <div class="form-group">
+                    <label for="trang-thai">Trạng thái:</label>
+                    <select id="trang-thai">
+                        <option value="tat-ca">Tất cả</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="den-ngay">Đến ngày:</label>
+                    <input id="den-ngay" type="date"/>
+                </div>
+                <div class="form-group" style="flex-basis: 100%; text-align: center;">
+                    <button class="btn" type="button">Làm mới</button>
+                </div>
+            </form>
+        </div>
+        <div class="discount-list">
+            <h2>
+                <i class="fas fa-list"></i>
+                Danh sách đợt giảm giá
+            </h2>
+            <div class="add-button">
+                <button>
+                    <i class="fas fa-user-plus"></i>
+                    <a href="/add-dot-giam-gia" style="text-decoration: none; color: white;">Thêm Mới</a>
+                </button>
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Mã</th>
+                    <th>Tên đợt giảm giá</th>
+                    <th>Giá trị giảm</th>
+                    <th>Ngày bắt đầu</th>
+                    <th>Ngày kết thúc</th>
+                    <th>Ngày cập nhật</th>
+                    <th>Trạng Thái</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+<!--                <tbody>-->
+<!--                <tr th:each="vc, iterStat : ${listVC}">-->
+<!--                    <td th:text="${iterStat.index + 1}"></td> &lt;!&ndash; STT &ndash;&gt;-->
+<!--                    <td th:text="${vc.voucher_code}"></td> &lt;!&ndash; ma &ndash;&gt;-->
+<!--                    <td th:text="${vc.name}"></td> &lt;!&ndash; ten dot giam gia &ndash;&gt;-->
+<!--                    <td th:text="${vc.minimum_value}"></td> &lt;!&ndash; gia tri giam toi thieu &ndash;&gt;-->
+<!--                    <td th:text="${vc.start_date}"></td> &lt;!&ndash; ngay bat dau &ndash;&gt;-->
+<!--                    <td th:text="${vc.end_date}"></td> &lt;!&ndash; ngay ket thuc &ndash;&gt;-->
+<!--                    <td th:text="${vc.end_date}"></td> &lt;!&ndash; ngay cap nhat &ndash;&gt;-->
+<!--                    <td>-->
+<!--                        <span class="status-label" th:text="${vc.status}"></span> &lt;!&ndash; trang thai &ndash;&gt;-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <button class="icon">✏️</button>-->
+<!--                        <button class="icon">🗑️</button>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                </tbody>-->
+
+
+
+                <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>KM607321310</td>
+                    <td>DUNG NA</td>
+                    <td>80%</td>
+                    <td>09:37:10 17-12-2023</td>
+                    <td>09:37:58 21-12-2023</td>
+                    <td>09:38:02 19-12-2023</td>
+                    <td>
+                        <button class="btn-edit">Đang kích hoạt</button>
+                    </td>
+                    <td>
+                        <button class="icon">✏️</button>
+                        <button class="icon">🗑️</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+</body>
+</html>

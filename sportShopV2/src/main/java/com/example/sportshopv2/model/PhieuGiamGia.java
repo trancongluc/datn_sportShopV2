@@ -55,6 +55,7 @@ public class PhieuGiamGia {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime endDate;
 
+
     @Column(name = "create_at")
     private LocalDateTime createAt;
 
@@ -66,6 +67,7 @@ public class PhieuGiamGia {
 
     @Column(name = "update_by")
     private String updateBy;
+
     @Column(name = "deleted")
     private Boolean deleted;
 

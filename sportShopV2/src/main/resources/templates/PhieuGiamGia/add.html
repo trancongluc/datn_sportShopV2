@@ -271,7 +271,7 @@
         var phanTramGiamInput = document.getElementById('phan-tram-giam');
         var currencyLabel = document.querySelector('.currency');
 
-        if (loaiPhieu === 'Tiền Mặt') {
+        if (loaiPhieu === 'Tiền mặt') {
             phanTramGiamInput.placeholder = "Số tiền giảm...";
             currencyLabel.innerText = "VND";
             phanTramGiamInput.value = '';
@@ -338,8 +338,8 @@
                                 <div class="form-group">
                                     <label for="loai-phieu">Loại Phiếu</label>
                                     <select id="loai-phieu" th:field="*{formVoucher}" oninput="updateDiscountType()">
-                                        <option value="Phần Trăm">Phần Trăm</option>
-                                        <option value="Tiền Mặt">Tiền Mặt</option>
+                                        <option value="Phần trăm">Phần Trăm</option>
+                                        <option value="Tiền mặt">Tiền Mặt</option>
                                     </select>
                                 </div>
                                 <div class="form-group">

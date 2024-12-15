@@ -14,71 +14,52 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             height: 400px;
             overflow-y: auto;
-            display: none; /* Ẩn tất cả các chatbox ban đầu */
+            display: none; /* Hide all chatboxes initially */
         }
 
         .chat-box.active {
-            display: block; /* Chỉ hiện chatbox được chọn */
+            display: block; /* Only show the selected chatbox */
         }
 
         .message.client {
             background-color: #007bff;
             color: white;
-            text-align: left;
+            text-align: left; /* Align client messages to the left */
             border-radius: 15px;
             padding: 10px;
             margin-bottom: 5px;
             max-width: 75%;
+            margin-right: auto; /* Align to the left */
         }
 
         .message.shop {
-            background-color: #28a745;
+            background-color: grey;
             color: white;
-            text-align: right;
+            text-align: right; /* Align shop messages to the right */
             border-radius: 15px;
             padding: 10px;
             margin-bottom: 5px;
             max-width: 75%;
-            margin-left: auto;
+            margin-left: auto; /* Align to the right */
         }
 
-        .list-group-item-action:hover {
-            background-color: #f0f8ff;
-        }
-
-        .list-group-item {
-            margin-bottom: 6px; /* Khoảng cách giữa các ô */
-            border-radius: 5px; /* Bo góc cho đẹp hơn */
-        }
-
-        .list-group-item-action {
-            display: flex; /* Dùng Flexbox để sắp xếp các phần tử */
-            align-items: center; /* Căn giữa theo chiều dọc */
-        }
-
-        .avatar {
-            margin-right: 10px; /* Khoảng cách giữa avatar và tên chatbox */
-            width: 50px;
-            height: 50px;
-            background-color: #007bff;
+        .timestamp {
+            font-size: 0.75rem;
             color: white;
-            font-size: 18px; /* Kích thước chữ */
-            font-weight: bold;
-            text-transform: uppercase;
-            line-height: 50px; /* Căn giữa chữ trong avatar */
+            margin-top: 2px;
         }
 
-        .list-group-item .ms-3 {
-            flex-grow: 1; /* Nội dung chat sẽ chiếm phần còn lại của container */
+        /* Notification dot */
+        .notification-dot {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            display: none; /* Hidden by default */
         }
-
-        .list-group-item .ms-3 strong {
-            white-space: nowrap; /* Đảm bảo tên không bị cắt nếu dài */
-            text-overflow: ellipsis; /* Nếu tên quá dài, hiển thị "..." */
-            overflow: hidden; /* Đảm bảo tên không bị tràn */
-        }
-
-
     </style>
 </head>
 <body>
@@ -87,68 +68,56 @@
     <hr>
     <br>
     <div class="row">
-        <!-- Danh sách chatbox bên trái -->
+        <!-- Left chatbox list -->
         <div class="col-md-4">
             <div class="list-group">
-                <a href="javascript:void(0);" class="list-group-item list-group-item-action"
+                <a href="javascript:void(0);" class="list-group-item list-group-item-action position-relative"
                    th:each="chatBox : ${chatBoxes}"
                    th:data-id="${chatBox.id}"
                    onclick="showChat(this)">
                     <div class="d-flex align-items-center">
-                        <!-- Avatar bên trái -->
                         <div class="avatar rounded-circle text-center d-flex align-items-center justify-content-center flex-shrink-0"
                              style="width: 50px; height: 50px; background-color: #007bff; color: white;">
                             <span th:text="${chatBox.name.substring(0, 1).toUpperCase()}"></span>
                         </div>
-
-                        <!-- Nội dung chat -->
                         <div class="ms-3 flex-grow-1">
                             <strong th:text="${chatBox.name}" style="color: black">ChatBox Name</strong>
                             <br>
                             <small class="text-muted">Nhấn để mở chat</small>
                         </div>
+                        <div class="notification-dot" id="notification-dot-${chatBox.id}"></div> <!-- Notification dot -->
                     </div>
                 </a>
-
-
             </div>
         </div>
-        <!-- Khu vực tin nhắn bên phải -->
+        <!-- Right message area -->
         <div class="col-md-8">
             <div id="chat-title" class="mb-3">
                 <h5>Chọn một ChatBox để hiển thị nội dung</h5>
             </div>
             <div id="chat-container">
-                <!-- Lặp qua các chatbox để hiển thị nội dung -->
                 <div th:each="chatBox : ${chatBoxes}"
                      th:id="'chat-box-' + ${chatBox.id}"
                      class="chat-box">
                     <div th:each="message : ${messagesByChatBox.get(chatBox.id)}">
-                        <div th:classappend="${message.role == 'client' ? 'client' : 'shop'}"
-                             class="message p-2 mb-2"
-                             th:text="${message.content}">
-                            Tin nhắn
+                        <div th:classappend="${message.role == 'shop' ? 'shop' : 'client'}"
+                             class="message p-2 mb-2">
+                            <span th:text="${message.content}">Tin nhắn</span>
+                            <div class="timestamp" th:text="${message.timestamp}"></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <form id="messageForm" class="mt-3 d-flex">
-                <!-- Kiểm tra và gán giá trị chatBoxId -->
+            <div id="messageForm" class="mt-3 d-flex">
                 <input type="hidden" id="chatBoxId" th:value="${chatBox != null ? chatBox.id : ''}">
-                <!-- Lấy accountId từ tài khoản đăng nhập -->
                 <input type="hidden" id="accountId" th:value="${accountId}">
                 <input type="text" id="content" placeholder="Nhập tin nhắn..." required class="form-control me-2">
-                <button type="submit" class="btn btn-success">Gửi</button>
-            </form>
+                <button id="sendButton" class="btn btn-success">Gửi</button>
+            </div>
         </div>
     </div>
-    </div>
-    <!-- Bootstrap 5 CSS and JS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.2/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
     <script>
@@ -157,17 +126,20 @@
             const allChatBoxes = document.querySelectorAll('.chat-box');
             const chatTitle = document.getElementById('chat-title');
 
-            // Ẩn tất cả các chatbox
-            allChatBoxes.forEach(box => box.classList.remove('active'));
+            allChatBoxes.forEach(box => {
+                box.classList.remove('active');
+                const notificationDot = document.getElementById(`notification-dot-${box.id.split('-')[2]}`);
+                if (notificationDot) {
+                    notificationDot.style.display = 'none'; // Hide notification dot
+                }
+            });
 
-            // Hiển thị chatbox được chọn
             const selectedChatBox = document.getElementById(`chat-box-${chatBoxId}`);
             if (selectedChatBox) {
                 selectedChatBox.classList.add('active');
                 chatTitle.innerHTML = `<h5>ChatBox: ${element.textContent.trim()}</h5>`;
             }
 
-            // Gán giá trị chatBoxId cho input ẩn
             const chatBoxIdInput = document.getElementById('chatBoxId');
             if (chatBoxIdInput) {
                 chatBoxIdInput.value = chatBoxId;
@@ -176,46 +148,35 @@
 
         let stompClient = null;
 
-        // Kết nối WebSocket
         function connect() {
-            const socket = new SockJS('http://localhost:8081/chat');
+            const socket = new SockJS('http://localhost:8080/chat');
             stompClient = Stomp.over(socket);
 
             stompClient.connect({}, function () {
                 console.log("Connected to WebSocket");
-
-                // Subscribe để nhận tin nhắn mới
                 stompClient.subscribe('/topic/messages', function (message) {
                     const data = JSON.parse(message.body);
-                    appendMessage(data.chatBox.id, data.role, data.content);
+                    appendMessage(data.chatBox.id, data.role, data.content, data.timestamp);
                 });
             });
         }
 
-        // Lắng nghe sự kiện gửi tin nhắn từ form
-        document.getElementById('messageForm').addEventListener('submit', function (event) {
-            event.preventDefault(); // Prevent form from reloading the page
+        document.getElementById('sendButton').addEventListener('click', function (event) {
+            event.preventDefault();
 
-            // Collect input values
             const chatBoxId = document.getElementById('chatBoxId').value;
             const accountId = document.getElementById('accountId').value;
             const content = document.getElementById('content').value;
 
-            // Tạo đối tượng tin nhắn
             const message = {
-                chatBox: {
-                    id: chatBoxId
-                },
-                role: 'shop', // Ví dụ: role là 'client', có thể thay bằng dữ liệu thực tế
+                chatBox: { id: chatBoxId },
+                role: 'shop',
                 content: content
             };
 
-            // Gửi dữ liệu qua Fetch API
             fetch('/sendMessage', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({
                     chatBoxId: chatBoxId,
                     accountId: accountId,
@@ -228,14 +189,8 @@
                     }
                     return response.json();
                 })
-                .then(data => {
-                    // Hiển thị tin nhắn mới trên giao diện
-                    appendMessage(data.chatBox.id, data.role, data.content);
-
-                    // Gửi tin nhắn qua WebSocket
-                    stompClient.send('/app/sendMessage', {}, JSON.stringify(message)); // Gửi tới endpoint WebSocket
-
-                    // Clear the input field
+                .then(() => {
+                    stompClient.send('/app/sendMessage', {}, JSON.stringify(message));
                     document.getElementById('content').value = '';
                 })
                 .catch(error => {
@@ -243,32 +198,56 @@
                 });
         });
 
-        // Hiển thị tin nhắn lên giao diện với 2 role: shop và client
-        function appendMessage(chatBoxId, role, content) {
+        const displayedMessages = new Map();
+
+        function appendMessage(chatBoxId, role, content, timestamp) {
             const chatBox = document.getElementById(`chat-box-${chatBoxId}`);
-            if (chatBox) {
-                const messageDiv = document.createElement('div');
 
-                // Gán class tương ứng với vai trò (role)
-                if (role === 'client') {
-                    messageDiv.className = 'message client'; // Tin nhắn từ client
-                } else if (role === 'shop') {
-                    messageDiv.className = 'message shop'; // Tin nhắn từ shop
-                } else {
-                    console.error(`Unknown role: ${role}`);
-                    return; // Không hiển thị nếu vai trò không hợp lệ
+            if (!chatBox || displayedMessages.has(chatBoxId + content)) {
+                return;
+            }
+
+            displayedMessages.set(chatBoxId + content, true);
+
+            const messageDiv = document.createElement('div');
+
+            if (role === 'client') {
+                messageDiv.className = 'message client';
+            } else if (role === 'shop') {
+                messageDiv.className = 'message shop';
+            } else {
+                console.error(`Unknown role: ${role}`);
+                return;
+            }
+
+            messageDiv.innerHTML = `
+                <span>${content}</span>
+                <div class="timestamp">${formatTimestamp(timestamp)}</div>
+            `;
+
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
+
+            // Show notification dot if chat box is not active
+            if (!chatBox.classList.contains('active')) {
+                const notificationDot = document.getElementById(`notification-dot-${chatBoxId}`);
+                if (notificationDot) {
+                    notificationDot.style.display = 'block'; // Show notification dot
                 }
-
-                messageDiv.textContent = content;
-
-                chatBox.appendChild(messageDiv);
-                chatBox.scrollTop = chatBox.scrollHeight; // Scroll xuống cuối
             }
         }
 
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}`; // Format to YYYY-MM-DD HH:MM
+        }
 
-        // Kết nối WebSocket khi tải trang
-        connect();
+        connect(); // Connect to WebSocket on page load
     </script>
 </main>
 </body>

@@ -38,7 +38,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/chat")
-                .setAllowedOrigins("http://localhost:8080", "http://localhost:8081") // Cho phép kết nối từ client
+                .setAllowedOrigins("http://localhost:8080") // Cho phép kết nối từ client
                 .withSockJS(); // Sử dụng SockJS fallback
     }
 

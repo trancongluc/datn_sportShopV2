@@ -429,17 +429,21 @@
             }
         }
     </style>
-    <script>
+    <script defer>
         function toggleSelectAll(source) {
             const checkboxes = document.querySelectorAll('.product-checkbox');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = source.checked;
+
             });
         }
+
     </script>
 </head>
+
 <body>
 <main layout:fragment="main1">
+
     <div class="container">
         <form th:action="@{/dot-giam-gia/save}" th:object="${dotGiamGia}" method="post" style="flex: 1;">
             <div style="display: flex; justify-content: space-between;">
@@ -450,9 +454,9 @@
                         <input type="text" id="promotion-name" name="promotionName" placeholder="Tên khuyến mãi" th:field="*{name}" required class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="discount-value">Giá trị giảm</label>
-                        <input type="number" id="discount-value" name="discountValue" placeholder="Giá trị giảm" th:field="*{discount}" required class="form-control" step="0.01" min="0">
-                        <small class="form-text text-muted">Nhập giá trị giảm (ví dụ: 10.00).</small>
+                        <label for="discount-value">Giá trị giảm (%)</label>
+                        <input type="number" id="discount-value" name="discount" placeholder="Nhập giá trị giảm" required class="form-control" step="0.01" min="0" max="100">
+                        <small class="form-text text-muted">Nhập giá trị giảm từ 0 đến 100.</small>
                     </div>
                     <div class="form-group">
                         <label for="start-date">Ngày bắt đầu</label>
@@ -485,7 +489,7 @@
                             </thead>
                             <tbody>
                             <tr th:each="sp, iterStat : ${sanPhamPage.content}">
-                                <td><input type="checkbox" class="product-checkbox" name="selectedProducts" th:value="${sp.id}"></td>
+                                <td><input type="checkbox" class="product-checkbox"name="selectedProducts" th:value="${sp.id}"></td>
                                 <td th:text="${iterStat.index + 1}"></td>
                                 <td th:text="${sp.code}"></td>
                                 <td th:text="${sp.tenSanPham}"></td>
