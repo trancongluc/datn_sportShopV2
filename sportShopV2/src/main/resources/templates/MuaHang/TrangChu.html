@@ -709,17 +709,16 @@
     </script>
 </head>
 <body>
-<div class="navbar">
-    <div class="logo">
+<div class="navbar d-flex align-items-center justify-content-between">
+    <div class="logo d-flex align-items-center">
         <img th:src="@{/images/logoSPSV2.png}" alt="SportShopLogo" height="40" width="40">
         <span>SportShopV2</span>
-
     </div>
-    <div style="margin-left: 50px">
+    <div class="d-flex align-items-center" style="margin-left: 50px;">
         <a th:href="@{/mua-sam-SportShopV2/tra-cuu-don-hang}"
            style="color: black; text-decoration: none;"
            onmouseover="this.style.color='#007bff'; this.style.textDecoration='underline';"
-           onmouseout="this.style.color='black'; this.style.textDecoration='none'; ">
+           onmouseout="this.style.color='black'; this.style.textDecoration='none';">
             <span>Tra cứu đơn hàng</span>
         </a>
 
@@ -727,9 +726,18 @@
            style="text-decoration: none;">
             <img th:src="@{/images/img_3.png}" width="40" height="40">
         </a>
-        <a th:href="@{/login/home}">
-            <img th:src="@{/images/img_4.png}" width="40" height="40">
-        </a>
+
+        <div class="dropdown" style="margin-left: 20px;">
+            <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <img th:src="@{/images/img_4.png}" width="40" height="40">
+            </a>
+
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" th:href="@{/login/home}">Login</a></li>
+                <li><a class="dropdown-item" th:href="@{/mua-sam-SportShopV2/accountDetail}">Thông tin tài khoản</a></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+        </div>
     </div>
 </div>
 
