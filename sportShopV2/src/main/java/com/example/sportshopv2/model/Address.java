@@ -37,7 +37,6 @@ public class Address {
     @JoinColumn(name = "id_User")
     private User khachHang;
 
-
     @Column(name = "create_at", columnDefinition = "DATETIME DEFAULT GETDATE()")
     private Date createdAt = new Date();
 
@@ -52,13 +51,5 @@ public class Address {
 
     @Column(name = "deleted", columnDefinition = "BIT DEFAULT 0")
     private boolean deleted = false;
-
-
-//    @ManyToOne
-//    @JoinColumn(name = "id_User")
-
-//    private User khachHang;
-
-//    private NguoiDung diaChi;
 
 }

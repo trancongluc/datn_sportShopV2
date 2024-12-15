@@ -329,6 +329,7 @@
                 transform: translate(-50%, -40%);
             }
         }
+
         body {
             margin-top: 60px; /* Khoảng cách đủ để bảng không bị che bởi navbar */
         }
@@ -336,11 +337,12 @@
         .table-container {
             margin-top: 20px; /* Tùy chỉnh nếu cần thêm khoảng cách */
         }
+
         nav {
             margin-bottom: 2px; /* Tạo khoảng cách giữa nút và bảng */
-            margin-left: 50px;   /* Căn chỉnh nút sang bên trái */
-            margin-right: auto;  /* Đảm bảo nút thẳng hàng theo nội dung */
-            width: fit-content;  /* Chỉ chiếm không gian cần thiết */
+            margin-left: 50px; /* Căn chỉnh nút sang bên trái */
+            margin-right: auto; /* Đảm bảo nút thẳng hàng theo nội dung */
+            width: fit-content; /* Chỉ chiếm không gian cần thiết */
         }
 
         button.btn-info {
@@ -480,8 +482,7 @@
                         <select class="form-select" id="tinh" name="tinh" required
                                 onchange="document.getElementsByName('tinh_name')[0].value = this.options[this.selectedIndex].text;">
                             <option value="0" hidden>Tỉnh Thành</option>
-                            <option th:each="diaChi : ${listDiaChi}"
-
+                            <option th:each="diaChi : ${Address}"
                                     th:text="${diaChi.tinh}"
                                     th:selected="${#lists.isEmpty(listDiaChi) ? false : diaChi.tinh == listDiaChi[0].tinh}">
                             </option>
@@ -496,7 +497,6 @@
                                 onchange="document.getElementsByName('quan_name')[0].value = this.options[this.selectedIndex].text;">
                             <option value="0" hidden></option>
                             <option th:each="diaChi : ${listDiaChi}"
-
                                     th:text="${diaChi.quan}"
                                     th:selected="${#lists.isEmpty(listDiaChi) ? false : diaChi.quan == listDiaChi[0].quan}">
                             </option>
@@ -536,7 +536,7 @@
                                     <span th:text="${address.quan}">-</span>
                                     <span th:text="${address.phuong}"></span>
                                     <button type="button" class="btn btn-link text-primary float-end"
-                                            onclick="selectAddress(this)">Chọn
+                                            th:value="${address.id}" onclick="selectAddress(this.value)">Chọn
                                     </button>
                                 </li>
                             </ul>
@@ -558,7 +558,7 @@
             <h2>Thông tin thanh toán</h2>
             <div class="section">
                 <label>Tiền hàng</label>
-                <input id="totalPayment" readonly type="text" value="0 VND"/>
+                <input id="totalPayment" name="tienHangBanDau" readonly type="text" value="0 VND"/>
             </div>
             <div class="section">
                 <label>Mã giảm giá:</label>
@@ -783,15 +783,51 @@
 </script>
 
 <script>
-    function selectAddress(button) {
-        // Lấy nội dung địa chỉ từ danh sách
-        const address = button.parentElement.querySelector('span').innerText;
-        // Gán địa chỉ vào ô nhập liệu
-        document.querySelector('input[name="address"]').value = address;
-        // Đóng modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('addressModal'));
-        modal.hide();
+    function selectAddress(id) {
+        console.log("Fetching address with ID:", id);
+        fetch(`/mua-sam-SportShopV2/address/details/${id}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch address details");
+                }
+                return response.json(); // Ensure the response is valid JSON
+            })
+            .then(data => {
+                // Cập nhật giá trị và chọn đúng option cho "Tỉnh"
+                const tinhSelect = document.getElementById('tinh');
+                for (let option of tinhSelect.options) {
+                    if (option.text === data.tinh) {
+                        option.selected = true;
+                        break;
+                    }
+                }
+
+                // Cập nhật giá trị và chọn đúng option cho "Quận"
+                const quanSelect = document.getElementById('quan');
+                for (let option of quanSelect.options) {
+                    if (option.text === data.quan) {
+                        option.selected = true;
+                        break;
+                    }
+                }
+
+                // Cập nhật giá trị và chọn đúng option cho "Phường"
+                const phuongSelect = document.getElementById('phuong');
+                for (let option of phuongSelect.options) {
+                    if (option.text === data.phuong) {
+                        option.selected = true;
+                        break;
+                    }
+                }
+
+                console.log("Selected Address:", data.tinh, data.quan, data.phuong);
+            })
+            .catch(error => {
+                console.error("Error fetching address:", error);
+            });
     }
+
+
 </script>
 
 <script>
@@ -918,8 +954,8 @@
         })
             .then(response => {
                 if (response.ok) {
-                    alert('Sản phẩm đã được xóa!');
                     location.reload(); // Reload the page to reflect changes
+                    alert('Sản phẩm đã được xóa!');
                 } else {
                     alert('Lỗi khi xóa sản phẩm');
                 }

@@ -20,10 +20,12 @@ public class PhieuGiamGiaChiTiet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Integer id;
-    @Column(name = "id_voucher")
-    private Integer idVoucher;
-    @Column(name = "id_bill")
-    private Integer idBill;
+    @JoinColumn(name = "id_voucher")
+    @ManyToOne
+    private PhieuGiamGia idVoucher;
+    @JoinColumn(name = "id_bill")
+    @ManyToOne
+    private HoaDon idBill;
     @Column(name = "before_price")
     private BigDecimal before_price;
 
