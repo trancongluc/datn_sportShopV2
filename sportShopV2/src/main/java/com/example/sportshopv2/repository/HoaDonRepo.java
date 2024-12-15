@@ -28,10 +28,10 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
     List<HoaDon> findAllByStatusLikeOrderByCreateAtDesc(String status);
     Page<HoaDon> findAllByStatusLikeOrderByCreateAtDesc(String status, Pageable pageable);
     @Query("SELECT h FROM HoaDon h WHERE " +
-            "(:maHoaDon IS NULL OR h.billCode LIKE %:maHoaDon%) AND " +
+            "(:userName IS NULL OR h.user_name LIKE %:userName%) AND " +
             "(:Type IS NULL OR h.type = :Type) AND " +
             "(h.createAt BETWEEN :startDate AND :endDate)")
-    List<HoaDon> searchHoaDon(@Param("maHoaDon") String maHoaDon,
+    List<HoaDon> searchHoaDon(@Param("userName") String maHoaDon,
                               @Param("Type") String Type,
                               @Param("startDate") LocalDateTime startDate,
                               @Param("endDate") LocalDateTime endDate);
