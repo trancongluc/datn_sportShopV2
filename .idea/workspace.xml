@@ -4,7 +4,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1cf1883e-5675-4e33-950b-148cfc47239c" name="Default Changelist" comment="" />
+    <list default="true" id="1cf1883e-5675-4e33-950b-148cfc47239c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/dto/SanPhamGiamGiaDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DoiTraController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DoiTraController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DotGiamGiaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DotGiamGiaController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/PhieuGiamGiaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/PhieuGiamGiaController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/Address.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/Address.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/DotGiamGia.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/DotGiamGia.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/PhieuGiamGia.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/PhieuGiamGia.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/DotGiamGiaRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/DotGiamGiaRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/PhieuGiamGiaResponsitory.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/PhieuGiamGiaResponsitory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/SanPhamChiTietRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/SanPhamChiTietRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/DotGiamGiaService.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/DotGiamGiaService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/impl/DotGiamGiaServiceImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/impl/DotGiamGiaServiceImp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/impl/PhieuGiamGiaServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/impl/PhieuGiamGiaServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/DotGiamGia/addDotGiamGia.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/DotGiamGia/addDotGiamGia.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/DotGiamGia/detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/DotGiamGia/detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/DotGiamGia/dotGiamGia.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/DotGiamGia/dotGiamGia.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/giamGia.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/giamGia.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -14,9 +35,9 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CSS File" />
+        <option value="Interface" />
         <option value="HTML File" />
         <option value="Class" />
-        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -51,11 +72,9 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../DaGiai/testDATN" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -172,13 +191,7 @@
       <workItem from="1733796401697" duration="6703000" />
       <workItem from="1733910669980" duration="7039000" />
       <workItem from="1733968111152" duration="18049000" />
-      <workItem from="1734053520401" duration="7557000" />
-      <workItem from="1734063963630" duration="703000" />
-      <workItem from="1734066940393" duration="3161000" />
-      <workItem from="1734089807368" duration="3121000" />
-      <workItem from="1734093155036" duration="573000" />
-      <workItem from="1734104380577" duration="6885000" />
-      <workItem from="1734232525200" duration="8055000" />
+      <workItem from="1734053520401" duration="5866000" />
     </task>
     <servers />
   </component>

@@ -91,9 +91,7 @@ public class ChatService {
     public List<chatBox> getActiveChatBoxes() {
         return chatBoxRepository.findAll(); // Hoặc tùy thuộc vào logic bạn cần
     }
-    public Optional<chatBox> getChatBoxById(int id) {
-        return chatBoxRepository.findById(id); // Hoặc tùy thuộc vào logic bạn cần
-    }
+
 
     public List<message> getMesByAccountId(int accountId) {
         return messageRepository.findByAccountId(accountId);
@@ -106,6 +104,28 @@ public class ChatService {
 
     public chatBox findChatBoxByAccountId(Integer accountId) {
         return chatBoxRepository.findByCreateBy(accountId);
+    }
+
+
+    public int getAccountFromUsername(String username) {
+        // Tìm Account theo username
+        Optional<Account> account = accountRepository.findByUsername(username);
+
+        if (account.isPresent()) {
+            return account.get().getUser().getId(); // Trả về accountId nếu tìm thấy
+        } else {
+            throw new RuntimeException("User not found");
+        }
+    }
+    public int getAccountId(String username) {
+        // Tìm Account theo username
+        Optional<Account> account = accountRepository.findByUsername(username);
+
+        if (account.isPresent()) {
+            return account.get().getId(); // Trả về accountId nếu tìm thấy
+        } else {
+            throw new RuntimeException("User not found");
+        }
     }
 }
 

@@ -55,7 +55,6 @@ public class PhieuGiamGia {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime endDate;
 
-
     @Column(name = "create_at")
     private LocalDateTime createAt;
 
@@ -67,7 +66,6 @@ public class PhieuGiamGia {
 
     @Column(name = "update_by")
     private String updateBy;
-
     @Column(name = "deleted")
     private Boolean deleted;
 
@@ -94,10 +92,14 @@ public class PhieuGiamGia {
                 statusText = "Chưa diễn ra";
             } else if (endDate.isBefore(now)) {
                 statusText = "Hết hạn";
-            } else {
+            }else if (quantity == 0) {
+                statusText = "Số lượng đã hết";
+            }
+            else {
                 statusText = "Đang diễn ra";
             }
-        } else {
+        }
+        else {
             statusText = "Không xác định";
         }
 

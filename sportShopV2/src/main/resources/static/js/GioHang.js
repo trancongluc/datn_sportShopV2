@@ -23,7 +23,7 @@ $(document).ready(function () {
                 var idtinh = $(this).val();
                 // Lấy danh sách quận
                 $.getJSON('https://esgoo.net/api-tinhthanh/2/' + idtinh + '.htm', function (data_quan) {
-                    $("#quan").empty(); // Xóa danh sách quận trước
+                    // $("#quan").empty(); // Xóa danh sách quận trước
                     $.each(data_quan.data, function (key_quan, val_quan) {
                         $("#quan").append('<option value="' + val_quan.id + '">' + val_quan.full_name + '</option>');
                     });
@@ -36,7 +36,7 @@ $(document).ready(function () {
                 var idquan = $(this).val();
                 // Lấy danh sách phường
                 $.getJSON('https://esgoo.net/api-tinhthanh/3/' + idquan + '.htm', function (data_phuong) {
-                    $("#phuong").empty(); // Xóa danh sách phường trước
+                    // $("#phuong").empty(); // Xóa danh sách phường trước
                     $.each(data_phuong.data, function (key_phuong, val_phuong) {
                         const selected = val_phuong.id == "${customer.addresses[0].ward_id}" ? "selected" : "";
                         $("#phuong").append('<option value="' + val_phuong.id + '" ' + selected + '>' + val_phuong.full_name + '</option>');

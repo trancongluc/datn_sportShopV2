@@ -228,9 +228,6 @@
             element.innerText = voucherCode;
         });
     }
-    function formatCurrency(value) {
-        return new Intl.NumberFormat().format(value) + 'đ';
-    }
 
     function validateDates() {
         const startDate = new Date(document.getElementById('ngay-bat-dau').value);
@@ -255,18 +252,7 @@
         if (!validateDates()) return false;
         return true;
     }
-
-    function saveVoucher(event) {
-        event.preventDefault();
-        if (validateInputs()) {
-            updatePreview();
-            document.querySelector('form').submit();
-        }
-    }
-
-
-
-    function updateDiscountType() {
+    /*function updateDiscountType() {
         var loaiPhieu = document.getElementById('loai-phieu').value;
         var phanTramGiamInput = document.getElementById('phan-tram-giam');
         var currencyLabel = document.querySelector('.currency');
@@ -285,8 +271,55 @@
             phanTramGiamInput.setAttribute("min", "0");
         }
         updatePreview();
+    }*/
+    function updateDiscountType() {
+        const loaiPhieu = document.getElementById("loai-phieu").value;
+        const input = document.getElementById("phan-tram-giam");
+        const unit = document.getElementById("unit");
+
+        if (loaiPhieu === "Phần trăm") {
+            input.setAttribute("max", "100");
+            input.setAttribute("min", "1");
+            unit.textContent = "%";
+        } else if (loaiPhieu === "Tiền mặt") {
+            input.removeAttribute("max");
+            input.removeAttribute("min");
+            unit.textContent = "đ";
+        }
+        input.value = ""; // Clear input value when type changes
+        updatePreview();
     }
 
+    function validateAndFormatDiscount() {
+        const loaiPhieu = document.getElementById("loai-phieu").value;
+        const input = document.getElementById("phan-tram-giam");
+        const value = parseFloat(input.value.replace(/,/g, "").trim());
+
+        if (loaiPhieu === "Phần trăm") {
+            if (value < 1 || value > 100) {
+                input.value = ""; // Clear invalid values
+                alert("Phần trăm giảm phải nằm trong khoảng từ 1 - 100.");
+            }
+        } else if (loaiPhieu === "Tiền mặt") {
+            if (isNaN(value) || value < 0) {
+                alert("Số tiền giảm phải là số dương.");
+                input.value = ""; // Xóa giá trị không hợp lệ
+                return;
+            }
+        }
+    }
+
+    function formatCurrency(value) {
+        if (isNaN(value) || value < 0) return "";
+        return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(value).replace("₫", "") + " đ";
+    }
+    function saveVoucher(event) {
+        event.preventDefault();
+        if (validateInputs()) {
+            updatePreview();
+            document.querySelector('form').submit();
+        }
+    }
 
 </script>
 </head>
@@ -316,8 +349,9 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="gia-tri-don-hang">Giá Trị Đơn Hàng</label>
-                                    <input type="number" id="gia-tri-don-hang" placeholder="Điều kiện áp dụng..." oninput="updatePreview()">
-                                    <span class="currency">VND</span>
+                                    <input type="number" id="gia-tri-don-hang" th:field="*{minimumValue}"
+                                           min="0"   placeholder="Điều kiện áp dụng..." oninput="updatePreview()">
+                                    <span th:if="${errorMinimumValue}" th:text="${errorMinimumValue}" style="color: red;"></span>
                                 </div>
                                 <div class="form-group">
                                     <label for="ngay-bat-dau">Ngày Bắt Đầu</label>
@@ -329,22 +363,22 @@
                                     <input type="number" id="so-luong" th:field="*{quantity}">
                                     <span th:if="${errorQuantity}" th:text="${errorQuantity}" style="color: red;"></span>
                                 </div>
-                                <div class="form-group">
-                                    <label for="mo-ta">Mô Tả (Optional)</label>
-                                    <textarea id="mo-ta"  th:field="*{description}" placeholder="Giảm tối đa..." oninput="updatePreview()"></textarea>
-                                </div>
+
                             </div>
                             <div class="form-column">
                                 <div class="form-group">
                                     <label for="loai-phieu">Loại Phiếu</label>
-                                    <select id="loai-phieu" th:field="*{formVoucher}" oninput="updateDiscountType()">
+                                    <select id="loai-phieu" th:field="*{formVoucher}" onchange="updateDiscountType()">
                                         <option value="Phần trăm">Phần Trăm</option>
                                         <option value="Tiền mặt">Tiền Mặt</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="phan-tram-giam">Số Tiền Giảm</label>
-                                    <input type="number" id="phan-tram-giam" th:field="*{discountValue}">
+                                    <div style="display: flex; align-items: center;">
+                                        <input type="number" id="phan-tram-giam" th:field="*{discountValue}" onblur="validateAndFormatDiscount()">
+                                        <span id="unit" style="margin-left: 5px;"></span>
+                                    </div>
                                     <span th:if="${errorDiscountAmount}" th:text="${errorDiscountAmount}" style="color: red;"></span>
                                 </div>
                                 <div class="form-group">
@@ -353,10 +387,14 @@
                                     <span th:if="${errorEndDate}" th:text="${errorEndDate}" style="color: red;"></span>
                                 </div>
 
-                                <div class="form-group">
+                                <!--<div class="form-group">
                                     <label for="giam-toi-da">Giá Trị Tối Đa</label>
                                     <input type="number" id="giam-toi-da" th:field="*{minimumValue}" min="0">
                                     <span th:if="${errorMinimumValue}" th:text="${errorMinimumValue}" style="color: red;"></span>
+                                </div>-->
+                                <div class="form-group">
+                                    <label for="mo-ta">Mô Tả (Optional)</label>
+                                    <textarea id="mo-ta"  th:field="*{description}" placeholder="Giảm tối đa..." oninput="updatePreview()"></textarea>
                                 </div>
                             </div>
                         </div>

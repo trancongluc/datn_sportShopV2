@@ -211,7 +211,42 @@
             if (!validateDates()) return false;
             return true;
         }
+        function updateDiscountType() {
+            const loaiPhieu = document.getElementById("loai-phieu").value;
+            const input = document.getElementById("phan-tram-giam");
+            const unit = document.getElementById("unit");
 
+            if (loaiPhieu === "Phần trăm") {
+                input.setAttribute("max", "100");
+                input.setAttribute("min", "1");
+                unit.textContent = "%";
+            } else if (loaiPhieu === "Tiền mặt") {
+                input.removeAttribute("max");
+                input.removeAttribute("min");
+                unit.textContent = "đ";
+            }
+            input.value = ""; // Clear input value when type changes
+            updatePreview();
+        }
+
+        function validateAndFormatDiscount() {
+            const loaiPhieu = document.getElementById("loai-phieu").value;
+            const input = document.getElementById("phan-tram-giam");
+            const value = parseFloat(input.value.replace(/,/g, "").trim());
+
+            if (loaiPhieu === "Phần trăm") {
+                if (value < 1 || value > 100) {
+                    input.value = ""; // Clear invalid values
+                    alert("Phần trăm giảm phải nằm trong khoảng từ 1 - 100.");
+                }
+            } else if (loaiPhieu === "Tiền mặt") {
+                if (isNaN(value) || value < 0) {
+                    alert("Số tiền giảm phải là số dương.");
+                    input.value = ""; // Xóa giá trị không hợp lệ
+                    return;
+                }
+            }
+        }
         function saveVoucher(event) {
             event.preventDefault();
             if (validateInputs()) {
@@ -219,30 +254,6 @@
                 document.querySelector('form').submit();
             }
         }
-
-
-
-        function updateDiscountType() {
-            var loaiPhieu = document.getElementById('loai-phieu').value;
-            var phanTramGiamInput = document.getElementById('phan-tram-giam');
-            var currencyLabel = document.querySelector('.currency');
-
-            if (loaiPhieu === 'Tiền Mặt') {
-                phanTramGiamInput.placeholder = "Số tiền giảm...";
-                currencyLabel.innerText = "VND";
-                phanTramGiamInput.value = '';
-                phanTramGiamInput.removeAttribute("max");
-                phanTramGiamInput.removeAttribute("min");
-            } else {
-                phanTramGiamInput.placeholder = "Phần trăm giảm giá...";
-                currencyLabel.innerText = "%";
-                phanTramGiamInput.value = '';
-                phanTramGiamInput.setAttribute("max", "100");
-                phanTramGiamInput.setAttribute("min", "0");
-            }
-            updatePreview();
-        }
-
 
     </script>
 </head>
@@ -286,22 +297,19 @@
                                     <input type="number" id="so-luong" th:field="*{quantity}" placeholder="Số lượng phiếu..." oninput="updatePreview()" min="0">
                                     <span th:if="${errorQuantity}" th:text="${errorQuantity}" style="color: red;"></span>
                                 </div>
-                                <div class="form-group">
-                                    <label for="mo-ta">Mô Tả (Optional)</label>
-                                    <textarea id="mo-ta" placeholder="Giảm tối đa..." oninput="updatePreview()"></textarea>
-                                </div>
+
                             </div>
                             <div class="form-column">
                                 <div class="form-group">
                                     <label for="loai-phieu">Loại Phiếu</label>
-                                    <select id="loai-phieu" th:field="*{formVoucher}" oninput="updateDiscountType()">
-                                        <option value="Percentage">Phần Trăm</option>
-                                        <option value="Fixed">Cố Định</option>
+                                    <select id="loai-phieu" th:field="*{formVoucher}" onchange="updateDiscountType()">
+                                        <option value="Phần trăm">Phần Trăm</option>
+                                        <option value="Tiền mặt">Tiền Mặt</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="phan-tram-giam">Số Tiền Giảm</label>
-                                    <input type="number" id="phan-tram-giam" th:field="*{discountValue}" placeholder="Phần trăm giảm giá..." oninput="updatePreview()">
+                                    <input type="number" id="phan-tram-giam" th:field="*{discountValue}" placeholder="Phần trăm giảm giá..."  onblur="validateAndFormatDiscount()" oninput="updatePreview()" >
                                     <span th:if="${errorDiscountAmount}" th:text="${errorDiscountAmount}" style="color: red;"></span>
 
                                 </div>
@@ -311,10 +319,14 @@
                                     <span th:if="${errorEndDate}" th:text="${errorEndDate}" style="color: red;"></span>
 
                                 </div>
-                                <div class="form-group">
+                                <!--<div class="form-group">
                                     <label for="giam-toi-da">Giảm Tối Đa</label>
                                     <input type="number" id="giam-toi-da" th:field="*{minimumValue}" placeholder="Giảm tối đa..." oninput="updatePreview()">
                                     <span th:if="${errorMinimumValue}" th:text="${errorMinimumValue}" style="color: red;"></span>
+                                </div>-->
+                                <div class="form-group">
+                                    <label for="mo-ta">Mô Tả (Optional)</label>
+                                    <textarea id="mo-ta" placeholder="Giảm tối đa..." th:field="*{description}"  oninput="updatePreview()"></textarea>
                                 </div>
                             </div>
                         </div>

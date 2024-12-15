@@ -18,4 +18,6 @@ public interface ChatBoxRepository extends JpaRepository<chatBox, Integer> {
     List<chatBox> findWithMessagesByDeletedFalse();
 
     chatBox findByCreateBy(Integer accountId);
+
+    List<chatBox> findAllByCreateBy(Integer accountId);
 }

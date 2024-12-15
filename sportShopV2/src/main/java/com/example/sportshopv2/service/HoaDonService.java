@@ -73,9 +73,8 @@ public class HoaDonService {
 
         return hdRepo.getTotalQuantityForMonthAndYear(currentMonth,currentYear);
     }
-
-
     public List<HoaDon> getBillsByCustomerId(Integer customerId) {
         return hdRepo.findByCustomerId(customerId);
     }
+
 }

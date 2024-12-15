@@ -33,6 +33,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Controller
@@ -103,7 +104,13 @@ public class DatHangController {
     @Autowired
     private AddressService addressService;
 
+    @Autowired
+    private HoaDonService hdService;
+
     String username;
+    int flag = 0;
+    chatBox newChatBox = new chatBox();
+    List<message> messages;
 
     @RequestMapping("/trang-chu")
     public String trangChu(Model model) {
@@ -140,6 +147,7 @@ public class DatHangController {
                 .map(anh -> anh.getTenAnh() != null ? "/images/" + anh.getTenAnh() : "/images/giayMau.png")
                 .collect(Collectors.toList());
 
+
         // Lấy accountId từ UserService
         int accountId = chatService.getAccountIdFromUsername(username);
         int getName = chatService.getNameFromIDUser(username);
@@ -147,26 +155,26 @@ public class DatHangController {
 
         model.addAttribute("accountId", accountId);
         // Lấy danh sách tất cả chatboxes
-// Kiểm tra xem accountId đã có chatBox hay chưa
-//        List<message> message = chatService.getMesByAccountId(accountId);
-//
-//        if (message.isEmpty()) {
-//            // Nếu không tìm thấy ChatBox, tạo mới ChatBox với tên đặt theo tên người dùng
-//            chatBox newChatBox = new chatBox();
-//            newChatBox.setName(name.get().getFull_name()); // Đặt tên ChatBox theo tên người dùng
-//            newChatBox.setCreateAt(LocalDateTime.now());
-//            newChatBox.setCreateBy(accountId);
-//            // Lưu ChatBox mới vào cơ sở dữ liệu
-//            chatService.saveChatBox(newChatBox);
-//        }
-//        chatBox cb = chatService.findChatBoxByAccountId(idTK);
-//        // Lấy danh sách tin nhắn của ChatBox
-//        List<message> messages = chatService.getMessagesByChatBoxId(cb.getId());
-//
-//        // Thêm ChatBox và tin nhắn vào Model để gửi ra view
-//        model.addAttribute("chatBox", cb.getId());
-//        model.addAttribute("messages", messages);
-//        model.addAttribute("accountId", accountId);
+        // Kiểm tra xem accountId đã có chatBox hay chưa
+        List<message> message = chatService.getMesByAccountId(accountId);
+
+        if (message.isEmpty()) {
+            // Nếu không tìm thấy ChatBox, tạo mới ChatBox với tên đặt theo tên người dùng
+            chatBox newChatBox = new chatBox();
+            newChatBox.setName(name.get().getFull_name()); // Đặt tên ChatBox theo tên người dùng
+            newChatBox.setCreateAt(LocalDateTime.now());
+            newChatBox.setCreateBy(accountId);
+            // Lưu ChatBox mới vào cơ sở dữ liệu
+            chatService.saveChatBox(newChatBox);
+        }
+        chatBox cb = chatService.findChatBoxByAccountId(accountId);
+        // Lấy danh sách tin nhắn của ChatBox
+        List<message> messages = chatService.getMessagesByChatBoxId(cb.getId());
+
+        // Thêm ChatBox và tin nhắn vào Model để gửi ra view
+        model.addAttribute("chatBox", cb.getId());
+        model.addAttribute("messages", messages);
+        model.addAttribute("accountId", accountId);
         model.addAttribute("imageUrls", imageUrls);
         model.addAttribute("listspct", AllProductDetail);
         model.addAttribute("listImage", anhSanPhams);
@@ -302,16 +310,40 @@ public class DatHangController {
 
     @RequestMapping("/mua-ngay")
     public String muaNgay(Model model, @RequestParam("id") Integer id) {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator(',');
+        symbols.setGroupingSeparator('.');
+        DecimalFormat formatter = new DecimalFormat("#,###", symbols);
         SanPham listSP = sanPhamService.findAllSanPhamById(id);
         SanPhamChiTietDTO listProductDetail = sanPhamChiTietService.getByID(id);
         List<AnhSanPham> anhSanPhams = listProductDetail.getAnhSanPham();
+
+        // Lấy danh sách size và màu liên quan
         List<SanPhamChiTietDTO> listSizeAndColor = sanPhamChiTietService
                 .findAllSPCTByIdSP(listProductDetail.getSanPham().getId());
-        model.addAttribute("listSizeAndColor", listSizeAndColor);
+
+        // Lọc danh sách kích thước duy nhất
+        List<KichThuoc> uniqueSizes = listSizeAndColor.stream()
+                .map(SanPhamChiTietDTO::getKichThuoc)
+                .filter(Objects::nonNull)
+                .distinct() // Loại bỏ phần tử trùng lặp
+                .collect(Collectors.toList());
+
+        // Lọc danh sách màu sắc duy nhất
+        List<MauSac> uniqueColors = listSizeAndColor.stream()
+                .map(SanPhamChiTietDTO::getMauSac)
+                .filter(Objects::nonNull)
+                .distinct() // Loại bỏ phần tử trùng lặp
+                .collect(Collectors.toList());
+
+        model.addAttribute("listSizes", uniqueSizes);
+        model.addAttribute("listColors", uniqueColors);
         model.addAttribute("listProduct", listProductDetail);
         model.addAttribute("listImage", anhSanPhams);
+        model.addAttribute("price", formatter.format(listProductDetail.getGia()) + "VND"); // Định dạng số tiền)
         return "MuaHang/mua-ngay";
     }
+
 
     @PostMapping("/update-quantity")
     public ResponseEntity<?> updateQuantity(@RequestBody Map<String, Object> payload, RedirectAttributes redirectAttributes) {
@@ -349,7 +381,7 @@ public class DatHangController {
                     .body(Map.of("error", "Invalid data format for id or soLuong."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "An unexpected error occurred."));
+                    .body(Map.of("error", "Sản phẩm hiện đã hết hàng."));
         }
     }
 
@@ -422,15 +454,46 @@ public class DatHangController {
         if (hoTen == null || hoTen.isEmpty()) {
             hoTen = "Unknown Customer";  // Set a default value if not provided
         }
+        List<GioHangChiTiet> gioHangChiTiets = gioHangChiTietRepo.findAllBySanPhamChiTiet_IdIn(selectedProducts);
         if (paystatus == null || paystatus.isEmpty()) {
             redirectAttributes.addFlashAttribute("message", "Phương thức thanh toán không được để trống!");
             return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
         }
         System.out.println(orderTotal);
         if (orderTotal == null || orderTotal.equals("0VND")) {
-            redirectAttributes.addFlashAttribute("message", "Vui lòng chọn sản phẩm để có thể mua hàng");
+            redirectAttributes.addFlashAttribute("error", "Vui lòng chọn sản phẩm để có thể mua hàng");
             return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
         }
+        // Lấy danh sách sản phẩm từ repository
+        List<SPCT> spctList = sanPhamChiTietRepo.findByIdIn(selectedProducts);
+
+        List<String> outOfStockProducts = new ArrayList<>();
+
+        for (SPCT spct : spctList) {
+            if (spct.getSoLuong() <= 0) {
+                // Thêm tên sản phẩm hết hàng vào danh sách
+                outOfStockProducts.add(spct.getIdSanPham().getTenSanPham());
+                // Xóa sản phẩm khỏi repository
+                spct.setTrangThai("Không hoạt động");
+                spct.setDeleted(true);
+
+                sanPhamChiTietRepo.save(spct);
+            }
+        }
+
+        if (!outOfStockProducts.isEmpty()) {
+            // Gộp tên sản phẩm thành một chuỗi thông báo
+            String message = "Các sản phẩm sau đã hết hàng, vui lòng chọn sản phẩm khác: "
+                    + String.join(", ", outOfStockProducts);
+            // Thêm thông báo vào redirectAttributes
+            redirectAttributes.addFlashAttribute("error", message);
+            for (GioHangChiTiet gioHangChiTiet : gioHangChiTiets
+            ) {
+                gioHangChiTietRepo.delete(gioHangChiTiet);
+            }
+            return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
+        }
+
         Float ship = 0.0f;
         Float voucher = 0.0f;
         TaiKhoan tk = new TaiKhoan();
@@ -467,20 +530,20 @@ public class DatHangController {
         hoaDon.setAddress(soNha + " " + phuong + " " + quan + " " + tinh);  // Add space between components
 
         hoaDonRepo.save(hoaDon);
-        PhieuGiamGia phieuGiamGia = phieuGiamGiaService.findByID(idVC);
-        if (phieuGiamGia.getQuantity() >= 1) {
-            phieuGiamGia.setQuantity(phieuGiamGia.getQuantity() - 1);
-            phieuGiamGiaService.save(phieuGiamGia);
-            if (phieuGiamGia.getQuantity() == 0) {
-                PhieuGiamGia hetPhieuGiamGia = phieuGiamGiaService.findByID(idVC);
-                hetPhieuGiamGia.setDeleted(true);
-                hetPhieuGiamGia.setStatus("Không hoạt động");
-                phieuGiamGiaService.save(hetPhieuGiamGia);
+        if (idVC != null) {
+            PhieuGiamGia phieuGiamGia = phieuGiamGiaService.findByID(idVC);
+            if (phieuGiamGia.getQuantity() >= 1) {
+                phieuGiamGia.setQuantity(phieuGiamGia.getQuantity() - 1);
+                phieuGiamGiaService.save(phieuGiamGia);
+                if (phieuGiamGia.getQuantity() == 0) {
+                    PhieuGiamGia hetPhieuGiamGia = phieuGiamGiaService.findByID(idVC);
+                    hetPhieuGiamGia.setDeleted(true);
+                    phieuGiamGiaService.save(hetPhieuGiamGia);
+                }
             }
         }
         // Assuming you have a list of product details (dsSPCT) to create bill details
-        List<SPCT> spctList = sanPhamChiTietRepo.findByIdIn(selectedProducts);  // Ensure dsSPCT is populated
-        List<GioHangChiTiet> gioHangChiTiets = gioHangChiTietRepo.findAllBySanPhamChiTiet_IdIn(selectedProducts);
+
 
         // Create HoaDonChiTiet for each SanPhamChiTiet and associate it with the HoaDon
         for (SPCT sanPhamChiTiet : spctList) {
@@ -507,10 +570,22 @@ public class DatHangController {
         }
         for (GioHangChiTiet gioHangChiTiet : gioHangChiTiets) {
             SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietService.findSPCTById(gioHangChiTiet.getSanPhamChiTiet().getId());
+
+            // Cập nhật số lượng
             sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - gioHangChiTiet.getSoLuong());
+
+            // Kiểm tra nếu số lượng = 0, cập nhật trạng thái deleted
+            if (sanPhamChiTiet.getSoLuong() == 0) {
+                sanPhamChiTiet.setDeleted(true);  // Giả sử bạn có thuộc tính 'deleted' trong SanPhamChiTiet
+            }
+
+            // Cập nhật lại thông tin sản phẩm chi tiết
             sanPhamChiTietService.updateSoLuongSanPhamChiTiet(sanPhamChiTiet.getId(), sanPhamChiTiet);
+
+            // Xóa Giỏ hàng chi tiết nếu không cần thiết nữa
             gioHangChiTietRepo.delete(gioHangChiTiet);
         }
+
         if (paystatus.equals("Thanh toán khi nhận hàng")) {
             redirectAttributes.addFlashAttribute("message", "Đặt hàng thành công!");
             return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
@@ -597,10 +672,12 @@ public class DatHangController {
 
     @PostMapping("/sendMessage")
     public ResponseEntity<message> sendMessage(@RequestParam("chatBoxId") int chatBoxId,
-                                               @RequestParam("accountId") int accountId,
-                                               @RequestParam("content") String content) {
+                                               @RequestParam("accountId") int accountIds,
+                                               @RequestParam("content") String content, Model model) {
+
+
         // Lưu tin nhắn vào cơ sở dữ liệu
-        message savedMessage = chatService.saveMessage(chatBoxId, accountId, "client", content);
+        message savedMessage = chatService.saveMessage(chatBoxId, accountIds, "client", content);
 
         // Gửi tin nhắn đến các subscriber thông qua STOMP
         messagingTemplate.convertAndSend("/topic/messages", savedMessage);
@@ -616,16 +693,44 @@ public class DatHangController {
         return chatService.getMessagesByChatBoxId(chatBoxId);
     }
 
-    //TT khach hang
+    @GetMapping("/product-detail")
+    @ResponseBody
+    public ResponseEntity<SanPhamChiTietDTO> getProductDetail(
+            @RequestParam("id") Integer id,
+            @RequestParam("idcolor") Integer idcolor,
+            @RequestParam("idsize") Integer idsize) {
+        SanPhamChiTietDTO productDetail = sanPhamChiTietService.getSPCTByIDSPIDSIZEIDCOLOR(id, idsize, idcolor);
+        System.out.println(productDetail.getId());
+        if (productDetail != null) {
+            return ResponseEntity.ok(productDetail);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
 
+
+
+    //TT khach hang
     @GetMapping("/accountDetail")
     public String viewCustomerDetails(Model model) {
-        int accountId = chatService.getAccountIdFromUsername(username);
+        int accountId = chatService.getAccountFromUsername(username);
+        int account_Id = chatService.getAccountId(username);
         User customer = userService.getCustomerById(accountId); // Add this method to UserService
-        model.addAttribute("customer", customer);
+        // Kiểm tra lại customer đã có chưa
+        if (customer == null) {
+            model.addAttribute("errorMessage", "Không tìm thấy khách hàng.");
+            return "errorPage"; // Chuyển hướng nếu không tìm thấy khách hàng
+        }
 
+        List<HoaDon> hoaDon = hdService.getBillsByCustomerId(account_Id);
+        model.addAttribute("hoaDon", hoaDon);
 
-        return "MuaHang/accountDetail"; // Create a new Thymeleaf template for details
+        // Kiểm tra giá trị customer và id của nó trước khi truyền vào model
+        System.out.println("Customer: " + customer); // In ra để kiểm tra customer có giá trị không
+        System.out.println("Customer ID: " + customer.getId()); // In ra ID để kiểm tra
+
+        model.addAttribute("customer", customer); // Thêm vào model
+        return "MuaHang/accountDetail"; // Trả về template
     }
 
     @GetMapping("/thong-tin-kh/{idKH}")
@@ -640,8 +745,6 @@ public class DatHangController {
     public String viewdiachi(@PathVariable("id") Integer id, Model model) {
         User customer = userService.getCustomerById(id); // Add this method to UserService
         model.addAttribute("customer", customer);
-
-
         return "MuaHang/accountDetail"; // Create a new Thymeleaf template for details
     }
 
@@ -654,8 +757,6 @@ public class DatHangController {
                                  @RequestParam("gender") String gender,
                                  @RequestParam("date") String date,
                                  @RequestParam("imageFile") MultipartFile imageFile,
-
-
                                  Model model) {
         try {
             User customer = userService.getCustomerById(id); // Fetch existing customer
@@ -674,7 +775,7 @@ public class DatHangController {
             // Nếu có lỗi, trả về trang chỉnh sửa
             if (model.containsAttribute("phoneError") || model.containsAttribute("emailError")) {
                 model.addAttribute("customer", customer); // Truyền dữ liệu khách hàng hiện tại vào form
-                return "MuaHang/accountDetail"; // Tên trang chỉnh sửa khách hàng
+                return "redirect:/mua-sam-SportShopV2/accountDetail"; // Tên trang chỉnh sửa khách hàng
             }
 
             customer.setFullName(fullName);
@@ -682,6 +783,7 @@ public class DatHangController {
             customer.setEmail(email);
             customer.setGender(gender);
             customer.setDate(date);
+
             if (!imageFile.isEmpty()) {
                 userService.updateCustomerImage(customer, imageFile); // Add this method to UserService
             }
@@ -691,7 +793,7 @@ public class DatHangController {
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Cập nhật không thành công.");
         }
-        return "redirect:MuaHang/accountDetail"; // Redirect back to the customer list
+        return "redirect:/mua-sam-SportShopV2/accountDetail"; // Redirect back to the customer list
     }
 
     @PostMapping("/addAddress/{id}")
@@ -723,7 +825,7 @@ public class DatHangController {
 
         // Hiển thị lại thông tin khách hàng và danh sách địa chỉ
         model.addAttribute("customer", customer);
-        return "MuaHang/accountDetail"; // Tên view để hiển thị lại chi tiết khách hàng
+        return "redirect:/mua-sam-SportShopV2/accountDetail"; // Tên view để hiển thị lại chi tiết khách hàng
     }
 
     @GetMapping("/customer/delete-address/{customerId}/{addressId}")
@@ -749,7 +851,7 @@ public class DatHangController {
 
         // Add the updated customer to the model and return to the customer's address page
         model.addAttribute("customer", customer);
-        return "MuaHang/accountDetail"; // Return to the page displaying the customer's addresses
+        return "redirect:/mua-sam-SportShopV2/accountDetail"; // Return to the page displaying the customer's addresses
     }
 
     @PostMapping("/them")
@@ -778,7 +880,7 @@ public class DatHangController {
         addressService.updateAddress(customerId, addressId, tinhName, quanName, phuongName, line);
 
         // Redirect back to the address view page
-        return "redirect:MuaHang/accountDetail" + customerId;
+        return "redirect:/mua-sam-SportShopV2/accountDetail";
     }
 
 
@@ -787,7 +889,7 @@ public class DatHangController {
         // Lấy khách hàng và địa chỉ theo ID
         User customer = userService.findCustomerById(customerId);
         if (customer == null || customer.getAddresses() == null || customer.getAddresses().isEmpty()) {
-            return "redirect:MuaHang/accountDetail";
+            return "redirect:/mua-sam-SportShopV2/accountDetail";
         }
         Address selectedAddress = userService.findAddressById(addressId);
         if (selectedAddress != null) {
@@ -795,6 +897,13 @@ public class DatHangController {
             session.setAttribute("selectedAddress_" + customerId, selectedAddress);
         }
         // Chuyển hướng đến trang danh sách khách hàng
-        return "MuaHang/accountDetail";
+        return "redirect:/mua-sam-SportShopV2/accountDetail";
+    }
+
+    @GetMapping("/deleteBill/{id}")
+    public String abortOrder(@PathVariable("id") Integer id) {
+        hoaDonRepo.deleteById(id); // Call the service to delete the customer
+        return "redirect:/mua-sam-SportShopV2/accountDetail"; // Redirect to the display page after deletion
     }
 }
+

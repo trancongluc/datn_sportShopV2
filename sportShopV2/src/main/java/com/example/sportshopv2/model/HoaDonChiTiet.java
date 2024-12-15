@@ -37,5 +37,10 @@ public class HoaDonChiTiet {
     private LocalDateTime update_at;
     private String update_by;
 
+    @Transient // Không lưu trong cơ sở dữ liệu
+    private String formattedPrice;
+
+    @Transient // Không lưu trong cơ sở dữ liệu
+    private String formattedTotal;
     // Getters, setters, and other necessary annotations
 }

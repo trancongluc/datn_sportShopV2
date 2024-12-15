@@ -83,7 +83,7 @@ public class User {
     private String updatedBy;
 
     @Column(name = "deleted", columnDefinition = "BIT DEFAULT 0")
-    private boolean deleted = false;
+    private Boolean deleted = false;
 
     // Phương thức tiện ích để thêm địa chỉ
     private static final AtomicInteger COUNTER = new AtomicInteger(1);
@@ -104,7 +104,7 @@ public class User {
     }
 
     public String generateUniqueCode() {
-        return "KH-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        return "KH" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
     @PreUpdate // Được gọi trước khi thực thể được cập nhật
