@@ -25,4 +25,7 @@ public class AddressService {
 
 
 
+    public Address getAddressById(Integer addressId) {
+        return addressRepository.findById(addressId).orElse(null);
+    }
 }

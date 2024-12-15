@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="1cf1883e-5675-4e33-950b-148cfc47239c" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/dto/SanPhamGiamGiaDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/config/LocaleConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/Diachi.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DoiTraController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DoiTraController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DotGiamGiaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DotGiamGiaController.java" afterDir="false" />
@@ -25,6 +27,20 @@
       <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/add.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/detail.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/giamGia.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/PhieuGiamGia/giamGia.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DatHang/DatHangController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DatHang/DatHangController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/AnhSanPham.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/AnhSanPham.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/NguoiDung.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/NguoiDung.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/PhieuGiamGia.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/PhieuGiamGia.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/HoaDonRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/HoaDonRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/SanPhamChiTietRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/SanPhamChiTietRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/SanPhamChiTietService.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/SanPhamChiTietService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/js/GioHang.js" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/static/js/GioHang.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/HoaDon/HoaDon.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/HoaDon/HoaDon.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/GioHang.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/GioHang.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/TrangChu.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/TrangChu.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/mua-ngay.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/mua-ngay.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/view.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/view.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,30 +68,33 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="2nIYNERvsVUBdIdxlBh14jjXncN" />
-  <component name="ProjectLevelVcsManager">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
-    <property name="DefaultHtmlFileTemplate" value="HTML File" />
-    <property name="RequestMappingsPanelOrder0" value="0" />
-    <property name="RequestMappingsPanelOrder1" value="1" />
-    <property name="RequestMappingsPanelWidth0" value="75" />
-    <property name="RequestMappingsPanelWidth1" value="75" />
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../DaGiai/testDATN" />
-    <property name="list.type.of.created.stylesheet" value="CSS" />
-    <property name="nodejs_package_manager_path" value="npm" />
-  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;Spring Boot.SportShopV2Application.executor&quot;: &quot;Run&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\testDATN\sportShopV2\src\main\resources\templates\MuaHang" />
@@ -130,6 +149,14 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.17011.79" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.17011.79" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -179,6 +206,15 @@
       <workItem from="1732757640993" duration="20025000" />
       <workItem from="1733107644654" duration="624000" />
       <workItem from="1733196316898" duration="15687000" />
+      <workItem from="1733273599527" duration="7576000" />
+      <workItem from="1733474384204" duration="2074000" />
+      <workItem from="1733489762757" duration="4035000" />
+      <workItem from="1733543051348" duration="223000" />
+      <workItem from="1733564209240" duration="771000" />
+      <workItem from="1733579775987" duration="2000" />
+      <workItem from="1733580259703" duration="1249000" />
+      <workItem from="1733618158686" duration="1046000" />
+      <workItem from="1733736254787" duration="1897000" />
       <workItem from="1733273599527" duration="7625000" />
       <workItem from="1733299683260" duration="3785000" />
       <workItem from="1733305925505" duration="5305000" />
@@ -192,6 +228,16 @@
       <workItem from="1733910669980" duration="7039000" />
       <workItem from="1733968111152" duration="18049000" />
       <workItem from="1734053520401" duration="5866000" />
+      <workItem from="1733807393769" duration="500000" />
+      <workItem from="1733909894017" duration="2139000" />
+      <workItem from="1733920155091" duration="6959000" />
+      <workItem from="1733972198364" duration="5421000" />
+      <workItem from="1734054933586" duration="4470000" />
+      <workItem from="1734059450487" duration="676000" />
+      <workItem from="1734074002454" duration="4643000" />
+      <workItem from="1734099143442" duration="403000" />
+      <workItem from="1734100717638" duration="2355000" />
+      <workItem from="1734151836620" duration="4851000" />
     </task>
     <servers />
   </component>
@@ -208,7 +254,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />

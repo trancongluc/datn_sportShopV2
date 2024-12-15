@@ -6,8 +6,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 
 @Getter
 @Setter
@@ -99,9 +101,16 @@ public class HoaDon {
     @Column(name = "deleted")
     private Boolean deleted;
 
+
+    public String getFormattedTotalMoney() {
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        return formatter.format(this.total_money);
+    }
+
     @OneToMany(mappedBy = "hoaDon", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<HoaDonChiTiet> billDetails;
+
 
     public String getStatusDisplay() {
         switch (status) {

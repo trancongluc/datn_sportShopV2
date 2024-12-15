@@ -7,14 +7,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Entity
 @Table(name = "Address")
-public class Address {
+
+public class Diachi {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -35,7 +35,7 @@ public class Address {
 
     @ManyToOne
     @JoinColumn(name = "id_User")
-    private User khachHang;
+    private NguoiDung khachHang;
 
 
     @Column(name = "create_at", columnDefinition = "DATETIME DEFAULT GETDATE()")
@@ -50,15 +50,5 @@ public class Address {
     @Column(name = "update_by", length = 50)
     private String updatedBy;
 
-    @Column(name = "deleted", columnDefinition = "BIT DEFAULT 0")
-    private boolean deleted = false;
-
-
-//    @ManyToOne
-//    @JoinColumn(name = "id_User")
-
-//    private User khachHang;
-
-//    private NguoiDung diaChi;
 
 }

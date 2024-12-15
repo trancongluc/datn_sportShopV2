@@ -99,27 +99,31 @@
                     <td th:text="${khachHang.gender}"></td>
 
                     <td>
+                        <!-- Hiển thị địa chỉ đã chọn -->
                         <div th:if="${session['selectedAddress_' + khachHang.id] != null}">
-                            <!-- Hiển thị địa chỉ đã chọn của khách hàng nếu có -->
-                            <span th:text="${session['selectedAddress_' + khachHang.id].tinh}"></span>,
-                            <span th:text="${session['selectedAddress_' + khachHang.id].quan}"></span>,
-                            <span th:text="${session['selectedAddress_' + khachHang.id].phuong}"></span>
-                            <br/>
+        <span th:each="address : ${khachHang.addresses}"
+              th:if="${address.id == session['selectedAddress_' + khachHang.id]}"
+              th:text="${address.tinh} + ', ' + ${address.quan} + ', ' + ${address.phuong}">
+        </span>
                         </div>
+
+                        <!-- Hiển thị địa chỉ mặc định nếu chưa chọn -->
                         <div th:if="${session['selectedAddress_' + khachHang.id] == null}">
                             <div th:if="${khachHang.addresses != null && !khachHang.addresses.isEmpty()}">
-                            <!-- Hiển thị địa chỉ đầu tiên của khách hàng nếu không có địa chỉ đã chọn -->
-                            <span th:text="${khachHang.addresses[0].tinh}"></span>,
-                            <span th:text="${khachHang.addresses[0].quan}"></span>,
-                            <span th:text="${khachHang.addresses[0].phuong}"></span>
+                                <span th:text="${khachHang.addresses[0].tinh}"></span>,
+                                <span th:text="${khachHang.addresses[0].quan}"></span>,
+                                <span th:text="${khachHang.addresses[0].phuong}"></span>
+
                             </div>
                             <div th:if="${khachHang.addresses == null || khachHang.addresses.isEmpty()}">
                                 <span>Không có địa chỉ</span>
                             </div>
                         </div>
-
-
                     </td>
+
+
+
+
 
 
                     <td>
@@ -129,19 +133,29 @@
                         </div>
                     </td>
                     <td>
-                        <a th:href="@{/khach-hang/customer/detail/{id}(id=${khachHang.id})}" > <i class="fas fa-edit"></i></i> </a>
+                        <a th:href="@{/khach-hang/customer/detail/{id}(id=${khachHang.id})}" class="icon btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                <path fill-rule="evenodd"
+                                      d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                            </svg>
+                        </a>
 <!--                        <a th:href="@{/khach-hang/delete/{id}(id=${khachHang.id})}" >🗑️</a>-->
 
-                        <a  th:href="@{/khach-hang/customer/diachi/{id}(id=${khachHang.id})}" ><i class="bi bi-map"></i></a>
-
-
-                        <a th:href="@{/khach-hang/order_history/{id}(id=${khachHang.id})}" class="icon btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-list" viewBox="0 0 16 16">
-                                <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"/>
-                                <path d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8m0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-1-5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0M4 8a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m0 2.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"/>
-                            </svg>
-
+                        <a  th:href="@{/khach-hang/customer/diachi/{id}(id=${khachHang.id})}" class="icon btn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-map" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M15.817.113A.5.5 0 0 1 16 .5v12a.5.5 0 0 1-.317.468l-4 1.6a.5.5 0 0 1-.366 0l-4-1.6-4 1.6a.5.5 0 0 1-.684-.468v-12a.5.5 0 0 1 .317-.468l4-1.6a.5.5 0 0 1 .366 0l4 1.6 4-1.6a.5.5 0 0 1 .684.468zm-5.634 1.02L9 1.64v10.72l1.183.473 4-1.6V1.006l-4 1.6zM8 12.36V1.64l-1.183-.473-4 1.6v10.114l4-1.6L8 12.36z"/>
+                        </svg>
                         </a>
+
+
+<!--                        <a th:href="@{/khach-hang/order_history/{id}(id=${khachHang.id})}" class="icon btn">-->
+<!--                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-list" viewBox="0 0 16 16">-->
+<!--                                <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"/>-->
+<!--                                <path d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8m0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-1-5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0M4 8a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m0 2.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"/>-->
+<!--                            </svg>-->
+
+<!--                        </a>-->
                     </td>
                 </tr>
                 </tbody>

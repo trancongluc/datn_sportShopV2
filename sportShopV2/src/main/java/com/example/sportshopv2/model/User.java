@@ -104,7 +104,7 @@ public class User {
     }
 
     public String generateUniqueCode() {
-        return "KH-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        return "KH" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
     @PreUpdate // Được gọi trước khi thực thể được cập nhật

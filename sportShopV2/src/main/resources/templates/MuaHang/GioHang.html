@@ -494,7 +494,7 @@
                         <label for="quan" class="form-label">Huyện</label>
                         <select class="form-select" id="quan" name="quan" required
                                 onchange="document.getElementsByName('quan_name')[0].value = this.options[this.selectedIndex].text;">
-                            <option value="0" hidden>Quận Huyện</option>
+                            <option value="0" hidden></option>
                             <option th:each="diaChi : ${listDiaChi}"
 
                                     th:text="${diaChi.quan}"
@@ -509,7 +509,7 @@
                         <label for="phuong" class="form-label">Phường</label>
                         <select class="form-select" id="phuong" name="phuong" required
                                 onchange="document.getElementsByName('phuong_name')[0].value = this.options[this.selectedIndex].text;">
-                            <option value="0" hidden>Phường Xã</option>
+                            <option value="0" hidden></option>
                             <option th:each="diaChi : ${listDiaChi}"
                                     th:text="${diaChi.phuong}"
                                     th:selected="${#lists.isEmpty(listDiaChi) ? false : diaChi.phuong == listDiaChi[0].phuong}">
@@ -532,8 +532,8 @@
                             <!-- Danh sách địa chỉ -->
                             <ul class="list-group">
                                 <li class="list-group-item" th:each="address, index : ${listDiaChi}">
-                                    <span th:text="${address.tinh}"></span>
-                                    <span th:text="${address.quan}"></span>
+                                    <span th:text="${address.tinh}">-</span>
+                                    <span th:text="${address.quan}">-</span>
                                     <span th:text="${address.phuong}"></span>
                                     <button type="button" class="btn btn-link text-primary float-end"
                                             onclick="selectAddress(this)">Chọn
