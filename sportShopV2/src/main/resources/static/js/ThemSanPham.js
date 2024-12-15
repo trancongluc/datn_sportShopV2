@@ -550,7 +550,7 @@ function formatPrice(input) {
 
     if (!isNaN(numericValue)) {
         // Định dạng giá và thêm " VND" vào cuối
-        input.value = numericValue.toLocaleString('vi-VN', {style: 'decimal', minimumFractionDigits: 0}) + ' VND';
+        input.value = numericValue.toLocaleString('vi-VN', {style: 'decimal', minimumFractionDigits: 0}) + ' đ';
     } else {
         input.value = '0 VND'; // Nếu không phải số, đặt về mặc định
     }
@@ -637,7 +637,7 @@ function createRow(size, color, productName, productRows, tableBody) {
             <span class="color-name" id="color-name-${color.id}">${color.code}</span>]
         </td>
         <td><input type="number" value="1" style="width: 50px;" class="quantity-input" min="0"></td>
-        <td><input type="text" class="price" value="0 VNĐ" style="width: 180px;" ></td>
+        <td><input type="text" class="price" value="0 đ" style="width: 180px;" ></td>
         <td class="action-buttons">
             <div class="action-buttons-container">
                 <i class="fas fa-trash-alt" onclick="removeRow(this)"></i>
@@ -671,7 +671,7 @@ function createRow(size, color, productName, productRows, tableBody) {
         if (value < 0) {
             value = 0; // Nếu giá trị âm, đặt lại về 0
         }
-        priceInput.value = value.toLocaleString() + ' VNĐ'; // Định dạng giá trị
+        priceInput.value = formatCurrency(value); // Định dạng giá trị
     });
 
 
@@ -1216,7 +1216,7 @@ function getInfoTable() {
             details.push({
                 sizeId: sizeId, // ID kích cỡ
                 colorId: colorId, // ID màu sắc
-                quantity: parseCurrency(priceNumber),
+                quantity: quantity,
                 price: priceNumber
             });
         } else {

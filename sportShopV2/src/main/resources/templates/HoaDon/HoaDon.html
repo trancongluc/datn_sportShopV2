@@ -164,7 +164,7 @@
                         <td th:text="${hd.type}"></td>
                         <td th:text="${hd.createAt}"></td>
                         <td th:text="${tienGiam[hd.id]}"></td>
-                        <td th:text="${tongTienHoaDon[hd.id]}"></td>
+                        <td id="tongTien" th:text="${hd.total_money}"></td>
                         <td>
                             <a th:href="@{~/bill/detail(id=${hd.id})}">
                                 <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
@@ -402,7 +402,12 @@
                 event.currentTarget.classList.add('active');
             }
         }
-
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
+        }
+        document.querySelectorAll('#tongTien').forEach(function(element) {
+            element.innerText = formatCurrency(parseFloat(element.innerText));
+        });
     </script>
 </main>
 </body>

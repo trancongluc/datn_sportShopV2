@@ -1,5 +1,6 @@
 package com.example.sportshopv2.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,5 +46,6 @@ public class NguoiDung {
     private Boolean deleted;
 
     @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Diachi> diachi = new ArrayList<>();
 }

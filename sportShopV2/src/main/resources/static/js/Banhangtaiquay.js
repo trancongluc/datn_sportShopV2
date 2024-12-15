@@ -421,7 +421,7 @@ for (let i = 0; i < productRows.length; i++) {
         const productId = productRows[i].getAttribute('data-id');
         console.log("Product ID:", productId);
 
-        fetch(`ban-hang-tai-quay/spct/${productId}`)
+        fetch(`/ban-hang-tai-quay/spct/${productId}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
