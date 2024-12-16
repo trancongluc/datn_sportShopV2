@@ -432,7 +432,6 @@
             }
         }
 
-
         function increaseValue() {
             const input = document.getElementById("quantity");
             let currentValue = parseInt(input.value);
@@ -453,8 +452,8 @@
 
         function updateCartLink() {
             const input = document.getElementById("quantity");
-            if (input > maxQuantity) {
-                console.error('Số lưoựng đã đạt tối đa!');
+            if (input.value > maxQuantity) {
+                console.error('Số lượng đã đạt tối đa!');
             }
             const soLuong = input.value; // Lấy giá trị hiện tại của số lượng
             const link = document.querySelector('.add-to-cart-link'); // Đảm bảo đúng selector
@@ -463,6 +462,26 @@
                 link.setAttribute('href', href);
             }
         }
+        document.addEventListener("DOMContentLoaded", function() {
+            const addToCartBtn = document.getElementById('add-to-cart-btn');
+            if (addToCartBtn) {
+                addToCartBtn.addEventListener('click', function(event) {
+                    const isConfirmed = confirm("Bạn có chắc chắn muốn thêm sản phẩm vào giỏ hàng?");
+
+                    if (isConfirmed) {
+                        // Nếu người dùng xác nhận, cập nhật đường dẫn giỏ hàng
+                        updateCartLink();
+                    } else {
+                        // Nếu người dùng hủy, không làm gì
+                        event.preventDefault();  // Ngừng hành động mặc định
+                    }
+                });
+            } else {
+                console.error('Không tìm thấy nút "Thêm vào giỏ hàng"!');
+            }
+        });
+
+
     </script>
 </head>
 <body>
@@ -577,8 +596,8 @@
                 </div>
             </div>
             <div class="product-actions">
-                <a href="#" class="add-to-cart-link">
-                    <button class="add-to-cart">Thêm Vào Giỏ Hàng</button>
+                <a href="#" class="add-to-cart-link" id="add-to-cart-link">
+                    <button class="add-to-cart" id="add-to-cart-btn">Thêm Vào Giỏ Hàng</button>
                 </a>
                 <a>
                     <button class="buy-now">
