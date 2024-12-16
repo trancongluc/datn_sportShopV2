@@ -12,7 +12,7 @@
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://esgoo.net/scripts/jquery.js"></script>
     <style>
         .profile-pic {
             width: 80px;
@@ -212,12 +212,52 @@
                 }
             });
         }
+
+        // Hàm format ngày
+        function formatDate(isoString) {
+            const date = new Date(isoString);
+            if (isNaN(date)) return isoString; // Kiểm tra dữ liệu hợp lệ
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        // Chạy hàm format khi DOM load
+        document.addEventListener("DOMContentLoaded", function () {
+            // Lấy tất cả các phần tử có ID bắt đầu bằng "createAt-"
+            const hoaDonElements = document.querySelectorAll('[id^="createAt-"]');
+
+            hoaDonElements.forEach(element => {
+                const rawDate = element.textContent.trim(); // Lấy nội dung trong p
+                const formattedDate = formatDate(rawDate); // Format ngày
+                element.textContent = formattedDate; // Gán lại ngày đã format
+            });
+        });
+
+        // Hàm format tiền
+        function formatMoney(amount) {
+            // Sử dụng phương thức toLocaleString để định dạng số
+            return amount.toLocaleString('vi-VN'); // Định dạng theo kiểu tiền Việt Nam
+        }
+
+        // Chạy hàm format khi DOM load
+        document.addEventListener("DOMContentLoaded", function () {
+            // Lấy tất cả phần tử có id bắt đầu bằng "productPrice-"
+            const priceElements = document.querySelectorAll('[id^="productPrice-"]');
+
+            priceElements.forEach(element => {
+                const rawPrice = element.textContent.trim().replace(' VND', ''); // Lấy giá trị và loại bỏ ' VND'
+                const formattedPrice = formatMoney(parseFloat(rawPrice)); // Chuyển sang số và format
+                element.textContent = `${formattedPrice} VND`; // Gán lại giá đã format
+            });
+        });
     </script>
 </head>
 <body>
 <div class="container-fluid">
-    <form th:action="@{/mua-sam-SportShopV2/customer/update/{id}(id=${customer.id})}" method="post"
-          th:object="${customer}"
+    <form th:action="@{/mua-sam-SportShopV2/customer/update/{id}(id=${customer.id})}"
+          method="post"
           enctype="multipart/form-data"><!-- Cập nhật action -->
         <div class="row">
             <!-- Sidebar -->
@@ -281,6 +321,11 @@
                                            th:text="'Trạng thái: ' + ${hoaDon.status}"></p>
                                         <!-- Các phần tử khác -->
                                     </div>
+                                    <!-- Ngày tạo hóa đơn với ID -->
+                                    <p id="createAt-${hoaDon.billCode}" class="fw-bold"
+                                       th:text="${hoaDon.createAt}"
+                                       style="margin-left: auto; text-align: center; display: flex; justify-content: center; align-items: center;">
+                                    </p>
                                 </div>
                                 <hr>
                                 <div class="d-flex align-items-center justify-content-between border-bottom py-2"
@@ -300,18 +345,23 @@
                                         <p th:text="'Size: '+${item.sanPhamChiTiet.idKichThuoc.tenKichThuoc}"></p>
                                         <p th:text="'Số lượng: '+${item.quantity}"></p>
                                     </div>
-                                    <div class="product-price" th:text="${item.sanPhamChiTiet.gia} + ' VND'"></div>
+                                    <div class="product-price" id="productPrice-${hoaDon.billCode}"
+                                         th:text="${item.sanPhamChiTiet.gia} + ' VND'">
+                                    </div>
+
                                 </div>
 
                                 <!-- Tóm tắt đơn hàng -->
                                 <div class="d-flex justify-content-between mt-3">
-                                    <p class="fw-bold">Thành tiền: <span
-                                            th:text="${hoaDon.total_money} + ' VND'"></span></p>
+                                    <p class="fw-bold">Thành tiền: <span class="product-price"
+                                                                         id="productPrice-${hoaDon.billCode}"
+                                                                         th:text="${hoaDon.total_money} + ' VND'"></span>
+                                    </p>
                                     <div>
                                         <form th:action="@{/mua-sam-SportShopV2/theo-doi-hoa-don}" method="get">
                                             <!-- Gán giá trị mặc định nếu billCode null -->
                                             <input type="hidden" name="tenHoaDon"
-                                                   th:value="${hoaDon.billCode != null ? hoaDon.billCode : 'DefaultBillCode'}" >
+                                                   th:value="${hoaDon.billCode != null ? hoaDon.billCode : 'DefaultBillCode'}">
                                             <button type="submit" class="btn btn-primary font-weight-bold">Xem đơn hàng
                                             </button>
                                         </form>
@@ -322,9 +372,10 @@
                     </div>
                 </div>
 
+
                 <!-- Form thông tin người dùng -->
                 <div id="profile-form" style="display:none; margin-top: 15px">
-                    <h4>Sửa Hồ Sơ</h4>
+                    <h3>Sửa Hồ Sơ</h3>
                     <div class="col-md-8">
                         <div class="row mb-3">
                             <div class="col-md-6">
@@ -384,13 +435,12 @@
            style="margin-bottom: 15px">Thêm Địa Chỉ</a>
         <div th:each="address : ${customer.addresses}">
             <div class="address-card">
-                <button style="margin-left:550px" href="#"
+                <button href="#"
                         th:href="@{/mua-sam-SportShopV2/customer/select-address/{customerId}/{addressId}(customerId=${customer.id}, addressId=${address.id})}"
                         class="btn btn-primary">
-                    <!--                                    class="star-icon"-->
-                    <!--                                    <i class="far fa-star" id="star-[[${address.id}]]"></i>-->
                     Chọn
                 </button>
+                <br>
                 <p>Địa chỉ: <span th:text="${address.tinh}">Tỉnh</span>,
                     <span th:text="${address.quan}">Quận</span>,
                     <span th:text="${address.phuong}">Phường</span> -
@@ -484,8 +534,7 @@
                             <form th:action="@{/mua-sam-SportShopV2/customer/update-address/{customerId}(customerId=${customer.id})}"
 
                                   method="post">
-                                <input type="hidden" id="addressId" name="addressId"
-                                       th:value="${address.id}">
+                                <input type="hidden" id="addressId" name="addressId" th:value="${address.id}">
 
                                 <div class="form-group">
                                     <label for="tinha" class="form-label">Tỉnh</label>
@@ -502,8 +551,7 @@
                                     <select class="form-select" id="quana" name="quan"
                                             onchange="document.getElementsByName('quanName')[0].value = this.options[this.selectedIndex].text;"
                                     >
-                                        <option th:value="${address.quan}" th:text="${address.quan}" hidden>
-                                            Quận
+                                        <option th:value="${address.quan}" th:text="${address.quan}" hidden>Quận
                                             Huyện
                                         </option>
                                     </select>
@@ -514,8 +562,7 @@
                                     <select class="form-select" id="phuonga" name="phuong"
                                             onchange="document.getElementsByName('phuongName')[0].value = this.options[this.selectedIndex].text;"
                                     >
-                                        <option th:value="${address.phuong}" th:text="${address.phuong}"
-                                                hidden>
+                                        <option th:value="${address.phuong}" th:text="${address.phuong}" hidden>
                                             Phường Xã
                                         </option>
                                     </select>
@@ -541,12 +588,7 @@
 </div>
 </div>
 </div>
-</main>
-
-
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="/js/KhachHang.js"></script>
 <script>
     //doi form
     function showProfileForm() {
@@ -612,8 +654,6 @@
         }
     });
 
-    //tt dia chi
-
     // Hàm xử lý khi click vào icon sao
     document.querySelectorAll('.star-icon').forEach(item => {
         item.addEventListener('click', function () {
@@ -621,14 +661,14 @@
             const starId = this.querySelector('i').id;
             const currentStar = document.getElementById(starId);
 
-            // Kiểm tra sao đã sáng chưa
+// Kiểm tra sao đã sáng chưa
             if (currentStar.classList.contains('fas')) {
-                // Nếu sao đã sáng, tắt nó đi (trở lại sao rỗng)
+// Nếu sao đã sáng, tắt nó đi (trở lại sao rỗng)
                 currentStar.classList.remove('fas');
                 currentStar.classList.add('far');
                 localStorage.removeItem('selectedStar'); // Xóa lưu trữ trạng thái
             } else {
-                // Nếu sao chưa sáng, tắt tất cả sao khác và bật sao này sáng
+// Nếu sao chưa sáng, tắt tất cả sao khác và bật sao này sáng
                 document.querySelectorAll('.star-icon i').forEach(star => {
                     star.classList.remove('fas');
                     star.classList.add('far');
@@ -702,7 +742,28 @@
                 });
             });
         });
+
+    });
+    //loc sp
+    document.addEventListener('DOMContentLoaded', function () {
+        const buttons = document.querySelectorAll('#order-list .btn-light');
+        const rows = document.querySelectorAll('#order-list tbody tr');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', function () {
+                const status = this.getAttribute('data-status');
+
+                rows.forEach(row => {
+                    if (status === 'all' || row.getAttribute('data-status') === status) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
     });
 </script>
+</main>
 </body>
 </html>
