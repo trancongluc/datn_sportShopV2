@@ -41,7 +41,12 @@ public class BanHangTaiQuayController {
         model.addAttribute("kh", listKH);
         return "BanHangTaiQuay/BanHangTaiQuay";
     }
-
+    @GetMapping("/cboKH")
+    @ResponseBody
+    public ResponseEntity<List<User>> timKhachHang(@RequestParam String keyword) {
+        List<User> danhSachKhachHang = khRepo.findByTenHoacSoDienThoai(keyword);
+        return ResponseEntity.ok(danhSachKhachHang);
+    }
     @GetMapping("/spct")
     public String getAllSPCT(@RequestParam(required = false) Integer idKH, Model model) {
         List<SanPhamChiTietDTO> listSPCTDto = spctService.getAllSPCT();

@@ -1,5 +1,6 @@
 package com.example.sportshopv2.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,6 +18,7 @@ public class Account {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user", nullable = false)
     @EqualsAndHashCode.Exclude // Loại bỏ vòng lặp trong hashCode() và equals()
+    @JsonIgnore
     private User user;
 
     @Column(name = "username", nullable = false, unique = true, length = 50)

@@ -428,7 +428,7 @@ async function hoanTraMotPhan() {
         // Lấy hóa đơn cũ
         const hoaDonCu = await getHoaDonById(oldId);
 
-        if (hoaDonCu.type === "Tại quầy") {
+        if (hoaDonCu.type === "Tại Quầy") {
             transaction_date = dateNow;
             receive_date = dateNow;
             status = "Hoàn thành";
@@ -444,6 +444,7 @@ async function hoanTraMotPhan() {
             user_name: hoaDonCu.user_name,
             phone_number: hoaDonCu.phone_number,
             status: status,
+
             address: hoaDonCu.address,
             ship_date: null,
             receive_date: receive_date,
@@ -576,13 +577,12 @@ async function taoHDCTMoiTuAddedItems(hoaDonNew, hoaDonCu) {
         }
 
         // Cập nhật tổng tiền của hóa đơn cũ
-        hoaDonCu.total_money -= totalPriceReduction;
         await fetch(`/doi-tra/update-hoa-don/${hoaDonCu.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 ...hoaDonCu,
-                total_money: hoaDonCu.total_money,
+                total_money: hoaDonCu.total_money -totalPriceNew,
                 note: "Hóa đơn có sản phẩm hoàn trả",
                 status: "Hoàn thành"
             })
@@ -592,7 +592,7 @@ async function taoHDCTMoiTuAddedItems(hoaDonNew, hoaDonCu) {
 
         // Cập nhật tổng tiền hóa đơn mới
         hoaDonNew.total_money = totalPriceNew;
-        hoaDonNew.status = "Chờ xác nhận";
+        console.log("Tong tien new",totalPriceNew);
         if (hdctMoiList.length > 0) {
             // Tạo hóa đơn chi tiết mới
             const createResponse = await fetch('/ban-hang-tai-quay/tao-hoa-don-chi-tiet', {
@@ -617,7 +617,7 @@ async function taoHDCTMoiTuAddedItems(hoaDonNew, hoaDonCu) {
                 ...hoaDonNew,
                 total_money: hoaDonNew.total_money,
                 note: "Đổi trả thành công",
-                status: "Hoàn thành"
+                status: hoaDonNew.type === 'Tại Quầy' ? 'Hoàn thành' : 'Chờ xác nhận'
             })
         });
 
