@@ -272,8 +272,11 @@
                             <!-- Chi tiết sản phẩm -->
                             <table class="table align-middle">
                                 <tbody th:each="item : ${hoaDon.billDetails}">
+                                <td th:text="${item.hoaDon.status}"></td>
                                 <tr>
+
                                     <td th:text="${index.index + 1}"></td>
+
                                     <td>
                                         <p th:text="${item.sanPhamChiTiet.idSanPham.tenSanPham}"></p>
                                         <p class="text-danger font-weight-bold"
@@ -290,10 +293,6 @@
 
                             <!-- Nút chức năng -->
                             <div class="d-flex justify-content-end mt-3">
-                                <!-- Hủy đơn -->
-                                <a th:href="@{/mua-sam-SportShopV2/deleteBill/{BillId}(BillId=${hoaDon.id})}"
-                                   class="btn btn-danger font-weight-bold mr-2" style="margin-right: 5px">Hủy đơn</a>
-
                                 <!-- Xem đơn hàng -->
                                 <form th:action="@{/mua-sam-SportShopV2/theo-doi-hoa-don}" method="get">
                                     <!-- Gán giá trị mặc định nếu billCode null -->

@@ -489,7 +489,7 @@
                             </thead>
                             <tbody>
                             <tr th:each="sp, iterStat : ${sanPhamPage.content}">
-                                <td><input type="checkbox" class="product-checkbox"name="selectedProducts" th:value="${sp.id}"></td>
+                                <td><input type="checkbox" class="product-checkbox"name="selectProductID" th:value="${sp.id}"></td>
                                 <td th:text="${iterStat.index + 1}"></td>
                                 <td th:text="${sp.code}"></td>
                                 <td th:text="${sp.tenSanPham}"></td>

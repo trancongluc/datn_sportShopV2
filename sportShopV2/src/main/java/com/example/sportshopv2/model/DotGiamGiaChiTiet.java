@@ -49,7 +49,7 @@ public class DotGiamGiaChiTiet {
 
     @ManyToOne
     @JoinColumn(name = "product_detail_id" , nullable = false)
-    private SanPhamChiTiet spct;
+    private SPCT spct;
 
     @ManyToOne
     @JoinColumn(name = "promotion_id" , nullable = false)

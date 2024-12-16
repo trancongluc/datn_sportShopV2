@@ -38,7 +38,6 @@ public class PhieuGiamGiaController {
     @GetMapping("/view")
     public String GiamGia(Model model) {
         List<PhieuGiamGia> vouchers = vcRepo.findAll(Sort.by(Sort.Direction.DESC, "createAt"));
-        model.addAttribute("listVCCT", vcctRepo.findAll());
         model.addAttribute("listVC", vouchers);
         return "PhieuGiamGia/giamGia";
     }
