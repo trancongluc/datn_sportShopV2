@@ -592,7 +592,7 @@ async function taoHDCTMoiTuAddedItems(hoaDonNew, hoaDonCu) {
 
         // Cập nhật tổng tiền hóa đơn mới
         hoaDonNew.total_money = totalPriceNew;
-
+        hoaDonNew.status = "Chờ xác nhận";
         if (hdctMoiList.length > 0) {
             // Tạo hóa đơn chi tiết mới
             const createResponse = await fetch('/ban-hang-tai-quay/tao-hoa-don-chi-tiet', {
