@@ -1,49 +1,20 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en"-->
-<!--      xmlns:th="http://www.thymeleaf.org"-->
-<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
-<!--      layout:decorate="~{Menu}"-->
-<!--&gt;-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <title>Trả hàng</title>-->
-<!--    <link rel="stylesheet" href="/css/DoiTra.css">-->
-<!--</head>-->
-<!--<body>-->
-<!--<main layout:fragment="main1">-->
-<!--<div class="container">-->
-<!--    <div class="header">-->
-<!--        <img src="/images/th.jpeg" alt="Trả hàng" class="icon">-->
-<!--        <h1>Trả hàng</h1>-->
-<!--    </div>-->
-<!--    <div class="form-group">-->
-<!--        <label for="maHoaDon">* Mã hóa đơn: <input type="text" id="maHoaDon" name="maHoaDon" ></label>-->
-<!--        <a th:href="@{/doitra/detail}"><button type="button" class="btn-tim">Tìm kiếm</button></a>-->
-<!--        <button type="button" class="btn-qrcode">QR Code</button>-->
-<!--    </div>-->
-<!--    <div class="image-container">-->
-<!--        <img src="/images/OIP.jpeg" alt="Returns Policy" class="returns-image">-->
-<!--        <h2>Returns Policy</h2>-->
-<!--    </div>-->
-<!--</div>-->
-<!--</main>-->
-<!--</body>-->
-<!--</html>-->
-
-
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{Menu}"
->
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{Menu}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trả hàng</title>
     <link rel="stylesheet" href="/css/DoiTra.css">
 </head>
+<style>
+    .error-message {
+        color: red;
+        font-size: 12px;
+        margin-top: 5px;
+        font-weight: bold; /* Đảm bảo chữ đậm và dễ nhìn */
+        display: block; /* Đảm bảo nó chiếm diện tích */
+    }
+</style>
 <body>
 <main layout:fragment="main1">
     <div class="container">
@@ -57,13 +28,47 @@
                 <button type="submit" class="btn-tim">Tìm kiếm</button>
                 <button type="button" class="btn-qrcode">QR Code</button>
             </form>
+            <div class="error-message" th:if="${errorMessage}" th:text="${errorMessage}"></div>
         </div>
         <div class="image-container">
             <img src="/images/OIP.jpeg" alt="Returns Policy" class="returns-image">
             <h2>Returns Policy</h2>
         </div>
     </div>
+
+    <!-- Toast thông báo -->
+    <div id="toast" class="toast hide">
+        <span id="toast-message">Thông báo sẽ xuất hiện ở đây!</span>
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
 </main>
+
+<script>
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+        const progressBar = document.getElementById('progress-bar');
+
+        toastMessage.textContent = message;
+        toast.classList.add('show');
+        progressBar.style.width = '100%';
+
+        // Sau 3 giây, ẩn toast và reset thanh tiến trình
+        setTimeout(function() {
+            toast.classList.remove('show');
+            progressBar.style.width = '0%';
+        }, 3000);  // Hiển thị toast trong 3 giây
+    }
+
+    // Kiểm tra nếu có message trong model
+    document.addEventListener("DOMContentLoaded", function() {
+        const showToastFlag = /*[[${showToast}]]*/ null;
+        const toastMessage = /*[[${toastMessage}]]*/ null;
+
+        if (showToastFlag && toastMessage) {
+            showToast(toastMessage);
+        }
+    });
+</script>
 </body>
 </html>
-

@@ -51,7 +51,7 @@ public class PhanQuyen {
 
                         // Cho phép truy cập công cộng
                         .requestMatchers("/login/**", "/mua-sam-SportShopV2/**", "/api/payment/**",
-                                "/VNPAY-demo/**", "/images/**", "https://**").permitAll()
+                                "/VNPAY-demo/**", "/images/**", "https://**","/doi-tra/**").permitAll()
                         // Các yêu cầu khác phải xác thực
                         .anyRequest().authenticated()
                 )
