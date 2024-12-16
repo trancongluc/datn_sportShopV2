@@ -128,7 +128,7 @@ public class ThongKeController {
     public ResponseEntity<?> getStatisticsByDateRange(@RequestParam("startDate")
                                                       LocalDateTime startDate,
                                                       @RequestParam("endDate")
-                                                       LocalDateTime endDate) {
+                                                      LocalDateTime endDate) {
         Map<String, Object> response = new HashMap<>();
 
         // Kiểm tra xem có dữ liệu từ service

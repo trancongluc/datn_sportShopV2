@@ -56,16 +56,20 @@ public class HoaDonService {
     public HoaDon findHoaDonById(Integer id) {
         return hdRepo.findById(id).orElse(null);
     }
+
     public int countByStatus(String status) {
         return hdRepo.countByStatus(status);
     }
+
     public int getTotalQuantityForCurrentMonth() {
         LocalDate now = LocalDate.now();
         int currentMonth = now.getMonthValue();
         int currentYear = now.getYear();
 
-        return hdRepo.getTotalQuantityForMonthAndYear(currentMonth,currentYear);
+        Integer totalQuantity = hdRepo.getTotalQuantityForMonthAndYear(currentMonth, currentYear);
+        return (totalQuantity != null) ? totalQuantity : 0;
     }
+
     public List<HoaDon> getBillsByCustomerId(Integer customerId) {
         return hdRepo.findByCustomerId(customerId);
     }

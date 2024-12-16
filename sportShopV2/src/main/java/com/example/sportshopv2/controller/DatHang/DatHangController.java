@@ -520,11 +520,6 @@ public class DatHangController {
             AnhSanPham anhSanPham = anhService.anhSanPhamByIDSPCT(hdct.getSanPhamChiTiet().getId());
             model.addAttribute("anhSP", anhSanPham);
         }
-        if (hoaDon == null) {
-            // Xử lý trường hợp không tìm thấy hóa đơn
-            model.addAttribute("error", "Không tìm thấy hóa đơn với mã: " + tenHoaDon);
-            return "redirect:/doi-tra/view";
-        }
         model.addAttribute("hoaDon", hoaDon);
 
         return "MuaHang/TheoDoiHoaDon";
@@ -592,7 +587,6 @@ public class DatHangController {
             }
         }
         model.addAttribute("anhSPMap", anhSPMap);
-        model.addAttribute("kt", size);
 
 
         // Kiểm tra giá trị customer và id của nó trước khi truyền vào model

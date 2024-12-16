@@ -311,7 +311,7 @@
                                         <form th:action="@{/mua-sam-SportShopV2/theo-doi-hoa-don}" method="get">
                                             <!-- Gán giá trị mặc định nếu billCode null -->
                                             <input type="hidden" name="tenHoaDon"
-                                                   th:value="${hoaDon.billCode != null ? hoaDon.billCode : 'DefaultBillCode'}">
+                                                   th:value="${hoaDon.billCode != null ? hoaDon.billCode : 'DefaultBillCode'}" >
                                             <button type="submit" class="btn btn-primary font-weight-bold">Xem đơn hàng
                                             </button>
                                         </form>

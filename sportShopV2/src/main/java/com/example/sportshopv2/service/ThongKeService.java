@@ -15,6 +15,7 @@ public class ThongKeService {
     private ThongKeRepository billRepository;
     @Autowired
     private HoaDonRepo hoaDonRepo;
+
     public Map<String, Object> getCompletedOrderStats() {
         return billRepository.getCompletedOrdersAndTotalMoney();
     }
@@ -22,12 +23,13 @@ public class ThongKeService {
     public Map<String, Object> getCompletedOrderStatsToday() {
         return billRepository.getCompletedOrdersAndTotalMoneyToday();
     }
+
     public List<Integer> getMonthlyBillCounts() {
         LocalDate now = LocalDate.now();
         int currentYear = now.getYear();
         List<Integer> monthlyCounts = new ArrayList<>();
         for (int i = 1; i <= 12; i++) {
-            Integer count = hoaDonRepo.countBillsByMonth(i,currentYear);
+            Integer count = hoaDonRepo.countBillsByMonth(i, currentYear);
             monthlyCounts.add(count);
             System.out.println("Tháng " + i + " có " + count + " hóa đơn.");
         }
@@ -39,18 +41,21 @@ public class ThongKeService {
         int currentYear = now.getYear();
         List<Integer> monthlyCounts = new ArrayList<>();
         for (int i = 1; i <= 12; i++) {
-            Integer countSp = hoaDonRepo.countProductsByMonth(i,currentYear);
+            Integer countSp = hoaDonRepo.countProductsByMonth(i, currentYear);
             monthlyCounts.add(countSp);
             System.out.println("Tháng " + i + " có " + countSp + " hóa đơn.");
         }
         return monthlyCounts;
     }
+
     public List<Object[]> getBillStatisticsByDay(int month, int year) {
         return hoaDonRepo.countBillsByDayInMonth(month, year);
     }
+
     public List<Object[]> getProductStatisticsByDay(int month, int year) {
         return hoaDonRepo.countProductsByDayInMonth(month, year);
     }
+
     public Map<String, List<Integer>> thongKeTheoNgay(LocalDate date) {
         List<Object[]> billData = hoaDonRepo.countBillsByHour(date);
         List<Object[]> productData = hoaDonRepo.countProductsByHour(date);
@@ -76,6 +81,7 @@ public class ThongKeService {
         result.put("totalProducts", totalProducts);
         return result;
     }
+
     public List<Object[]> getBillStatisticsByDayInDateRange(LocalDateTime startDate, LocalDateTime endDate) {
         return hoaDonRepo.countBillsByDayInDateRange(startDate, endDate);
     }

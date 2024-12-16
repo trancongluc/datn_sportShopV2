@@ -76,7 +76,7 @@
                    onclick="showChat(this)">
                     <div class="d-flex align-items-center">
                         <div class="avatar rounded-circle text-center d-flex align-items-center justify-content-center flex-shrink-0"
-                             style="width: 50px; height: 50px; background-color: #007bff; color: white;">
+                             style="width: 50px; height: 50px; background-color: #007bff; color: white;" id="notidot">
                             <span th:text="${chatBox.name.substring(0, 1).toUpperCase()}"></span>
                         </div>
                         <div class="ms-3 flex-grow-1">
@@ -84,7 +84,19 @@
                             <br>
                             <small class="text-muted">Nhấn để mở chat</small>
                         </div>
-                        <div class="notification-dot" id="notification-dot-${chatBox.id}"></div>
+                        <!-- Chấm thông báo -->
+                        <div th:id="'notification-dot-' + ${chatBox.id}"
+                             style="position: absolute;
+                    top: 50%;
+                    right: 15px;
+                    width: 12px;
+                    height: 12px;
+                    background-color: red;
+                    border-radius: 50%;
+                    transform: translateY(-50%);
+                    display: none">
+                        </div>
+                        <span th:text="'Debug ID: ' + ${chatBox.id}" hidden></span>
                     </div>
                 </a>
             </div>
@@ -122,7 +134,7 @@
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
     <script>
         let stompClient = null;
-        const displayedMessages = new Map(); // Khởi tạo biến toàn cục để lưu tin nhắn đã hiển thị
+        // const displayedMessages = new Map(); // Khởi tạo biến toàn cục để lưu tin nhắn đã hiển thị
 
         function showChat(element) {
             const chatBoxId = element.getAttribute('data-id');
@@ -131,10 +143,6 @@
 
             allChatBoxes.forEach(box => {
                 box.classList.remove('active');
-                const notificationDot = document.getElementById(`notification-dot-${box.id.split('-')[2]}`);
-                if (notificationDot) {
-                    notificationDot.style.display = 'none';
-                }
             });
 
             const selectedChatBox = document.getElementById(`chat-box-${chatBoxId}`);
@@ -143,86 +151,57 @@
                 chatTitle.innerHTML = `<h5>ChatBox: ${element.textContent.trim()}</h5>`;
             }
 
+            // Ẩn chấm thông báo
+            const notificationDot = document.getElementById(`notification-dot-${chatBoxId}`);
+            if (notificationDot) {
+                notificationDot.style.display = 'none';
+            }
+
+            // Cập nhật giá trị chatBoxId
             const chatBoxIdInput = document.getElementById('chatBoxId');
             if (chatBoxIdInput) {
                 chatBoxIdInput.value = chatBoxId;
             }
         }
 
-        function connect() {
-            const socket = new SockJS('http://localhost:8080/chat');
-            stompClient = Stomp.over(socket);
-
-            stompClient.connect({}, function () {
-                console.log("Connected to WebSocket");
-                stompClient.subscribe('/topic/messages', function (message) {
-                    const data = JSON.parse(message.body);
-                    appendMessage(data.chatBox.id, data.role, data.content, data.timestamp);
-                });
-            });
-        }
-
-        document.getElementById('sendButton').addEventListener('click', function (event) {
-            event.preventDefault();
-
-            const chatBoxId = document.getElementById('chatBoxId').value;
-            const accountId = document.getElementById('accountId').value;
-            const content = document.getElementById('content').value;
-
-            const message = {
-                chatBox: { id: chatBoxId },
-                role: 'shop',
-                content: content
-            };
-
-            fetch('/sendMessage', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({
-                    chatBoxId: chatBoxId,
-                    accountId: accountId,
-                    content: content
-                })
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to send message');
-                    }
-                    return response.json();
-                })
-                .then(() => {
-                    stompClient.send('/app/sendMessage', {}, JSON.stringify(message));
-                    document.getElementById('content').value = '';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        });
+        let displayedMessages = new Map(); // Khởi tạo map để lưu các tin nhắn đã hiển thị theo chatBoxId
 
         function appendMessage(chatBoxId, role, content, timestamp) {
-            const chatBox = document.getElementById(`chat-box-${chatBoxId}`);
+            console.log("Appending message to chatBox:", chatBoxId, role, content, timestamp);
 
-            if (!chatBox || displayedMessages.has(chatBoxId + content)) {
+            // Kiểm tra xem tin nhắn đã được hiển thị trước đó chưa (theo nội dung)
+            const key = `${chatBoxId}-${content}`; // Sử dụng chatBoxId và nội dung để tạo một khóa duy nhất cho mỗi tin nhắn
+            if (displayedMessages.has(key)) {
+                console.log("Duplicate message, not adding.");
+                return; // Nếu tin nhắn đã có, không thêm
+            }
+
+            // Lưu tin nhắn vào Map để theo dõi tin nhắn đã hiển thị
+            displayedMessages.set(key, true);
+
+            // Xác định khung chat dựa trên chatBoxId
+            const chatBox = document.getElementById(`chat-box-${chatBoxId}`);
+            if (!chatBox) {
+                console.error(`ChatBox not found for ID: ${chatBoxId}`);
                 return;
             }
 
-            displayedMessages.set(chatBoxId + content, true);
-
+            // Tạo phần tử tin nhắn
             const messageDiv = document.createElement('div');
-            messageDiv.className = role === 'client' ? 'message client' : 'message shop';
+            messageDiv.classList.add('message', role === 'shop' ? 'shop' : 'client', 'p-2', 'mb-2');
             messageDiv.innerHTML = `
-                <span>${content}</span>
-                <div class="timestamp">${formatTimestamp(timestamp)}</div>
-            `;
+        <span>${content}</span>
+        <div class="timestamp">${formatTimestamp(timestamp)}</div>
+    `;
 
+            // Thêm tin nhắn vào khung chat
             chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
+            chatBox.scrollTop = chatBox.scrollHeight; // Cuộn xuống dưới cùng để xem tin nhắn mới
 
-            if (!chatBox.classList.contains('active')) {
-                const notificationDot = document.getElementById(`notification-dot-${chatBoxId}`);
-                if (notificationDot) {
-                    notificationDot.style.display = 'block';
-                }
+            // Hiển thị chấm thông báo nếu tin nhắn đến từ client và chatBox không hoạt động
+            const notificationDot = document.getElementById(`notification-dot-${chatBoxId}`);
+            if (role === 'client' && !chatBox.classList.contains('active')) {
+                notificationDot.style.display = 'block';
             }
         }
 
@@ -230,6 +209,60 @@
             const date = new Date(timestamp);
             return date.toISOString().slice(0, 16).replace('T', ' ');
         }
+
+
+        // Kết nối WebSocket
+        function connect() {
+            const socket = new SockJS('http://localhost:8080/chat');
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, function () {
+                console.log("Connected to WebSocket");
+
+                // Đăng ký lắng nghe tin nhắn
+                stompClient.subscribe('/topic/messages', function (message) {
+                    const data = JSON.parse(message.body);
+                    appendMessage(data.chatBox.id, data.role, data.content, data.timestamp);
+                });
+            });
+        }
+
+        // Gửi tin nhắn
+        document.getElementById('sendButton').addEventListener('click', function (event) {
+            event.preventDefault();
+
+            const chatBoxId = document.getElementById('chatBoxId').value;
+            const accountId = document.getElementById('accountId').value;
+            const content = document.getElementById('content').value;
+
+            if (!content.trim()) return; // Không gửi tin nhắn trống
+
+            const message = {
+                chatBox: {id: chatBoxId},
+                role: 'shop',
+                content: content,
+                timestamp: new Date().toISOString()
+            };
+
+            fetch('/sendMessage', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: new URLSearchParams({
+                    chatBoxId: chatBoxId,
+                    accountId: accountId,
+                    content: content
+                })
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to send message');
+                    stompClient.send('/app/sendMessage', {}, JSON.stringify(message));
+                    appendMessage(chatBoxId, 'shop', content, message.timestamp); // Hiển thị tin nhắn gửi
+                    document.getElementById('content').value = ''; // Xóa nội dung input
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+        // Kết nối ngay khi tải trang
 
         connect();
     </script>
