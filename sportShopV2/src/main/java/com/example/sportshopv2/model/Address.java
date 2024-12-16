@@ -56,5 +56,9 @@ public class Address {
 
 //    @ManyToOne
 //    @JoinColumn(name = "id_User")
+
+//    private User khachHang;
+
 //    private NguoiDung diaChi;
+
 }

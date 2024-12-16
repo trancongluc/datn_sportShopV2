@@ -12,6 +12,5 @@ public interface PhieuGiamGiaService {
     Boolean update(PhieuGiamGia phieuGiamGia);
     Boolean delete(Integer id);
     List<PhieuGiamGia> getVoucherByGiaTriDonHang(Integer giaTriDonHang);
-
     void save(PhieuGiamGia giamGia);
 }

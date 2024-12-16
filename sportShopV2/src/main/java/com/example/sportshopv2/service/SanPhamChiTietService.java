@@ -38,7 +38,6 @@ public class SanPhamChiTietService {
 
     public SanPhamChiTiet addSPCT(SanPhamChiTiet spct) {
         spct.setCreateBy("NV1");
-        spct.setTrangThai("Đang hoạt động");
         return sanPhamChiTietRepository.save(spct);
     }
 
@@ -48,7 +47,7 @@ public class SanPhamChiTietService {
     }
 
     public List<SanPhamChiTietDTO> getAllDISTINCTSPCT() {
-        List<SanPhamChiTiet> spct = sanPhamChiTietRepository.findDistinctByIdProduct();
+        List<SanPhamChiTiet> spct = sanPhamChiTietRepository.findDistinctByIdAndIdSanPham();
         return spct.stream().map(sanPhamChiTiet ->
                         SanPhamChiTiet.toDTO(sanPhamChiTiet, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo))
                 .collect(Collectors.toList());
@@ -63,7 +62,11 @@ public class SanPhamChiTietService {
         SanPhamChiTiet spct = sanPhamChiTietRepository.findByIdAndDeleted(idSPCT, false);
         return spct;
     }
+    public SanPhamChiTietDTO findSPCTDtoById(Integer idSPCT) {
+        SanPhamChiTiet spct = sanPhamChiTietRepository.findByIdAndDeleted(idSPCT, false);
 
+        return spct.toDTO(spct, ktRepo, spRepo, msRepo, thRepo, dgRepo, tlRepo, cgRepo, clRepo, anhRepo);
+    }
     public List<SanPhamChiTietDTO> getAllSPCT() {
         List<SanPhamChiTiet> listSPCT = sanPhamChiTietRepository.findAllByDeletedAndTrangThaiOrderByCreateAtDesc(false, "Đang hoạt động");
         return listSPCT.stream().map(sanPhamChiTiet ->
@@ -160,6 +163,7 @@ public class SanPhamChiTietService {
         sanPhamChiTiet.setSoLuong(spct.getSoLuong());
         sanPhamChiTiet.setGia(spct.getGia());
         sanPhamChiTiet.setGioiTinh(spct.getGioiTinh());
+        sanPhamChiTiet.setTrangThai(spct.getTrangThai());
 
         // Lưu thông tin cập nhật vào database
         return sanPhamChiTietRepository.save(sanPhamChiTiet);

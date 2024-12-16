@@ -3,23 +3,26 @@ package com.example.sportshopv2.controller;
 import com.example.sportshopv2.dto.HoaDonChiTietDTO;
 import com.example.sportshopv2.model.HoaDon;
 import com.example.sportshopv2.model.HoaDonChiTiet;
+import com.example.sportshopv2.repository.HoaDonChiTietRepo;
 import com.example.sportshopv2.repository.HoaDonRepo;
 import com.example.sportshopv2.repository.SanPhamChiTietRepository;
 import com.example.sportshopv2.repository.SanPhamRepository;
 
+import com.example.sportshopv2.service.HoaDonChiTietService;
 import com.example.sportshopv2.service.KhachhangService;
 import com.example.sportshopv2.service.SanPhamChiTietService;
 
 import com.example.sportshopv2.service.impl.HoaDonServiceImp;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/doi-tra")
@@ -27,9 +30,10 @@ public class DoiTraController {
 
     @Autowired
     private HoaDonServiceImp hoaDonServiceImp;
-
     @Autowired
-    private KhachhangService userService; // Dịch vụ để lấy thông tin người dùng
+    private HoaDonChiTietRepo hdctRepo;
+    @Autowired
+    private HoaDonChiTietService hdctService;
 
     @GetMapping("/view")
     public String DoiTraView() {
@@ -50,11 +54,46 @@ public class DoiTraController {
 
         return "DoiTra/DoiTraChiTiet";
     }
-    @GetMapping("/cap-nhat")
-    public String doiTra(@RequestParam("maHoaDon") Integer maHoaDon, Model model) {
-        hoaDonServiceImp.updateTrangThai(maHoaDon, "Hoàn trả");
-        model.addAttribute("message", "Trạng thái hóa đơn đã được cập nhật thành công.");
-        return "redirect:/doi-tra/view";
-    }
+    @PutMapping("/updateHD/{id}")
+    @ResponseBody
+    public ResponseEntity<?> updateHoaDon(
+            @PathVariable("id") Integer idHD,
+            @RequestBody HoaDon updatedHoaDon) {
+        try {
+            // Gọi service để cập nhật hóa đơn
+            hoaDonServiceImp.updateHoaDon(idHD, updatedHoaDon);
 
+            // Trả về đối tượng JSON
+            return ResponseEntity.ok(Map.of("status", "success", "message", "Hóa đơn đã được cập nhật thành công."));
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("status", "error", "message", "Không tìm thấy hóa đơn với mã: " + idHD));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("status", "error", "message", "Đã xảy ra lỗi: " + ex.getMessage()));
+        }
+    }
+    @PutMapping("/updateHDCT/{id}")
+    @ResponseBody
+    public ResponseEntity<?> updateHoaDonCT(
+            @PathVariable("id") Integer idHDCT,
+            @RequestBody HoaDonChiTiet updateHDCT) {
+        try {
+            // Gọi service để cập nhật hóa đơn
+            hdctService.updateHoaDonCT(idHDCT, updateHDCT);
+
+            // Trả về đối tượng JSON
+            return ResponseEntity.ok(Map.of("status", "success", "message", "Hóa đơn đã được cập nhật thành công."));
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("status", "error", "message", "Không tìm thấy hóa đơn với mã: " + idHDCT));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("status", "error", "message", "Đã xảy ra lỗi: " + ex.getMessage()));
+        }
+    }
+    @GetMapping("/thong-tin/")
+    public HoaDonChiTiet hdctDetail(@RequestParam("idHDCT") Integer idHDCT) {
+        return hdctRepo.findAllById(idHDCT);
+    }
 }

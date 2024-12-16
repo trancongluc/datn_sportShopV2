@@ -50,7 +50,6 @@ function selectTab(invoiceId) {
     updateSelectedProductsTable(invoiceId);
 // Cập nhật phương thức giao hàng và địa chỉ từ tabSelection
 }
-
 function updateDeliveryOption() {
     // Lấy tất cả các radio button với name là "deliveryOption"
     const deliveryOptions = document.getElementsByName('deliveryOption');
@@ -422,7 +421,7 @@ for (let i = 0; i < productRows.length; i++) {
         const productId = productRows[i].getAttribute('data-id');
         console.log("Product ID:", productId);
 
-        fetch(`ban-hang-tai-quay/spct/${productId}`)
+        fetch(`/ban-hang-tai-quay/spct/${productId}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -532,7 +531,10 @@ for (let i = 0; i < productRows.length; i++) {
                     tongTien = calculateTotal();
                     updateTotal();
                 });
-
+                if(idHD == null){
+                    showToast("Vui lòng chọn hóa đơn!")
+                    return;
+                }
                 // Thêm hàng sản phẩm vào bảng đã chọn
                 selectedProductsTable.querySelector('tbody').appendChild(selectedProduct);
                 const currentInvoiceId = getCurrentInvoiceId();
@@ -629,7 +631,9 @@ async function taoHoaDonCho() {
     const phiShip = 0;
     const giamGia = 0;
     const status = "Hóa Đơn Chờ"; // Trạng thái mặc định
-    const date = new Date();
+    const now = new Date();
+    const localTime = now.toLocaleString('en-CA', { hour12: false }).replace(',', ''); // "2024-12-12 14:00:00"
+    const date = new Date(localTime);
     try {
         const userKH = await fetch(`/khach-hang/thong-tin-kh/14`).then(res => res.json());
         const emp = await fetch(`/nhanvien/thong-tin-nv/${idNV}`).then(res => res.json());
@@ -644,11 +648,11 @@ async function taoHoaDonCho() {
             money_ship: phiShip,
             billCode: `HD-${Date.now()}`,
             type: "Tại Quầy",
-            createAt: date,
             create_by: idNV,
             deleted: false,
             id_account: userKH,
-            id_staff: emp
+            id_staff: emp,
+            createAt:date
         };
 
         const response = await fetch('ban-hang-tai-quay/tao-hoa-don', {
@@ -717,7 +721,6 @@ async function loadInvoicesFromDatabase() {
 }
 
 
-
 // Hàm thêm tab khi nhấn nút thêm hóa đơn
 document.getElementById('addInvoiceButton').addEventListener('click', () => {
     if (soLuongHoaDonCho < maxInvoices) {
@@ -734,7 +737,9 @@ async function capNhatHoaDon() {
         const sdt = document.getElementById('phone').value;
         const email = document.getElementById('email').value;
         var status = "Chờ xác nhận"; // Trạng thái mặc định
-        const date = new Date(); // Lấy thời gian hiện tại
+        const now = new Date();
+        const localTime = now.toLocaleString('en-CA', { hour12: false }).replace(',', ''); // "2024-12-12 14:00:00"
+        const date = new Date(localTime);
         const soNha = document.getElementById('soNha').value;
         var payStatus = null;
         var soLuongNew;
@@ -750,8 +755,6 @@ async function capNhatHoaDon() {
             address = null;
             payStatus = null;
             status = "Hoàn thành";
-            receive_date = date;
-            transaction_date = date;
         }
         var diaChiChiTiet = (nhanHang === 'Tại Quầy') ? null : `${soNha}, ${address}`;
         const currentInvoice = await fetch(`ban-hang-tai-quay/hd/${idHD}`).then(handleResponse);
@@ -761,7 +764,6 @@ async function capNhatHoaDon() {
 
         // Lấy thông tin nhân viên
         const emp = await fetch(`/ban-hang-tai-quay/tk/${idNV}`).then(handleResponse);
-        const voucher = await fetch(`/ban-hang-tai-quay/voucher/${idVoucher}`).then(handleResponse);
 
         // Nếu phương thức thanh toán là "Chuyển Khoản", mở popup VNPay
         if (paymentMethod === 'Chuyển Khoản') {
@@ -769,8 +771,8 @@ async function capNhatHoaDon() {
                 try {
                     const response = await fetch('VNPAY-demo/api/vnpay/create_payment', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ amount: orderTotal, orderInfo: orderInfo, orderId: orderId })
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({amount: orderTotal, orderInfo: orderInfo, orderId: orderId})
                     });
 
                     const result = await response.json();
@@ -802,8 +804,6 @@ async function capNhatHoaDon() {
             transaction_date: transaction_date,
             type: nhanHang,
             address: diaChiChiTiet,
-            updateAt: date,
-            createAt: currentInvoice.createAt,
             create_by: idNV,
             id_account: userKH,
             id_staff: emp,
@@ -812,7 +812,7 @@ async function capNhatHoaDon() {
             deleted: 0,
             receive_date: receive_date,
         };
-
+        console.log("HD:",hoaDon);
         // Cập nhật hóa đơn
         const updatedHoaDon = await fetch(`ban-hang-tai-quay/update-hoa-don/${idHD}`, {
             method: 'PUT',
@@ -859,16 +859,83 @@ async function capNhatHoaDon() {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(validHoaDonChiTietList),
         });
+        if (idVoucher != null) {
+            try {
+                // Gọi API để lấy thông tin voucher
+                const voucher = await fetch(`/ban-hang-tai-quay/voucher/${idVoucher}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    });
 
+                // Kiểm tra số lượng và thực hiện giảm số lượng
+                if (voucher.quantity > 0) {
+                    voucher.quantity -= 1; // Giảm số lượng voucher
+                    if(voucher.quantity ==0){
+                        voucher.status ="Đã hết";
+                    }
+                } else {
+                    console.warn("Voucher không còn số lượng!");
+                    return;
+                }
+
+                // Gửi API PUT để cập nhật voucher
+                const updateResponse = await fetch(`/giam-gia/update`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(voucher)
+                });
+
+                if (updateResponse.ok) {
+                    console.log("Cập nhật số lượng voucher thành công.");
+                } else {
+                    throw new Error("Cập nhật số lượng voucher thất bại.");
+                }
+                const voucherDetail = {
+                    idVoucher: voucher.id,  // ID voucher
+                    idBill: idHD,           // ID hóa đơn
+                    before_price: tongTien,  // Giá trị trước khi áp dụng voucher
+                    after_price: tongTien-giamGia,  // Giá trị sau khi áp dụng voucher
+                    valueVoucher: giamGia, // Giá trị voucher
+                    create_at: date,
+                    create_by: "admin",
+                };
+
+                // Gửi API để lưu voucher detail
+                const saveVoucherDetailResponse = await fetch(`/ban-hang-tai-quay/voucher-detail/add`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(voucherDetail)
+                });
+
+                if (saveVoucherDetailResponse.ok) {
+                    const savedVoucherDetail = await saveVoucherDetailResponse.json();
+                    console.log("Voucher Detail đã được lưu thành công", savedVoucherDetail);
+                } else {
+                    throw new Error("Lỗi khi lưu Voucher Detail");
+                }
+            } catch (error) {
+                console.error("Lỗi xử lý voucher:", error.message);
+                showToast("Lỗi khi thêm voucher!");
+            }
+        }
         showToast("Tạo Hóa Đơn Thành Công!");
         selectedProductIds = [];
         window.location.href = '/ban-hang-tai-quay'; // Chuyển hướng về trang bán hàng
 
     } catch (error) {
         console.error('Có lỗi xảy ra:', error);
-        showToast("Thêm hóa đơn thất bại!");
+        closeModal('confirmationModal');
+        showToast("Vui lòng điền đầy đủ thông tin!");
     }
 }
+
 // Hàm xử lý phản hồi từ API
 function handleResponse(response) {
     if (!response.ok) {

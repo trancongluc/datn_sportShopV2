@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -39,6 +40,9 @@ public class DotGiamGia {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime endDate;
 
+    @Column(name = "status")
+    private String status;
+
     @Column(name = "update_at")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime updateAt;
@@ -56,15 +60,40 @@ public class DotGiamGia {
     @Column(name = "deleted")
     private Boolean deleted;
 
+    @OneToMany(mappedBy = "dotGiamGia", fetch = FetchType.LAZY)
+    private List<DotGiamGiaChiTiet> dotGiamGiaChiTietList;
+
+
     public boolean isActive() {
         LocalDateTime now = LocalDateTime.now();
-        System.out.println("Thời gian hiện tại: " + now); // In ra thời gian hiện tại
+        System.out.println("Thời gian hiện tại: " + now);
         return startDate != null && endDate != null && startDate.isBefore(now) && endDate.isAfter(now);
     }
 
 
+    @PrePersist
+    @PreUpdate
+    public void updateStatus() {
+        this.status = getStatus();
+    }
+
     public String getStatus() {
-        return isActive() ? "Đang diễn ra" : "Kết thúc";
+        LocalDateTime now = LocalDateTime.now();
+        String statusText;
+
+        if (startDate != null && endDate != null) {
+            if (startDate.isAfter(now)) {
+                statusText = "Chưa diễn ra";
+            } else if (endDate.isBefore(now)) {
+                statusText = "Hết hạn";
+            } else {
+                statusText = "Đang diễn ra";
+            }
+        } else {
+            statusText = "Không xác định";
+        }
+
+        return statusText;
     }
 
 

@@ -64,7 +64,7 @@ public class KhachhangService {
     }
 
 
-    private final String UPLOAD_DIR = "C:\\Users\\panha\\OneDrive\\Documents\\GitHub\\datn_sportShopV2\\sportShopV2\\src\\main\\resources\\static\\uploads";
+    private final String UPLOAD_DIR = "D:\\demoMergeCodeDatn\\sportShopV2\\src\\main\\resources\\static\\uploads";
 
     public User addKhachHang(User khachHang, MultipartFile imageFile) throws IOException {
 

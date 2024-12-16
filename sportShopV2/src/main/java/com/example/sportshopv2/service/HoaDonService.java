@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class HoaDonService {
     private final HoaDonRepo hdRepo;
 
     public HoaDon createHoaDon(HoaDon hoaDon) {
-
+        hoaDon.setCreateAt(LocalDateTime.now());
         return hdRepo.save(hoaDon);
     }
 
@@ -29,6 +30,12 @@ public class HoaDonService {
                 throw new EntityNotFoundException("Hóa đơn không tồn tại với ID: " + idHD);
             }
             hoaDon.setId(idHD);
+            hoaDon.setCreateAt(LocalDateTime.now());
+            hoaDon.setUpdateAt(LocalDateTime.now());
+            if(hoaDon.getType().equals("Tại Quầy")){
+                hoaDon.setReceive_date(LocalDateTime.now());
+                hoaDon.setTransaction_date(LocalDateTime.now());
+            }
             return hdRepo.save(hoaDon);
         } catch (Exception e) {
             // Log lỗi chi tiết

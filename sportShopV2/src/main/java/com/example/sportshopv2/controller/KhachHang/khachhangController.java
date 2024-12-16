@@ -9,18 +9,26 @@ import com.example.sportshopv2.service.AddressService;
 import com.example.sportshopv2.service.HoaDonService;
 import com.example.sportshopv2.service.KhachhangService;
 import jakarta.servlet.http.HttpSession;
+import org.apache.xmlbeans.impl.soap.Detail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.Random;
 
 
 @Controller
@@ -41,6 +49,9 @@ public class khachhangController {
     private HoaDonService  hoaDonService;
     @Autowired
     private HoaDonChiTietRepo hoaDonChiTietRepo;
+
+    String password = "";
+    String sendPassword ="";
 
     @GetMapping("/list")
     public String displayCustomers(@RequestParam(defaultValue = "0") int page,
@@ -68,7 +79,22 @@ public class khachhangController {
 
 
     @GetMapping("/add")
-    public String addCustomer(Model model) {
+    public String addCustomer(Model model, String matKhau) {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+        int length = 10;
+
+        Random rand = new Random();
+
+        for (int i = 0; i < length; i++) {
+            int index = rand.nextInt(characters.length());
+            char randomChar = characters.charAt(index);
+            password += randomChar;
+        }
+        sendPassword = password;
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        matKhau = ("{bcrypt}" + encoder.encode(password));
+        model.addAttribute("pass", matKhau);
+
         model.addAttribute("user", new User());
         return "KhachHang/tao-khach-hang";
     }
@@ -289,6 +315,7 @@ public class khachhangController {
                 // Save the updated customer
                 userService.save(customer);
             }
+
         }
 
         // Add the updated customer to the model and return to the customer's address page
@@ -322,46 +349,82 @@ public class khachhangController {
         // Redirect back to the address view page
         return "redirect:/khach-hang/customer/diachi/" + customerId;
     }
+    @PostMapping("/select-address/{customerId}/{addressId}")
+    public String selectAddressForCustomer(
+            @PathVariable("customerId") Integer customerId,
+            @PathVariable("addressId") Integer addressId,
+            HttpSession session) {
+        // Fetch the selected address using the service
+        Address selectedAddress = addressService.getAddressById(addressId);
 
-
-    @GetMapping("/customer/select-address/{customerId}/{addressId}")
-    public String selectAddress(@PathVariable("customerId") Integer customerId, @PathVariable("addressId") Integer addressId, HttpSession session) {
-        // Lấy khách hàng và địa chỉ theo ID
-        User customer = userService.findCustomerById(customerId);
-        if (customer == null || customer.getAddresses() == null || customer.getAddresses().isEmpty()) {
-            return "redirect:/khach-hang/list";
-        }
-        Address selectedAddress = userService.findAddressById(addressId);
         if (selectedAddress != null) {
-            // Lưu địa chỉ đã chọn vào session
+            // Save the selected address to the session with a unique key per customer
             session.setAttribute("selectedAddress_" + customerId, selectedAddress);
         }
-        // Chuyển hướng đến trang danh sách khách hàng
+
+        // Redirect back to the customer list
         return "redirect:/khach-hang/list";
     }
+
+
+    @GetMapping("/chon-dia-chi/{customerId}/{addressId}")
+    public String chonDiaChi(
+                @PathVariable Integer customerId,
+                @PathVariable Integer addressId,
+                HttpSession session) {
+            // Lưu địa chỉ đã chọn vào session
+            session.setAttribute("selectedAddress_" + customerId, addressId);
+            return "redirect:/khach-hang/list";
+        }
+
+
+
+
+
 
 
 
     @GetMapping("/order_history/{id}")
     public String viewOrderHistory(@PathVariable("id") Integer customerId, Model model) {
         List<HoaDon> orders = hoaDonService .getOrdersByCustomerId(customerId);
+
         model.addAttribute("orders", orders);
+
 
         return "KhachHang/khachhang-donhang"; // Create a new Thymeleaf template for details
     }
 
 
-    @GetMapping("/detail/{id}")
-    public String getHoaDonDetail(@PathVariable("id") Integer id, Model model) {
-        HoaDon hoaDon = hoaDonService.findHoaDonById(id);
-        if (hoaDon == null) {
-            model.addAttribute("error", "Hóa đơn không tồn tại!");
-            return "error"; // Trang hiển thị lỗi
-        }
-
-        model.addAttribute("hoaDon", hoaDon);
-        return "KhachHang/khachhang-donhang-detail"; // Tên file HTML hiển thị chi tiết hóa đơn
-    }
+//    @GetMapping("/detail/{id}")
+//    public String getHoaDonDetail(@PathVariable("id") Integer id, Model model) {
+//        HoaDon hoaDon = hoaDonService.findHoaDonById(id);
+//        if (hoaDon == null) {
+//            model.addAttribute("error", "Hóa đơn không tồn tại!");
+//            return "error"; // Trang hiển thị lỗi
+//        }
+//        // Lấy danh sách chi tiết hóa đơn
+//        List<HoaDonChiTiet> hoaDonChiTietList = hoaDon.getHoaDonChiTiet();
+//
+//        // Định dạng giá tiền
+//        DecimalFormat df = new DecimalFormat("#,### đ");
+//        hoaDonChiTietList.forEach(detail -> {
+//            detail.setFormattedPrice(df.format(detail.getPrice()));
+//            detail.setFormattedTotal(df.format(detail.getPrice() * detail.getQuantity()));
+//        });
+//
+//        // Tính tổng tiền và định dạng
+//        BigDecimal total = hoaDonChiTietList.stream()
+//                .map(detail -> BigDecimal.valueOf(detail.getPrice() * detail.getQuantity()))
+//                .reduce(BigDecimal.ZERO, BigDecimal::add);
+//        String formattedTotal = df.format(total);
+//
+//        // Thêm dữ liệu vào Model
+//        model.addAttribute("hoaDon", hoaDon);
+//        model.addAttribute("hoaDonChiTietList", hoaDonChiTietList);
+//        model.addAttribute("formattedTotal", formattedTotal);
+//
+//        return "KhachHang/khachhang-donhang-detail"; // Tên file HTML hiển thị chi tiết hóa đơn
+//    }
 
 }
 

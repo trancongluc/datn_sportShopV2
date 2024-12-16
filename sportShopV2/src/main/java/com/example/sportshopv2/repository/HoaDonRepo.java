@@ -1,6 +1,8 @@
 package com.example.sportshopv2.repository;
 
 import com.example.sportshopv2.model.HoaDon;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,9 +17,8 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
 
     HoaDon findAllById(Integer id);
 
-
     List<HoaDon> findAllByStatusNotOrderByCreateAtDesc(String status);
-
+    Page<HoaDon> findAllByStatusNotOrderByCreateAtDesc(String status, Pageable pageable);
     List<HoaDon> findAllByType(String Type);
 
     List<HoaDon> findAllByCreateAtBetween(LocalDateTime start, LocalDateTime end);
@@ -25,7 +26,7 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
     List<HoaDon> findHoaDonByBillCodeLike(String billCode);
 
     List<HoaDon> findAllByStatusLikeOrderByCreateAtDesc(String status);
-
+    Page<HoaDon> findAllByStatusLikeOrderByCreateAtDesc(String status, Pageable pageable);
     @Query("SELECT h FROM HoaDon h WHERE " +
             "(:userName IS NULL OR h.user_name LIKE %:userName%) AND " +
             "(:Type IS NULL OR h.type = :Type) AND " +

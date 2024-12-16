@@ -23,7 +23,7 @@
             <div class="col-md-6">
                 <p><strong>Ngày đặt:</strong> <span th:text="${hoaDon.createAt}"></span></p>
                 <p><strong>Trạng thái:</strong> <span th:text="${hoaDon.status}"></span></p>
-                <p><strong>Tổng tiền:</strong> <span th:text="${hoaDon.total_money}"></span> VNĐ</p>
+                <p><strong>Tổng tiền:</strong> <span th:text="${formattedTotal}"></span></p> <!-- Hiển thị tổng tiền đã định dạng -->
             </div>
         </div>
         <hr>
@@ -39,18 +39,21 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="detail, stat : ${hoaDon.hoaDonChiTiet}">
-                <td th:text="${stat.count}"></td>
+            <tr th:each="detail, stat : ${hoaDonChiTietList}">
+                <td th:text="${stat.count + 1}"></td>
                 <td th:text="${detail.sanPhamChiTiet.idSanPham.tenSanPham}"></td>
                 <td th:text="${detail.quantity}"></td>
-                <td th:text="${detail.price}"></td>
-                <td th:text="${detail.quantity * detail.price}">
-                </td>
+                <td th:text="${detail.formattedPrice}"></td>
+                <td th:text="${detail.formattedTotal}"></td>
             </tr>
             </tbody>
         </table>
 
     </div>
+
+
+
+
 </main>
 </body>
 </html>
