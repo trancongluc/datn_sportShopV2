@@ -31,7 +31,7 @@
         <h2 class="mb-4"> Chỉnh Sửa Thông Tin Khách Hàng</h2>
         <!-- Hiển thị thông báo -->
 
-        <form  th:action="@{/khach-hang/customer/update/{id}(id=${customer.id})}" method="post" enctype="multipart/form-data"> <!-- Cập nhật action -->
+        <form  th:action="@{/khach-hang/customer/update/{id}(id=${customer.id})}" method="post" enctype="multipart/form-data" onsubmit="return confirmSave()"> <!-- Cập nhật action -->
             <span>
                             <a class="btn btn-success" href="/khach-hang/list">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
@@ -213,6 +213,12 @@
                 event.preventDefault(); // Ngăn chặn submit nếu không hợp lệ
             }
         });
+
+
+        function confirmSave() {
+            var result = confirm("Bạn có muốn cập nhập thông tin không?");
+            return result;  // Nếu người dùng chọn "OK", form sẽ được gửi đi; nếu chọn "Cancel", form sẽ không gửi.
+        }
     </script>
 
 

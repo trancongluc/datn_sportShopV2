@@ -105,9 +105,7 @@
                             <span th:text="${address.phuong}">Phường</span> -
                             <span th:text="${address.line}">Địa chỉ chi tiết</span>
                         </p>
-                        <a href="#"
-                           th:href="@{/khach-hang/customer/delete-address/{customerId}/{addressId}(customerId=${customer.id}, addressId=${address.id})}">
-                            <i class="fas fa-trash-can"></i></a>
+
 
 
                         <a href="#" data-bs-toggle="modal"
@@ -140,7 +138,7 @@
                                 <div class="modal-body">
                                     <form action="#"
                                           th:action="@{/khach-hang/addAddress/{customerId}(customerId=${customer.id})}"
-                                          method="post">
+                                          method="post" onsubmit="return confirmSave1()">
                                         <div class="form-group">
                                             <label for="tinh" class="form-label">Tỉnh</label>
                                             <select class="form-select" id="tinh" name="tinh"
@@ -193,7 +191,7 @@
                                 <div class="modal-body">
                                     <form th:action="@{/khach-hang/customer/update-address/{customerId}(customerId=${customer.id})}"
 
-                                          method="post">
+                                          method="post" onsubmit="return confirmSave()">
                                         <input type="hidden" id="addressId" name="addressId" th:value="${address.id}">
 
                                         <div class="form-group">
@@ -288,7 +286,14 @@
             }
         }
 
-
+        function confirmSave() {
+            var result = confirm("Bạn có muốn cập nhập thông tin không?");
+            return result;  // Nếu người dùng chọn "OK", form sẽ được gửi đi; nếu chọn "Cancel", form sẽ không gửi.
+        }
+        function confirmSave1() {
+            var result = confirm("Bạn có muốn lưu thông tin không?");
+            return result;  // Nếu người dùng chọn "OK", form sẽ được gửi đi; nếu chọn "Cancel", form sẽ không gửi.
+        }
     </script>
 
 

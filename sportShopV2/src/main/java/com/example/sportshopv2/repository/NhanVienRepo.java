@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface NhanVienRepo extends JpaRepository<User, Integer> {
 
-    @Query("SELECT u FROM User u JOIN u.account a LEFT JOIN FETCH u.addresses  WHERE  a.role = 'Employee' AND u.deleted = false")
+    @Query("SELECT u FROM User u JOIN u.account a LEFT JOIN FETCH u.addresses  WHERE  a.role = 'Staff' AND u.deleted = false")
     Page<User> findAllEmp(Pageable pageable);
 
     @Query("SELECT u FROM User u JOIN u.account a LEFT JOIN FETCH u.addresses WHERE a.role = 'Staff' AND " +

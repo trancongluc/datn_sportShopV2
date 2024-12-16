@@ -26,7 +26,7 @@
                 <h1>Quản Lý Khách Hàng</h1>
                 <div class="filter-section">
                     <form th:action="@{/khach-hang/list}" method="get">
-                        <input type="text" name="keyword"  placeholder="Tìm kiếm theo tên, điện thoại và email " >
+                        <input type="text" name="keyword"  placeholder="Tìm kiếm theo tên, điện thoại và email " style="width: 750px">
                         <button style="color: black;background: #00CCFF ;margin-bottom: 5px" type="submit" class="btn btn-primary mr-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                  class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
@@ -160,6 +160,31 @@
                 </tr>
                 </tbody>
             </table>
+                <nav>
+                    <div class="d-flex justify-content-center">
+                        <div class="pagination">
+                            <ul class="pagination">
+                                <!-- Nút trước (Previous) -->
+                                <li th:if="${currentPage > 0}" class="page-item">
+                                    <a th:href="@{/khach-hang/list(page=${currentPage - 1}, size=${size})}" class="page-link">&lt;</a>
+                                </li>
+
+                                <!-- Các số trang -->
+                                <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" class="page-item">
+                                    <a th:href="@{/khach-hang/list(page=${i}, size=${size})}"
+                                       th:text="${i + 1}"
+                                       th:class="${i == currentPage} ? 'page-link active' : 'page-link'"
+                                       class="page-link"></a>
+                                </li>
+
+                                <!-- Nút sau (Next) -->
+                                <li th:if="${currentPage < totalPages - 1}" class="page-item">
+                                    <a th:href="@{/khach-hang/list(page=${currentPage + 1}, size=${size})}" class="page-link">&gt;</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
             </div>
         </div>
 
@@ -168,25 +193,7 @@
 
 
 
-            <nav>
-            <div class="d-flex justify-content-center">
-                <div class="pagination">
-                    <ul class="pagination">
-                        <li th:if="${currentPage > 0}">
-                            <a th:href="@{/khach-hang/list(page=${currentPage - 1}, size=${size})}" class="btn btn-secondary"><</a>
-                        </li>
-                        <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-                            <a th:href="@{/khach-hang/list(page=${i}, size=${size})}"
-                               th:text="${i + 1}"
-                               th:class="${i == currentPage} ? 'btn btn-primary' : 'btn btn-secondary'"></a>
-                        </li>
-                        <li th:if="${currentPage < totalPages - 1}">
-                            <a th:href="@{/khach-hang/list(page=${currentPage + 1}, size=${size})}" class="btn btn-secondary">></a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            </nav>
+
         </div>
         </div>
 

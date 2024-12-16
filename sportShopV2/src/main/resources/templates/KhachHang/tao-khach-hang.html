@@ -33,7 +33,7 @@
     <div class="container">
         <div >
             <h2 class="mb-4">Tạo Khách Hàng</h2>
-            <form  th:action="@{/khach-hang/add-khach-hang}" method="post" enctype="multipart/form-data"> <!-- Cập nhật action -->
+            <form  th:action="@{/khach-hang/add-khach-hang}" method="post" enctype="multipart/form-data" onsubmit="return confirmSave()"> <!-- Cập nhật action -->
                 <span>
                 <a class="btn btn-success" href="/khach-hang/list">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
@@ -337,7 +337,10 @@
         }
 
 
-
+        function confirmSave() {
+            var result = confirm("Bạn có muốn lưu thông tin không?");
+            return result;  // Nếu người dùng chọn "OK", form sẽ được gửi đi; nếu chọn "Cancel", form sẽ không gửi.
+        }
 
     </script>
 
