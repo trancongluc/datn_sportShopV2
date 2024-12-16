@@ -455,7 +455,7 @@ public class DatHangController {
                               @RequestParam("nguoiDung.phone_number") String sdt,
                               @RequestParam(value = "nguoiDung.full_name", required = false) String hoTen,
                               @RequestParam("soNha") String soNha,
-                              @RequestParam("selectedProducts") List<Long> selectedProducts,
+                              @RequestParam(value = "selectedProducts",required = false) List<Long> selectedProducts,
                               @RequestParam(value = "moneyShip", defaultValue = "0.0") String moneyShip,
                               @RequestParam(value = "voucher", defaultValue = "0.0") String moneyVoucher,
                               @RequestParam(value = "soLuongSanPham") Integer soLuong, @RequestParam("tienHangBanDau") String tienHangBanDau,
@@ -469,8 +469,9 @@ public class DatHangController {
             return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
         }
         System.out.println(orderTotal);
-        if (orderTotal == null || orderTotal.equals("0VND")) {
-            redirectAttributes.addFlashAttribute("error", "Vui lòng chọn sản phẩm để có thể mua hàng");
+        if (orderTotal == null || orderTotal.equals("0VND") || tienHangBanDau.equals("0VND") ||
+                tienHangBanDau == null || selectedProducts.isEmpty() || selectedProducts == null) {
+            redirectAttributes.addFlashAttribute("error", "Vui lòng chọn sản phẩm để có thể mua hàng!");
             return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
         }
         // Lấy danh sách sản phẩm từ repository

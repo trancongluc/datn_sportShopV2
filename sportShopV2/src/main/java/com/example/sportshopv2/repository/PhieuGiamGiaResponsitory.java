@@ -10,8 +10,8 @@ import java.util.List;
 
 public interface PhieuGiamGiaResponsitory extends JpaRepository<PhieuGiamGia, Integer> {
     boolean existsByVoucherCode(String voucherCode);
-    List<PhieuGiamGia> findByMinimumValueLessThan(Integer discountValue);
 
+    List<PhieuGiamGia> findByMinimumValueLessThan(Integer discountValue);
 
     @Query("SELECT v FROM PhieuGiamGia v WHERE v.status LIKE :status AND v.minimumValue <= :minimumValue")
     List<PhieuGiamGia> findVoucherByStatusAndMinimumValue(@Param("status") String status, @Param("minimumValue") Integer minimumValue);

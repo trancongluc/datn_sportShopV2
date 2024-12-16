@@ -145,3 +145,50 @@ async function tinhPhiShipGHTK(tongTienTinhShip) {
         return null;
     }
 }
+
+function selectAddress(id) {
+    console.log("Fetching address with ID:", id);
+    fetch(`/mua-sam-SportShopV2/address/details/${id}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch address details");
+            }
+            return response.json(); // Ensure the response is valid JSON
+        })
+        .then(data => {
+            // Cập nhật giá trị và chọn đúng option cho "Tỉnh"
+            const tinhSelect = document.getElementById('tinh');
+            for (let option of tinhSelect.options) {
+                if (option.text === data.tinh) {
+                    option.selected = true;
+                    break;
+                }
+            }
+            $("#tinh").change(); // Kích hoạt sự kiện "change"
+
+            // Cập nhật giá trị và chọn đúng option cho "Quận"
+            const quanSelect = document.getElementById('quan');
+            for (let option of quanSelect.options) {
+                if (option.text === data.quan) {
+                    option.selected = true;
+                    break;
+                }
+            }
+            $("#quan").change(); // Kích hoạt sự kiện "change"
+
+            // Cập nhật giá trị và chọn đúng option cho "Phường"
+            const phuongSelect = document.getElementById('phuong');
+            for (let option of phuongSelect.options) {
+                if (option.text === data.phuong) {
+                    option.selected = true;
+                    break;
+                }
+            }
+            $("#phuong").change(); // Kích hoạt sự kiện "change"
+
+            console.log("Selected Address:", data.tinh, data.quan, data.phuong);
+        })
+        .catch(error => {
+            console.error("Error fetching address:", error);
+        });
+}
