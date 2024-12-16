@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface AddressRepository extends JpaRepository<Address, Integer> {
-
+    List<Address> findByKhachHangId(Integer customerId);
 }

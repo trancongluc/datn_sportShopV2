@@ -6,6 +6,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AddressService {
     @Autowired
@@ -27,5 +29,9 @@ public class AddressService {
 
     public Address getAddressById(Integer addressId) {
         return addressRepository.findById(addressId).orElse(null);
+    }
+
+    public List<Address> getAddressesByCustomerId(Integer customerId) {
+        return addressRepository.findByKhachHangId(customerId);
     }
 }

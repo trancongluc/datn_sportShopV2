@@ -33,7 +33,6 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Controller
@@ -77,14 +76,12 @@ public class DatHangController {
     private PhieuGiamGiaKhachHangRepository phieuGiamGiaKhachHangRepository;
     @Autowired
     private PhieuGiamGiaServiceImpl phieuGiamGiaService;
-
     @Autowired
     private HoaDonServiceImp hoaDonServiceImp;
     @Autowired
     private AnhService anhService;
     private Integer idTK = null;
     private List<Long> dsSPCT = null;
-    private Integer idVC = null;
 
     @Autowired
     private ChatService chatService;
@@ -108,9 +105,7 @@ public class DatHangController {
     private HoaDonService hdService;
 
     String username;
-    int flag = 0;
-    chatBox newChatBox = new chatBox();
-    List<message> messages;
+    KichThuoc size;
 
     @RequestMapping("/trang-chu")
     public String trangChu(Model model) {
@@ -310,40 +305,16 @@ public class DatHangController {
 
     @RequestMapping("/mua-ngay")
     public String muaNgay(Model model, @RequestParam("id") Integer id) {
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-        symbols.setDecimalSeparator(',');
-        symbols.setGroupingSeparator('.');
-        DecimalFormat formatter = new DecimalFormat("#,###", symbols);
         SanPham listSP = sanPhamService.findAllSanPhamById(id);
         SanPhamChiTietDTO listProductDetail = sanPhamChiTietService.getByID(id);
         List<AnhSanPham> anhSanPhams = listProductDetail.getAnhSanPham();
-
-        // Lấy danh sách size và màu liên quan
         List<SanPhamChiTietDTO> listSizeAndColor = sanPhamChiTietService
                 .findAllSPCTByIdSP(listProductDetail.getSanPham().getId());
-
-        // Lọc danh sách kích thước duy nhất
-        List<KichThuoc> uniqueSizes = listSizeAndColor.stream()
-                .map(SanPhamChiTietDTO::getKichThuoc)
-                .filter(Objects::nonNull)
-                .distinct() // Loại bỏ phần tử trùng lặp
-                .collect(Collectors.toList());
-
-        // Lọc danh sách màu sắc duy nhất
-        List<MauSac> uniqueColors = listSizeAndColor.stream()
-                .map(SanPhamChiTietDTO::getMauSac)
-                .filter(Objects::nonNull)
-                .distinct() // Loại bỏ phần tử trùng lặp
-                .collect(Collectors.toList());
-
-        model.addAttribute("listSizes", uniqueSizes);
-        model.addAttribute("listColors", uniqueColors);
+        model.addAttribute("listSizeAndColor", listSizeAndColor);
         model.addAttribute("listProduct", listProductDetail);
         model.addAttribute("listImage", anhSanPhams);
-        model.addAttribute("price", formatter.format(listProductDetail.getGia()) + "VND"); // Định dạng số tiền)
         return "MuaHang/mua-ngay";
     }
-
 
     @PostMapping("/update-quantity")
     public ResponseEntity<?> updateQuantity(@RequestBody Map<String, Object> payload, RedirectAttributes redirectAttributes) {
@@ -381,43 +352,6 @@ public class DatHangController {
                     .body(Map.of("error", "Invalid data format for id or soLuong."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Sản phẩm hiện đã hết hàng."));
-        }
-    }
-
-    @PostMapping("/product-quantity")
-    public ResponseEntity<?> productQuantity(@RequestBody Map<String, Object> payload, RedirectAttributes redirectAttributes) {
-        try {
-            // Kiểm tra giá trị đầu vào
-            if (payload.get("id") == null || payload.get("soLuong") == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Map.of("error", "Missing required fields: id or soLuong"));
-            }
-
-            Integer soLuong = Integer.parseInt(payload.get("soLuong").toString());
-            Integer idSPCT = Integer.parseInt(payload.get("idSPCT").toString());
-
-            SanPhamChiTietDTO sanPham = sanPhamChiTietService.getByID(idSPCT);
-
-            // Kiểm tra số lượng sản phẩm
-            if (sanPham.getSoLuong() < soLuong) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(Map.of("error", "Số lượng không hợp lệ!!!"));
-            }
-
-            // Xử lý logic nếu dữ liệu hợp lệ
-            return ResponseEntity.ok(Map.of(
-                    "message", "Số lượng hợp lệ",
-                    "idSPCT", idSPCT,
-                    "soLuong", soLuong
-            ));
-        } catch (NumberFormatException e) {
-            // Trường hợp lỗi format
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "Invalid data format for id or soLuong."));
-        } catch (Exception e) {
-            // Bắt lỗi chung
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "An unexpected error occurred."));
         }
     }
@@ -454,46 +388,15 @@ public class DatHangController {
         if (hoTen == null || hoTen.isEmpty()) {
             hoTen = "Unknown Customer";  // Set a default value if not provided
         }
-        List<GioHangChiTiet> gioHangChiTiets = gioHangChiTietRepo.findAllBySanPhamChiTiet_IdIn(selectedProducts);
         if (paystatus == null || paystatus.isEmpty()) {
             redirectAttributes.addFlashAttribute("message", "Phương thức thanh toán không được để trống!");
             return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
         }
         System.out.println(orderTotal);
         if (orderTotal == null || orderTotal.equals("0VND")) {
-            redirectAttributes.addFlashAttribute("error", "Vui lòng chọn sản phẩm để có thể mua hàng");
+            redirectAttributes.addFlashAttribute("message", "Vui lòng chọn sản phẩm để có thể mua hàng");
             return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
         }
-        // Lấy danh sách sản phẩm từ repository
-        List<SPCT> spctList = sanPhamChiTietRepo.findByIdIn(selectedProducts);
-
-        List<String> outOfStockProducts = new ArrayList<>();
-
-        for (SPCT spct : spctList) {
-            if (spct.getSoLuong() <= 0) {
-                // Thêm tên sản phẩm hết hàng vào danh sách
-                outOfStockProducts.add(spct.getIdSanPham().getTenSanPham());
-                // Xóa sản phẩm khỏi repository
-                spct.setTrangThai("Không hoạt động");
-                spct.setDeleted(true);
-
-                sanPhamChiTietRepo.save(spct);
-            }
-        }
-
-        if (!outOfStockProducts.isEmpty()) {
-            // Gộp tên sản phẩm thành một chuỗi thông báo
-            String message = "Các sản phẩm sau đã hết hàng, vui lòng chọn sản phẩm khác: "
-                    + String.join(", ", outOfStockProducts);
-            // Thêm thông báo vào redirectAttributes
-            redirectAttributes.addFlashAttribute("error", message);
-            for (GioHangChiTiet gioHangChiTiet : gioHangChiTiets
-            ) {
-                gioHangChiTietRepo.delete(gioHangChiTiet);
-            }
-            return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
-        }
-
         Float ship = 0.0f;
         Float voucher = 0.0f;
         TaiKhoan tk = new TaiKhoan();
@@ -510,7 +413,6 @@ public class DatHangController {
         hoaDon.setPhone_number(sdt);
         hoaDon.setType("Chuyển phát");
         hoaDon.setUser_name(hoTen);
-        hoaDon.setNote(orderInfo);
         hoaDon.setEmail(email);
         hoaDon.setCreateAt(LocalDateTime.now());
         hoaDon.setCreate_by(taiKhoan.getUsername());  // Assuming the logged-in user is set correctly
@@ -530,62 +432,29 @@ public class DatHangController {
         hoaDon.setAddress(soNha + " " + phuong + " " + quan + " " + tinh);  // Add space between components
 
         hoaDonRepo.save(hoaDon);
-        if (idVC != null) {
-            PhieuGiamGia phieuGiamGia = phieuGiamGiaService.findByID(idVC);
-            if (phieuGiamGia.getQuantity() >= 1) {
-                phieuGiamGia.setQuantity(phieuGiamGia.getQuantity() - 1);
-                phieuGiamGiaService.save(phieuGiamGia);
-                if (phieuGiamGia.getQuantity() == 0) {
-                    PhieuGiamGia hetPhieuGiamGia = phieuGiamGiaService.findByID(idVC);
-                    hetPhieuGiamGia.setDeleted(true);
-                    phieuGiamGiaService.save(hetPhieuGiamGia);
-                }
-            }
-        }
+
         // Assuming you have a list of product details (dsSPCT) to create bill details
-
-
+        List<SPCT> spctList = sanPhamChiTietRepo.findByIdIn(selectedProducts);  // Ensure dsSPCT is populated
+        List<GioHangChiTiet> gioHangChiTiets = gioHangChiTietRepo.findAllBySanPhamChiTiet_IdIn(selectedProducts);
+        for (GioHangChiTiet gioHangChiTiet : gioHangChiTiets) {
+            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietService.findSPCTById(gioHangChiTiet.getSanPhamChiTiet().getId());
+            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - gioHangChiTiet.getSoLuong());
+            sanPhamChiTietService.updateSoLuongSanPhamChiTiet(sanPhamChiTiet.getId(), sanPhamChiTiet);
+            gioHangChiTietRepo.delete(gioHangChiTiet);
+        }
         // Create HoaDonChiTiet for each SanPhamChiTiet and associate it with the HoaDon
         for (SPCT sanPhamChiTiet : spctList) {
             HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
-            GioHang gioHang = gioHangRepo.findByIdTaiKhoan_Id(idTK);
-            if (gioHang == null) {
-                throw new IllegalArgumentException("Giỏ hàng không tồn tại hoặc chưa được tạo cho tài khoản ID: " + idTK);
-            }
-
-            if (sanPhamChiTiet == null) {
-                throw new IllegalArgumentException("Sản phẩm chi tiết không tồn tại hoặc không hợp lệ: " + sanPhamChiTiet.getId());
-            }
-            GioHangChiTiet gioHangChiTiet = gioHangChiTietRepo.findByGioHang_IdAndSanPhamChiTiet_Id(gioHang.getId(), sanPhamChiTiet.getId());
-            if (gioHangChiTiet == null) {
-                throw new IllegalArgumentException("Không tìm thấy chi tiết giỏ hàng cho sản phẩm ID: " + gioHangChiTiet.getId());
-            }
-            System.out.println(gioHangChiTiet.getId());
             hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);  // Set the product detail
             hoaDonChiTiet.setHoaDon(hoaDon);  // Associate the bill with the bill detail
-            hoaDonChiTiet.setQuantity(gioHangChiTiet.getSoLuong());
+            hoaDonChiTiet.setQuantity(soLuong);
             hoaDonChiTiet.setPrice(Float.valueOf(orderTotalStr));
-            hoaDonChiTiet.setCreate_at(LocalDateTime.now());
             hoaDonChiTietRepo.save(hoaDonChiTiet);  // Save the bill detail
         }
-        for (GioHangChiTiet gioHangChiTiet : gioHangChiTiets) {
-            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietService.findSPCTById(gioHangChiTiet.getSanPhamChiTiet().getId());
 
-            // Cập nhật số lượng
-            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - gioHangChiTiet.getSoLuong());
 
-            // Kiểm tra nếu số lượng = 0, cập nhật trạng thái deleted
-            if (sanPhamChiTiet.getSoLuong() == 0) {
-                sanPhamChiTiet.setDeleted(true);  // Giả sử bạn có thuộc tính 'deleted' trong SanPhamChiTiet
-            }
-
-            // Cập nhật lại thông tin sản phẩm chi tiết
-            sanPhamChiTietService.updateSoLuongSanPhamChiTiet(sanPhamChiTiet.getId(), sanPhamChiTiet);
-
-            // Xóa Giỏ hàng chi tiết nếu không cần thiết nữa
-            gioHangChiTietRepo.delete(gioHangChiTiet);
-        }
-
+//        orderInfo = "hello";
+        System.out.println(orderTotalStr);
         if (paystatus.equals("Thanh toán khi nhận hàng")) {
             redirectAttributes.addFlashAttribute("message", "Đặt hàng thành công!");
             return "redirect:/mua-sam-SportShopV2/gio-hang-khach-hang?id=" + idTK;
@@ -599,9 +468,8 @@ public class DatHangController {
 
     @GetMapping("/voucher/details/{id}")
     @ResponseBody
-    public PhieuGiamGia getVoucherDetails(@PathVariable Integer id) {
-        PhieuGiamGia voucher = phieuGiamGiaService.findByID(id);
-        idVC = id;
+    public PhieuGiamGiaKhachHang getVoucherDetails(@PathVariable Integer id) {
+        PhieuGiamGiaKhachHang voucher = phieuGiamGiaKhachHangRepository.findByIdPhieuGiamGia_Id(id);
         if (voucher == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Voucher không tồn tại");
         }
@@ -614,11 +482,15 @@ public class DatHangController {
 
         GioHangChiTiet productInCart = gioHangChiTietRepo.findById(id).orElse(null);
 
+        // Kiểm tra nếu không tìm thấy sản phẩm
         if (productInCart == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sản phẩm không tồn tại trong giỏ hàng");
         }
 
+        // Xóa sản phẩm
         gioHangChiTietRepo.delete(productInCart);
+
+        // Trả về đối tượng đã bị xóa
         return productInCart;
     }
 
@@ -626,7 +498,6 @@ public class DatHangController {
     @ResponseBody
     public ResponseEntity<List<PhieuGiamGia>> getVoucher(@RequestBody Map<String, String> request) {
         String total = request.get("total");
-        System.out.println(total);
         Integer vc = Integer.valueOf(total.replaceAll("[^\\d]", ""));
         List<PhieuGiamGia> vouchers = phieuGiamGiaService.getVoucherByGiaTriDonHang(vc);
 
@@ -693,22 +564,6 @@ public class DatHangController {
         return chatService.getMessagesByChatBoxId(chatBoxId);
     }
 
-    @GetMapping("/product-detail")
-    @ResponseBody
-    public ResponseEntity<SanPhamChiTietDTO> getProductDetail(
-            @RequestParam("id") Integer id,
-            @RequestParam("idcolor") Integer idcolor,
-            @RequestParam("idsize") Integer idsize) {
-        SanPhamChiTietDTO productDetail = sanPhamChiTietService.getSPCTByIDSPIDSIZEIDCOLOR(id, idsize, idcolor);
-        System.out.println(productDetail.getId());
-        if (productDetail != null) {
-            return ResponseEntity.ok(productDetail);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-    }
-
-
 
     //TT khach hang
     @GetMapping("/accountDetail")
@@ -724,6 +579,21 @@ public class DatHangController {
 
         List<HoaDon> hoaDon = hdService.getBillsByCustomerId(account_Id);
         model.addAttribute("hoaDon", hoaDon);
+
+        Map<Integer, String> anhSPMap = new HashMap<>();
+        for (HoaDon hDon : hoaDon) {
+            for (HoaDonChiTiet hdct : hDon.getBillDetails()) {
+                AnhSanPham anhSanPham = anhService.anhSanPhamByIDSPCT(hdct.getSanPhamChiTiet().getId());
+                if (anhSanPham != null) {
+                    anhSPMap.put(hdct.getSanPhamChiTiet().getId(), anhSanPham.getTenAnh());
+                } else {
+                    anhSPMap.put(hdct.getSanPhamChiTiet().getId(), "default.jpg"); // ảnh mặc định
+                }
+            }
+        }
+        model.addAttribute("anhSPMap", anhSPMap);
+        model.addAttribute("kt", size);
+
 
         // Kiểm tra giá trị customer và id của nó trước khi truyền vào model
         System.out.println("Customer: " + customer); // In ra để kiểm tra customer có giá trị không
@@ -906,4 +776,3 @@ public class DatHangController {
         return "redirect:/mua-sam-SportShopV2/accountDetail"; // Redirect to the display page after deletion
     }
 }
-

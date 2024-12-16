@@ -33,6 +33,9 @@ public class BanHangTaiQuayController {
     private final NguoiDungRepo ndRepo;
     private final PhieuGiamGiaService voucherService;
     private final PhieuGiamGiaChiTietResponsitory voucherDetailService;
+
+    private final AddressService addressService;
+
     @GetMapping("")
     public String banHangTaiQuay(Model model) {
         List<SanPhamChiTietDTO> listSPCTDto = spctService.getAllSPCT();
@@ -121,4 +124,11 @@ public class BanHangTaiQuayController {
         return tkService.createTK(taiKhoan);
     }
 
+
+
+    @GetMapping("/{customerId}")
+    public ResponseEntity<List<Address>> getAddressesByCustomerId(@PathVariable Integer customerId) {
+        List<Address> addresses = addressService.getAddressesByCustomerId(customerId);
+        return ResponseEntity.ok(addresses);
+    }
 }
