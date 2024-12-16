@@ -75,7 +75,7 @@
             <ul class="nav nav-tabs">
                 <li class="nav-item">
                     <a class="nav-link"
-                       th:href="@{~/bill/view}"
+                       th:href="@{~/bill/view(tab='all', page=0, size=5)}"
                        th:classappend="${tab == 'all'} ? 'active' : ''">Tất cả
                     </a>
                 </li>
@@ -164,7 +164,7 @@
                         <td th:text="${hd.type}"></td>
                         <td th:text="${hd.createAt}"></td>
                         <td th:text="${tienGiam[hd.id]}"></td>
-                        <td th:text="${tongTienHoaDon[hd.id]}"></td>
+                        <td id="tongTien" th:text="${hd.total_money}"></td>
                         <td>
                             <a th:href="@{~/bill/detail(id=${hd.id})}">
                                 <button class="btn btn-warning"><i class="fas fa-eye"></i></button>
@@ -172,6 +172,52 @@
                         </td>
                     </tbody>
                 </table>
+<!--                <nav aria-label="Page navigation example">-->
+<!--                    <ul class="pagination justify-content-center">-->
+<!--                        &lt;!&ndash; Nút 'Trước' &ndash;&gt;-->
+<!--                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">-->
+<!--                            <a class="page-link" th:href="@{/bill/tab(status=${tab}, page=${currentPage - 1}, size=${5})}" aria-label="Previous">-->
+<!--                                <span aria-hidden="true">&laquo;</span>-->
+<!--                            </a>-->
+<!--                        </li>-->
+
+<!--                        &lt;!&ndash; Các số trang &ndash;&gt;-->
+<!--                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">-->
+<!--                            <a class="page-link" th:href="@{/bill/tab(status=${tab}, page=${i}, size=${5})}" th:text="${i + 1}"></a>-->
+<!--                        </li>-->
+
+<!--                        &lt;!&ndash; Nút 'Sau' &ndash;&gt;-->
+<!--                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">-->
+<!--                            <a class="page-link" th:href="@{/bill/tab(status=${tab}, page=${currentPage + 1}, size=${5})}" aria-label="Next">-->
+<!--                                <span aria-hidden="true">&raquo;</span>-->
+<!--                            </a>-->
+<!--                        </li>-->
+<!--                    </ul>-->
+<!--                </nav>-->
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        <!-- Nút 'Trước' -->
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/bill/view(tab=${tab}, page=${currentPage - 1}, size=${5})}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+
+                        <!-- Các số trang -->
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/bill/view(tab=${tab}, page=${i}, size=${5})}" th:text="${i + 1}"></a>
+                        </li>
+
+                        <!-- Nút 'Sau' -->
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/bill/view(tab=${tab}, page=${currentPage + 1}, size=${5})}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+
             </div>
 
             <div id="pending" class="tab-content">
@@ -206,6 +252,7 @@
                         </td>
                     </tbody>
                 </table>
+
             </div>
 
             <div id="shipping" class="tab-content">
@@ -402,7 +449,12 @@
                 event.currentTarget.classList.add('active');
             }
         }
-
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
+        }
+        document.querySelectorAll('#tongTien').forEach(function(element) {
+            element.innerText = formatCurrency(parseFloat(element.innerText));
+        });
     </script>
 </main>
 </body>

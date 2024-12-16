@@ -305,60 +305,60 @@
                     </div>
 
 
-
-                <!-- Form thông tin người dùng -->
-                <div id="profile-form" style="display:none; margin-top: 15px">
-                    <h3>Sửa Hồ Sơ</h3>
-                    <div class="col-md-8">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="hoTen" class="form-label">Họ và tên</label>
-                                <input type="hoTen" class="form-control" id="hoTen" name="fullName"
-                                       th:value="${customer.fullName}" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="ngaySinh" class="form-label">Ngày sinh</label>
-                                <input type="date" class="form-control" id="ngaySinh" name="date"
-                                       th:value="${customer.date}" required max="" onchange="validateBirthDate()">
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="email" class="form-label">E-mail</label>
-                                <input type="email" class="form-control" id="email" name="email"
-                                       th:value="${customer.email}" required>
-                                <div th:if="${emailError != null}" class="text-danger">
-                                    <span th:text="${emailError}"></span>
+                    <!-- Form thông tin người dùng -->
+                    <div id="profile-form" style="display:none; margin-top: 15px">
+                        <h3>Sửa Hồ Sơ</h3>
+                        <div class="col-md-8">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="hoTen" class="form-label">Họ và tên</label>
+                                    <input type="hoTen" class="form-control" id="hoTen" name="fullName"
+                                           th:value="${customer.fullName}" required>
                                 </div>
-
+                                <div class="col-md-6">
+                                    <label for="ngaySinh" class="form-label">Ngày sinh</label>
+                                    <input type="date" class="form-control" id="ngaySinh" name="date"
+                                           th:value="${customer.date}" required max="" onchange="validateBirthDate()">
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label for="gioiTinh" class="form-label">Giới tính</label>
-                                <select class="form-select" id="gioiTinh" name="gender" required>
-                                    <option th:value="${customer.gender}" th:text="${customer.gender}" hidden>Chọn giới
-                                        tính
-                                    </option>
-                                    <option value="Nam">Nam</option>
-                                    <option value="Nữ">Nữ</option>
-                                    <option value="Khác">Khác</option>
-                                </select>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">E-mail</label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                           th:value="${customer.email}" required>
+                                    <div th:if="${emailError != null}" class="text-danger">
+                                        <span th:text="${emailError}"></span>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="gioiTinh" class="form-label">Giới tính</label>
+                                    <select class="form-select" id="gioiTinh" name="gender" required>
+                                        <option th:value="${customer.gender}" th:text="${customer.gender}" hidden>Chọn
+                                            giới
+                                            tính
+                                        </option>
+                                        <option value="Nam">Nam</option>
+                                        <option value="Nữ">Nữ</option>
+                                        <option value="Khác">Khác</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="soDienThoai" class="form-label">Số điện thoại</label>
+                                <input type="text" class="form-control" id="soDienThoai" name="phoneNumber"
+                                       th:value="${customer.phoneNumber}" required
+                                       pattern="^[0-9]{10,15}$"
+                                       title="Số điện thoại phải có từ 10 đến 15 chữ số">
+
+                                <div th:if="${phoneError != null}" class="text-danger">
+                                    <span th:text="${phoneError}"></span>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="mb-3">
-                            <label for="soDienThoai" class="form-label">Số điện thoại</label>
-                            <input type="text" class="form-control" id="soDienThoai" name="phoneNumber"
-                                   th:value="${customer.phoneNumber}" required
-                                   pattern="^[0-9]{10,15}$"
-                                   title="Số điện thoại phải có từ 10 đến 15 chữ số">
-
-                            <div th:if="${phoneError != null}" class="text-danger">
-                                <span th:text="${phoneError}"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Cập Nhật</button>
+                        <button type="submit" class="btn btn-primary">Cập Nhật</button>
 
     </form>
     <hr>

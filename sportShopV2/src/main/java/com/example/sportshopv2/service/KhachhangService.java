@@ -88,7 +88,6 @@ public class KhachhangService {
         khachHang.setAccount(account); // Gán tài khoản cho user
 
 
-
         // Lưu khách hàng cùng với địa chỉ
         return userRepository.save(khachHang);
 

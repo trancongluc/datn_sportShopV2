@@ -19,6 +19,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -77,12 +78,23 @@ public class HoaDonController {
     }
 
     @RequestMapping("/view")
-    public String view(Model model) {
-        List<HoaDon> hdList = hdrepo.findAllByStatusNotOrderByCreateAtDesc("Hóa đơn chờ");
+    public String view(Model model,
+
+                       @RequestParam(value = "page", defaultValue = "0") int page,
+                       @RequestParam(value = "size", defaultValue = "5") int size,
+                       @RequestParam(value = "tab", defaultValue = "all") String tab) {
+//        Page<HoaDon> hdList = hdService.getHoaDonsByStatusNot("Hóa đơn chờ", page, size);
+        Page<HoaDon> hdList;
+        if ("all".equals(tab)) {
+            hdList = hdService.getHoaDonsByStatusNot("Hóa đơn chờ", page, size);
+        } else {
+            hdList = hdService.getHoaDonsByStatus(tab, page, size);
+        }
+
         Map<Integer, String> tongTienHoaDon = hdList.stream().collect(Collectors.toMap(
                 HoaDon::getId, // Key là ID của hóa đơn
                 hd -> {
-                    // Tính tổng tiền của hóa đơn
+                       // Tính tổng tiền của hóa đơn
                     BigDecimal total = hdctrepo.findAllByHoaDon_Id(hd.getId()).stream()
                             .map(hdct -> new BigDecimal(hdct.getHoaDon().getTotal_money()))
                             .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -104,10 +116,13 @@ public class HoaDonController {
         ));
         tongTienHD = tongTienHoaDon;
         tongTienGiamGia = tongTienGiam;
-        model.addAttribute("hdList", hdList);
+        model.addAttribute("hdList", hdList.getContent());
         model.addAttribute("tongTienHoaDon", tongTienHoaDon);
         model.addAttribute("tienGiam", tongTienGiam);
-        model.addAttribute("tab", "all");
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", hdList.getTotalPages());
+        model.addAttribute("tab", tab);
+//        model.addAttribute("tab", "all");
         model.addAttribute("countChoXacNhan", hdService.countByStatus("Chờ xác nhận"));
         model.addAttribute("countDaXacNhan", hdService.countByStatus("Đã xác nhận"));
         model.addAttribute("countChoVanChuyen", hdService.countByStatus("Chờ vận chuyển"));
@@ -119,9 +134,14 @@ public class HoaDonController {
     }
 
     @GetMapping("/tab")
-    public String tab(Model model, @RequestParam(value = "status", defaultValue = "defaultStatus") String status) {
-        List<HoaDon> hdctList = hdrepo.findAllByStatusLikeOrderByCreateAtDesc(status);
-        model.addAttribute("hdList", hdctList);
+    public String tab(Model model, @RequestParam(value = "status", defaultValue = "defaultStatus") String status,
+                      @RequestParam(value = "page", defaultValue = "0") int page,
+                      @RequestParam(value = "size", defaultValue = "5") int size)  {
+
+        Page<HoaDon> hdctList = hdService.getHoaDonsByStatus(status, page, size);
+        model.addAttribute("hdList", hdctList.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", hdctList.getTotalPages());
         model.addAttribute("tab", status);
         model.addAttribute("tongTienHoaDon", tongTienHD);
         model.addAttribute("tienGiam", tongTienGiamGia);

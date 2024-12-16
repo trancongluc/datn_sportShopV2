@@ -446,7 +446,7 @@
                 <td><input type="number" style="width: 50px;" th:value="${spct.soLuong}" id="soLuong" min="0" oninput="this.value = this.value < 0 ? 0 : this.value" ></td>
                 <td>
                     <input type="text" style="width: 180px;" id="gia" th:value="${spct.gia}" class="price"
-                           oninput="this.value = validatePriceInput(this.value)">
+                           oninput="this.value = validatePriceInput(this.value)" readonly>
 
                 </td>
                 <td class="action-buttons">

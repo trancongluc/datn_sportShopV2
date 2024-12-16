@@ -29,7 +29,6 @@ public class HoaDonServiceImp {
             hoaDon.setStatus(updatedHoaDon.getStatus());
             hoaDon.setNote(updatedHoaDon.getNote());
             hoaDon.setCreateAt(LocalDateTime.now());
-            hoaDon.setTotal_money(updatedHoaDon.getTotal_money());
             // Cập nhật metadata
             hoaDon.setUpdateAt(LocalDateTime.now());
             hoaDon.setUpdate_by("system"); // hoặc từ tài khoản hiện tại

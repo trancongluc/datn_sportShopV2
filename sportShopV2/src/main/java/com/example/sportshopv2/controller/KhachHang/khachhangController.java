@@ -79,21 +79,8 @@ public class khachhangController {
 
 
     @GetMapping("/add")
-    public String addCustomer(Model model, String matKhau) {
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
-        int length = 10;
+    public String addCustomer(Model model) {
 
-        Random rand = new Random();
-
-        for (int i = 0; i < length; i++) {
-            int index = rand.nextInt(characters.length());
-            char randomChar = characters.charAt(index);
-            password += randomChar;
-        }
-        sendPassword = password;
-        PasswordEncoder encoder = new BCryptPasswordEncoder();
-        matKhau = ("{bcrypt}" + encoder.encode(password));
-        model.addAttribute("pass", matKhau);
 
         model.addAttribute("user", new User());
         return "KhachHang/tao-khach-hang";

@@ -17,7 +17,7 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
 
     HoaDon findAllById(Integer id);
 
-    List<HoaDon> findAllByStatusNotOrderByCreateAtDesc(String status);
+//    List<HoaDon> findAllByStatusNotOrderByCreateAtDesc(String status);
     Page<HoaDon> findAllByStatusNotOrderByCreateAtDesc(String status, Pageable pageable);
     List<HoaDon> findAllByType(String Type);
 
@@ -25,7 +25,7 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
 
     List<HoaDon> findHoaDonByBillCodeLike(String billCode);
 
-    List<HoaDon> findAllByStatusLikeOrderByCreateAtDesc(String status);
+//    List<HoaDon> findAllByStatusLikeOrderByCreateAtDesc(String status);
     Page<HoaDon> findAllByStatusLikeOrderByCreateAtDesc(String status, Pageable pageable);
     @Query("SELECT h FROM HoaDon h WHERE " +
             "(:userName IS NULL OR h.user_name LIKE %:userName%) AND " +
