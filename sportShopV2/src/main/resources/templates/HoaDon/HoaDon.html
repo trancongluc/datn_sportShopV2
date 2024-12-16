@@ -163,7 +163,7 @@
                         <td th:text="${hd.getId_staff().getUsername()}"></td>
                         <td th:text="${hd.type}"></td>
                         <td th:text="${hd.createAt}"></td>
-                        <td th:text="${tienGiam[hd.id]}"></td>
+                        <td id="tienGiam" th:text="${hd.money_reduced}"></td>
                         <td id="tongTien" th:text="${hd.total_money}"></td>
                         <td>
                             <a th:href="@{~/bill/detail(id=${hd.id})}">
@@ -452,7 +452,7 @@
         function formatCurrency(amount) {
             return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
         }
-        document.querySelectorAll('#tongTien').forEach(function(element) {
+        document.querySelectorAll('#tongTien,#tienGiam').forEach(function(element) {
             element.innerText = formatCurrency(parseFloat(element.innerText));
         });
     </script>

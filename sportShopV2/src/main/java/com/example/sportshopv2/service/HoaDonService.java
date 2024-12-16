@@ -47,7 +47,20 @@ public class HoaDonService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cập nhật hóa đơn không thành công", e);
         }
     }
-
+    public HoaDon updateHoaDonHoanTra(Integer idHD, HoaDon hoaDon) {
+        try {
+            if (!hdRepo.existsById(idHD)) {
+                throw new EntityNotFoundException("Hóa đơn không tồn tại với ID: " + idHD);
+            }
+            hoaDon.setId(idHD);
+            hoaDon.setUpdateAt(LocalDateTime.now());
+            return hdRepo.save(hoaDon);
+        } catch (Exception e) {
+            // Log lỗi chi tiết
+            System.out.println(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cập nhật hóa đơn không thành công", e);
+        }
+    }
 
     public HoaDon hoaDonById(Integer idHD) {
 

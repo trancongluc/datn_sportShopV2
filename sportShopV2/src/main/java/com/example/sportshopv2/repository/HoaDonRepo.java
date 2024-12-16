@@ -53,7 +53,7 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
             "JOIN HoaDonChiTiet bd on bd.hoaDon.id = b.id " +
             "JOIN SanPhamChiTiet pd on pd.id = bd.sanPhamChiTiet.id " +
             "JOIN MauSac c on c.id=pd.idMauSac " +
-            "WHERE b.billCode = :tenHoaDon")
+            "WHERE b.billCode = :tenHoaDon and b.status = 'Hoàn thành'")
     HoaDon findBillDetailByBillCode(@Param("tenHoaDon") String tenHoaDon);
 
     @Query("SELECT SUM(bd.quantity) AS totalQuantity " +
