@@ -147,8 +147,7 @@ public class DatHangController {
                 .map(anh -> anh.getTenAnh() != null ? "/images/" + anh.getTenAnh() : "/images/giayMau.png")
                 .collect(Collectors.toList());
 
-
-        // Lấy accountId từ UserService
+// Lấy accountId từ UserService
         int accountId = chatService.getAccountIdFromUsername(username);
         int getName = chatService.getNameFromIDUser(username);
         Optional<NguoiDung> name = chatService.getName(getName);
@@ -158,7 +157,8 @@ public class DatHangController {
         // Kiểm tra xem accountId đã có chatBox hay chưa
         List<message> message = chatService.getMesByAccountId(accountId);
 
-        if (message.isEmpty()) {
+// Kiểm tra xem accountId đã có ChatBox hay chưa dựa vào createBy
+        if (!chatService.isChatBoxExistsByCreateBy(accountId)) {
             // Nếu không tìm thấy ChatBox, tạo mới ChatBox với tên đặt theo tên người dùng
             chatBox newChatBox = new chatBox();
             newChatBox.setName(name.get().getFull_name()); // Đặt tên ChatBox theo tên người dùng
@@ -709,7 +709,6 @@ public class DatHangController {
     }
 
 
-
     //TT khach hang
     @GetMapping("/accountDetail")
     public String viewCustomerDetails(Model model) {
@@ -724,6 +723,19 @@ public class DatHangController {
 
         List<HoaDon> hoaDon = hdService.getBillsByCustomerId(account_Id);
         model.addAttribute("hoaDon", hoaDon);
+
+        Map<Integer, String> anhSPMap = new HashMap<>();
+        for (HoaDon hDon : hoaDon) {
+            for (HoaDonChiTiet hdct : hDon.getBillDetails()) {
+                AnhSanPham anhSanPham = anhService.anhSanPhamByIDSPCT(hdct.getSanPhamChiTiet().getId());
+                if (anhSanPham != null) {
+                    anhSPMap.put(hdct.getSanPhamChiTiet().getId(), anhSanPham.getTenAnh());
+                } else {
+                    anhSPMap.put(hdct.getSanPhamChiTiet().getId(), "default.jpg"); // ảnh mặc định
+                }
+            }
+        }
+        model.addAttribute("anhSPMap", anhSPMap);
 
         // Kiểm tra giá trị customer và id của nó trước khi truyền vào model
         System.out.println("Customer: " + customer); // In ra để kiểm tra customer có giá trị không

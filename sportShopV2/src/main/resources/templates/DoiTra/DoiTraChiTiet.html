@@ -66,10 +66,14 @@
                         <p th:attr="data-idSPCT=${item.sanPhamChiTiet.id}" th:text="${item.sanPhamChiTiet.idSanPham.tenSanPham}"></p>
 
                         <p id="price" style="color: red; font-weight: bold;" th:text="${item.sanPhamChiTiet.gia} "></p>
+
                     </td>
                     <td>
-                        <div th:style="'width: 25px; height: 25px; border-radius: 50%; background-color: ' + ${item.sanPhamChiTiet.idMauSac.tenMauSac}"></div>
+                        <div th:style="'width: 25px; height: 25px; border-radius: 50%; background-color: ' + ${item.sanPhamChiTiet.idMauSac.tenMauSac}">
+
+                        </div>
                         <span class="color-name" id="color-name-${item.sanPhamChiTiet.idMauSac.tenMauSac}" th:text="${item.sanPhamChiTiet.idMauSac.tenMauSac}">Không có màu</span>
+                        <span th:text="'- '+${item.sanPhamChiTiet.idKichThuoc.tenKichThuoc}"></span>
                     </td>
                     <td id="totalQuantity" th:text="${item.quantity}"></td>
                     <td id="totalPayment" th:text="${item.quantity}*${item.sanPhamChiTiet.gia} "></td>

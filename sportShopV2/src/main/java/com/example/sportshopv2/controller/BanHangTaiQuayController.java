@@ -3,10 +3,7 @@ package com.example.sportshopv2.controller;
 import com.example.sportshopv2.dto.SanPhamChiTietDTO;
 import com.example.sportshopv2.dto.UserDTO;
 import com.example.sportshopv2.model.*;
-import com.example.sportshopv2.repository.HoaDonRepo;
-import com.example.sportshopv2.repository.KhachHangRepository;
-import com.example.sportshopv2.repository.NguoiDungRepo;
-import com.example.sportshopv2.repository.PhieuGiamGiaChiTietResponsitory;
+import com.example.sportshopv2.repository.*;
 import com.example.sportshopv2.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +13,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/ban-hang-tai-quay")
@@ -33,15 +33,23 @@ public class BanHangTaiQuayController {
     private final NguoiDungRepo ndRepo;
     private final PhieuGiamGiaService voucherService;
     private final PhieuGiamGiaChiTietResponsitory voucherDetailService;
+    private final AddressRepo addressRepo;
     @GetMapping("")
     public String banHangTaiQuay(Model model) {
         List<SanPhamChiTietDTO> listSPCTDto = spctService.getAllSPCT();
         List<User> listKH = khRepo.findAllKhachHang();
+
         model.addAttribute("spctDto", listSPCTDto);
         model.addAttribute("kh", listKH);
+
         return "BanHangTaiQuay/BanHangTaiQuay";
     }
-
+    @GetMapping("/cboKH")
+    @ResponseBody
+    public ResponseEntity<List<User>> timKhachHang(@RequestParam String keyword) {
+        List<User> danhSachKhachHang = khRepo.findByTenHoacSoDienThoai(keyword);
+        return ResponseEntity.ok(danhSachKhachHang);
+    }
     @GetMapping("/spct")
     public String getAllSPCT(@RequestParam(required = false) Integer idKH, Model model) {
         List<SanPhamChiTietDTO> listSPCTDto = spctService.getAllSPCT();
@@ -119,6 +127,32 @@ public class BanHangTaiQuayController {
     @ResponseBody
     public TaiKhoan createTaiKhoan(@RequestBody TaiKhoan taiKhoan) {
         return tkService.createTK(taiKhoan);
+    }
+    @GetMapping("/diaChiKH")
+    @ResponseBody
+    public List<Address> listDiaChi(@RequestParam("idKH") Integer idKH){
+        return  addressRepo.findByKhachHang_Id(idKH);
+    }
+    @PostMapping("/add-dia-chi")
+    @ResponseBody
+    public Address diaChiCreate(@RequestBody Address address){
+        return addressRepo.save(address);
+    }
+    @GetMapping("/kiem-tra-email")
+    @ResponseBody
+    public ResponseEntity<Map<String, Boolean>> checkEmailExists(@RequestParam String email) {
+        boolean exists = khRepo.existsByEmail(email);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("exists", exists);
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/kiem-tra-phone")
+    @ResponseBody
+    public ResponseEntity<Map<String, Boolean>> checkPhoneExists(@RequestParam String phone) {
+        boolean exists = khRepo.existsByPhoneNumber(phone);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("exists", exists);
+        return ResponseEntity.ok(response);
     }
 
 }

@@ -184,7 +184,7 @@
                 <th class="px-4 py-2">Trạng Thái</th>
             </tr>
             </thead>
-            <tbody th:each="listHdct, index: ${list}">
+            <tbody th:each="listHdct, index: ${list}" th:attr="data-idspct=${listHdct.sanPhamChiTiet.id}">
             <tr class="bg-gray-100">
                 <td class="border px-4 py-2 text-center" th:text="${index.index + 1}"></td>
                 <td class="border px-4 py-2 text-center">
@@ -535,27 +535,83 @@
             showStatusConfirmation();
             toggleButtons();
         });
-        document.getElementById('cancel-status').addEventListener('click', function() {
+        // Hàm gọi API cập nhật số lượng SPCT
+        async function updateProductQuantity(idSPCT, soLuongNew) {
+            try {
+                const response = await fetch(`/san-pham-chi-tiet/cap-nhat-so-luong/${idSPCT}?soLuongNew=${soLuongNew}`, {
+                    method: 'PUT'
+                });
+                if (!response.ok) {
+                    console.log(`Cập nhật thất bại cho sản phẩm chi tiết ID: ${idSPCT}`);
+                } else {
+                    console.log(`Cập nhật thành công cho sản phẩm chi tiết ID: ${idSPCT}`);
+                }
+            } catch (error) {
+                console.log(`Lỗi khi gọi API cập nhật số lượng:`, error);
+            }
+        }
+
+        // Khi nhấn nút hủy hóa đơn
+        async function cancelInvoice() {
+            // Danh sách các tbody chứa thông tin sản phẩm
+            const productDetails = document.querySelectorAll('tbody[data-idspct]');
+
+            for (const row of productDetails) {
+                // Lấy idSPCT từ thuộc tính data-idspct
+                const idSPCT = row.getAttribute('data-idspct');
+                const quantityElement = row.querySelector('td:nth-child(6)'); // Cột thứ 6 chứa số lượng
+                const quantityHDCT = quantityElement ? parseInt(quantityElement.textContent.trim()) : 0;
+                if (idSPCT && !isNaN(quantityHDCT)) {
+                    const currentQuantityResponse = await fetch(`/san-pham-chi-tiet/thong-tin-spct/${idSPCT}`);
+                    if (currentQuantityResponse.ok) {
+                        const currentQuantityData = await currentQuantityResponse.json();
+                        const currentQuantity = currentQuantityData.soLuong || 0;
+
+                        // Tính toán số lượng mới (số lượng hiện tại + số lượng từ hóa đơn chi tiết)
+                        const soLuongNew = currentQuantity + quantityHDCT;
+
+                        // Gọi API cập nhật số lượng mới
+                        await updateProductQuantity(idSPCT, soLuongNew);
+                    } else {
+                        alert.error(`Không thể lấy số lượng hiện tại cho sản phẩm chi tiết ID: ${idSPCT}`);
+                    }
+                }
+            }
+
+            // Sau khi cập nhật số lượng, thực hiện logic hủy hóa đơn
+            newStatus = 'Hủy';
+            /*document.getElementById('status-form').submit();*/
+        }
+
+
+        // Gắn sự kiện click vào nút Hủy hóa đơn
+        document.getElementById('cancel-status').addEventListener('click', async function () {
+            await cancelInvoice();
+            showStatusConfirmation();
+            toggleButtons();
+        });
+
+        /*document.getElementById('cancel-status').addEventListener('click', function() {
             // Cập nhật trạng thái hóa đơn thành "Hủy"
             newStatus = 'Hủy';
 
             // Hiển thị modal xác nhận hoặc tự động submit form
             showStatusConfirmation();
             toggleButtons();
-        });
+        });*/
 
         // Hàm kiểm tra và bật/tắt khả năng bấm các nút
         function toggleButtons() {
             var currentStatus = document.getElementById('status').value;
 
             // Disable nút revert-status nếu trạng thái là "Chờ xác nhận", "Đang vận chuyển" hoặc "Hoàn thành"
-            document.getElementById('revert-status').disabled = currentStatus === "Chờ xác nhận" || currentStatus === "Đang vận chuyển" || currentStatus === "Hoàn thành";
+            document.getElementById('revert-status').disabled = currentStatus === "Chờ xác nhận" || currentStatus === "Đang vận chuyển" || currentStatus === "Hoàn thành" ||currentStatus ==="Hủy";
 
             // Disable nút cancel-status nếu trạng thái là "Hoàn thành" hoặc "Đang vận chuyển"
-            document.getElementById('cancel-status').disabled = currentStatus === "Hoàn thành" || currentStatus === "Đang vận chuyển";
+            document.getElementById('cancel-status').disabled = currentStatus === "Hoàn thành" || currentStatus === "Đang vận chuyển" ||currentStatus ==="Hủy";
 
             // Disable nút change-status nếu trạng thái là "Hoàn thành"
-            document.getElementById('change-status').disabled = currentStatus === "Hoàn thành";
+            document.getElementById('change-status').disabled = currentStatus === "Hoàn thành" ||currentStatus ==="Hủy";
         }
 
 

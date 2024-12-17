@@ -1,3 +1,5 @@
+const selectedIds = new Set(); // Biến lưu trữ các idHDCT đã chọn
+const addedItems = new Map(); // Biến lưu trữ các idHDCT và số lượng đã thêm vào bảng cart
 function formatCurrency(value) {
     return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(value);
 }
@@ -23,8 +25,7 @@ document.querySelectorAll('#totalPayment').forEach(element => {
         element.textContent = formatCurrency(rawValue); // Gán lại giá trị đã format
     }
 });
-const selectedIds = new Set(); // Biến lưu trữ các idHDCT đã chọn
-const addedItems = new Map(); // Biến lưu trữ các idHDCT và số lượng đã thêm vào bảng cart
+
 
 // Hàm mở modal và xử lý idHDCT
 function openModal(id, rowElement) {
@@ -117,7 +118,7 @@ function addItem() {
                 <div style="width: 25px; height: 25px; border-radius: 50%; background-color: ${color};"></div>
                
             </td>
-            <td>${newQuantityInCart}</td>
+            <td id="totalNewQuantity">${newQuantityInCart}</td>
             <td>${price}</td>
             <td class="total-return">${total}</td>
             <td>
@@ -146,6 +147,7 @@ function addItem() {
     if (quantityHDCT - quantity <= 0) {
         row.querySelector('.action button').disabled = true;
     }
+    console.log(addedItems);
     showSummary();
     // Đóng modal
     closeModal();
@@ -406,41 +408,43 @@ async function createNewHoaDon(newHoaDon) {
     }
 }
 // Hàm sao chép hóa đơn
+let tongTienHDMoi =0;
 async function hoanTraMotPhan() {
     const oldId = document.querySelector('input[name="maHoaDon"]').value;
-    console.log("idHD"+oldId);
-    tongTienHoanTra = tongTienCartTable();
-    let transaction_date =null;
+    console.log("idHD: " + oldId);
+    const tongTienHoanTra = tongTienCartTable();
+    let transaction_date = null;
     let receive_date = null;
-    var status = "Chờ xác nhận";
+    let status = "Chờ xác nhận";
     const dateNow = new Date();
-    const moTa = document.querySelector('#moTa').value.trim(); // Lấy mô tả từ textarea
+    const moTa = document.querySelector('#moTa').value.trim();
+
     if (moTa === '') {
         alert('Vui lòng nhập mô tả!');
         return;
     }
 
     try {
-
-        // 1. Lấy hóa đơn cũ
+        // Lấy hóa đơn cũ
         const hoaDonCu = await getHoaDonById(oldId);
-        if(hoaDonCu.type == "Tại quầy"){
+
+        if (hoaDonCu.type === "Tại Quầy") {
             transaction_date = dateNow;
             receive_date = dateNow;
-            status ="Hoàn thành";
+            status = "Hoàn thành";
         }
-        // 2. Tạo đối tượng hóa đơn mới từ dữ liệu cũ
-        const hoaDonMoi = {
-            total_money: tongTienHoanTra, // Tổng tiền mới
-            money_reduced: 0, // Tiền giảm mới
-            money_ship: 0, // Tiền ship mới
 
-            // Sao chép các thông tin khác
+        // Tạo hóa đơn mới
+        const hoaDonMoi = {
+            total_money: tongTienHDMoi,
+            money_reduced: 0,
+            money_ship: 0,
             id_account: hoaDonCu.id_account,
             id_staff: hoaDonCu.id_staff,
             user_name: hoaDonCu.user_name,
             phone_number: hoaDonCu.phone_number,
             status: status,
+
             address: hoaDonCu.address,
             ship_date: null,
             receive_date: receive_date,
@@ -455,16 +459,190 @@ async function hoanTraMotPhan() {
             note: moTa,
         };
 
-        // 3. Gửi yêu cầu tạo hóa đơn mới
         const hoaDonMoiResponse = await createNewHoaDon(hoaDonMoi);
+
+        if (!hoaDonMoiResponse || !hoaDonMoiResponse.id) {
+            throw new Error('Hóa đơn mới tạo không hợp lệ!');
+        }
+
         console.log('Hóa đơn mới đã được tạo:', hoaDonMoiResponse);
-        alert("Tạo hóa đơn thành công!");
-        return hoaDonMoiResponse; // Trả về hóa đơn mới vừa tạo
+
+        // Tạo hóa đơn chi tiết mới
+        await taoHDCTMoiTuAddedItems(hoaDonMoiResponse, hoaDonCu);
+        alert("Đổi trả thành công!");
+
     } catch (error) {
-        console.error('Lỗi khi sao chép hóa đơn:', error.message);
-        throw error;
+        console.error('Lỗi khi hoàn trả:', error.message);
+        alert('Có lỗi xảy ra, vui lòng thử lại!');
     }
 }
+
+// Cập nhật Số Lượng của HDCT và Tổng Tiền của HD
+async function taoHDCTMoiTuAddedItems(hoaDonNew, hoaDonCu) {
+    const oldId = document.querySelector('input[name="maHoaDon"]').value;
+    let totalPriceNew = 0; // Tổng tiền hóa đơn mới chỉ tính sản phẩm còn hàng
+    if (addedItems.size === 0) {
+        alert('Không có sản phẩm nào để hoàn trả!');
+        return;
+    }
+
+    try {
+        const idHDCTList = Array.from(addedItems.keys()).map(Number); // Chuyển các key từ string sang number
+        console.log("idHDCT", idHDCTList);
+
+        const response = await fetch(`/doi-tra/thong-tin/?idHDCT=${encodeURIComponent(idHDCTList.join(","))}`);
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Không thể lấy danh sách HDCT cũ: ${response.status} - ${errorText}`);
+        }
+
+        const hdctCuList = await response.json();
+        console.log("Dữ liệu nhận được từ API:", hdctCuList);
+
+        let totalPriceReduction = 0; // Tổng tiền giảm từ sản phẩm hết hàng
+        const hdctMoiList = [];
+
+        for (const hdct of hdctCuList) {
+            const idKey = hdct.id.toString();
+            const quantityToReduce = addedItems.get(idKey);
+
+            if (!quantityToReduce || quantityToReduce <= 0) {
+                console.error(`Số lượng không hợp lệ cho key ${idKey}`);
+                continue;
+            }
+
+            const productId = hdct.sanPhamChiTiet.id;
+            const productDetails = await fetch(`/san-pham-chi-tiet/thong-tin-spct/${productId}`).then(handleResponse);
+            const newSoLuong = productDetails.soLuong - quantityToReduce;
+
+            if (productDetails.soLuong <= 0 || productDetails.soLuong < quantityToReduce) {
+                totalPriceReduction += hdct.price * quantityToReduce;
+                const giaGiam = formatCurrency(hdct.price * quantityToReduce);
+                alert(`Sản phẩm ID ${productId} không đủ số lượng. Vui lòng trả ${giaGiam} cho khách.`);
+                // Cập nhật HDCT cũ và giảm tổng tiền hóa đơn cũ
+                await fetch(`/doi-tra/updateHDCT/${hdct.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ...hdct, quantity: hdct.quantity - quantityToReduce })
+                });
+                hoaDonCu.total_money -= totalPriceReduction;
+                await fetch(`/doi-tra/update-hoa-don/${hoaDonCu.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ...hoaDonCu,
+                        total_money: hoaDonCu.total_money,
+                        note: "Sản phẩm không đủ số lượng. Hoàn trả tiền!",
+                        status: "Hoàn thành"
+                    })
+                });
+
+                continue; // Bỏ qua sản phẩm này vì hết hàng
+            }
+
+            // Tính tổng tiền hóa đơn mới cho sản phẩm còn hàng
+            totalPriceNew += hdct.price * quantityToReduce;
+
+            // Cập nhật số lượng sản phẩm chi tiết
+            const updateResponse = await fetch(`/san-pham-chi-tiet/cap-nhat-so-luong/${productId}?soLuongNew=${newSoLuong}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (!updateResponse.ok) {
+                const errorText = await updateResponse.text();
+                console.error(`Không thể cập nhật số lượng cho SPCT ${productId}: ${updateResponse.status} - ${errorText}`);
+                continue;
+            }
+
+            console.log(`Cập nhật số lượng cho SPCT ${productId} thành công`);
+
+            // Tạo HDCT mới
+            hdctMoiList.push({
+                hoaDon: hoaDonNew,
+                sanPhamChiTiet: hdct.sanPhamChiTiet,
+                quantity: quantityToReduce,
+                price: hdct.price
+            });
+
+            // Cập nhật số lượng HDCT cũ
+            await fetch(`/doi-tra/updateHDCT/${hdct.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ...hdct,
+                    quantity: hdct.quantity - quantityToReduce
+                })
+            });
+        }
+
+        // Cập nhật tổng tiền của hóa đơn cũ
+        await fetch(`/doi-tra/update-hoa-don/${hoaDonCu.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                ...hoaDonCu,
+                total_money: hoaDonCu.total_money -totalPriceNew,
+                note: "Hóa đơn có sản phẩm hoàn trả",
+                status: "Hoàn thành"
+            })
+        });
+
+        console.log('Cập nhật tổng tiền của hóa đơn cũ thành công!');
+
+        // Cập nhật tổng tiền hóa đơn mới
+        hoaDonNew.total_money = totalPriceNew;
+        console.log("Tong tien new",totalPriceNew);
+        if (hdctMoiList.length > 0) {
+            // Tạo hóa đơn chi tiết mới
+            const createResponse = await fetch('/ban-hang-tai-quay/tao-hoa-don-chi-tiet', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(hdctMoiList),
+            });
+
+            if (!createResponse.ok) {
+                const errorText = await createResponse.text();
+                throw new Error(`Không thể tạo HDCT mới: ${createResponse.status} - ${errorText}`);
+            }
+
+            console.log('Tạo hóa đơn chi tiết mới thành công!');
+        }
+
+        // Cập nhật hóa đơn mới
+        await fetch(`/doi-tra/update-hoa-don/${hoaDonNew.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                ...hoaDonNew,
+                total_money: hoaDonNew.total_money,
+                note: "Đổi trả thành công",
+                status: hoaDonNew.type === 'Tại Quầy' ? 'Hoàn thành' : 'Chờ xác nhận'
+            })
+        });
+
+        closeModal();
+        window.location.href = "/doi-tra/view";
+    } catch (error) {
+        console.error('Lỗi khi tạo HDCT mới:', error.message);
+        alert('Có lỗi khi tạo HDCT mới, vui lòng thử lại!');
+    }
+}
+
+function handleResponse(response) {
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
+    }
+    return response.json();
+}
+//tongSoluongSPCT
+
+
+
+
+
+
+
 
 
 

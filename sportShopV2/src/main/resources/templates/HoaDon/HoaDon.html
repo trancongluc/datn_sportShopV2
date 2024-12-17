@@ -75,10 +75,11 @@
             <ul class="nav nav-tabs">
                 <li class="nav-item">
                     <a class="nav-link"
-                       th:href="@{~/bill/view}"
+                       th:href="@{~/bill/view(tab='all', page=0, size=5)}"
                        th:classappend="${tab == 'all'} ? 'active' : ''">Tất cả
                     </a>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link"
                        th:href="@{~/bill/tab(status='Chờ xác nhận')}"
@@ -163,7 +164,7 @@
                         <td th:text="${hd.getId_staff().getUsername()}"></td>
                         <td th:text="${hd.type}"></td>
                         <td th:text="${hd.createAt}"></td>
-                        <td th:text="${tienGiam[hd.id]}"></td>
+                        <td id="tienGiam" th:text="${hd.money_reduced}"></td>
                         <td id="tongTien" th:text="${hd.total_money}"></td>
                         <td>
                             <a th:href="@{~/bill/detail(id=${hd.id})}">
@@ -172,6 +173,45 @@
                         </td>
                     </tbody>
                 </table>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        <!-- Nút 'Trước' -->
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/bill/view(tab=${tab}, page=${currentPage - 1}, size=${5})}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+
+                        <!-- Hiển thị trang đầu tiên -->
+                        <li class="page-item" th:if="${currentPage > 2}">
+                            <a class="page-link" th:href="@{/bill/view(tab=${tab}, page=0, size=${5})}">1</a>
+                        </li>
+                        <li class="page-item disabled" th:if="${currentPage > 3}">
+                            <span class="page-link">...</span>
+                        </li>
+
+                        <!-- Hiển thị các trang gần trang hiện tại -->
+                        <li class="page-item" th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}"
+                            th:if="${i >= 0 and i < totalPages}" th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/bill/view(tab=${tab}, page=${i}, size=${5})}" th:text="${i + 1}"></a>
+                        </li>
+
+                        <!-- Hiển thị trang cuối cùng -->
+                        <li class="page-item disabled" th:if="${currentPage < totalPages - 4}">
+                            <span class="page-link">...</span>
+                        </li>
+                        <li class="page-item" th:if="${currentPage < totalPages - 3}">
+                            <a class="page-link" th:href="@{/bill/view(tab=${tab}, page=${totalPages - 1}, size=${5})}" th:text="${totalPages}"></a>
+                        </li>
+
+                        <!-- Nút 'Sau' -->
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/bill/view(tab=${tab}, page=${currentPage + 1}, size=${5})}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
 
             <div id="pending" class="tab-content">
@@ -405,7 +445,7 @@
         function formatCurrency(amount) {
             return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
         }
-        document.querySelectorAll('#tongTien').forEach(function(element) {
+        document.querySelectorAll('#tongTien,#tienGiam').forEach(function(element) {
             element.innerText = formatCurrency(parseFloat(element.innerText));
         });
     </script>

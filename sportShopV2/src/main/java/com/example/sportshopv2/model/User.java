@@ -4,6 +4,7 @@ import com.example.sportshopv2.dto.UserDTO;
 import com.example.sportshopv2.dto.UserNhanVienDTO;
 import com.example.sportshopv2.repository.KhachHangRepository;
 import com.example.sportshopv2.repository.NhanVienRepo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -60,11 +61,13 @@ public class User {
     private String imageFileName;
 
     @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Address> addresses = new ArrayList<>();
 
     //
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude // Loại bỏ vòng lặp trong hashCode() và equals()
+
     private Account account;
 
 

@@ -1,15 +1,20 @@
 package com.example.sportshopv2.controller.ThanhToan;
 
 import com.example.sportshopv2.config.VNPAYService;
+import com.example.sportshopv2.model.TaiKhoan;
+import com.example.sportshopv2.repository.TaiKhoanRepo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.net.Authenticator;
 import java.util.Map;
 
 import java.text.DecimalFormat;
@@ -18,7 +23,8 @@ import java.text.DecimalFormat;
 public class VNPayReturnController {
     @Autowired
     private VNPAYService vnPayService;
-
+    @Autowired
+    private TaiKhoanRepo taiKhoanRepo;
 
     @GetMapping("/vnpay-payment-return")
     public String paymentCompleted(HttpServletRequest request, Model model) {
@@ -37,7 +43,14 @@ public class VNPayReturnController {
         model.addAttribute("paymentTime", paymentTime);
         model.addAttribute("transactionId", transactionId);
 
+        Authentication authenticator = SecurityContextHolder.getContext().getAuthentication();
+        String username = authenticator.getName();
+        TaiKhoan taiKhoan = taiKhoanRepo.findTaiKhoanByUsername(username);
+        if (taiKhoan.getRole().equals("Admin")) {
+            return paymentStatus == 1 ? "BanHangTaiQuay/BanHangTaiQuay" : "Dathang/oderSuccess";
+        }
         return paymentStatus == 1 ? "Dathang/oderSuccess" : "Dathang/orderFail";
+
     }
    /* @GetMapping("/vnpay-payment-return")
     @ResponseBody

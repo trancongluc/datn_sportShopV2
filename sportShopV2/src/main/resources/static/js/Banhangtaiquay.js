@@ -50,6 +50,7 @@ function selectTab(invoiceId) {
     updateSelectedProductsTable(invoiceId);
 // Cập nhật phương thức giao hàng và địa chỉ từ tabSelection
 }
+
 function updateDeliveryOption() {
     // Lấy tất cả các radio button với name là "deliveryOption"
     const deliveryOptions = document.getElementsByName('deliveryOption');
@@ -235,11 +236,28 @@ function updateSelectedProductsTable(invoiceId) {
 
         // Xử lý sự kiện xóa sản phẩm
         deleteIcon.addEventListener('click', function () {
+            const productId = product.id; // Lấy ID của sản phẩm hiện tại
+
+            // Xóa dòng sản phẩm khỏi bảng
             selectedProduct.remove();
-            productDetailByInvoice[invoiceId] = productDetailByInvoice[invoiceId].filter(p => p.id !== product.id);
+
+            // Xóa ID khỏi mảng selectedProductIds
+            selectedProductIds = selectedProductIds.filter(id => id !== productId);
+
+            // Xóa số lượng của sản phẩm khỏi productQuantities
+            delete productQuantities[productId];
+
+            // Xóa sản phẩm khỏi danh sách productDetailByInvoice
+            productDetailByInvoice[invoiceId] = productDetailByInvoice[invoiceId].filter(p => p.id !== productId);
+
+            // Tính lại tổng tiền và cập nhật giao diện
             tongTien = calculateTotal();
             updateTotal();
+
+            // Kiểm tra danh sách còn lại
+            console.log("Danh sách sản phẩm còn lại:", selectedProductIds);
         });
+
 
         tbody.appendChild(selectedProduct);
         selectedProductIds.push(product.id); // Cập nhật danh sách sản phẩm đã chọn
@@ -380,7 +398,159 @@ document.addEventListener('click', function (event) {
         productList.style.display = 'none'; // Ẩn danh sách sản phẩm
     }
 });
+// Xử lý khi focus vào ô input khách hàng
+document.querySelector('.khachHang').addEventListener('input', async function () {
+    const input = this.value.trim(); // Lấy giá trị trong ô input
+    const dropdown = document.getElementById('customerDropdown');
 
+    // Nếu input rỗng, lấy tất cả khách hàng
+    const url = input ? `/ban-hang-tai-quay/cboKH?keyword=${encodeURIComponent(input)}` : '/ban-hang-tai-quay/cboKH?keyword=';
+
+    // Xóa dropdown trước khi thêm dữ liệu mới
+    dropdown.innerHTML = '';
+
+    try {
+        // Gửi yêu cầu đến server để tìm khách hàng dựa trên từ khóa (hoặc lấy tất cả nếu rỗng)
+        const response = await fetch(url);
+
+        if (response.ok) {
+            const customers = await response.json();
+
+            if (customers.length === 0) {
+                dropdown.innerHTML = '<div>Không tìm thấy khách hàng</div>';
+            } else {
+                // Thêm khách hàng vào dropdown
+                customers.forEach(customer => {
+                    const div = document.createElement('div');
+                    div.textContent = customer.fullName;
+                    div.dataset.customerId = customer.id;  // Lưu ID khách hàng vào data attribute
+
+                    // Xử lý khi click vào khách hàng
+                    div.addEventListener('click', function () {
+                        document.querySelector('.khachHang').value = customer.fullName; // Điền tên vào ô input
+                        dropdown.classList.remove('visible'); // Ẩn dropdown
+                        if (idHD == null) {
+                            showToast("Vui lòng chọn hóa đơn!")
+                            return;
+                        }
+                        // Lấy ID khách hàng khi chọn
+                        const selectedCustomerId = customer.id;
+                        const activeTab = document.querySelector('.tab-item.active');
+                        const invoiceId = activeTab ? activeTab.dataset.invoiceId : null; // Lấy ID hóa đơn từ tab đang hoạt động
+
+                        idKH = selectedCustomerId;
+                        console.log("Khách hàng ID:", selectedCustomerId, idKH);
+                        if (selectedCustomerId && invoiceId) {
+                            fetch(`/ban-hang-tai-quay/thong-tin-kh/${selectedCustomerId}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    // Hiển thị và lưu thông tin khách hàng vào các ô input
+                                    document.getElementById("customerName").value = data.fullName || "";
+                                    document.getElementById("phone").value = data.phoneNumber || "";
+                                    document.getElementById("email").value = data.email || "";
+                                    document.getElementById("customerCode").value = data.code || "";
+
+                                    // Lưu thông tin khách hàng vào đối tượng của tab
+                                    saveCustomerInfoForTab(invoiceId, data);
+                                })
+                                .catch(error => console.error("Lỗi khi lấy thông tin khách hàng:", error));
+                        }
+                        fetch(`/ban-hang-tai-quay/diaChiKH?idKH=${selectedCustomerId}`)
+                            .then(response => response.json())
+                            .then(addressList => {
+                                const addressContainer = document.querySelector("#addressModal .list-group");
+                                addressContainer.innerHTML = ""; // Xóa danh sách cũ
+
+                                if (addressList.length > 0) {
+                                    // Tạo danh sách địa chỉ và chèn vào modal
+                                    addressList.forEach(address => {
+                                        const addressItem = `
+                        <li class="list-group-item">
+                            <span>${address.tinh || '-'}</span>
+                            <span>${address.quan || '-'}</span>
+                            <span>${address.phuong || '-'}</span>
+                            <span>${address.line}</span>
+                            <button type="button" class="btn btn-link text-primary float-end" onclick="selectAddress(this, '${address.tinh}', '${address.quan}', '${address.phuong}')">
+                                Chọn
+                            </button>
+                        </li>
+                    `;
+                                        addressContainer.insertAdjacentHTML('beforeend', addressItem);
+                                    });
+                                } else {
+                                    addressContainer.innerHTML = "<li class='list-group-item'>Không có địa chỉ nào</li>";
+                                }
+
+                                // Hiển thị modal
+
+                            })
+                            .catch(error => console.error("Lỗi khi lấy danh sách địa chỉ:", error));
+                    });
+
+                    dropdown.appendChild(div);
+                });
+            }
+
+            // Hiển thị dropdown
+            dropdown.classList.add('visible');
+        } else {
+            console.error('Không thể tải danh sách khách hàng.');
+        }
+    } catch (error) {
+        console.error('Lỗi khi tìm khách hàng:', error);
+    }
+});
+
+async function selectAddress(button) {
+    // Lấy các giá trị địa chỉ từ thẻ cha của nút "Chọn"
+    const listItem = button.closest('li');
+    const tinh = listItem.querySelector('span:nth-child(1)').innerText.trim();
+    const quan = listItem.querySelector('span:nth-child(2)').innerText.trim();
+    const phuong = listItem.querySelector('span:nth-child(3)').innerText.trim();
+    const line = listItem.querySelector('span:nth-child(4)').innerText.trim();
+    console.log(line)
+    // Cập nhật các dropdown trong phần deliveryAddress
+    document.getElementById("tinh").innerHTML = `<option value="${tinh}">${tinh}</option>`;
+    document.getElementById("quan").innerHTML = `<option value="${quan}">${quan}</option>`;
+    document.getElementById("phuong").innerHTML = `<option value="${phuong}">${phuong}</option>`;
+    document.getElementById("soNha").value = line;
+    // Hiển thị phần deliveryAddress nếu đang ẩn
+    document.getElementById("deliveryAddress").style.display = "block";
+
+    // Đóng modal
+    const addressModal = bootstrap.Modal.getInstance(document.getElementById('addressModal'));
+    addressModal.hide();
+    try {
+        const phiShipChonDC = await tinhPhiShipGHTK(tongTien);
+
+        if (phiShipChonDC !== null) {
+
+            $("#ship").text(phiShipChonDC + ' đ');
+            phiShip = phiShipChonDC;
+            console.log("Phí ship là:", phiShip);
+            updateTotal();
+        } else {
+            alert("Không thể tính phí ship. Vui lòng kiểm tra thông tin địa chỉ!");
+        }
+    } catch (error) {
+        console.error("Lỗi khi tính phí ship:", error);
+    }
+    console.log("Địa chỉ được chọn:", {tinh, quan, phuong});
+    const diaChiThem =  {tinh, quan, phuong};
+    address =`${diaChiThem.phuong}, ${diaChiThem.quan}, ${diaChiThem.tinh}`;
+    console.log("DiachiThem", address);
+}
+
+// Ẩn dropdown khi nhấn ra ngoài
+document.addEventListener('click', function (event) {
+    const dropdown = document.getElementById('customerDropdown');
+    const inputField = document.querySelector('.khachHang');
+
+    // Nếu nhấn ra ngoài ô input khách hàng và dropdown, ẩn dropdown
+    if (!inputField.contains(event.target) && !dropdown.contains(event.target)) {
+        dropdown.classList.remove('visible');
+    }
+});
 // Hàm tìm kiếm sản phẩm
 inputField.addEventListener('input', function () {
     const searchTerm = inputField.value.toLowerCase(); // Lấy giá trị nhập vào và chuyển thành chữ thường
@@ -531,7 +701,7 @@ for (let i = 0; i < productRows.length; i++) {
                     tongTien = calculateTotal();
                     updateTotal();
                 });
-                if(idHD == null){
+                if (idHD == null) {
                     showToast("Vui lòng chọn hóa đơn!")
                     return;
                 }
@@ -632,7 +802,7 @@ async function taoHoaDonCho() {
     const giamGia = 0;
     const status = "Hóa Đơn Chờ"; // Trạng thái mặc định
     const now = new Date();
-    const localTime = now.toLocaleString('en-CA', { hour12: false }).replace(',', ''); // "2024-12-12 14:00:00"
+    const localTime = now.toLocaleString('en-CA', {hour12: false}).replace(',', ''); // "2024-12-12 14:00:00"
     const date = new Date(localTime);
     try {
         const userKH = await fetch(`/khach-hang/thong-tin-kh/14`).then(res => res.json());
@@ -652,7 +822,7 @@ async function taoHoaDonCho() {
             deleted: false,
             id_account: userKH,
             id_staff: emp,
-            createAt:date
+            createAt: date
         };
 
         const response = await fetch('ban-hang-tai-quay/tao-hoa-don', {
@@ -738,11 +908,16 @@ async function capNhatHoaDon() {
         const email = document.getElementById('email').value;
         var status = "Chờ xác nhận"; // Trạng thái mặc định
         const now = new Date();
-        const localTime = now.toLocaleString('en-CA', { hour12: false }).replace(',', ''); // "2024-12-12 14:00:00"
+        const localTime = now.toLocaleString('en-CA', {hour12: false}).replace(',', ''); // "2024-12-12 14:00:00"
         const date = new Date(localTime);
         const soNha = document.getElementById('soNha').value;
         var payStatus = null;
         var soLuongNew;
+        if (selectedProductIds == null || tongTien == 0) {
+            showToast("Vui lòng chọn sản phẩm!")
+            closeModal();
+            return;
+        }
         const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').id === 'tienMat'
             ? 'Tiền Mặt'
             : 'Chuyển Khoản';
@@ -769,15 +944,18 @@ async function capNhatHoaDon() {
         if (paymentMethod === 'Chuyển Khoản') {
             async function redirectToVNPay(orderTotal, orderInfo, orderId) {
                 try {
-                    const response = await fetch('VNPAY-demo/api/vnpay/create_payment', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({amount: orderTotal, orderInfo: orderInfo, orderId: orderId})
+                    // Tạo URL với các tham số query string
+                    const url = `/VNPay/demo/submitOrder?amount=${orderTotal}&orderInfo=${orderInfo}`;
+
+                    // Gửi yêu cầu GET tới server
+                    const response = await fetch(url, {
+                        method: 'GET' // Phương thức GET vì bạn đã sử dụng @GetMapping trên server
                     });
 
-                    const result = await response.json();
-                    if (result.url) {
-                        window.location.href = result.url; // Chuyển hướng đến VNPay
+                    // Kiểm tra nếu yêu cầu thành công
+                    if (response.ok) {
+                        const result = await response.text(); // Lấy URL thanh toán VNPay từ kết quả
+                        window.location.href = result; // Chuyển hướng đến VNPay (không sử dụng "redirect:")
                     } else {
                         showToast('Lỗi khi tạo thanh toán!');
                     }
@@ -787,9 +965,10 @@ async function capNhatHoaDon() {
                 }
             }
 
-            await redirectToVNPay();
-            return; // Dừng hàm `capNhatHoaDon` khi chuyển hướng đến VNPay
+            await redirectToVNPay(tongTien, idHD);
+
         }
+
 
         // Tiến hành cập nhật hóa đơn ngay nếu thanh toán không qua VNPay
         const hoaDon = {
@@ -812,7 +991,7 @@ async function capNhatHoaDon() {
             deleted: 0,
             receive_date: receive_date,
         };
-        console.log("HD:",hoaDon);
+        console.log("HD:", hoaDon);
         // Cập nhật hóa đơn
         const updatedHoaDon = await fetch(`ban-hang-tai-quay/update-hoa-don/${idHD}`, {
             method: 'PUT',
@@ -873,8 +1052,8 @@ async function capNhatHoaDon() {
                 // Kiểm tra số lượng và thực hiện giảm số lượng
                 if (voucher.quantity > 0) {
                     voucher.quantity -= 1; // Giảm số lượng voucher
-                    if(voucher.quantity ==0){
-                        voucher.status ="Đã hết";
+                    if (voucher.quantity == 0) {
+                        voucher.status = "Đã hết";
                     }
                 } else {
                     console.warn("Voucher không còn số lượng!");
@@ -899,7 +1078,7 @@ async function capNhatHoaDon() {
                     idVoucher: voucher.id,  // ID voucher
                     idBill: idHD,           // ID hóa đơn
                     before_price: tongTien,  // Giá trị trước khi áp dụng voucher
-                    after_price: tongTien-giamGia,  // Giá trị sau khi áp dụng voucher
+                    after_price: tongTien - giamGia,  // Giá trị sau khi áp dụng voucher
                     valueVoucher: giamGia, // Giá trị voucher
                     create_at: date,
                     create_by: "admin",
@@ -927,7 +1106,7 @@ async function capNhatHoaDon() {
         }
         showToast("Tạo Hóa Đơn Thành Công!");
         selectedProductIds = [];
-        window.location.href = '/ban-hang-tai-quay'; // Chuyển hướng về trang bán hàng
+      /*  window.location.href = '/ban-hang-tai-quay';*/ // Chuyển hướng về trang bán hàng
 
     } catch (error) {
         console.error('Có lỗi xảy ra:', error);
@@ -1035,7 +1214,17 @@ async function addCustomer() {
     const customerPhone = document.getElementById("customerPhone").value;
     const customerEmail = document.getElementById("customerEmail").value;
     const date = new Date().toISOString();
-    // Kiểm tra dữ liệu
+
+    // Lấy dữ liệu địa chỉ từ form
+    const provinceId = document.getElementById("tinhadd").value;
+    const provinceName = document.getElementById("tinhadd").options[document.getElementById("tinhadd").selectedIndex].text;
+    const districtId = document.getElementById("quanadd").value;
+    const districtName = document.getElementById("quanadd").options[document.getElementById("quanadd").selectedIndex].text;
+    const wardId = document.getElementById("phuongadd").value;
+    const wardName = document.getElementById("phuongadd").options[document.getElementById("phuongadd").selectedIndex].text;
+    const line = document.getElementById("soNhaadd").value;
+
+    // Kiểm tra dữ liệu khách hàng
     if (!customerName || !customerPhone || !customerEmail) {
         alert("Vui lòng điền đầy đủ thông tin!");
         return;
@@ -1045,74 +1234,110 @@ async function addCustomer() {
         alert("Email không hợp lệ!");
         return;
     }
-    const customerData = {
-        full_name: customerName,
-        phone_number: customerPhone,
-        email: customerEmail,
-        create_at: date,
-        create_by: "Admin",
-        deleted: false
-    };
+
     try {
-        // Gửi dữ liệu đến server (API endpoint của bạn)
+        // Kiểm tra email có tồn tại không
+        const emailExists = await fetch(`/ban-hang-tai-quay/kiem-tra-email?email=${customerEmail}`);
+        const phoneExists = await fetch(`/ban-hang-tai-quay/kiem-tra-phone?phone=${customerPhone}`);
+
+        const emailExistsJson = await emailExists.json();
+        const phoneExistsJson = await phoneExists.json();
+
+        if (emailExistsJson.exists) {
+            showToast("Email này đã tồn tại!");
+            return;
+        }
+
+        if (phoneExistsJson.exists) {
+            showToast("Số điện thoại này đã tồn tại!");
+            return;
+        }
+
+        const customerData = {
+            full_name: customerName,
+            phone_number: customerPhone,
+            email: customerEmail,
+            create_at: date,
+            create_by: "Admin",
+            deleted: false
+        };
+
+        // Gửi dữ liệu khách hàng đến server
         const response = await fetch("/khach-hang/them", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(customerData)
         });
 
         if (response.ok) {
-            const customer = await response.json(); // Giả sử server trả về thông tin khách hàng với id
-            const customerId = customer.id;
-            const userKH = await fetch(`/ban-hang-tai-quay/thong-tin-kh/${customerId}`).then(handleResponse);
+            const customer = await response.json(); // Nhận thông tin khách hàng từ server
+            const customerId = customer.id; // Lấy ID của khách hàng mới
+
+            // Gửi thông tin địa chỉ lên server
+            const addressData = {
+                tinh: provinceName,
+                province_id: provinceId,
+                quan: districtName,
+                district_id: districtId,
+                phuong: wardName,
+                ward_id: wardId,
+                line: line,
+                khachHang: { id: customerId }, // Gửi ID khách hàng
+                create_at: date,
+                create_by: "Admin",
+                deleted: false
+            };
+
+            const addressResponse = await fetch("/ban-hang-tai-quay/add-dia-chi", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(addressData)
+            });
+
+            if (addressResponse.ok) {
+                console.log("Thêm địa chỉ thành công!");
+            } else {
+                console.error("Thêm địa chỉ thất bại!");
+            }
+
+            // Tạo tài khoản khách hàng
             const accountData = {
                 username: customerEmail,
                 role: "Employee",
                 create_at: date,
                 create_by: "Admin",
-                email: customerEmail,  // Dùng email của khách hàng làm tài khoản
+                email: customerEmail,
                 password: "12345",
                 deleted: false,
-                status: "Active",
-                nguoiDung: userKH // Thêm idKhachHang vào thông tin tài khoản
+                status: "Đang hoạt động",
+                nguoiDung: { id: customerId }
             };
 
-            try {
-                // Gửi dữ liệu tài khoản đến server
-                const accountResponse = await fetch("/ban-hang-tai-quay/tao-tai-khoan", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(accountData)
-                });
+            const accountResponse = await fetch("/ban-hang-tai-quay/tao-tai-khoan", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(accountData)
+            });
 
-                if (accountResponse.ok) {
-                    console.log("Thêm tk thành công");
-                } else {
-                    console.log("Thêm tk thất bại");
-                }
-            } catch (error) {
-                console.error("Lỗi khi tạo tài khoản:", error);
+            if (accountResponse.ok) {
+                console.log("Thêm tài khoản thành công!");
+            } else {
+                console.log("Thêm tài khoản thất bại!");
             }
-            // Đóng modal sau khi thêm khách hàng thành công
 
+            // Đóng modal và reset form
             $('#addCustomerModal').modal('hide');
-            // Reset form sau khi thêm khách hàng
-            document.getElementById("addCustomerForm").reset();
             await reloadCustomerComboBox();
-            showToast("Thêm Khách Hàng Thành Công!");
-
+            showToast("Thêm Khách Hàng và Địa Chỉ Thành Công!");
         } else {
             alert("Có lỗi khi thêm khách hàng!");
         }
     } catch (error) {
-        console.error("Lỗi khi thêm khách hàng:", error);
+        console.error("Lỗi hệ thống:", error);
         alert("Lỗi hệ thống, vui lòng thử lại!");
     }
 }
+
 
 //Load combobox KH
 async function reloadCustomerComboBox() {
@@ -1181,96 +1406,106 @@ function updateVoucherDisplay(tongTien) {
 
             // Hiển thị tất cả các voucher phù hợp
             vouchers.forEach(voucher => {
-                const voucherElement = document.createElement('div');
-                voucherElement.classList.add('voucher');
-                voucherElement.setAttribute('data-id', voucher.id);
-                // Tạo phần chi tiết voucher
-                const voucherDetails = document.createElement('div');
-                voucherDetails.classList.add('voucher-details');
-                const voucherCode = document.createElement('div');
-                voucherCode.classList.add('voucher-code');
-                voucherCode.textContent = voucher.voucherCode;
-                const voucherInfo = document.createElement('div');
-                voucherInfo.classList.add('voucher-info');
-                voucherInfo.innerHTML = `
-                    <p>Hạn Đến: ${voucher.endDate}</p>
-                    <p>Điều Kiện: ${voucher.name}</p>
-                    <p>Số Lượng: ${voucher.quantity}</p>
-                `;
-                voucherDetails.appendChild(voucherCode);
-                voucherDetails.appendChild(voucherInfo);
-                voucherElement.appendChild(voucherDetails);
+                // Lọc các voucher thỏa mãn điều kiện
+                if (voucher.status === "Đang diễn ra" && voucher.minimumValue <= tongTien) {
+                    const voucherElement = document.createElement('div');
+                    voucherElement.classList.add('voucher');
+                    voucherElement.setAttribute('data-id', voucher.id);
 
-                // Tạo phần chiết khấu voucher
-                const voucherDiscount = document.createElement('div');
-                voucherDiscount.classList.add('voucher-discount');
-                const voucherDiscountTitle = document.createElement('p');
-                voucherDiscountTitle.textContent = 'Mã Giảm Giá';
-                const voucherDiscountValue = document.createElement('p');
-                voucherDiscountValue.textContent = `${voucher.discountValue}`;
-                voucherDiscount.appendChild(voucherDiscountTitle);
-                voucherDiscount.appendChild(voucherDiscountValue);
+                    // Tạo phần chi tiết voucher
+                    const voucherDetails = document.createElement('div');
+                    voucherDetails.classList.add('voucher-details');
+                    const voucherCode = document.createElement('div');
+                    voucherCode.classList.add('voucher-code');
+                    voucherCode.textContent = voucher.voucherCode;
+                    const voucherInfo = document.createElement('div');
+                    voucherInfo.classList.add('voucher-info');
+                    voucherInfo.innerHTML = `
+                        <p>Hạn Đến: ${voucher.endDate}</p>
+                        <p>Điều Kiện: ${voucher.name}</p>
+                        <p>Số Lượng: ${voucher.quantity}</p>
+                    `;
+                    voucherDetails.appendChild(voucherCode);
+                    voucherDetails.appendChild(voucherInfo);
+                    voucherElement.appendChild(voucherDetails);
 
-                voucherElement.appendChild(voucherDiscount);
-                voucherElement.addEventListener('click', function () {
-                    const voucherId = this.getAttribute('data-id'); // Lấy id từ thuộc tính data-id
+                    // Tạo phần chiết khấu voucher
+                    const voucherDiscount = document.createElement('div');
+                    voucherDiscount.classList.add('voucher-discount');
+                    const voucherDiscountTitle = document.createElement('p');
+                    voucherDiscountTitle.textContent = 'Mã Giảm Giá';
+                    const voucherDiscountValue = document.createElement('p');
+                    voucherDiscountValue.textContent = `${voucher.discountValue}`;
+                    voucherDiscount.appendChild(voucherDiscountTitle);
+                    voucherDiscount.appendChild(voucherDiscountValue);
 
-                    // Kiểm tra xem voucher đã được chọn chưa
-                    if (this.classList.contains('selected')) {
-                        // Nếu voucher đã được chọn, bỏ chọn và reset giảm giá
-                        this.classList.remove('selected');
-                        idVoucher = null;
-                        giamGia = 0; // Reset giảm giá
-                        document.getElementById('giamGia').textContent = formatCurrency(giamGia); // Cập nhật hiển thị giảm giá
-                        updateThucThu(); // Cập nhật lại số tiền thực thu
-                    } else {
-                        // Nếu voucher chưa được chọn, thực hiện chọn voucher
-                        idVoucher = voucherId;
-                        fetch(`/ban-hang-tai-quay/voucher/${idVoucher}`)
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('Network response was not ok');
-                                }
-                                return response.json(); // Trả về dữ liệu dạng JSON
-                            })
-                            .then(voucher => {
-                                // Kiểm tra nếu formVoucher là 'Tiền mặt'
-                                if (voucher.formVoucher == 'Tiền mặt') {
-                                    // Thực hiện hành động khi formVoucher là 'Tiền mặt'
-                                    giamGia = voucher.discountValue;
-                                    const formatGiamGia = formatCurrency(giamGia);
-                                    document.getElementById('giamGia').textContent = formatGiamGia;
-                                    updateThucThu();
-                                } else {
-                                    // Thực hiện hành động nếu formVoucher không phải là 'Tiền mặt'
-                                    giamGia = tongTien * voucher.discountValue / 100;
-                                    const formatGiamGia = formatCurrency(giamGia);
-                                    document.getElementById('giamGia').textContent = formatGiamGia;
-                                    updateThucThu();
-                                }
-                            })
-                            .catch(error => {
-                                console.error('There was a problem with the fetch operation:', error);
+                    voucherElement.appendChild(voucherDiscount);
+
+                    // Lắng nghe sự kiện click vào voucher
+                    voucherElement.addEventListener('click', function () {
+                        const voucherId = this.getAttribute('data-id'); // Lấy id từ thuộc tính data-id
+
+                        // Kiểm tra xem voucher đã được chọn chưa
+                        if (this.classList.contains('selected')) {
+                            // Nếu voucher đã được chọn, bỏ chọn và reset giảm giá
+                            this.classList.remove('selected');
+                            idVoucher = null;
+                            giamGia = 0; // Reset giảm giá
+                            document.getElementById('giamGia').textContent = formatCurrency(giamGia); // Cập nhật hiển thị giảm giá
+                            updateThucThu(); // Cập nhật lại số tiền thực thu
+                        } else {
+                            // Nếu voucher chưa được chọn, thực hiện chọn voucher
+                            idVoucher = voucherId;
+                            fetch(`/ban-hang-tai-quay/voucher/${idVoucher}`)
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error('Network response was not ok');
+                                    }
+                                    return response.json(); // Trả về dữ liệu dạng JSON
+                                })
+                                .then(voucher => {
+                                    // Kiểm tra nếu formVoucher là 'Tiền mặt'
+                                    if (voucher.formVoucher == 'Tiền mặt') {
+                                        // Thực hiện hành động khi formVoucher là 'Tiền mặt'
+                                        giamGia = voucher.discountValue;
+                                        const formatGiamGia = formatCurrency(giamGia);
+                                        document.getElementById('giamGia').textContent = formatGiamGia;
+                                        updateThucThu();
+                                    } else {
+                                        // Thực hiện hành động nếu formVoucher không phải là 'Tiền mặt'
+                                        giamGia = tongTien * voucher.discountValue / 100;
+                                        const formatGiamGia = formatCurrency(giamGia);
+                                        document.getElementById('giamGia').textContent = formatGiamGia;
+                                        updateThucThu();
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('There was a problem with the fetch operation:', error);
+                                });
+
+                            // Xóa vòng bao quanh khỏi tất cả các voucher
+                            const allVouchers = document.querySelectorAll('.voucher');
+                            allVouchers.forEach(v => {
+                                v.classList.remove('selected');
                             });
 
-                        // Xóa vòng bao quanh khỏi tất cả các voucher
-                        const allVouchers = document.querySelectorAll('.voucher');
-                        allVouchers.forEach(v => {
-                            v.classList.remove('selected');
-                        });
+                            // Thêm vòng bao quanh cho voucher được chọn
+                            this.classList.add('selected');
+                        }
+                    });
 
-                        // Thêm vòng bao quanh cho voucher được chọn
-                        this.classList.add('selected');
-                    }
-                });
-                // Thêm voucher vào container
-                voucherContainer.appendChild(voucherElement);
+                    // Thêm voucher vào container
+                    voucherContainer.appendChild(voucherElement);
+                }
             });
         })
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
         });
 }
+
+
+
 
 
 

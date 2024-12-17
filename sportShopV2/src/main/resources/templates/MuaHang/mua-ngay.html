@@ -384,6 +384,10 @@
         .shipping button:hover {
             color: #2980b9;
         }
+        .logo span{
+            font-size: 20px;
+            font-weight: bold;
+        }
     </style>
     <script>
         const listProduct = {id: [[${listProduct.sanPham.id}]]};
@@ -466,6 +470,14 @@
     </script>
 </head>
 <body>
+
+    <div class="logo">
+        <a th:href="@{/mua-sam-SportShopV2/trang-chu}">
+            <img th:src="@{/images/logoSPSV2.png}" alt="SportShopLogo" height="40" width="40">
+        </a>
+        <span>SportShopV2</span>
+
+    </div>
 <div class="container" th:object="${listProduct}">
     <div class="product-header">
         <h1 th:text="${listProduct.sanPham.tenSanPham}">

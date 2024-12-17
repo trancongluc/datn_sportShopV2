@@ -20,6 +20,8 @@ public class HoaDonChiTietService {
         for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTietList) {
             // Kiểm tra nếu cần (ví dụ: validate dữ liệu hoặc tính toán giá trị)
             // Sau đó lưu vào cơ sở dữ liệu
+            hoaDonChiTiet.setCreate_at(LocalDateTime.now());
+            hoaDonChiTiet.setCreate_by("1");
             hdctRepo.save(hoaDonChiTiet);
         }
     }
@@ -37,5 +39,7 @@ public class HoaDonChiTietService {
             throw new EntityNotFoundException("Hóa đơn với mã " + idHDCT + " không tồn tại");
         }
     }
-
+    public HoaDonChiTiet hdctDetail(Integer idHDCT){
+       return hdctRepo.findAllById(idHDCT);
+    }
 }

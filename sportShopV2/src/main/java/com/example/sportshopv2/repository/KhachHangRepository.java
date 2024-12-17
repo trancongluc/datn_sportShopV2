@@ -24,7 +24,8 @@ public interface KhachHangRepository extends JpaRepository<User, Integer> {
             "WHERE a.role = 'Employee' AND u.deleted = false " +
             "ORDER BY u.createdAt DESC")
     List<User> findAllKhachHang();
-
+    @Query("SELECT kh FROM User kh WHERE kh.fullName LIKE %:keyword% OR kh.phoneNumber LIKE %:keyword% ORDER BY kh.createdAt DESC")
+    List<User> findByTenHoacSoDienThoai(@Param("keyword") String keyword);
 
     @Query("SELECT u FROM User u JOIN u.account a LEFT JOIN FETCH u.addresses WHERE a.role = 'Employee' AND " +
             "(u.fullName LIKE %:keyword% OR u.phoneNumber LIKE %:keyword% OR u.email LIKE %:keyword%)")
@@ -41,7 +42,8 @@ public interface KhachHangRepository extends JpaRepository<User, Integer> {
 
     // Tìm kiếm người dùng theo email
     Optional<User> findByEmail(String email);
-
+    boolean existsByEmail(String email);
+    boolean existsByPhoneNumber(String phone);
 
 
 

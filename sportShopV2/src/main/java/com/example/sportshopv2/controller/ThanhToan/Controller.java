@@ -22,30 +22,15 @@ public class Controller {
     }
 
     // Chuyển hướng người dùng đến cổng thanh toán VNPAY
-    @PostMapping("/submitOrder")
+    @GetMapping("/submitOrder")
+    @ResponseBody
     public String submidOrder(@RequestParam("amount") String orderTotal,
                               @RequestParam("orderInfo") String orderInfo,
                               HttpServletRequest request){
         System.out.println(orderTotal);
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
         String vnpayUrl = vnPayService.createOrder(request, orderTotal, orderInfo, baseUrl);
-        return "redirect:" + vnpayUrl;
+        return vnpayUrl;
     }
-   /* @PostMapping("/api/vnpay/create-payment")
-    @ResponseBody
-    public ResponseEntity<?> createVNPayPayment(@RequestBody Map<String, Object> payload, HttpServletRequest request) {
-        int orderTotal = (int) payload.get("amount");
-        String orderInfo = (String) payload.get("orderInfo");
-        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-
-        String vnpayUrl = vnPayService.createOrder(request, orderTotal, orderInfo, baseUrl);
-
-        if (vnpayUrl != null) {
-            return ResponseEntity.ok(Map.of("url", vnpayUrl));
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "Không thể tạo URL thanh toán."));
-        }
-    }*/
 
 }

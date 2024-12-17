@@ -95,12 +95,9 @@
                    style="margin-bottom: 15px">Thêm Địa Chỉ</a>
                 <div th:each="address : ${customer.addresses}">
                     <div class="address-card">
-                        <button style="margin-left:550px" href="#"
-                                th:href="@{/khach-hang/customer/select-address/{customerId}/{addressId}(customerId=${customer.id}, addressId=${address.id})}"
+                        <button style="margin-left:500px"
                                 class="btn btn-primary"
-                        >
-                            <!--                                    class="star-icon"-->
-                            <!--                                    <i class="far fa-star" id="star-[[${address.id}]]"></i>-->
+                                th:onclick="'location.href=\'/khach-hang/chon-dia-chi/' + ${customer.id} + '/' + ${address.id} + '\''">
                             Chọn
                         </button>
                         <p>Địa chỉ: <span th:text="${address.tinh}">Tỉnh</span>,

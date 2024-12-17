@@ -498,22 +498,32 @@ h3 {
     color: #2ecc71;
 }
 /*Khang hang*/
-#customerList {
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
     max-height: 200px;
     overflow-y: auto;
-    border: 1px solid #ddd;
-    background-color: white;
-    position: absolute;
-    z-index: 999;
+    display: none; /* Ban đầu ẩn dropdown */
+    z-index: 1000;
 }
 
-.dropdown-item {
+.dropdown-menu.visible {
+    display: block; /* Khi có class "visible", dropdown sẽ hiển thị */
+}
+
+.dropdown-menu div {
     padding: 8px;
     cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
 }
 
-.dropdown-item:hover {
-    background-color: #f1f1f1;
+.dropdown-menu div:hover {
+    background: #f8f8f8;
 }
+
 
 

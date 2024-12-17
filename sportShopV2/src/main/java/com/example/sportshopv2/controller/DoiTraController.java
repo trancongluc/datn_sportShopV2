@@ -9,6 +9,7 @@ import com.example.sportshopv2.repository.SanPhamChiTietRepository;
 import com.example.sportshopv2.repository.SanPhamRepository;
 
 import com.example.sportshopv2.service.HoaDonChiTietService;
+import com.example.sportshopv2.service.HoaDonService;
 import com.example.sportshopv2.service.KhachhangService;
 import com.example.sportshopv2.service.SanPhamChiTietService;
 
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
@@ -34,6 +36,8 @@ public class DoiTraController {
     private HoaDonChiTietRepo hdctRepo;
     @Autowired
     private HoaDonChiTietService hdctService;
+    @Autowired
+    private HoaDonService hdService;
 
     @GetMapping("/view")
     public String DoiTraView() {
@@ -46,14 +50,21 @@ public class DoiTraController {
 
         HoaDon hoaDon = hoaDonServiceImp.getBillDetailByBillCode(tenHoaDon);
         if (hoaDon == null) {
-            // Xử lý trường hợp không tìm thấy hóa đơn
-            model.addAttribute("error", "Không tìm thấy hóa đơn với mã: " + tenHoaDon);
-            return "doi-tra/view";
+            model.addAttribute("errorMessage", "Không tìm thấy hóa đơn với mã: " + tenHoaDon);
+            return "DoiTra/DoiTra";
+        } else {
+            model.addAttribute("hoaDon", hoaDon);
         }
-        model.addAttribute("hoaDon", hoaDon);
-
         return "DoiTra/DoiTraChiTiet";
     }
+
+    /* @GetMapping("/detail")
+    @ResponseBody
+    public HoaDon getHoaDonDetail2(@RequestParam("tenHoaDon") String tenHoaDon) {
+
+       return hoaDonServiceImp.getBillDetailByBillCode(tenHoaDon);
+
+    }*/
     @PutMapping("/updateHD/{id}")
     @ResponseBody
     public ResponseEntity<?> updateHoaDon(
@@ -73,6 +84,7 @@ public class DoiTraController {
                     .body(Map.of("status", "error", "message", "Đã xảy ra lỗi: " + ex.getMessage()));
         }
     }
+
     @PutMapping("/updateHDCT/{id}")
     @ResponseBody
     public ResponseEntity<?> updateHoaDonCT(
@@ -92,8 +104,22 @@ public class DoiTraController {
                     .body(Map.of("status", "error", "message", "Đã xảy ra lỗi: " + ex.getMessage()));
         }
     }
+
     @GetMapping("/thong-tin/")
-    public HoaDonChiTiet hdctDetail(@RequestParam("idHDCT") Integer idHDCT) {
-        return hdctRepo.findAllById(idHDCT);
+    @ResponseBody
+    public List<HoaDonChiTiet> hdctDetail(@RequestParam("idHDCT") List<Integer> idHDCTs) {
+        return hdctRepo.findAllById(idHDCTs);
+    }
+
+    @PutMapping("/update-hoa-don/{idHD}")
+    @ResponseBody
+    public HoaDon updateBill(@PathVariable("idHD") Integer idHD,
+                             @RequestBody HoaDon hoaDon) {
+        try {
+            return hdService.updateHoaDonHoanTra(idHD, hoaDon);
+        } catch (Exception e) {
+            // Xử lý lỗi (có thể log lỗi và trả về thông báo lỗi)
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cập nhật hóa đơn không thành công", e);
+        }
     }
 }
