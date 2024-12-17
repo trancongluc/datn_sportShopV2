@@ -4,6 +4,7 @@ import com.example.sportshopv2.dto.SanPhamGiamGiaDTO;
 import com.example.sportshopv2.model.*;
 import com.example.sportshopv2.repository.DotGiamGiaRepo;
 import com.example.sportshopv2.service.DotGiamGiaService;
+import jakarta.transaction.Transactional;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -44,9 +45,10 @@ public class DotGiamGiaServiceImp implements DotGiamGiaService {
         return dotGiamGiaRepo.findById(id).orElse(null);
     }
 
-    @Override
+    @Transactional
     public Boolean update(DotGiamGia dotGiamGia) {
         if (dotGiamGiaRepo.existsById(dotGiamGia.getId())) {
+            dotGiamGia.setStatus(dotGiamGia.getStatus()); // Cập nhật trạng thái
             dotGiamGiaRepo.save(dotGiamGia);
             return true;
         }

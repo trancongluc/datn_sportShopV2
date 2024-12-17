@@ -7,6 +7,7 @@ import com.example.sportshopv2.service.DotGiamGiaService;
 import com.example.sportshopv2.service.SanPhamChiTietService;
 import com.example.sportshopv2.service.impl.DotGiamGiaServiceImp;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Controller
@@ -47,17 +49,20 @@ public class DotGiamGiaController {
     public String DotGiamGia(Model model) {
         List<DotGiamGia> allPromotions = dotGiamGiaRepo.findAll(Sort.by(Sort.Direction.DESC, "id"));
 
-        // Cập nhật trạng thái ngay lập tức nếu hết hạn
+        // Cập nhật trạng thái ngay lập tức nếu hết hạn cho cả đợt giảm giá và các chi tiết sản phẩm
         for (DotGiamGia dotGiamGia : allPromotions) {
-            if (dotGiamGia.getEndDate() != null && dotGiamGia.getEndDate().isBefore(LocalDateTime.now())) {
+            // Kiểm tra xem ngày hết hạn có hợp lệ không
+            if (dotGiamGia.getEndDate() != null && dotGiamGia.getEndDate().isBefore(LocalDateTime.now(ZoneId.of("UTC")))) {
+                System.out.println("Updating status for promotion ID: " + dotGiamGia.getId());
                 dotGiamGia.setStatus("Hết hạn");
-                dotGiamGiaRepo.save(dotGiamGia); // Cập nhật vào cơ sở dữ liệu ngay lập tức
+                dotGiamGiaRepo.save(dotGiamGia); // Lưu cập nhật vào cơ sở dữ liệu
+                System.out.println("Updated status to Hết hạn for promotion ID: " + dotGiamGia.getId());
             }
         }
-
         model.addAttribute("listDotGiamGia", allPromotions);
         return "DotGiamGia/dotGiamGia";
     }
+
 
     @GetMapping("/add-dot-giam-gia")
     public String showAddGiamGiaForm(Model model,
@@ -79,64 +84,76 @@ public class DotGiamGiaController {
         return "DotGiamGia/addDotGiamGia";
     }
 
-    private Map<Long, Float> originalPricesCache = new HashMap<>();
 
     @PostMapping("/save")
+    @Transactional
     public String saveDotGiamGia(
             @RequestParam("selectProductID") List<Long> selectedProducts,
             @ModelAttribute DotGiamGia dotGiamGia,
             RedirectAttributes redirectAttributes) {
 
-        if (dotGiamGia.getEndDate() != null && dotGiamGia.getEndDate().isBefore(LocalDateTime.now())) {
-            dotGiamGia.setStatus("Hết hạn");
-        } else {
-            dotGiamGia.setStatus("Đang diễn ra");
-        }
+        try {
+            // Kiểm tra ngày hết hạn và cập nhật trạng thái
+            if (dotGiamGia.getEndDate() != null && dotGiamGia.getEndDate().isBefore(LocalDateTime.now())) {
+                dotGiamGia.setStatus("Hết hạn");
+            } else {
+                dotGiamGia.setStatus("Đang diễn ra"); // Trạng thái mặc định nếu chưa hết hạn
+            }
 
-        DotGiamGia savedPromotion = dotGiamGiaRepo.save(dotGiamGia);
+            DotGiamGia savedPromotion = dotGiamGiaRepo.saveAndFlush(dotGiamGia);
+            System.out.println("Saved Promotion ID: " + savedPromotion.getId());
 
-        System.out.println("Saved Promotion ID: " + savedPromotion.getId());
+            // Danh sách để lưu các chi tiết sản phẩm
+            List<DotGiamGiaChiTiet> productDetailPromotions = new ArrayList<>();
 
+            // Tìm kiếm sản phẩm chi tiết theo ID đã chọn
+            List<SPCT> sanPhamChiTietList = spctRePo.findByidSanPham_IdIn(selectedProducts);
+            System.out.println(sanPhamChiTietList.isEmpty() + " tắt unikey ");
 
-        List<DotGiamGiaChiTiet> productDetailPromotions = new ArrayList<>();
+            if (sanPhamChiTietList.isEmpty()) {
+                System.out.println("No products found for the selected IDs.");
+                redirectAttributes.addFlashAttribute("errorMessage", "Không có sản phẩm nào được chọn.");
+                return "redirect:/dot-giam-gia/view";
+            }
 
-        System.out.println(selectedProducts + "ID đã chọn");
-        // Tìm kiếm sản phẩm chi tiết theo ID
-        List<SPCT> sanPhamChiTietList = spctRePo.findByidSanPham_IdIn(selectedProducts);
-        System.out.println(sanPhamChiTietList.isEmpty() + "tắt unikey ");
-        if (sanPhamChiTietList.isEmpty()) {
-            System.out.println("No products found for the selected IDs.");
-        } else {
+            // Tạo các chi tiết sản phẩm cho đợt giảm giá
             for (SPCT sanPhamChiTiet : sanPhamChiTietList) {
                 DotGiamGiaChiTiet productDetailPromotion = new DotGiamGiaChiTiet();
                 productDetailPromotion.setDotGiamGia(savedPromotion);
                 productDetailPromotion.setSpct(sanPhamChiTiet);
                 productDetailPromotion.setName(savedPromotion.getName());
 
+                // Tạo mã ngẫu nhiên cho chi tiết sản phẩm
                 String code = generateRandomCode();
                 productDetailPromotion.setCode(code);
 
+                // Đặt trạng thái và thông tin khác
                 productDetailPromotion.setStatus(savedPromotion.getStatus());
-                productDetailPromotion.setCreateAt(savedPromotion.getCreateAt());
+                productDetailPromotion.setCreateAt(LocalDateTime.now());
                 productDetailPromotion.setCreateBy(savedPromotion.getCreateBy());
                 productDetailPromotion.setDeleted(savedPromotion.getDeleted());
 
                 productDetailPromotions.add(productDetailPromotion);
                 System.out.println("Created Product Detail Promotion ID: " + productDetailPromotion.getId());
             }
+
+            // Lưu tất cả các chi tiết sản phẩm nếu có
+            if (!productDetailPromotions.isEmpty()) {
+                productDetailPromotionRepo.saveAll(productDetailPromotions);
+                System.out.println("Saved Product Detail Promotions: " + productDetailPromotions.size());
+            } else {
+                System.out.println("No product detail promotions to save.");
+            }
+
+            redirectAttributes.addFlashAttribute("successMessage", "Lưu đợt giảm giá thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi xảy ra khi lưu đợt giảm giá: " + e.getMessage());
+            return "redirect:/dot-giam-gia/view";
         }
 
-        // Lưu tất cả các chi tiết sản phẩm nếu có
-        if (!productDetailPromotions.isEmpty()) {
-            productDetailPromotionRepo.saveAll(productDetailPromotions);
-            System.out.println("Saved Product Detail Promotions: " + productDetailPromotions.size());
-        } else {
-            System.out.println("No product detail promotions to save.");
-        }
-
-        redirectAttributes.addFlashAttribute("successMessage", "Lưu đợt giảm giá thành công!");
         return "redirect:/dot-giam-gia/view";
     }
+
 
     private String generateRandomCode() {
         Random random = new Random();

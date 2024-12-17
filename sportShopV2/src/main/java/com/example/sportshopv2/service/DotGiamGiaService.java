@@ -14,7 +14,6 @@ public interface DotGiamGiaService {
     Boolean update(DotGiamGia dotGiamGia);
     Boolean delete(Integer id);
 
-
     void save(DotGiamGia dotGiamGia);
 
     List<SanPhamChiTiet> getSanPhamChiTietByDotGiamGiaId(Integer dotGiamGiaId);
