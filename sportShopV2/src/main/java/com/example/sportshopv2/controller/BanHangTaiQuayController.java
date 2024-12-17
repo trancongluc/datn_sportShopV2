@@ -41,6 +41,7 @@ public class BanHangTaiQuayController {
 
         model.addAttribute("spctDto", listSPCTDto);
         model.addAttribute("kh", listKH);
+
         return "BanHangTaiQuay/BanHangTaiQuay";
     }
     @GetMapping("/cboKH")

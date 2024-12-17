@@ -4,6 +4,9 @@ import com.example.sportshopv2.model.HoaDon;
 import com.example.sportshopv2.repository.HoaDonRepo;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.server.ResponseStatusException;
@@ -88,5 +91,15 @@ public class HoaDonService {
     }
     public List<HoaDon> getBillsByCustomerId(Integer customerId) {
         return hdRepo.findByCustomerId(customerId);
+    }
+
+    public Page<HoaDon> getHoaDonsByStatus(String status, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return hdRepo.findAllByStatusLikeOrderByCreateAtDesc(status, pageable);
+    }
+
+    public Page<HoaDon> getHoaDonsByStatusNot(String status, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return hdRepo.findAllByStatusNotOrderByCreateAtDesc(status, pageable);
     }
 }

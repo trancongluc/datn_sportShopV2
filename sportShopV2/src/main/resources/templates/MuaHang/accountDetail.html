@@ -96,129 +96,160 @@
             margin: 0 0 10px; /* Space between lines of text */
         }
 
-        /* Phần lọc trạng thái đơn hàng */
-        button[data-status] {
-            border: none;
-            background-color: #f8f9fa;
-            color: black;
-            font-weight: bold;
-            margin-right: 10px;
-            padding: 8px 16px;
-            border-radius: 5px;
+        #order-list {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        button[data-status]:hover,
-        button[data-status]:focus {
-            background-color: #e2e6ea;
-            color: #007bff;
-            cursor: pointer;
-        }
-
-        button[data-status="Chờ xác nhận"] {
-            background-color: #007bff;
-            color: white;
-        }
-
-        /* Phần hiển thị chi tiết đơn hàng */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        table tr {
-            border-bottom: 1px solid #ddd;
-        }
-
-        table td {
-            padding: 10px;
-            vertical-align: middle;
-        }
-
-        table img {
-            width: 80px;
-            height: auto;
-            border-radius: 5px;
-        }
-
-        /* Tên sản phẩm và giá */
-        table p {
-            margin: 0;
-            font-size: 14px;
-        }
-
-        table p:first-child {
-            font-weight: bold;
+        .btn-light {
             color: #333;
-        }
-
-        table p:last-child {
-            color: red;
-            font-weight: bold;
-        }
-
-        /* Thành tiền */
-        #total-price {
-            font-size: 18px;
-            font-weight: bold;
-            color: red;
-            text-align: right;
-        }
-
-        #total-price::before {
-            content: "Thành tiền: ";
-            color: black;
-        }
-
-        /* Nút chức năng */
-        .d-flex button {
-            padding: 8px 16px;
-            border-radius: 5px;
-            font-weight: bold;
             border: none;
+            transition: background-color 0.3s;
         }
 
-        #cancel-order {
-            background-color: #dc3545;
-            color: white;
+        .btn-light:hover {
+            background-color: #d5d5d5;
         }
 
-        #cancel-order:hover {
-            background-color: #c82333;
-            cursor: pointer;
+        .order-list {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
         }
 
-        #view-order {
-            background-color: #f8f9fa;
-            border: 1px solid #ced4da;
-            color: black;
+        .product-image {
+            width: 60px; /* Kích thước hình ảnh */
+            height: 60px; /* Kích thước hình ảnh */
+            border-radius: 5px; /* Bo góc */
+            object-fit: cover; /* Cắt ảnh cho vừa khung */
         }
 
-        #view-order:hover {
-            background-color: #e2e6ea;
-            color: black;
-            cursor: pointer;
+        h6 {
+            font-weight: bold;
+            margin: 0; /* Bỏ margin mặc định */
         }
 
+        .product-price {
+            font-size: 1.2em;
+            color: #c0392b; /* Màu sắc giá tiền */
+            font-weight: bold;
+        }
+
+        .emoji {
+            font-size: 1.5em; /* Kích thước emoji */
+        }
+
+        .d-flex {
+            display: flex;
+            align-items: center;
+        }
+
+        .mt-3 {
+            margin-top: 1rem; /* Khoảng cách trên */
+        }
+
+        .mb-4 {
+            margin-bottom: 1.5rem; /* Khoảng cách dưới */
+        }
+
+        .py-2 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .border-bottom {
+            border-bottom: 1px solid #ddd; /* Đường viền dưới */
+        }
+
+        .border-top {
+            border-top: 1px solid #ddd; /* Đường viền trên */
+        }
+
+        .btn {
+            border-radius: 5px; /* Bo góc các nút */
+        }
+
+        .d-flex {
+            display: flex;
+            align-items: center; /* Căn giữa theo chiều dọc */
+        }
+
+        .product-image {
+            width: 60px; /* Kích thước hình ảnh */
+            height: 60px; /* Kích thước hình ảnh */
+            border-radius: 5px; /* Bo góc */
+            object-fit: cover; /* Cắt ảnh cho vừa khung */
+            margin-right: 10px; /* Khoảng cách bên phải của hình ảnh */
+        }
+
+        .flex-grow-1 {
+            margin-left: 30px; /* Khoảng cách bên trái cho tên sản phẩm */
+        }
+
+        .flex-column {
+            display: flex; /* Sử dụng Flexbox cho phần tử xếp dọc */
+            flex-direction: column; /* Xếp theo chiều dọc */
+        }
     </style>
     <script>
-        //loc sp
-        document.addEventListener('DOMContentLoaded', function () {
-            const buttons = document.querySelectorAll('#order-list .btn-light');
-            const rows = document.querySelectorAll('#order-list tbody tr');
+        function filterOrders(status) {
+            event.preventDefault();
+            // Lấy tất cả các đơn hàng
+            const orders = document.querySelectorAll('.order-list > div');
 
-            buttons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const status = this.getAttribute('data-status');
+            orders.forEach(order => {
+                const orderStatus = order.getAttribute('data-status'); // Lấy trạng thái của từng đơn hàng
 
-                    rows.forEach(row => {
-                        if (status === 'all' || row.getAttribute('data-status') === status) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    });
-                });
+                // Hiển thị tất cả nếu status = 'all', hoặc chỉ hiển thị đơn hàng có trạng thái khớp
+                if (status === 'all' || orderStatus === status) {
+                    order.style.display = 'block'; // Hiển thị đơn hàng
+                } else {
+                    order.style.display = 'none'; // Ẩn đơn hàng
+                }
+            });
+        }
+
+        // Hàm format ngày
+        function formatDate(isoString) {
+            const date = new Date(isoString);
+            if (isNaN(date)) return isoString; // Kiểm tra dữ liệu hợp lệ
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        // Chạy hàm format khi DOM load
+        document.addEventListener("DOMContentLoaded", function () {
+            // Lấy tất cả các phần tử có ID bắt đầu bằng "createAt-"
+            const hoaDonElements = document.querySelectorAll('[id^="createAt-"]');
+
+            hoaDonElements.forEach(element => {
+                const rawDate = element.textContent.trim(); // Lấy nội dung trong p
+                const formattedDate = formatDate(rawDate); // Format ngày
+                element.textContent = formattedDate; // Gán lại ngày đã format
+            });
+        });
+
+        // Hàm format tiền
+        function formatMoney(amount) {
+            // Sử dụng phương thức toLocaleString để định dạng số
+            return amount.toLocaleString('vi-VN'); // Định dạng theo kiểu tiền Việt Nam
+        }
+
+        // Chạy hàm format khi DOM load
+        document.addEventListener("DOMContentLoaded", function () {
+            // Lấy tất cả phần tử có id bắt đầu bằng "productPrice-"
+            const priceElements = document.querySelectorAll('[id^="productPrice-"]');
+
+            priceElements.forEach(element => {
+                const rawPrice = element.textContent.trim().replace(' VND', ''); // Lấy giá trị và loại bỏ ' VND'
+                const formattedPrice = formatMoney(parseFloat(rawPrice)); // Chuyển sang số và format
+                element.textContent = `${formattedPrice} VND`; // Gán lại giá đã format
             });
         });
     </script>
@@ -262,103 +293,139 @@
             <main class="col-md-9" id="main-content">
                 <!-- Danh sách đơn hàng mặc định -->
                 <div id="order-list">
-                    <div th:if="${hoaDon != null}">
-                        <!-- Danh sách hóa đơn -->
-                        <div th:each="hoaDon, index : ${hoaDon}" class="border rounded p-3 mb-4">
-                            <!-- Debug giá trị billCode -->
-                            <p th:text="'Bill Code: ' + ${hoaDon.billCode}"></p>
-
-                            <!-- Chi tiết sản phẩm -->
-                            <table class="table align-middle">
-                                <tbody th:each="item : ${hoaDon.billDetails}">
-                                <tr>
-                                    <td th:text="${index.index + 1}"></td>
-                                    <td>
-                                        <p th:text="${item.sanPhamChiTiet.idSanPham.tenSanPham}"></p>
-                                        <p class="text-danger font-weight-bold"
-                                           th:text="${item.sanPhamChiTiet.gia} + ' VND'"></p>
-                                    </td>
-                                    <td>
-                                        <div th:style="'width: 40px; height: 40px; background-color:' + ${item.sanPhamChiTiet.idMauSac.tenMauSac}"></div>
-                                    </td>
-                                    <td th:text="${item.quantity}"></td>
-                                    <td th:text="${item.quantity} * ${item.sanPhamChiTiet.gia} + ' đ'"></td>
-                                </tr>
-                                </tbody>
-                            </table>
-
-                            <!-- Nút chức năng -->
-                            <div class="d-flex justify-content-end mt-3">
-                                <!-- Hủy đơn -->
-                                <a th:href="@{/mua-sam-SportShopV2/deleteBill/{BillId}(BillId=${hoaDon.id})}"
-                                   class="btn btn-danger font-weight-bold mr-2" style="margin-right: 5px">Hủy đơn</a>
-
-                                <!-- Xem đơn hàng -->
-                                <form th:action="@{/mua-sam-SportShopV2/theo-doi-hoa-don}" method="get">
-                                    <!-- Gán giá trị mặc định nếu billCode null -->
-                                    <input type="hidden" name="tenHoaDon"
-                                           th:value="${hoaDon.billCode != null ? hoaDon.billCode : 'DefaultBillCode'}">
-                                    <button type="submit" class="btn btn-primary font-weight-bold">Xem đơn hàng</button>
-                                </form>
-                            </div>
-                        </div>
+                    <h4 class="fw-bold">Danh sách đơn hàng</h4>
+                    <hr>
+                    <p class="fw-bold"><i class="bi bi-funnel-fill"></i> Bộ lọc</p>
+                    <div class="d-flex mb-4">
+                        <button class="btn btn-light mr-2" onclick="filterOrders('all')">Tất cả</button>
+                        <button class="btn btn-light mr-2" onclick="filterOrders('Chờ xác nhận')">Chờ xác nhận</button>
+                        <button class="btn btn-light mr-2" onclick="filterOrders('Đã xác nhận')">Đã xác nhận</button>
+                        <button class="btn btn-light mr-2" onclick="filterOrders('Đang vận chuyển')">Đang vận chuyển
+                        </button>
+                        <button class="btn btn-light mr-2" onclick="filterOrders('Hoàn thành')">Hoàn thành</button>
+                        <button class="btn btn-light mr-2" onclick="filterOrders('Hoàn trả')">Hoàn trả</button>
+                        <button class="btn btn-light mr-2" onclick="filterOrders('Hủy')">Hủy</button>
                     </div>
 
-
-                    <!-- Form thông tin người dùng -->
-                    <div id="profile-form" style="display:none; margin-top: 15px">
-                        <h3>Sửa Hồ Sơ</h3>
-                        <div class="col-md-8">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="hoTen" class="form-label">Họ và tên</label>
-                                    <input type="hoTen" class="form-control" id="hoTen" name="fullName"
-                                           th:value="${customer.fullName}" required>
+                    <!-- Mẫu đơn hàng -->
+                    <div class="order-list border-top mt-3">
+                        <div th:each="hoaDon, index : ${hoaDon}" th:attr="data-status=${hoaDon.status}">
+                            <div class="border rounded p-3 mb-4">
+                                <div class="d-flex">
+                                    <p th:text="${index.index + 1}" class="fw-bold"
+                                       style="margin-right: 50px; width: 30px; height: 30px; background-color: black; border-radius: 50%; color: white; text-align: center; display: flex; justify-content: center; align-items: center;">
+                                    </p>
+                                    <div>
+                                        <p class="fw-bold" th:text="'Mã ĐH: ' + ${hoaDon.billCode}"></p>
+                                        <p class="fw-bold order-display"
+                                           th:text="'Trạng thái: ' + ${hoaDon.status}"></p>
+                                        <!-- Các phần tử khác -->
+                                    </div>
+                                    <!-- Ngày tạo hóa đơn với ID -->
+                                    <p id="createAt-${hoaDon.billCode}" class="fw-bold"
+                                       th:text="${hoaDon.createAt}"
+                                       style="margin-left: auto; text-align: center; display: flex; justify-content: center; align-items: center;">
+                                    </p>
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="ngaySinh" class="form-label">Ngày sinh</label>
-                                    <input type="date" class="form-control" id="ngaySinh" name="date"
-                                           th:value="${customer.date}" required max="" onchange="validateBirthDate()">
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="email" class="form-label">E-mail</label>
-                                    <input type="email" class="form-control" id="email" name="email"
-                                           th:value="${customer.email}" required>
-                                    <div th:if="${emailError != null}" class="text-danger">
-                                        <span th:text="${emailError}"></span>
+                                <hr>
+                                <div class="d-flex align-items-center justify-content-between border-bottom py-2"
+                                     th:each="item : ${hoaDon.billDetails}">
+                                    <div>
+                                        <div class="d-flex align-items-center">
+                                            <!-- Hiển thị ảnh cho từng sản phẩm -->
+                                            <img th:src="@{|/images/${anhSPMap[item.sanPhamChiTiet.id]}|}"
+                                                 alt="Ảnh sản phẩm"
+                                                 style="width: 60px; height: 60px; object-fit: cover; margin-right: 30px; border-radius: 5px">
+                                            <div th:style="'border-radius: 10px; width: 30px; height: 30px; background-color:' + ${item.sanPhamChiTiet.idMauSac.tenMauSac}"></div>
+                                            <div class="flex-grow-1 ml-3">
+                                                <h6 th:text="${item.sanPhamChiTiet.idSanPham.tenSanPham}"></h6>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <p th:text="'Size: '+${item.sanPhamChiTiet.idKichThuoc.tenKichThuoc}"></p>
+                                        <p th:text="'Số lượng: '+${item.quantity}"></p>
+                                    </div>
+                                    <div class="product-price" id="productPrice-${hoaDon.billCode}"
+                                         th:text="${item.sanPhamChiTiet.gia} + ' VND'">
                                     </div>
 
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="gioiTinh" class="form-label">Giới tính</label>
-                                    <select class="form-select" id="gioiTinh" name="gender" required>
-                                        <option th:value="${customer.gender}" th:text="${customer.gender}" hidden>Chọn
-                                            giới
-                                            tính
-                                        </option>
-                                        <option value="Nam">Nam</option>
-                                        <option value="Nữ">Nữ</option>
-                                        <option value="Khác">Khác</option>
-                                    </select>
-                                </div>
-                            </div>
 
-                            <div class="mb-3">
-                                <label for="soDienThoai" class="form-label">Số điện thoại</label>
-                                <input type="text" class="form-control" id="soDienThoai" name="phoneNumber"
-                                       th:value="${customer.phoneNumber}" required
-                                       pattern="^[0-9]{10,15}$"
-                                       title="Số điện thoại phải có từ 10 đến 15 chữ số">
-
-                                <div th:if="${phoneError != null}" class="text-danger">
-                                    <span th:text="${phoneError}"></span>
+                                <!-- Tóm tắt đơn hàng -->
+                                <div class="d-flex justify-content-between mt-3">
+                                    <p class="fw-bold">Thành tiền: <span class="product-price"
+                                                                         id="productPrice-${hoaDon.billCode}"
+                                                                         th:text="${hoaDon.total_money} + ' VND'"></span>
+                                    </p>
+                                    <div>
+                                        <form th:action="@{/mua-sam-SportShopV2/theo-doi-hoa-don}" method="get">
+                                            <!-- Gán giá trị mặc định nếu billCode null -->
+                                            <input type="hidden" name="tenHoaDon"
+                                                   th:value="${hoaDon.billCode != null ? hoaDon.billCode : 'DefaultBillCode'}">
+                                            <button type="submit" class="btn btn-primary font-weight-bold">Xem đơn hàng
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Cập Nhật</button>
+                    </div>
+                </div>
+
+
+                <!-- Form thông tin người dùng -->
+                <div id="profile-form" style="display:none; margin-top: 15px">
+                    <h3>Sửa Hồ Sơ</h3>
+                    <div class="col-md-8">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="hoTen" class="form-label">Họ và tên</label>
+                                <input type="hoTen" class="form-control" id="hoTen" name="fullName"
+                                       th:value="${customer.fullName}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="ngaySinh" class="form-label">Ngày sinh</label>
+                                <input type="date" class="form-control" id="ngaySinh" name="date"
+                                       th:value="${customer.date}" required max="" onchange="validateBirthDate()">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">E-mail</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                       th:value="${customer.email}" required>
+                                <div th:if="${emailError != null}" class="text-danger">
+                                    <span th:text="${emailError}"></span>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <label for="gioiTinh" class="form-label">Giới tính</label>
+                                <select class="form-select" id="gioiTinh" name="gender" required>
+                                    <option th:value="${customer.gender}" th:text="${customer.gender}" hidden>Chọn giới
+                                        tính
+                                    </option>
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="soDienThoai" class="form-label">Số điện thoại</label>
+                            <input type="text" class="form-control" id="soDienThoai" name="phoneNumber"
+                                   th:value="${customer.phoneNumber}" required
+                                   pattern="^[0-9]{10,15}$"
+                                   title="Số điện thoại phải có từ 10 đến 15 chữ số">
+
+                            <div th:if="${phoneError != null}" class="text-danger">
+                                <span th:text="${phoneError}"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Cập Nhật</button>
 
     </form>
     <hr>
@@ -676,6 +743,25 @@
             });
         });
 
+    });
+    //loc sp
+    document.addEventListener('DOMContentLoaded', function () {
+        const buttons = document.querySelectorAll('#order-list .btn-light');
+        const rows = document.querySelectorAll('#order-list tbody tr');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', function () {
+                const status = this.getAttribute('data-status');
+
+                rows.forEach(row => {
+                    if (status === 'all' || row.getAttribute('data-status') === status) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
     });
 </script>
 </main>

@@ -469,6 +469,7 @@ document.querySelector('.khachHang').addEventListener('input', async function ()
                             <span>${address.tinh || '-'}</span>
                             <span>${address.quan || '-'}</span>
                             <span>${address.phuong || '-'}</span>
+                            <span>${address.line}</span>
                             <button type="button" class="btn btn-link text-primary float-end" onclick="selectAddress(this, '${address.tinh}', '${address.quan}', '${address.phuong}')">
                                 Chọn
                             </button>
@@ -506,12 +507,13 @@ async function selectAddress(button) {
     const tinh = listItem.querySelector('span:nth-child(1)').innerText.trim();
     const quan = listItem.querySelector('span:nth-child(2)').innerText.trim();
     const phuong = listItem.querySelector('span:nth-child(3)').innerText.trim();
-
+    const line = listItem.querySelector('span:nth-child(4)').innerText.trim();
+    console.log(line)
     // Cập nhật các dropdown trong phần deliveryAddress
     document.getElementById("tinh").innerHTML = `<option value="${tinh}">${tinh}</option>`;
     document.getElementById("quan").innerHTML = `<option value="${quan}">${quan}</option>`;
     document.getElementById("phuong").innerHTML = `<option value="${phuong}">${phuong}</option>`;
-
+    document.getElementById("soNha").value = line;
     // Hiển thị phần deliveryAddress nếu đang ẩn
     document.getElementById("deliveryAddress").style.display = "block";
 
@@ -534,6 +536,9 @@ async function selectAddress(button) {
         console.error("Lỗi khi tính phí ship:", error);
     }
     console.log("Địa chỉ được chọn:", {tinh, quan, phuong});
+    const diaChiThem =  {tinh, quan, phuong};
+    address =`${diaChiThem.phuong}, ${diaChiThem.quan}, ${diaChiThem.tinh}`;
+    console.log("DiachiThem", address);
 }
 
 // Ẩn dropdown khi nhấn ra ngoài
@@ -939,15 +944,18 @@ async function capNhatHoaDon() {
         if (paymentMethod === 'Chuyển Khoản') {
             async function redirectToVNPay(orderTotal, orderInfo, orderId) {
                 try {
-                    const response = await fetch('VNPAY-demo/api/vnpay/create_payment', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({amount: orderTotal, orderInfo: orderInfo, orderId: orderId})
+                    // Tạo URL với các tham số query string
+                    const url = `/VNPay/demo/submitOrder?amount=${orderTotal}&orderInfo=${orderInfo}`;
+
+                    // Gửi yêu cầu GET tới server
+                    const response = await fetch(url, {
+                        method: 'GET' // Phương thức GET vì bạn đã sử dụng @GetMapping trên server
                     });
 
-                    const result = await response.json();
-                    if (result.url) {
-                        window.location.href = result.url; // Chuyển hướng đến VNPay
+                    // Kiểm tra nếu yêu cầu thành công
+                    if (response.ok) {
+                        const result = await response.text(); // Lấy URL thanh toán VNPay từ kết quả
+                        window.location.href = result; // Chuyển hướng đến VNPay (không sử dụng "redirect:")
                     } else {
                         showToast('Lỗi khi tạo thanh toán!');
                     }
@@ -957,9 +965,10 @@ async function capNhatHoaDon() {
                 }
             }
 
-            await redirectToVNPay();
-            return; // Dừng hàm `capNhatHoaDon` khi chuyển hướng đến VNPay
+            await redirectToVNPay(tongTien, idHD);
+
         }
+
 
         // Tiến hành cập nhật hóa đơn ngay nếu thanh toán không qua VNPay
         const hoaDon = {
@@ -1097,7 +1106,7 @@ async function capNhatHoaDon() {
         }
         showToast("Tạo Hóa Đơn Thành Công!");
         selectedProductIds = [];
-        window.location.href = '/ban-hang-tai-quay'; // Chuyển hướng về trang bán hàng
+      /*  window.location.href = '/ban-hang-tai-quay';*/ // Chuyển hướng về trang bán hàng
 
     } catch (error) {
         console.error('Có lỗi xảy ra:', error);

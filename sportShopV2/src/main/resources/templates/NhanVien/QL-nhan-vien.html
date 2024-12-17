@@ -19,24 +19,18 @@
     <div class="container">
         <h1 class="txt">Quản lý nhân viên</h1>
         <form th:action="@{/nhanvien/list}" method="get" class="shadow-lg p-3 mb-5 bg-body rounded">
-            <div class="fw-bold" style="margin-bottom: 10px">Tìm kiếm nhân viên
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
-                     viewBox="0 0 16 16">
-                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-                </svg>
-            </div>
             <div class="filter-section">
                 <input type="text"
                        placeholder="Tìm kiếm theo tên, điện thoại, email, địa chỉ và trạng thái hoạt động..."
                        name="keyword" th:value="${keyword}">
-                <button style="margin-left: 400px; width: 150px" type="submit" class="btn btn-warning">
+                <button style="margin-left: 400px; width: 140px" type="submit" class="btn btn-warning">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="bi bi-search" viewBox="0 0 16 16">
                         <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
                     </svg>
                     Search
                 </button>
-                <a href="/nhanvien/list" class="btn btn-danger" style="margin-left: 10px; width: 150px" >
+                <a href="/nhanvien/list" class="btn btn-danger" style="margin-left: 10px; width: 140px" >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
@@ -44,7 +38,7 @@
                     </svg>
                     Reset
                 </a>
-                <a href="/nhanvien/them-nhan-vien" class="btn btn-success">
+                <a href="/nhanvien/them-nhan-vien" class="btn btn-success" style="margin-left: 10px; width: 140px">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="bi bi-plus-circle" viewBox="0 0 16 16">
                         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
@@ -52,7 +46,6 @@
                     </svg>
                     Thêm nhân viên
                 </a>
-
             </div>
         </form>
         <div class="shadow-lg p-3 mb-5 bg-body rounded" style="margin-top: 50px">
@@ -149,7 +142,7 @@
                     <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
                         <a class="page-link" th:href="@{/nhanvien/list(page=${i}, size=${size})}"
                            th:text="${i + 1}"
-                           th:class="${i == currentPage ? 'btn btn-primary' : 'btn btn-secondary'}"></a>
+                           th:class="${i == currentPage ? 'btn btn-primary' : 'btn btn-secondary'}" style="margin-left: 1px; margin-right: 1px; background-color: white; color: black"></a>
                     </li>
                     <li class="page-item" th:class="${currentPage == totalPages - 1} ? 'disabled' : ''">
                         <a class="page-link" th:href="@{/nhanvien/list(page=${currentPage + 1}, size=${size})}" th:if="${currentPage < totalPages - 1}">Next</a>
