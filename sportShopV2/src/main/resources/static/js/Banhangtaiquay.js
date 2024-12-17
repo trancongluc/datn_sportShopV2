@@ -1106,7 +1106,7 @@ async function capNhatHoaDon() {
         }
         showToast("Tạo Hóa Đơn Thành Công!");
         selectedProductIds = [];
-      /*  window.location.href = '/ban-hang-tai-quay';*/ // Chuyển hướng về trang bán hàng
+        window.location.href = '/ban-hang-tai-quay'; // Chuyển hướng về trang bán hàng
 
     } catch (error) {
         console.error('Có lỗi xảy ra:', error);
