@@ -68,6 +68,7 @@ public class ChatService {
             throw new RuntimeException("User not found");
         }
     }
+
     public int getNameFromIDUser(String username) {
         // Tìm Account theo username
         Optional<Account> account = accountRepository.findByUsername(username);
@@ -78,7 +79,8 @@ public class ChatService {
             throw new RuntimeException("User not found");
         }
     }
-    public Optional<NguoiDung> getName(int ID){
+
+    public Optional<NguoiDung> getName(int ID) {
         return user.findById(ID);
     }
 
@@ -117,6 +119,7 @@ public class ChatService {
             throw new RuntimeException("User not found");
         }
     }
+
     public int getAccountId(String username) {
         // Tìm Account theo username
         Optional<Account> account = accountRepository.findByUsername(username);
@@ -126,6 +129,10 @@ public class ChatService {
         } else {
             throw new RuntimeException("User not found");
         }
+    }
+
+    public boolean isChatBoxExistsByCreateBy(int accountId) {
+        return chatBoxRepository.existsByCreateBy(accountId);
     }
 }
 

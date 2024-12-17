@@ -156,7 +156,8 @@ public class DatHangController {
         // Kiểm tra xem accountId đã có chatBox hay chưa
         List<message> message = chatService.getMesByAccountId(accountId);
 
-        if (message.isEmpty()) {
+// Kiểm tra xem accountId đã có ChatBox hay chưa dựa vào createBy
+        if (!chatService.isChatBoxExistsByCreateBy(accountId)) {
             // Nếu không tìm thấy ChatBox, tạo mới ChatBox với tên đặt theo tên người dùng
             chatBox newChatBox = new chatBox();
             newChatBox.setName(name.get().getFull_name()); // Đặt tên ChatBox theo tên người dùng
@@ -700,7 +701,6 @@ public class DatHangController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-
 
 
     //TT khach hang

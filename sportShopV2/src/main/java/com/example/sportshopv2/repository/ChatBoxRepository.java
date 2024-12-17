@@ -20,4 +20,7 @@ public interface ChatBoxRepository extends JpaRepository<chatBox, Integer> {
     chatBox findByCreateBy(Integer accountId);
 
     List<chatBox> findAllByCreateBy(Integer accountId);
+
+    boolean existsByCreateBy(int createBy);
+    chatBox findByCreateBy(int createBy);
 }
