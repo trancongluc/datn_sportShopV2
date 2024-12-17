@@ -230,6 +230,7 @@ public class HoaDonController {
 
     @GetMapping("/export/pdf")
     public void viewInvoice(HttpServletRequest request, HttpServletResponse response, @RequestParam Integer id) {
+
         List<HoaDonChiTiet> billDetail = hdctrepo.findAllByHoaDon_Id(id);
         Map<Integer, SanPhamChiTietDTO> spctMap = new HashMap<>();
         for (HoaDonChiTiet hdct: billDetail){
@@ -243,6 +244,15 @@ public class HoaDonController {
         }
 
         try {
+            double discountValue = bill.getMoney_reduced();
+            double moneyShip = bill.getMoney_ship();
+            double totalPayMent = bill.getTotal_money();
+            double total = billDetail.stream().mapToDouble(HoaDonChiTiet::getPrice).sum();
+            NumberFormat currencyFormatter = NumberFormat.getInstance(new Locale("vi", "VN"));
+            String formattedDiscount = currencyFormatter.format(discountValue) + "đ";
+            String formatMoneyShip = currencyFormatter.format(moneyShip);
+            String formatTotalPayMent = currencyFormatter.format(totalPayMent);
+            String formatTotal = currencyFormatter.format(total);
             response.setContentType("application/pdf");
             response.setHeader("Content-Disposition", "attachment; filename=Invoice_" + id + ".pdf");
 
@@ -252,11 +262,11 @@ public class HoaDonController {
             context.setVariable("items", billDetail);
             context.setVariable("spct", spctMap);
             context.setVariable("productCount", billDetail.size());
-            context.setVariable("discount", bill.getMoney_reduced());
-            context.setVariable("tienShip", bill.getMoney_ship());
-            context.setVariable("total", billDetail.stream().mapToDouble(HoaDonChiTiet::getPrice).sum());
+            context.setVariable("discount", formattedDiscount);
+            context.setVariable("tienShip", formatMoneyShip);
+            context.setVariable("total", formatTotal);
             context.setVariable("totalQuantity", billDetail.stream().mapToInt(HoaDonChiTiet::getQuantity).sum());
-            context.setVariable("totalPayment", bill.getTotal_money());
+            context.setVariable("totalPayment", formatTotalPayMent);
 
             String htmlContent = templateEngine.process("HoaDon/HinhAnhHoaDon", context);
 

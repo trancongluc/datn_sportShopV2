@@ -198,12 +198,12 @@ public class DatHangController {
             // Lưu ChatBox mới vào cơ sở dữ liệu
             chatService.saveChatBox(newChatBox);
         }
-//        chatBox cb = chatService.findChatBoxByAccountId(accountId);
-        // Lấy danh sách tin nhắn của ChatBox
-//        List<message> messages = chatService.getMessagesByChatBoxId(cb.getId());
-//
-//        // Thêm ChatBox và tin nhắn vào Model để gửi ra view
-//        model.addAttribute("chatBox", cb.getId());
+     chatBox cb = chatService.findChatBoxByAccountId(accountId);
+     //    Lấy danh sách tin nhắn của ChatBox
+        List<message> messages = chatService.getMessagesByChatBoxId(cb.getId());
+
+       //  Thêm ChatBox và tin nhắn vào Model để gửi ra view
+     model.addAttribute("chatBox", cb.getId());
         model.addAttribute("messages", messages);
         model.addAttribute("accountId", accountId);
         model.addAttribute("imageUrls", imageUrls);

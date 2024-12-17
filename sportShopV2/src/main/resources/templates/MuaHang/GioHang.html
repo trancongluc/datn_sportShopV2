@@ -405,7 +405,7 @@
                     </td>
                     <td>
                         <p th:text="${list.SanPhamChiTiet.idSanPham.tenSanPham}"></p>
-                        <p> Giá tiền: <span style="color: red" th:text="${list.giaTien}"></span></p>
+                        <p> Giá tiền: <span style="color: red" th:text="${#numbers.formatDecimal(list.giaTien, 0, 'DEFAULT', 0, 'POINT') + 'VND'} "></span></p>
                         <p>Kích cỡ: <span th:text="${list.SanPhamChiTiet.idKichThuoc.tenKichThuoc}"></span></p>
                     </td>
                     <td class="border px-4 py-2 text-center">

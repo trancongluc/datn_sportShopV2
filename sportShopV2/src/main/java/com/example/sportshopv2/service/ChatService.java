@@ -58,6 +58,10 @@ public class ChatService {
         return messageRepository.save(newMessage);
     }
 
+    public chatBox findChatBoxByAccountId(Integer accountId) {
+        return chatBoxRepository.findByCreateBy(accountId);
+    }
+
     public int getAccountIdFromUsername(String username) {
         // Tìm Account theo username
         Optional<Account> account = accountRepository.findByUsername(username);

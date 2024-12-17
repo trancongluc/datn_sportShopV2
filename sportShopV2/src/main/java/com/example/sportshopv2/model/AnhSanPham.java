@@ -31,7 +31,7 @@ public class AnhSanPham {
 
         // Xây dựng đường dẫn đầy đủ đến file ảnh
 
-        Path imagePath = Paths.get("D:\\DATN\\sportShopV2\\src\\main\\resources\\static\\images", tenAnh);
+        Path imagePath = Paths.get("D:\\demoMergeCodeDatn\\sportShopV2\\src\\main\\resources\\static\\images", tenAnh);
 
 //        return Files.readAllBytes(imagePath);
         // Xây dựng đường dẫn đầy đủ đến file ảnh từ thư mục resources

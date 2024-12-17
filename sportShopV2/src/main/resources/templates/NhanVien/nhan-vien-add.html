@@ -33,8 +33,8 @@
     <script src="/js/KhachHang.js"></script>
 
     <div class="container">
-        <h1 class="txt">Thêm nhân viên mới</h1>
-        <div style="margin-bottom: -35px; margin-left: 200px">
+        <h1 class="txt" style="margin-left: 150px">Thêm nhân viên mới</h1>
+        <div style="margin-bottom: -35px; margin-left: 170px">
             <button class="btn-scan-qr" data-toggle="modal" data-target="#qrModal">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                      class="bi bi-qr-code-scan" viewBox="0 0 16 16">
@@ -90,11 +90,11 @@
                             <div class="col-md-6">
                                 <label for="hoTen" class="form-label">Họ và tên</label>
                                 <input type="text" class="form-control" id="hoTen" placeholder="Nhập họ và tên"
-                                       name="fullName">
+                                       name="fullName" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="ngaySinh" class="form-label">Ngày sinh</label>
-                                <input type="date" class="form-control" id="ngaySinh" name="date">
+                                <input type="date" class="form-control" id="ngaySinh" name="date" required>
                             </div>
                         </div>
 
@@ -102,11 +102,11 @@
                             <div class="col-md-6">
                                 <label for="email" class="form-label">E-mail</label>
                                 <input type="email" class="form-control" id="email" placeholder="Nhập email"
-                                       name="email" oninput="generateUsername()">
+                                       name="email" oninput="generateUsername()" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="gioiTinh" class="form-label">Giới tính</label>
-                                <select class="form-select" id="gioiTinh" name="gender">
+                                <select class="form-select" id="gioiTinh" name="gender" required>
                                     <option value="Nam">Nam</option>
                                     <option value="Nữ">Nữ</option>
                                     <option value="Khác">Khác</option>
@@ -117,7 +117,7 @@
                         <div class="mb-3">
                             <label for="soDienThoai" class="form-label">Số điện thoại</label>
                             <input type="text" class="form-control" id="soDienThoai" placeholder="Nhập số điện thoại"
-                                   name="phoneNumber">
+                                   name="phoneNumber" required>
                         </div>
 
 
@@ -129,7 +129,7 @@
                                             onchange="document.getElementsByName('tinh_name')[0].value = this.options[this.selectedIndex].text;">
                                         <option value="0">Tỉnh Thành</option>
                                     </select>
-                                    <input type="hidden" name="tinh_name" value="">
+                                    <input type="hidden" name="tinh_name" value="" required>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="quan" class="form-label">Quận/Huyện</label>
@@ -137,7 +137,7 @@
                                             onchange="document.getElementsByName('quan_name')[0].value = this.options[this.selectedIndex].text;">
                                         <option value="0">Quận Huyện</option>
                                     </select>
-                                    <input type="hidden" name="quan_name" value="">
+                                    <input type="hidden" name="quan_name" value="" required>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="phuong" class="form-label">Phường/Xã</label>
@@ -145,7 +145,7 @@
                                             onchange="document.getElementsByName('phuong_name')[0].value = this.options[this.selectedIndex].text;">
                                         <option value="0">Phường Xã</option>
                                     </select>
-                                    <input type="hidden" name="phuong_name" value="">
+                                    <input type="hidden" name="phuong_name" value="" required>
                                 </div>
                             </div>
                         </div>
@@ -154,7 +154,7 @@
                         <div class="mb-3">
                             <label for="soNha" class="form-label">Số nhà</label>
                             <input type="text" class="form-control" id="soNha"
-                                   placeholder="Nhập số nhà và địa chỉ chi tiết" name="line">
+                                   placeholder="Nhập số nhà và địa chỉ chi tiết" name="line" required>
                         </div>
                         <hr>
                         <h3 class="fw-bold">Thông tin tài khoản</h3>
@@ -162,7 +162,7 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="un" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="un" placeholder="Username" name="username">
+                                <input type="text" class="form-control" id="un" placeholder="Username" name="username" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="pw" class="form-label">Mật khẩu</label>
@@ -329,7 +329,47 @@
             // Đưa kết quả vào ô input username
             document.getElementById("un").value = username;
         }
+        document.getElementById('soDienThoai').addEventListener('input', function () {
+            const phoneNumber = this.value;
 
+            const regex = /^[0-9]{10,15}$/;
+
+            if (!regex.test(phoneNumber)) {
+                this.setCustomValidity('Số điện thoại phải có từ 10 đến 15 chữ số và chỉ chứa số.');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        document.querySelector("form").addEventListener("submit", function (event) {
+            const phoneInput = document.getElementById('soDienThoai');
+            if (!phoneInput.checkValidity()) {
+                event.preventDefault(); // Ngăn chặn submit nếu không hợp lệ
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const ngaySinhInput = document.getElementById('ngaySinh');
+
+            // Đặt giá trị tối đa cho ngày sinh là ngày hiện tại
+            const today = new Date().toISOString().split("T")[0];
+            ngaySinhInput.max = today;
+
+            // Kiểm tra ngày sinh khi người dùng thay đổi
+            ngaySinhInput.addEventListener("change", validateBirthDate);
+        });
+
+        function validateBirthDate() {
+            const ngaySinhInput = document.getElementById('ngaySinh');
+            const selectedDate = new Date(ngaySinhInput.value);
+            const today = new Date();
+
+            if (selectedDate > today) {
+                ngaySinhInput.setCustomValidity("Ngày sinh không được lớn hơn ngày hiện tại.");
+            } else {
+                ngaySinhInput.setCustomValidity("");
+            }
+        }
     </script>
 </main>
 </body>
