@@ -93,7 +93,6 @@ public class PhieuGiamGiaController {
             phieuGiamGia.setStatus("Đang diễn ra");
         }
         phieuGiamGiaService.update(phieuGiamGia);
-//        checkAndUpdateVoucherStatus(phieuGiamGia);
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");
 
         return "redirect:/giam-gia/view";

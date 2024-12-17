@@ -85,7 +85,8 @@ public class DotGiamGia {
             if (startDate.isAfter(now)) {
                 statusText = "Chưa diễn ra";
             } else if (endDate.isBefore(now)) {
-                statusText = "Hết hạn";
+                statusText = "Hết hạn";  // Khi hết hạn, phải cập nhật trạng thái là "Hết hạn"
+
             } else {
                 statusText = "Đang diễn ra";
             }

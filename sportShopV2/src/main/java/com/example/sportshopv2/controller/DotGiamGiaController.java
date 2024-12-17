@@ -81,38 +81,6 @@ public class DotGiamGiaController {
 
     private Map<Long, Float> originalPricesCache = new HashMap<>();
 
-
-    //    @PostMapping("/save")
-//    public String saveDotGiamGia(
-//            @RequestParam List<Long> selectedProducts,
-//            @ModelAttribute DotGiamGia dotGiamGia,
-//            RedirectAttributes redirectAttributes) {
-//
-//
-//        List<SanPhamChiTiet> updatedProducts = new ArrayList<>();
-//
-//        // Lưu giá gốc vào cache và cập nhật giá sản phẩm
-//        for (Long productId : selectedProducts) {
-//            Optional<SanPhamChiTiet> sanPhamChiTietOpt = SPCTRep.findActiveById(productId.intValue());
-//            sanPhamChiTietOpt.ifPresent(sanPhamChiTiet -> {
-//
-//                originalPricesCache.put(productId,100.f);
-//
-//                float newPrice = sanPhamChiTiet.getGia() - dotGiamGia.getDiscount().floatValue();
-//                sanPhamChiTiet.setGia(newPrice);
-//
-//                updatedProducts.add(sanPhamChiTiet);
-//            });
-//        }
-//
-//        // Lưu đợt giảm giá
-//        dotGiamGiaRepo.save(dotGiamGia);
-//
-//        // Lưu các sản phẩm đã cập nhật
-//        SPCTRep.saveAll(updatedProducts);
-//        redirectAttributes.addFlashAttribute("successMessage", "Lưu đợt giảm giá thành công!");
-//        return "redirect:/dot-giam-gia/view";
-//    }
     @PostMapping("/save")
     public String saveDotGiamGia(
             @RequestParam("selectProductID") List<Long> selectedProducts,
@@ -199,8 +167,7 @@ public class DotGiamGiaController {
             return "redirect:/dot-giam-gia/view";
         }
         ArrayList<Integer> listSPCTDetails = new ArrayList<>();
-        for (DotGiamGiaChiTiet dotGiamGiaChiTiet : dotGiamGiaChiTiets
-        ) {
+        for (DotGiamGiaChiTiet dotGiamGiaChiTiet : dotGiamGiaChiTiets) {
             Optional<SPCT> spct = spctRePo.findById(dotGiamGiaChiTiet.getSpct().getId());
             System.out.println(spct.get().getIdSanPham().getId());
             listSPCTDetails.add(spct.get().getIdSanPham().getId());
@@ -256,8 +223,11 @@ public class DotGiamGiaController {
                 productDetailPromotion.setSpct(sanPhamChiTiet);  // Liên kết sản phẩm chi tiết
                 productDetailPromotion.setName(dotGiamGia.getName());  // Lấy tên của đợt giảm giá
 
-                String code = generateRandomCode();  // Tạo mã ngẫu nhiên cho đợt giảm giá
-                productDetailPromotion.setCode(code);
+                // Kiểm tra nếu sản phẩm chi tiết đã có mã, nếu chưa thì tạo mã mới
+                if (productDetailPromotion.getCode() == null || productDetailPromotion.getCode().isEmpty()) {
+                    String code = generateRandomCode();  // Tạo mã ngẫu nhiên cho đợt giảm giá
+                    productDetailPromotion.setCode(code);
+                }
 
                 productDetailPromotion.setStatus(dotGiamGia.getStatus());
                 productDetailPromotion.setCreateAt(dotGiamGia.getCreateAt());
@@ -280,8 +250,6 @@ public class DotGiamGiaController {
 
         return "redirect:/dot-giam-gia/view";
     }
-
-
 
     @PostMapping("/delete/{id}")
     public String deleteDotGiamGia(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
