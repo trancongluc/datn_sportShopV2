@@ -6,9 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="b7d0f461-515b-409f-be38-85e2dbbedf1b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DatHang/DatHangController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DatHang/DatHangController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/GioHang.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/GioHang.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/mua-ngay.html" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/resources/templates/MuaHang/mua-ngay.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/SportShopV2Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/SportShopV2Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DotGiamGiaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/DotGiamGiaController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/PhieuGiamGiaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/controller/PhieuGiamGiaController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/PhieuGiamGia.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/model/PhieuGiamGia.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/PhieuGiamGiaResponsitory.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/repository/PhieuGiamGiaResponsitory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/impl/PhieuGiamGiaServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/sportShopV2/src/main/java/com/example/sportshopv2/service/impl/PhieuGiamGiaServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,6 +77,17 @@
     </key>
   </component>
   <component name="RunManager" selected="Spring Boot.SportShopV2Application">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="add.html (1)" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/testDATN/sportShopV2/templates/PhieuGiamGia/add.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
@@ -217,7 +231,9 @@
       <workItem from="1734053520401" duration="5866000" />
       <workItem from="1734268081223" duration="2661000" />
       <workItem from="1734285895744" duration="338000" />
-      <workItem from="1734329278099" duration="15432000" />
+      <workItem from="1734329278099" duration="15463000" />
+      <workItem from="1734365582819" duration="1355000" />
+      <workItem from="1734403736209" duration="5626000" />
     </task>
     <servers />
   </component>
