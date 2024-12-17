@@ -3,6 +3,7 @@ package com.example.sportshopv2.service.impl;
 import com.example.sportshopv2.model.PhieuGiamGia;
 import com.example.sportshopv2.repository.PhieuGiamGiaResponsitory;
 import com.example.sportshopv2.service.PhieuGiamGiaService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,9 +38,10 @@ public class PhieuGiamGiaServiceImpl implements PhieuGiamGiaService {
         return phieuGiamGiaRepo.findById(id).orElse(null);
     }
 
-    @Override
+    @Transactional
     public Boolean update(PhieuGiamGia phieuGiamGia) {
         if (phieuGiamGiaRepo.existsById(phieuGiamGia.getId())) {
+            phieuGiamGia.setStatus(phieuGiamGia.getStatus()); // Cập nhật trạng thái
             phieuGiamGiaRepo.save(phieuGiamGia);
             return true;
         }

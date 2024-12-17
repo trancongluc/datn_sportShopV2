@@ -6,9 +6,11 @@ import com.example.sportshopv2.model.PhieuGiamGia;
 import com.example.sportshopv2.repository.PhieuGiamGiaChiTietResponsitory;
 import com.example.sportshopv2.repository.PhieuGiamGiaResponsitory;
 import com.example.sportshopv2.service.PhieuGiamGiaService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +40,12 @@ public class PhieuGiamGiaController {
     @GetMapping("/view")
     public String GiamGia(Model model) {
         List<PhieuGiamGia> vouchers = vcRepo.findAll(Sort.by(Sort.Direction.DESC, "createAt"));
+        for (PhieuGiamGia voucher : vouchers) {
+            if (voucher.getEndDate() != null && voucher.getEndDate().isBefore(LocalDateTime.now())) {
+                voucher.setStatus("Hết hạn");
+                phieuGiamGiaService.update(voucher); // Cập nhật vào cơ sở dữ liệu ngay lập tức
+            }
+        }
         model.addAttribute("listVC", vouchers);
         return "PhieuGiamGia/giamGia";
     }
@@ -53,22 +61,41 @@ public class PhieuGiamGiaController {
         if (!isValidVoucher(voucher, redirectAttributes)) {
             return "redirect:/giam-gia/add-giam-gia";
         }
+        if (voucher.getEndDate() != null && voucher.getEndDate().isBefore(LocalDateTime.now())) {
+            voucher.setStatus("Hết hạn");
+        } else {
+            voucher.setStatus("Đang diễn ra"); // Trạng thái mặc định nếu chưa hết hạn
+        }
 
         String uniqueVoucherCode = generateUniqueVoucherCode();
         voucher.setVoucherCode(uniqueVoucherCode);
         voucher.setCreateAt(LocalDateTime.now());
         voucherService.create(voucher);
+
+//        checkAndUpdateVoucherStatus(voucher);
         return "redirect:/giam-gia/view";
     }
-
+//    public void checkAndUpdateVoucherStatus(PhieuGiamGia voucher) {
+//        LocalDateTime now = LocalDateTime.now();
+//        if (voucher.getEndDate() != null && voucher.getEndDate().isBefore(now)) {
+//            voucher.setStatus("Hết hạn");  // Cập nhật trạng thái phiếu giảm giá
+//            phieuGiamGiaService.update(voucher);  // Lưu lại vào cơ sở dữ liệu
+//        }
+//    }
     @PostMapping("/update")
     public String updateGiamGia(@ModelAttribute PhieuGiamGia phieuGiamGia, RedirectAttributes redirectAttributes) {
         if (!isValidVoucher(phieuGiamGia, redirectAttributes)) {
             return "redirect:/giam-gia/detail/" + phieuGiamGia.getId();
         }
-
+        if (phieuGiamGia.getEndDate() != null && phieuGiamGia.getEndDate().isBefore(LocalDateTime.now())) {
+            phieuGiamGia.setStatus("Hết hạn");
+        } else {
+            phieuGiamGia.setStatus("Đang diễn ra");
+        }
         phieuGiamGiaService.update(phieuGiamGia);
+//        checkAndUpdateVoucherStatus(phieuGiamGia);
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");
+
         return "redirect:/giam-gia/view";
     }
 
@@ -158,4 +185,6 @@ public class PhieuGiamGiaController {
         } while (vcRepo.existsByVoucherCode(code)); // Kiểm tra xem mã đã tồn tại chưa
         return code;
     }
+
+
 }

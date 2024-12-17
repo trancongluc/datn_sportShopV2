@@ -642,7 +642,11 @@ public class DatHangController {
         hoaDon.setCreateAt(LocalDateTime.now());
         hoaDon.setCreate_by(taiKhoan.getUsername());  // Assuming the logged-in user is set correctly
         hoaDon.setUpdateAt(LocalDateTime.now());
-        hoaDon.setPay_method("Chuyển khoản");
+        if (paystatus.equals("Thanh toán khi nhận hàng")) {
+            hoaDon.setPay_method("Thanh toán sau");
+        } else {
+            hoaDon.setPay_method("Chuyển khoản");
+        }
         hoaDon.setPay_status(paystatus);
         ship = Float.valueOf(moneyShip.replaceAll("[^\\d]", ""));
         voucher = Float.valueOf(moneyVoucher.replaceAll("[^\\d]", ""));

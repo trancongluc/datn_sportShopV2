@@ -493,12 +493,38 @@
                 console.error('Lỗi khi lấy dữ liệu sản phẩm chi tiết:', error);
             }
         }
+<<<<<<< HEAD
         function updateCartLink() {
             const input = document.getElementById("quantity");
             let currentValue = parseInt(input.value);
             if (isNaN(currentValue) || currentValue <= 0) {
                 alert("Giá trị số lượng không hợp lệ!");
                 return;
+=======
+
+        function increaseValue() {
+            const input = document.getElementById("quantity");
+            let currentValue = parseInt(input.value);
+            if (currentValue + 1 > maxQuantity) {
+                alert("Không đủ hàng!");
+            } else {
+                input.value = currentValue + 1;
+            }
+        }
+
+        function decreaseValue() {
+            const input = document.getElementById("quantity");
+            let currentValue = parseInt(input.value);
+            if (currentValue > 1) {
+                input.value = currentValue - 1;
+            }
+        }
+
+        function updateCartLink() {
+            const input = document.getElementById("quantity");
+            if (input.value > maxQuantity) {
+                console.error('Số lượng đã đạt tối đa!');
+>>>>>>> f212490bb408da85d920c4d974ae1ace081bd0ae
             }
             const soLuong = currentValue;
             console.log("Giá trị số lượng (soLuong):", soLuong);
@@ -515,6 +541,26 @@
                 link.setAttribute('href', href);
             }
         }
+        document.addEventListener("DOMContentLoaded", function() {
+            const addToCartBtn = document.getElementById('add-to-cart-btn');
+            if (addToCartBtn) {
+                addToCartBtn.addEventListener('click', function(event) {
+                    const isConfirmed = confirm("Bạn có chắc chắn muốn thêm sản phẩm vào giỏ hàng?");
+
+                    if (isConfirmed) {
+                        // Nếu người dùng xác nhận, cập nhật đường dẫn giỏ hàng
+                        updateCartLink();
+                    } else {
+                        // Nếu người dùng hủy, không làm gì
+                        event.preventDefault();  // Ngừng hành động mặc định
+                    }
+                });
+            } else {
+                console.error('Không tìm thấy nút "Thêm vào giỏ hàng"!');
+            }
+        });
+
+
     </script>
 </head>
 <body>
@@ -631,8 +677,8 @@
                 </div>
             </div>
             <div class="product-actions">
-                <a href="#" class="add-to-cart-link">
-                    <button class="add-to-cart">Thêm Vào Giỏ Hàng</button>
+                <a href="#" class="add-to-cart-link" id="add-to-cart-link">
+                    <button class="add-to-cart" id="add-to-cart-btn">Thêm Vào Giỏ Hàng</button>
                 </a>
                 <a>
                     <button class="buy-now">
