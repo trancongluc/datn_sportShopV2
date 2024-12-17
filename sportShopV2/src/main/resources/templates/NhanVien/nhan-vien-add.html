@@ -68,7 +68,7 @@
                     </div>
                 </div>
             </div>
-                <form th:action="@{/nhanvien/add}" method="post" enctype="multipart/form-data">
+            <form th:action="@{/nhanvien/add}" method="post" enctype="multipart/form-data">
                 <div class="row">
                     <!-- Cột bên trái -->
                     <div class="col-md-4 text-center">
@@ -129,7 +129,7 @@
                                             onchange="document.getElementsByName('tinh_name')[0].value = this.options[this.selectedIndex].text;">
                                         <option value="0">Tỉnh Thành</option>
                                     </select>
-                                    <input type="hidden" name="tinh_name" value="">
+                                    <input type="hidden" id="valueTinh" name="tinh_name" value="">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="quan" class="form-label">Quận/Huyện</label>
@@ -137,7 +137,7 @@
                                             onchange="document.getElementsByName('quan_name')[0].value = this.options[this.selectedIndex].text;">
                                         <option value="0">Quận Huyện</option>
                                     </select>
-                                    <input type="hidden" name="quan_name" value="">
+                                    <input type="hidden" id="valueQuan" name="quan_name" value="">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="phuong" class="form-label">Phường/Xã</label>
@@ -145,7 +145,7 @@
                                             onchange="document.getElementsByName('phuong_name')[0].value = this.options[this.selectedIndex].text;">
                                         <option value="0">Phường Xã</option>
                                     </select>
-                                    <input type="hidden" name="phuong_name" value="">
+                                    <input type="hidden" id="valuePhuong" name="phuong_name" value="">
                                 </div>
                             </div>
                         </div>
@@ -167,7 +167,7 @@
                             <div class="col-md-6">
                                 <label for="pw" class="form-label">Mật khẩu</label>
                                 <input type="password" class="form-control" id="pw" placeholder="Mật khẩu"
-                                       name="password"  th:value="${pass}">
+                                       name="password" th:value="${pass}">
                             </div>
                         </div>
 
@@ -291,9 +291,9 @@
                         document.getElementById("ngaySinh").value = formatDate(bd);
                         document.getElementById("gioiTinh").value = gender;
                         document.getElementById("soNha").value = part1;
-                        document.getElementById("phuong").value = part2;
-                        document.getElementById("quan").value = part3;
-                        document.getElementById("tinh").value = part4;
+                        document.getElementById("valuePhuong").value = part2;
+                        document.getElementById("valueQuan").value = part3;
+                        document.getElementById("valueTinh").value = part4;
                     }
                 } else {
                     // Xử lý trường hợp mảng parts không chứa đủ các phần tử cần thiết
@@ -319,6 +319,7 @@
         $('#qrModal').on('hidden.bs.modal', function () {
             stopQrScannerAndCloseModal();
         });
+
         function generateUsername() {
             // Lấy giá trị email từ ô input
             const email = document.getElementById("email").value;
@@ -329,6 +330,49 @@
             // Đưa kết quả vào ô input username
             document.getElementById("un").value = username;
         }
+
+        document.getElementById('soDienThoai').addEventListener('input', function () {
+            const phoneNumber = this.value;
+
+            const regex = /^[0-9]{10,15}$/;
+
+            if (!regex.test(phoneNumber)) {
+                this.setCustomValidity('Số điện thoại phải có từ 10 đến 15 chữ số và chỉ chứa số.');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        document.querySelector("form").addEventListener("submit", function (event) {
+            const phoneInput = document.getElementById('soDienThoai');
+            if (!phoneInput.checkValidity()) {
+                event.preventDefault(); // Ngăn chặn submit nếu không hợp lệ
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const ngaySinhInput = document.getElementById('ngaySinh');
+
+            // Đặt giá trị tối đa cho ngày sinh là ngày hiện tại
+            const today = new Date().toISOString().split("T")[0];
+            ngaySinhInput.max = today;
+
+            // Kiểm tra ngày sinh khi người dùng thay đổi
+            ngaySinhInput.addEventListener("change", validateBirthDate);
+        });
+
+        function validateBirthDate() {
+            const ngaySinhInput = document.getElementById('ngaySinh');
+            const selectedDate = new Date(ngaySinhInput.value);
+            const today = new Date();
+
+            if (selectedDate > today) {
+                ngaySinhInput.setCustomValidity("Ngày sinh không được lớn hơn ngày hiện tại.");
+            } else {
+                ngaySinhInput.setCustomValidity("");
+            }
+        }
+
 
     </script>
 </main>

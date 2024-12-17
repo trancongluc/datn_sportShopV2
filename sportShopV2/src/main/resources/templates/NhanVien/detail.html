@@ -17,28 +17,39 @@
 <body>
 
 
-
 <main layout:fragment="main1">
 
     <script src="https://esgoo.net/scripts/jquery.js"></script>
     <style type="text/css">
-        .css_select_div{ text-align: center;}
-        .css_select{ display: inline-table; width: 25%; padding: 5px; margin: 5px 2%; border: solid 1px #686868; border-radius: 5px;}
+        .css_select_div {
+            text-align: center;
+        }
+
+        .css_select {
+            display: inline-table;
+            width: 25%;
+            padding: 5px;
+            margin: 5px 2%;
+            border: solid 1px #686868;
+            border-radius: 5px;
+        }
     </style>
 
 
     <div class="container">
         <h1 class="mb-4 txt">Thông Tin Nhân Viên</h1>
-        <form  th:action="@{/nhanvien/update/{id}(id=${employ.id})}" method="post" enctype="multipart/form-data"> <!-- Cập nhật action -->
+        <form th:action="@{/nhanvien/update/{id}(id=${employ.id})}" method="post" enctype="multipart/form-data">
+            <!-- Cập nhật action -->
             <span>
                     <a class="btn btn-success" href="/nhanvien/list">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-arrow-return-left" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                  d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5"/>
                         </svg>
                         Quay lại
                     </a>
                 </span>
-
 
 
             <div class="row">
@@ -46,9 +57,11 @@
                 <div class="col-md-4 text-center">
                     <div class="image-upload" style="margin-top: 50px">
                         <label for="file-input">
-                            <img th:src="@{/uploads/{imageFileName}(imageFileName=${employ.imageFileName})}" alt="placeholder image" id="image-preview">
+                            <img th:src="@{/uploads/{imageFileName}(imageFileName=${employ.imageFileName})}"
+                                 alt="placeholder image" id="image-preview">
                         </label>
-                        <input id="file-input" type="file"  accept="image/*" name="imageFile" onchange="loadImage(event)"> <!-- Thêm name -->
+                        <input id="file-input" type="file" accept="image/*" name="imageFile"
+                               onchange="loadImage(event)"> <!-- Thêm name -->
 
                     </div>
 
@@ -59,23 +72,27 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="hoTen" class="form-label">Họ và tên</label>
-                            <input type="hoTen" class="form-control" id="hoTen" name="fullName" th:value="${employ.fullName}"  required>
+                            <input type="hoTen" class="form-control" id="hoTen" name="fullName"
+                                   th:value="${employ.fullName}" required>
                         </div>
                         <div class="col-md-6">
                             <label for="ngaySinh" class="form-label">Ngày sinh</label>
-                            <input type="date" class="form-control" id="ngaySinh" name="date" th:value="${employ.date}" required>
+                            <input type="date" class="form-control" id="ngaySinh" name="date" th:value="${employ.date}"
+                                   required>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="email" class="form-label">E-mail</label>
-                            <input type="email" class="form-control" id="email" name="email"  th:value="${employ.email}"  required>
+                            <input type="email" class="form-control" id="email" name="email" th:value="${employ.email}"
+                                   required>
                         </div>
                         <div class="col-md-6">
                             <label for="gioiTinh" class="form-label">Giới tính</label>
                             <select class="form-select" id="gioiTinh" name="gender" required>
-                                <option th:value="${employ.gender}" th:text="${employ.gender}" hidden>Chọn giới tính</option>
+                                <option th:value="${employ.gender}" th:text="${employ.gender}" hidden>Chọn giới tính
+                                </option>
                                 <option value="Nam">Nam</option>
                                 <option value="Nữ">Nữ</option>
                                 <option value="Khác">Khác</option>
@@ -85,7 +102,8 @@
 
                     <div class="mb-3">
                         <label for="soDienThoai" class="form-label">Số điện thoại</label>
-                        <input type="text" class="form-control" id="soDienThoai" name="phoneNumber" th:value="${employ.phoneNumber}" required>
+                        <input type="text" class="form-control" id="soDienThoai" name="phoneNumber"
+                               th:value="${employ.phoneNumber}" required>
                     </div>
 
                     <div class="css_select_div">
@@ -94,8 +112,11 @@
                                 <label for="tinh" class="form-label">Tỉnh</label>
                                 <select class="form-select" id="tinh" name="tinh" title="Chọn Tỉnh Thành"
 
-                                        onchange="document.getElementsByName('tinh_name')[0].value = this.options[this.selectedIndex].text;" required>
-                                    <option th:value="${employ.addresses[0].tinh}" th:text="${employ.addresses[0].tinh}" hidden>Tỉnh Thành</option>
+                                        onchange="document.getElementsByName('tinh_name')[0].value = this.options[this.selectedIndex].text;"
+                                        required>
+                                    <option th:value="${employ.addresses[0].tinh}" th:text="${employ.addresses[0].tinh}"
+                                            hidden>Tỉnh Thành
+                                    </option>
                                 </select>
                                 <input type="hidden" name="tinh_name" th:value="${employ.addresses[0].tinh}">
                             </div>
@@ -103,8 +124,11 @@
                                 <label for="quan" class="form-label">Huyện</label>
                                 <select class="form-select" id="quan" name="quan" title="Chọn Quận Huyện"
 
-                                        onchange="document.getElementsByName('quan_name')[0].value = this.options[this.selectedIndex].text;" required>
-                                    <option th:value="${employ.addresses[0].quan}" th:text="${employ.addresses[0].quan}" hidden>Quận Huyện</option>
+                                        onchange="document.getElementsByName('quan_name')[0].value = this.options[this.selectedIndex].text;"
+                                        required>
+                                    <option th:value="${employ.addresses[0].quan}" th:text="${employ.addresses[0].quan}"
+                                            hidden>Quận Huyện
+                                    </option>
                                 </select>
                                 <input type="hidden" name="quan_name" th:value="${employ.addresses[0].quan}">
                             </div>
@@ -112,8 +136,11 @@
                                 <label for="phuong" class="form-label">Phường</label>
                                 <select class="form-select" id="phuong" name="phuong" title="Chọn Phường Xã"
 
-                                        onchange="document.getElementsByName('phuong_name')[0].value = this.options[this.selectedIndex].text;" required>
-                                    <option th:value="${employ.addresses[0].phuong}" th:text="${employ.addresses[0].phuong}" hidden>Phường Xã</option>
+                                        onchange="document.getElementsByName('phuong_name')[0].value = this.options[this.selectedIndex].text;"
+                                        required>
+                                    <option th:value="${employ.addresses[0].phuong}"
+                                            th:text="${employ.addresses[0].phuong}" hidden>Phường Xã
+                                    </option>
                                 </select>
                                 <input type="hidden" name="phuong_name" th:value="${employ.addresses[0].phuong}">
                             </div>
@@ -122,7 +149,8 @@
 
                     <div class="mb-3">
                         <label for="line" class="form-label">Số nhà</label>
-                        <input type="line" class="form-control" id="line" name="line" th:value="${employ.addresses[0].line}" required>
+                        <input type="line" class="form-control" id="line" name="line"
+                               th:value="${employ.addresses[0].line}" required>
                     </div>
                 </div>
             </div>
@@ -139,6 +167,47 @@
             }
         }
 
+        document.getElementById('soDienThoai').addEventListener('input', function () {
+            const phoneNumber = this.value;
+
+            const regex = /^[0-9]{10,15}$/;
+
+            if (!regex.test(phoneNumber)) {
+                this.setCustomValidity('Số điện thoại phải có từ 10 đến 15 chữ số và chỉ chứa số.');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        document.querySelector("form").addEventListener("submit", function (event) {
+            const phoneInput = document.getElementById('soDienThoai');
+            if (!phoneInput.checkValidity()) {
+                event.preventDefault(); // Ngăn chặn submit nếu không hợp lệ
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const ngaySinhInput = document.getElementById('ngaySinh');
+
+            // Đặt giá trị tối đa cho ngày sinh là ngày hiện tại
+            const today = new Date().toISOString().split("T")[0];
+            ngaySinhInput.max = today;
+
+            // Kiểm tra ngày sinh khi người dùng thay đổi
+            ngaySinhInput.addEventListener("change", validateBirthDate);
+        });
+
+        function validateBirthDate() {
+            const ngaySinhInput = document.getElementById('ngaySinh');
+            const selectedDate = new Date(ngaySinhInput.value);
+            const today = new Date();
+
+            if (selectedDate > today) {
+                ngaySinhInput.setCustomValidity("Ngày sinh không được lớn hơn ngày hiện tại.");
+            } else {
+                ngaySinhInput.setCustomValidity("");
+            }
+        }
     </script>
 
 
