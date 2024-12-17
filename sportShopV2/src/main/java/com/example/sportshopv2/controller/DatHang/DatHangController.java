@@ -106,11 +106,18 @@ public class DatHangController {
 
     @Autowired
     private HoaDonService hdService;
-
+    @Autowired
+    private DotGiamGiaChiTietRepo dotGiamGiaChiTietRepo;
     String username;
     int flag = 0;
     chatBox newChatBox = new chatBox();
     List<message> messages;
+
+    public List<DotGiamGiaChiTiet> dotGiamGiaChiTietList() {
+        String status = "Đang diễn ra";
+        List<DotGiamGiaChiTiet> dotGiamGiaChiTiets = dotGiamGiaChiTietRepo.findAllByStatus(status);
+        return dotGiamGiaChiTiets;
+    }
 
     @RequestMapping("/trang-chu")
     public String trangChu(Model model) {
@@ -138,6 +145,23 @@ public class DatHangController {
 
         // Xử lý danh sách sản phẩm
         List<SanPhamChiTietDTO> AllProductDetail = sanPhamChiTietService.getAllDISTINCTSPCT();
+//        List<DotGiamGiaChiTiet> AllPromotion = dotGiamGiaChiTietRepo.findAll();
+        List<DotGiamGiaChiTiet> allPromotions = dotGiamGiaChiTietList();
+        Map<Integer, Double> priceAfterDiscountMap = allPromotions.stream()
+                .filter(promo -> AllProductDetail.stream()
+                        .anyMatch(spct -> spct.getId().equals(promo.getSpct().getId())))
+                .collect(Collectors.toMap(
+                        promo -> promo.getSpct().getId(),
+                        promo -> {
+                            // Lấy giá gốc và tỷ lệ giảm
+                            double giaBanGoc = promo.getSpct().getGia();
+                            double tiLeGiam = promo.getDotGiamGia().getDiscount().doubleValue(); // Sử dụng doubleValue()
+
+
+                            return giaBanGoc - (giaBanGoc * tiLeGiam) / 100; // Trả về giá sau giảm
+                        }
+                ));
+//        System.out.println(promotionMap.size());
         List<AnhSanPham> anhSanPhams = AllProductDetail.stream()
                 .map(spct -> anhSanPhamRepository.findByIdSPCT(spct.getId()))
                 .flatMap(List::stream)
@@ -167,18 +191,18 @@ public class DatHangController {
             // Lưu ChatBox mới vào cơ sở dữ liệu
             chatService.saveChatBox(newChatBox);
         }
-        chatBox cb = chatService.findChatBoxByAccountId(accountId);
-        // Lấy danh sách tin nhắn của ChatBox
-        List<message> messages = chatService.getMessagesByChatBoxId(cb.getId());
+//        chatBox cb = chatService.findChatBoxByAccountId(accountId);
+//        // Lấy danh sách tin nhắn của ChatBox
+//        List<message> messages = chatService.getMessagesByChatBoxId(cb.getId());
 
         // Thêm ChatBox và tin nhắn vào Model để gửi ra view
-        model.addAttribute("chatBox", cb.getId());
+//        model.addAttribute("chatBox", cb.getId());
         model.addAttribute("messages", messages);
         model.addAttribute("accountId", accountId);
         model.addAttribute("imageUrls", imageUrls);
         model.addAttribute("listspct", AllProductDetail);
         model.addAttribute("listImage", anhSanPhams);
-
+        model.addAttribute("promotionMap", priceAfterDiscountMap);
         return "MuaHang/TrangChu";
     }
 
@@ -186,15 +210,17 @@ public class DatHangController {
     public String gioHang(Model model,
                           @RequestParam("id") Integer id,
                           @RequestParam("idcolor") Integer idcolor,
-                          @RequestParam("idsize") Integer idsize, @RequestParam("soLuong") Integer soLuong) {
+                          @RequestParam("idsize") Integer idsize, @RequestParam("soLuong") Integer soLuong,
+                          @RequestParam("giaSanPham") String giaSanPham, RedirectAttributes redirectAttributes) {
         Integer soLuongDat = Integer.valueOf(soLuong);
         // Lấy chi tiết sản phẩm từ service dựa trên id, idsize và idcolor
         SanPhamChiTietDTO productDetail = sanPhamChiTietService.getSPCTByIDSPIDSIZEIDCOLOR(id, idsize, idcolor);
-
+        Float giaSP = Float.valueOf(giaSanPham.replaceAll("[^\\d]", ""));
         TaiKhoan tk = new TaiKhoan();
         tk.setId(idTK);
-
+        System.out.println(giaSP + "đây là giá sản phẩm");
         // Kiểm tra giỏ hàng
+
         GioHang gioHang = gioHangRepo.findByIdTaiKhoan_Id(tk.getId());
         if (gioHang == null) {
             gioHang = new GioHang();
@@ -206,15 +232,41 @@ public class DatHangController {
         // Kiểm tra sản phẩm đã có trong giỏ hàng chưa
         GioHangChiTiet existingCartItem = gioHangChiTietRepo.findByGioHang_IdAndSanPhamChiTiet_Id(gioHang.getId(), productDetail.getId());
         if (existingCartItem != null) {
-            existingCartItem.setSoLuong(existingCartItem.getSoLuong() + soLuongDat);
+            // Kiểm tra số lượng sản phẩm trong giỏ hàng và kho
+            if (existingCartItem.getSoLuong() + soLuongDat > productDetail.getSoLuong()) {
+                redirectAttributes.addFlashAttribute("errorMessage",
+                        "Số lượng sản phẩm trong giỏ sẽ vượt quá số lượng sản phẩm cửa hàng có! "
+                                + "Hãy mua sản phẩm tương tự mà bạn đã thêm vào trong giỏ trước nhé."
+                );
+                return "redirect:/mua-sam-SportShopV2/mua-ngay?id=" + productDetail.getId();
+            }
+
+            int newQuantity = existingCartItem.getSoLuong() + soLuongDat;
+
+            if (newQuantity > productDetail.getSoLuong()) {
+                throw new IllegalArgumentException(
+                        "Số lượng sản phẩm trong giỏ sẽ vượt quá số lượng sản phẩm cửa hàng có! "
+                                + "Làm ơn hãy mua sản phẩm mà bạn đã thêm vào trong giỏ trước nhé."
+                );
+            }
+
+//  Cập nhật số lượng và giá tiền
+            existingCartItem.setSoLuong(newQuantity);
+            float productPrice = 0.0f;
+            productPrice = Float.valueOf(giaSanPham.replaceAll("[^\\d]", ""));
+            existingCartItem.setGiaTien(productPrice);
+            redirectAttributes.addFlashAttribute("successMessage", "Sản phẩm đã được thêm vào giỏ hàng thành công." + productPrice);
+
+//  Lưu thay đổi vào cơ sở dữ liệu
             gioHangChiTietRepo.save(existingCartItem);
+
         } else {
             GioHangChiTiet gioHangChiTiet = new GioHangChiTiet();
             SPCT spct = new SPCT();
             spct.setId(productDetail.getId());
             gioHangChiTiet.setSanPhamChiTiet(spct);
             gioHangChiTiet.setCreateAt(LocalDateTime.now());
-            gioHangChiTiet.setGiaTien(productDetail.getGia());
+            gioHangChiTiet.setGiaTien(giaSP);
             gioHangChiTiet.setGioHang(gioHang);
             gioHangChiTiet.setTrangThai("Active");
             gioHangChiTiet.setSoLuong(soLuongDat);
@@ -224,7 +276,6 @@ public class DatHangController {
         // Lấy danh sách sản phẩm trong giỏ hàng
         List<GioHangChiTiet> allCart = gioHangChiTietRepo.findAllByGioHang_Id(gioHang.getId());
         model.addAttribute("danhSachGioHang", allCart);
-
         return "redirect:/mua-sam-SportShopV2/trang-chu";
     }
 
@@ -246,6 +297,42 @@ public class DatHangController {
         symbols.setDecimalSeparator(',');
         symbols.setGroupingSeparator('.');
 
+// Lấy danh sách sản phẩm giảm giá
+        List<DotGiamGiaChiTiet> allPromotion = dotGiamGiaChiTietList();
+
+        if (allPromotion != null) {
+            // Tạo Set chứa ID sản phẩm giảm giá đang diễn ra
+            Set<Integer> activePromotionProductIds = allPromotion.stream()
+                    .filter(promo -> "đang diễn ra".equalsIgnoreCase(promo.getDotGiamGia().getStatus())) // Lọc các đợt giảm giá đang diễn ra
+                    .map(promo -> promo.getSpct().getId())
+                    .collect(Collectors.toSet());
+
+            // Duyệt qua từng sản phẩm trong giỏ hàng
+            listCart.forEach(item -> {
+                Integer productId = item.getSanPhamChiTiet().getId();
+
+                // Kiểm tra sản phẩm có trong danh sách giảm giá hay không
+                DotGiamGiaChiTiet matchingPromotion = allPromotion.stream()
+                        .filter(promo -> promo.getSpct().getId().equals(productId))
+                        .findFirst()
+                        .orElse(null);
+
+                if (matchingPromotion != null) {
+                    // Nếu trạng thái của đợt giảm giá khác "đang diễn ra", cập nhật giá sản phẩm trong giỏ hàng
+                    if (!"đang diễn ra".equalsIgnoreCase(matchingPromotion.getDotGiamGia().getStatus())) {
+                        item.setGiaTien(matchingPromotion.getSpct().getGia()); // Cập nhật giá từ đợt giảm giá
+                    } else {
+                        item.setGiaTien(matchingPromotion.getSpct().getGia()
+                                - (matchingPromotion.getSpct().getGia() * matchingPromotion.getDotGiamGia().getDiscount().floatValue() / 100));
+                    }
+                }
+            });
+
+            // Lưu thay đổi vào database
+            gioHangChiTietRepo.saveAll(listCart);
+        }
+
+
         DecimalFormat formatter = new DecimalFormat("#,###", symbols);
 
         // Tạo một Map để chứa giá trị đã định dạng cho từng sản phẩm
@@ -265,17 +352,17 @@ public class DatHangController {
             model.addAttribute("listDiaChi", diaChi);
         }
 
-        Map<Integer, String> tongTienHoaDon = listCart.stream().collect(Collectors.toMap(
-                gioHangChiTiet -> gioHangChiTiet.getGioHang().getId(),
-                ghct -> {
-                    BigDecimal total = gioHangChiTietRepo.findAllByGioHang_Id(ghct.getGioHang().getId()).stream()
-                            .map(hdct -> new BigDecimal(hdct.getGiaTien()).multiply(BigDecimal.valueOf(hdct.getSoLuong())))
-                            .reduce(BigDecimal.ZERO, BigDecimal::add);
-                    total = total.setScale(2, RoundingMode.HALF_UP);
-                    return NumberFormat.getCurrencyInstance(new Locale("vi", "VN")).format(total);
-                },
-                (existingValue, newValue) -> existingValue
-        ));
+//        Map<Integer, String> tongTienHoaDon = listCart.stream().collect(Collectors.toMap(
+//                gioHangChiTiet -> gioHangChiTiet.getGioHang().getId(),
+//                ghct -> {
+//                    BigDecimal total = gioHangChiTietRepo.findAllByGioHang_Id(ghct.getGioHang().getId()).stream()
+//                            .map(hdct -> new BigDecimal(hdct.getGiaTien()).multiply(BigDecimal.valueOf(hdct.getSoLuong())))
+//                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+//                    total = total.setScale(2, RoundingMode.HALF_UP);
+//                    return NumberFormat.getCurrencyInstance(new Locale("vi", "VN")).format(total);
+//                },
+//                (existingValue, newValue) -> existingValue
+//        ));
 
         List<AnhSanPham> anhSanPhams = listCart.stream()
                 .map(gioHangChiTiet -> anhSanPhamRepository.findByIdSPCT(gioHangChiTiet.getSanPhamChiTiet().getId()))
@@ -352,6 +439,46 @@ public class DatHangController {
             if (payload.get("soLuong") != null || payload.get("idSPCT") != null) {
                 SanPhamChiTietDTO sanPham = sanPhamChiTietService.getByID(Integer.valueOf(payload.get("idSPCT").toString()));
                 if (sanPham.getSoLuong() < soLuong) {
+//                    redirectAttributes.addFlashAttribute("message", "Số lượng không hợp lệ!!!");
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                            .body(Map.of("error", "Số lượng sản phẩm của Shop tạm thời không đủ!!!"));
+                }
+            }
+            // Ensure proper data types
+            if (payload.get("id") == null || payload.get("soLuong") == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("error", "Missing required fields: id or soLuong"));
+            }
+
+            Integer id = Integer.parseInt(payload.get("id").toString());  // Convert to Integer
+            // Convert to Integer
+
+            Optional<GioHangChiTiet> product = gioHangChiTietRepo.findById(id);
+            if (product.isPresent()) {
+                GioHangChiTiet existingProduct = product.get();
+                existingProduct.setSoLuong(soLuong);
+                gioHangChiTietRepo.save(existingProduct);
+                return ResponseEntity.ok(Map.of("message", "Số lượng đã được cập nhật."));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "Sản phẩm không tồn tại."));
+            }
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Invalid data format for id or soLuong."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Sản phẩm hiện đã hết hàng."));
+        }
+    }
+
+    @PostMapping("/update-quantity-low")
+    public ResponseEntity<?> updateQuantityLow(@RequestBody Map<String, Object> payload, RedirectAttributes redirectAttributes) {
+        try {
+            Integer soLuong = Integer.parseInt(payload.get("soLuong").toString());
+            if (payload.get("soLuong") != null || payload.get("idSPCT") != null) {
+                SanPhamChiTietDTO sanPham = sanPhamChiTietService.getByID(Integer.valueOf(payload.get("idSPCT").toString()));
+                if (sanPham.getSoLuong() <= 0) {
 //                    redirectAttributes.addFlashAttribute("message", "Số lượng không hợp lệ!!!");
                     return ResponseEntity.status(HttpStatus.NOT_FOUND)
                             .body(Map.of("error", "Số lượng không hợp lệ!!!"));
@@ -515,7 +642,11 @@ public class DatHangController {
         hoaDon.setCreateAt(LocalDateTime.now());
         hoaDon.setCreate_by(taiKhoan.getUsername());  // Assuming the logged-in user is set correctly
         hoaDon.setUpdateAt(LocalDateTime.now());
-        hoaDon.setPay_method("Chuyển khoản");
+        if (paystatus.equals("Thanh toán khi nhận hàng")) {
+            hoaDon.setPay_method("Thanh toán sau");
+        } else {
+            hoaDon.setPay_method("Chuyển khoản");
+        }
         hoaDon.setPay_status(paystatus);
         ship = Float.valueOf(moneyShip.replaceAll("[^\\d]", ""));
         voucher = Float.valueOf(moneyVoucher.replaceAll("[^\\d]", ""));
@@ -596,6 +727,7 @@ public class DatHangController {
             return "redirect:" + vnpayUrl;
         }
     }
+
 
     @GetMapping("/voucher/details/{id}")
     @ResponseBody
@@ -699,8 +831,28 @@ public class DatHangController {
             @RequestParam("id") Integer id,
             @RequestParam("idcolor") Integer idcolor,
             @RequestParam("idsize") Integer idsize) {
+
+        // Lấy sản phẩm chi tiết
         SanPhamChiTietDTO productDetail = sanPhamChiTietService.getSPCTByIDSPIDSIZEIDCOLOR(id, idsize, idcolor);
-        System.out.println(productDetail.getId());
+
+        // Lấy danh sách khuyến mãi
+        List<DotGiamGiaChiTiet> allPromotions = dotGiamGiaChiTietList();
+
+        if (productDetail != null) {
+            // Tìm khuyến mãi và tính giá sau giảm (nếu có)
+            for (DotGiamGiaChiTiet promo : allPromotions) {
+                if (promo.getSpct().getId().equals(productDetail.getId())) {
+                    float giaBanGoc = productDetail.getGia(); // Giá gốc từ sản phẩm chi tiết
+                    float tiLeGiam = promo.getDotGiamGia().getDiscount().floatValue(); // Tỷ lệ giảm
+
+                    // Tính giá sau giảm
+                    float giaSauGiam = giaBanGoc - (giaBanGoc * tiLeGiam / 100);
+                    productDetail.setGiaSauGiam(giaSauGiam); // Gắn giá sau giảm vào DTO
+                    break; // Dừng nếu tìm thấy khuyến mãi
+                }
+            }
+        }
+        // Trả về response
         if (productDetail != null) {
             return ResponseEntity.ok(productDetail);
         } else {

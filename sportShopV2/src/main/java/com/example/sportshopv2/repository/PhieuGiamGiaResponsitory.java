@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface PhieuGiamGiaResponsitory extends JpaRepository<PhieuGiamGia, Integer> {
@@ -18,4 +19,7 @@ public interface PhieuGiamGiaResponsitory extends JpaRepository<PhieuGiamGia, In
 
 
     List<PhieuGiamGia> findAll(Sort sort);
+
+
+    List<PhieuGiamGia> findByEndDateBeforeAndStatusNot(LocalDateTime now, String status);
 }

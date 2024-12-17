@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface SPCTRePo extends JpaRepository<SPCT, Integer> {
     List<SPCT> findByIdIn(List<Long> ids);
+    List<SPCT> findByidSanPham_IdIn(List<Long> ids);
 }

@@ -32,6 +32,7 @@ public class SanPhamChiTietDTO extends BaseEntity {
     private Float gia;
     private String trangThai;
     private String gioiTinh;
+    private Float giaSauGiam;
     private List<AnhSanPham> anhSanPham;
     private List<HoaDonChiTiet> hoaDonChiTiet;
 }

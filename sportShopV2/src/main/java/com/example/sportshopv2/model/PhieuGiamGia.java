@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "Voucher")
 public class PhieuGiamGia {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
@@ -43,7 +44,6 @@ public class PhieuGiamGia {
     @Column(name = "status")
     private String status;
 
-
     @Column(name = "quantity")
     private Integer quantity;
 
@@ -66,39 +66,32 @@ public class PhieuGiamGia {
 
     @Column(name = "update_by")
     private String updateBy;
+
     @Column(name = "deleted")
     private Boolean deleted;
-
-
-    public boolean isActive() {
-        LocalDateTime now = LocalDateTime.now();
-        System.out.println("Thời gian hiện tại: " + now);
-        return startDate != null && endDate != null && startDate.isBefore(now) && endDate.isAfter(now);
-    }
-
 
     @PrePersist
     @PreUpdate
     public void updateStatus() {
+        // Gọi phương thức getStatus() để cập nhật trạng thái trước khi lưu hoặc cập nhật
         this.status = getStatus();
     }
 
     public String getStatus() {
         LocalDateTime now = LocalDateTime.now();
         String statusText;
+
         if (startDate != null && endDate != null) {
             if (startDate.isAfter(now)) {
                 statusText = "Chưa diễn ra";
             } else if (endDate.isBefore(now)) {
-                statusText = "Hết hạn";
-            }else if (quantity == 0) {
+                statusText = "Hết hạn";  // Khi hết hạn, phải cập nhật trạng thái là "Hết hạn"
+            } else if (quantity == 0) {
                 statusText = "Số lượng đã hết";
-            }
-            else {
+            } else {
                 statusText = "Đang diễn ra";
             }
-        }
-        else {
+        } else {
             statusText = "Không xác định";
         }
 
