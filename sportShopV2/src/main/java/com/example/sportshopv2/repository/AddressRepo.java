@@ -8,4 +8,5 @@ import java.util.List;
 public interface AddressRepo extends JpaRepository<Address, Integer> {
 
     List<Address> findByKhachHang_Id(Integer id);
+    Address findTop1ByKhachHang_Id(Integer id);
 }

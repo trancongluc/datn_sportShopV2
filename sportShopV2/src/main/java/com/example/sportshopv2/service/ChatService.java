@@ -104,9 +104,9 @@ public class ChatService {
     }
 
 
-    public chatBox findChatBoxByAccountId(Integer accountId) {
-        return chatBoxRepository.findByCreateBy(accountId);
-    }
+//    public chatBox findChatBoxByAccountId(Integer accountId) {
+//        return chatBoxRepository.findByCreateBy(accountId);
+//    }
 
 
     public int getAccountFromUsername(String username) {

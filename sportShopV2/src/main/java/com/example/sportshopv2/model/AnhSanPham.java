@@ -45,7 +45,5 @@ public class AnhSanPham {
             throw new IOException("File ảnh không tồn tại: " + imagePath.toString());
         }
     }
-
-
-    }
+}
 

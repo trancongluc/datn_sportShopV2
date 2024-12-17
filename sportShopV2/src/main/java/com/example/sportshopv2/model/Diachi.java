@@ -1,5 +1,6 @@
 package com.example.sportshopv2.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +36,7 @@ public class Diachi {
 
     @ManyToOne
     @JoinColumn(name = "id_User")
+    @JsonIgnore
     private NguoiDung khachHang;
 
 

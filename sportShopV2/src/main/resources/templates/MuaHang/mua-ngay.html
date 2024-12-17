@@ -479,7 +479,7 @@
 
                 // Định dạng giá tiền
                 const formatCurrency = (value) => {
-                    return new Intl.NumberFormat('vi-VN', {maximumFractionDigits: 0}).format(value);
+                    return new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 0 }).format(value);
                 };
                 maxQuantity = data.soLuong;
 
@@ -511,6 +511,7 @@
                 alert("Không đủ hàng!");
             } else {
                 input.value = currentValue + 1;
+                updateCartLink();
             }
         }
 
@@ -519,6 +520,7 @@
             let currentValue = parseInt(input.value);
             if (currentValue > 1) {
                 input.value = currentValue - 1;
+                updateCartLink();
             }
         }
 

@@ -329,7 +329,6 @@
                 transform: translate(-50%, -40%);
             }
         }
-
         body {
             margin-top: 60px; /* Khoảng cách đủ để bảng không bị che bởi navbar */
         }
@@ -337,7 +336,6 @@
         .table-container {
             margin-top: 20px; /* Tùy chỉnh nếu cần thêm khoảng cách */
         }
-
         nav {
             margin-bottom: 2px; /* Tạo khoảng cách giữa nút và bảng */
             margin-left: 50px; /* Căn chỉnh nút sang bên trái */
@@ -360,7 +358,7 @@
             </a>
             <span>SportShopV2</span>
 
-        </div>
+    </div>
     <div style="margin-left: 50px">
         <a th:href="@{/login/home}">
             <img th:src="@{/images/img_4.png}" width="40" height="40">
@@ -541,7 +539,7 @@
                                     <span th:text="${address.quan}">-</span>
                                     <span th:text="${address.phuong}"></span>
                                     <button type="button" class="btn btn-link text-primary float-end"
-                                            onclick="selectAddress(this)">Chọn
+                                            th:value="${address.id}" onclick="selectAddress(this.value)">Chọn
                                     </button>
                                 </li>
                             </ul>
@@ -563,7 +561,7 @@
             <h2>Thông tin thanh toán</h2>
             <div class="section">
                 <label>Tiền hàng</label>
-                <input id="totalPayment" readonly type="text" value="0 VND"/>
+                <input id="totalPayment" name="tienHangBanDau" readonly type="text" value="0 VND"/>
             </div>
             <div class="section">
                 <label>Mã giảm giá:</label>
@@ -629,16 +627,15 @@
                 <label>Tổng tiền:</label>
                 <input readonly name="amount" id="totalAmount" type="text" value="0 VND"/>
             </div>
-            <button class="btn btn-primary" type="submit" onclick="confirmSubmitOrder()">
-                Xác nhận đặt hàng
-            </button>
-
+            <button class="btn btn-primary " type="submit">Xác nhận đặt hàng</button>
+            <input id="formVoucher" type="hidden">
         </div>
     </div>
 </form>
 <script src="/js/GioHang.js"></script>
 <script>
     // Hàm tính tổng tiền
+    let totalMoney = 0;
     function calculateTotal() {
         // Lấy danh sách các checkbox đã được chọn
         const checkboxes = document.querySelectorAll('input[name="selectedProducts"]:checked');
@@ -667,12 +664,14 @@
         // Sau khi tính tổng tiền cho sản phẩm, tính tổng tiền thanh toán
         const shippingFee = parseFloat(document.getElementById("ship").value.replace(/\./g, '').replace(/,/g, '.')) || 0;
         const discountAmount = parseFloat(document.getElementById("discountAmount").value.replace(/\./g, '').replace(/,/g, '.')) || 0;
-
+        const formVoucher = document.getElementById("formVoucher").value
         // Tính tổng tiền
+
         const totalAmount = total + shippingFee - discountAmount;
 
         // Định dạng lại tổng tiền theo kiểu VND và hiển thị vào ô Tổng tiền
         document.getElementById("totalAmount").value = formatCurrency(totalAmount) + 'VND';
+        totalMoney = total;
         fetchVouchers(total)
     }
 
@@ -747,12 +746,6 @@
 
     // Hàm xử lý chuyển đổi giữa các phương thức thanh toán
     function toggleSwitch(selected, other) {
-        // Nếu chọn 'TraSau', bạn có thể thay đổi cách tính phí vận chuyển
-        if (selected === 'TraSau') {
-            document.getElementById("shippingFee").value = "50000"; // Phí vận chuyển cho "Tra sau"
-        } else {
-            document.getElementById("shippingFee").value = "0"; // Nếu chọn "Giao hang", không có phí vận chuyển
-        }
 
         // Sau khi thay đổi, tính lại tổng tiền
         calculateTotal();
@@ -788,21 +781,11 @@
             checkbox.addEventListener('change', toggleButton);
         });
     });
-</script>
 
-<script>
-    function selectAddress(button) {
-        // Lấy nội dung địa chỉ từ danh sách
-        const address = button.parentElement.querySelector('span').innerText;
-        // Gán địa chỉ vào ô nhập liệu
-        document.querySelector('input[name="address"]').value = address;
-        // Đóng modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('addressModal'));
-        modal.hide();
-    }
-</script>
 
-<script>
+
+
+
     function toggleSwitch(activeId, otherId) {
         // Lấy checkbox đang được thao tác
         const activeCheckbox = document.getElementById(activeId);
@@ -907,27 +890,35 @@
             })
             .then(data => {
                 // Gán giá trị vào input khi có phản hồi từ server
-                document.getElementById('discountAmount').value =
-                    `${new Intl.NumberFormat('vi-VN', {
-                        style: 'decimal',
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 0
-                    }).format(data.discountValue)} VND`;
+                if (data.formVoucher === 'Tiền mặt') {
+                    document.getElementById('discountAmount').value =
+                        `${new Intl.NumberFormat('vi-VN', {
+                            style: 'decimal',
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0
+                        }).format(data.discountValue)} VND`;
+                } else {
+                    document.getElementById('discountAmount').value =
+                        `${new Intl.NumberFormat('vi-VN', {
+                            style: 'decimal',
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0
+                        }).format((totalMoney * data.discountValue) / 100)} VND`;
+                }
 
-                document.getElementById('discountCode').value = `${data.voucherCode}`;
+                document.getElementById('discountCode').value = data.voucherCode;
+                document.getElementById('formVoucher').value = data.formVoucher;
+
+                // Tính toán tổng lại
                 calculateTotal();
 
                 // Sử dụng setTimeout để đảm bảo radio button được cập nhật đúng
                 setTimeout(() => {
                     // Chọn radio button tương ứng với voucher đã chọn
                     document.querySelectorAll('input[name="selectedVoucher"]').forEach(radio => {
-                        if (radio.value === id) {
-                            radio.checked = true; // Đánh dấu radio button là checked
-                        } else {
-                            radio.checked = false; // Bỏ chọn các radio khác
-                        }
+                        radio.checked = radio.value === id; // Đánh dấu radio button là checked
                     });
-                }, 100); // Thử trì hoãn 100ms để đảm bảo DOM đã được cập nhật
+                }, 100); // Trì hoãn 100ms để đảm bảo DOM đã được cập nhật
             })
             .catch(error => console.error("Error:", error));
     }
@@ -971,8 +962,7 @@
         }
     }
 
-</script>
-<script>
+
     document.addEventListener("DOMContentLoaded", function () {
         setTimeout(function () {
             const alertBox = document.querySelector('.custom-alert');
