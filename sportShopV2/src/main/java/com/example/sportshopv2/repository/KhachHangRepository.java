@@ -42,7 +42,8 @@ public interface KhachHangRepository extends JpaRepository<User, Integer> {
 
     // Tìm kiếm người dùng theo email
     Optional<User> findByEmail(String email);
-
+    boolean existsByEmail(String email);
+    boolean existsByPhoneNumber(String phone);
 
 
 

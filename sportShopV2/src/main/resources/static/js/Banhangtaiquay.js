@@ -50,6 +50,7 @@ function selectTab(invoiceId) {
     updateSelectedProductsTable(invoiceId);
 // Cập nhật phương thức giao hàng và địa chỉ từ tabSelection
 }
+
 function updateDeliveryOption() {
     // Lấy tất cả các radio button với name là "deliveryOption"
     const deliveryOptions = document.getElementsByName('deliveryOption');
@@ -235,11 +236,28 @@ function updateSelectedProductsTable(invoiceId) {
 
         // Xử lý sự kiện xóa sản phẩm
         deleteIcon.addEventListener('click', function () {
+            const productId = product.id; // Lấy ID của sản phẩm hiện tại
+
+            // Xóa dòng sản phẩm khỏi bảng
             selectedProduct.remove();
-            productDetailByInvoice[invoiceId] = productDetailByInvoice[invoiceId].filter(p => p.id !== product.id);
+
+            // Xóa ID khỏi mảng selectedProductIds
+            selectedProductIds = selectedProductIds.filter(id => id !== productId);
+
+            // Xóa số lượng của sản phẩm khỏi productQuantities
+            delete productQuantities[productId];
+
+            // Xóa sản phẩm khỏi danh sách productDetailByInvoice
+            productDetailByInvoice[invoiceId] = productDetailByInvoice[invoiceId].filter(p => p.id !== productId);
+
+            // Tính lại tổng tiền và cập nhật giao diện
             tongTien = calculateTotal();
             updateTotal();
+
+            // Kiểm tra danh sách còn lại
+            console.log("Danh sách sản phẩm còn lại:", selectedProductIds);
         });
+
 
         tbody.appendChild(selectedProduct);
         selectedProductIds.push(product.id); // Cập nhật danh sách sản phẩm đã chọn
@@ -411,7 +429,7 @@ document.querySelector('.khachHang').addEventListener('input', async function ()
                     div.addEventListener('click', function () {
                         document.querySelector('.khachHang').value = customer.fullName; // Điền tên vào ô input
                         dropdown.classList.remove('visible'); // Ẩn dropdown
-                        if(idHD == null){
+                        if (idHD == null) {
                             showToast("Vui lòng chọn hóa đơn!")
                             return;
                         }
@@ -421,7 +439,7 @@ document.querySelector('.khachHang').addEventListener('input', async function ()
                         const invoiceId = activeTab ? activeTab.dataset.invoiceId : null; // Lấy ID hóa đơn từ tab đang hoạt động
 
                         idKH = selectedCustomerId;
-                        console.log("Khách hàng ID:", selectedCustomerId,idKH);
+                        console.log("Khách hàng ID:", selectedCustomerId, idKH);
                         if (selectedCustomerId && invoiceId) {
                             fetch(`/ban-hang-tai-quay/thong-tin-kh/${selectedCustomerId}`)
                                 .then(response => response.json())
@@ -437,6 +455,35 @@ document.querySelector('.khachHang').addEventListener('input', async function ()
                                 })
                                 .catch(error => console.error("Lỗi khi lấy thông tin khách hàng:", error));
                         }
+                        fetch(`/ban-hang-tai-quay/diaChiKH?idKH=${selectedCustomerId}`)
+                            .then(response => response.json())
+                            .then(addressList => {
+                                const addressContainer = document.querySelector("#addressModal .list-group");
+                                addressContainer.innerHTML = ""; // Xóa danh sách cũ
+
+                                if (addressList.length > 0) {
+                                    // Tạo danh sách địa chỉ và chèn vào modal
+                                    addressList.forEach(address => {
+                                        const addressItem = `
+                        <li class="list-group-item">
+                            <span>${address.tinh || '-'}</span>
+                            <span>${address.quan || '-'}</span>
+                            <span>${address.phuong || '-'}</span>
+                            <button type="button" class="btn btn-link text-primary float-end" onclick="selectAddress(this, '${address.tinh}', '${address.quan}', '${address.phuong}')">
+                                Chọn
+                            </button>
+                        </li>
+                    `;
+                                        addressContainer.insertAdjacentHTML('beforeend', addressItem);
+                                    });
+                                } else {
+                                    addressContainer.innerHTML = "<li class='list-group-item'>Không có địa chỉ nào</li>";
+                                }
+
+                                // Hiển thị modal
+
+                            })
+                            .catch(error => console.error("Lỗi khi lấy danh sách địa chỉ:", error));
                     });
 
                     dropdown.appendChild(div);
@@ -452,6 +499,43 @@ document.querySelector('.khachHang').addEventListener('input', async function ()
         console.error('Lỗi khi tìm khách hàng:', error);
     }
 });
+
+async function selectAddress(button) {
+    // Lấy các giá trị địa chỉ từ thẻ cha của nút "Chọn"
+    const listItem = button.closest('li');
+    const tinh = listItem.querySelector('span:nth-child(1)').innerText.trim();
+    const quan = listItem.querySelector('span:nth-child(2)').innerText.trim();
+    const phuong = listItem.querySelector('span:nth-child(3)').innerText.trim();
+
+    // Cập nhật các dropdown trong phần deliveryAddress
+    document.getElementById("tinh").innerHTML = `<option value="${tinh}">${tinh}</option>`;
+    document.getElementById("quan").innerHTML = `<option value="${quan}">${quan}</option>`;
+    document.getElementById("phuong").innerHTML = `<option value="${phuong}">${phuong}</option>`;
+
+    // Hiển thị phần deliveryAddress nếu đang ẩn
+    document.getElementById("deliveryAddress").style.display = "block";
+
+    // Đóng modal
+    const addressModal = bootstrap.Modal.getInstance(document.getElementById('addressModal'));
+    addressModal.hide();
+    try {
+        const phiShipChonDC = await tinhPhiShipGHTK(tongTien);
+
+        if (phiShipChonDC !== null) {
+
+            $("#ship").text(phiShipChonDC + ' đ');
+            phiShip = phiShipChonDC;
+            console.log("Phí ship là:", phiShip);
+            updateTotal();
+        } else {
+            alert("Không thể tính phí ship. Vui lòng kiểm tra thông tin địa chỉ!");
+        }
+    } catch (error) {
+        console.error("Lỗi khi tính phí ship:", error);
+    }
+    console.log("Địa chỉ được chọn:", {tinh, quan, phuong});
+}
+
 // Ẩn dropdown khi nhấn ra ngoài
 document.addEventListener('click', function (event) {
     const dropdown = document.getElementById('customerDropdown');
@@ -612,7 +696,7 @@ for (let i = 0; i < productRows.length; i++) {
                     tongTien = calculateTotal();
                     updateTotal();
                 });
-                if(idHD == null){
+                if (idHD == null) {
                     showToast("Vui lòng chọn hóa đơn!")
                     return;
                 }
@@ -713,7 +797,7 @@ async function taoHoaDonCho() {
     const giamGia = 0;
     const status = "Hóa Đơn Chờ"; // Trạng thái mặc định
     const now = new Date();
-    const localTime = now.toLocaleString('en-CA', { hour12: false }).replace(',', ''); // "2024-12-12 14:00:00"
+    const localTime = now.toLocaleString('en-CA', {hour12: false}).replace(',', ''); // "2024-12-12 14:00:00"
     const date = new Date(localTime);
     try {
         const userKH = await fetch(`/khach-hang/thong-tin-kh/14`).then(res => res.json());
@@ -733,7 +817,7 @@ async function taoHoaDonCho() {
             deleted: false,
             id_account: userKH,
             id_staff: emp,
-            createAt:date
+            createAt: date
         };
 
         const response = await fetch('ban-hang-tai-quay/tao-hoa-don', {
@@ -819,11 +903,16 @@ async function capNhatHoaDon() {
         const email = document.getElementById('email').value;
         var status = "Chờ xác nhận"; // Trạng thái mặc định
         const now = new Date();
-        const localTime = now.toLocaleString('en-CA', { hour12: false }).replace(',', ''); // "2024-12-12 14:00:00"
+        const localTime = now.toLocaleString('en-CA', {hour12: false}).replace(',', ''); // "2024-12-12 14:00:00"
         const date = new Date(localTime);
         const soNha = document.getElementById('soNha').value;
         var payStatus = null;
         var soLuongNew;
+        if (selectedProductIds == null || tongTien == 0) {
+            showToast("Vui lòng chọn sản phẩm!")
+            closeModal();
+            return;
+        }
         const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').id === 'tienMat'
             ? 'Tiền Mặt'
             : 'Chuyển Khoản';
@@ -893,7 +982,7 @@ async function capNhatHoaDon() {
             deleted: 0,
             receive_date: receive_date,
         };
-        console.log("HD:",hoaDon);
+        console.log("HD:", hoaDon);
         // Cập nhật hóa đơn
         const updatedHoaDon = await fetch(`ban-hang-tai-quay/update-hoa-don/${idHD}`, {
             method: 'PUT',
@@ -954,8 +1043,8 @@ async function capNhatHoaDon() {
                 // Kiểm tra số lượng và thực hiện giảm số lượng
                 if (voucher.quantity > 0) {
                     voucher.quantity -= 1; // Giảm số lượng voucher
-                    if(voucher.quantity ==0){
-                        voucher.status ="Đã hết";
+                    if (voucher.quantity == 0) {
+                        voucher.status = "Đã hết";
                     }
                 } else {
                     console.warn("Voucher không còn số lượng!");
@@ -980,7 +1069,7 @@ async function capNhatHoaDon() {
                     idVoucher: voucher.id,  // ID voucher
                     idBill: idHD,           // ID hóa đơn
                     before_price: tongTien,  // Giá trị trước khi áp dụng voucher
-                    after_price: tongTien-giamGia,  // Giá trị sau khi áp dụng voucher
+                    after_price: tongTien - giamGia,  // Giá trị sau khi áp dụng voucher
                     valueVoucher: giamGia, // Giá trị voucher
                     create_at: date,
                     create_by: "admin",
@@ -1116,7 +1205,17 @@ async function addCustomer() {
     const customerPhone = document.getElementById("customerPhone").value;
     const customerEmail = document.getElementById("customerEmail").value;
     const date = new Date().toISOString();
-    // Kiểm tra dữ liệu
+
+    // Lấy dữ liệu địa chỉ từ form
+    const provinceId = document.getElementById("tinhadd").value;
+    const provinceName = document.getElementById("tinhadd").options[document.getElementById("tinhadd").selectedIndex].text;
+    const districtId = document.getElementById("quanadd").value;
+    const districtName = document.getElementById("quanadd").options[document.getElementById("quanadd").selectedIndex].text;
+    const wardId = document.getElementById("phuongadd").value;
+    const wardName = document.getElementById("phuongadd").options[document.getElementById("phuongadd").selectedIndex].text;
+    const line = document.getElementById("soNhaadd").value;
+
+    // Kiểm tra dữ liệu khách hàng
     if (!customerName || !customerPhone || !customerEmail) {
         alert("Vui lòng điền đầy đủ thông tin!");
         return;
@@ -1126,74 +1225,110 @@ async function addCustomer() {
         alert("Email không hợp lệ!");
         return;
     }
-    const customerData = {
-        full_name: customerName,
-        phone_number: customerPhone,
-        email: customerEmail,
-        create_at: date,
-        create_by: "Admin",
-        deleted: false
-    };
+
     try {
-        // Gửi dữ liệu đến server (API endpoint của bạn)
+        // Kiểm tra email có tồn tại không
+        const emailExists = await fetch(`/ban-hang-tai-quay/kiem-tra-email?email=${customerEmail}`);
+        const phoneExists = await fetch(`/ban-hang-tai-quay/kiem-tra-phone?phone=${customerPhone}`);
+
+        const emailExistsJson = await emailExists.json();
+        const phoneExistsJson = await phoneExists.json();
+
+        if (emailExistsJson.exists) {
+            showToast("Email này đã tồn tại!");
+            return;
+        }
+
+        if (phoneExistsJson.exists) {
+            showToast("Số điện thoại này đã tồn tại!");
+            return;
+        }
+
+        const customerData = {
+            full_name: customerName,
+            phone_number: customerPhone,
+            email: customerEmail,
+            create_at: date,
+            create_by: "Admin",
+            deleted: false
+        };
+
+        // Gửi dữ liệu khách hàng đến server
         const response = await fetch("/khach-hang/them", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(customerData)
         });
 
         if (response.ok) {
-            const customer = await response.json(); // Giả sử server trả về thông tin khách hàng với id
-            const customerId = customer.id;
-            const userKH = await fetch(`/ban-hang-tai-quay/thong-tin-kh/${customerId}`).then(handleResponse);
+            const customer = await response.json(); // Nhận thông tin khách hàng từ server
+            const customerId = customer.id; // Lấy ID của khách hàng mới
+
+            // Gửi thông tin địa chỉ lên server
+            const addressData = {
+                tinh: provinceName,
+                province_id: provinceId,
+                quan: districtName,
+                district_id: districtId,
+                phuong: wardName,
+                ward_id: wardId,
+                line: line,
+                khachHang: { id: customerId }, // Gửi ID khách hàng
+                create_at: date,
+                create_by: "Admin",
+                deleted: false
+            };
+
+            const addressResponse = await fetch("/ban-hang-tai-quay/add-dia-chi", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(addressData)
+            });
+
+            if (addressResponse.ok) {
+                console.log("Thêm địa chỉ thành công!");
+            } else {
+                console.error("Thêm địa chỉ thất bại!");
+            }
+
+            // Tạo tài khoản khách hàng
             const accountData = {
                 username: customerEmail,
                 role: "Employee",
                 create_at: date,
                 create_by: "Admin",
-                email: customerEmail,  // Dùng email của khách hàng làm tài khoản
+                email: customerEmail,
                 password: "12345",
                 deleted: false,
-                status: "Active",
-                nguoiDung: userKH // Thêm idKhachHang vào thông tin tài khoản
+                status: "Đang hoạt động",
+                nguoiDung: { id: customerId }
             };
 
-            try {
-                // Gửi dữ liệu tài khoản đến server
-                const accountResponse = await fetch("/ban-hang-tai-quay/tao-tai-khoan", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(accountData)
-                });
+            const accountResponse = await fetch("/ban-hang-tai-quay/tao-tai-khoan", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(accountData)
+            });
 
-                if (accountResponse.ok) {
-                    console.log("Thêm tk thành công");
-                } else {
-                    console.log("Thêm tk thất bại");
-                }
-            } catch (error) {
-                console.error("Lỗi khi tạo tài khoản:", error);
+            if (accountResponse.ok) {
+                console.log("Thêm tài khoản thành công!");
+            } else {
+                console.log("Thêm tài khoản thất bại!");
             }
-            // Đóng modal sau khi thêm khách hàng thành công
 
+            // Đóng modal và reset form
             $('#addCustomerModal').modal('hide');
-            // Reset form sau khi thêm khách hàng
-            document.getElementById("addCustomerForm").reset();
             await reloadCustomerComboBox();
-            showToast("Thêm Khách Hàng Thành Công!");
-
+            showToast("Thêm Khách Hàng và Địa Chỉ Thành Công!");
         } else {
             alert("Có lỗi khi thêm khách hàng!");
         }
     } catch (error) {
-        console.error("Lỗi khi thêm khách hàng:", error);
+        console.error("Lỗi hệ thống:", error);
         alert("Lỗi hệ thống, vui lòng thử lại!");
     }
 }
+
 
 //Load combobox KH
 async function reloadCustomerComboBox() {

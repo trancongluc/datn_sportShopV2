@@ -249,6 +249,34 @@
                             <label for="customerEmail" class="form-label">Email</label>
                             <input type="email" class="form-control" id="customerEmail" name="customerEmail" required placeholder="Nhập email">
                         </div>
+                        <div class="css_select_div">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="tinhadd" class="form-label">Tỉnh</label>
+                                    <select class="form-select" id="tinhadd" name="tinh" title="Chọn Tỉnh Thành">
+                                        <option value="0" hidden>Tỉnh Thành</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="quanadd" class="form-label">Huyện</label>
+                                    <select class="form-select" id="quanadd" name="quan" title="Chọn Quận Huyện">
+                                        <option value="0" hidden>Quận Huyện</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="phuongadd" class="form-label">Phường</label>
+                                    <select class="form-select" id="phuongadd" name="phuong" title="Chọn Phường Xã">
+                                        <option value="0" hidden>Phường Xã</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="soNhaadd" class="form-label">Số nhà</label>
+                                    <input type="text" class="form-control" id="soNhaadd" placeholder="Nhập số nhà và địa chỉ chi tiết">
+                                </div>
+                            </div>
+                        </div>
+
+
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -285,7 +313,47 @@
     <script src="/js/Banhangtaiquay.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            //Lấy tỉnh thành
+            $.getJSON('https://esgoo.net/api-tinhthanh/1/0.htm', function (data_tinh) {
+                if (data_tinh.error == 0) {
+                    $.each(data_tinh.data, function (key_tinh, val_tinh) {
+                        $("#tinhadd").append('<option value="' + val_tinh.id + '">' + val_tinh.full_name + '</option>');
+                    });
+                    $("#tinhadd").change(function (e) {
+                        var idtinh = $(this).val();
+                        //Lấy quận huyện
+                        $.getJSON('https://esgoo.net/api-tinhthanh/2/' + idtinh + '.htm', function (data_quan) {
+                            if (data_quan.error == 0) {
+                                $("#quanadd").html('<option value="0">Quận Huyện</option>');
+                                $("#phuongadd").html('<option value="0">Phường Xã</option>');
+                                $.each(data_quan.data, function (key_quan, val_quan) {
+                                    $("#quanadd").append('<option value="' + val_quan.id + '">' + val_quan.full_name + '</option>');
+                                });
+                                //Lấy phường xã
+                                $("#quanadd").change(function (e) {
+                                    var idquan = $(this).val();
+                                    $.getJSON('https://esgoo.net/api-tinhthanh/3/' + idquan + '.htm', function (data_phuong) {
+                                        if (data_phuong.error == 0) {
+                                            $("#phuongadd").html('<option value="0">Phường Xã</option>');
+                                            $.each(data_phuong.data, function (key_phuong, val_phuong) {
+                                                $("#phuongadd").append('<option value="' + val_phuong.id + '">' + val_phuong.full_name + '</option>');
 
+                                            });
+                                        }
+                                    });
+                                });
+
+                            }
+                        });
+                    });
+
+                }
+            });
+
+        });
+    </script>
 </main>
 </body>
 </html>
