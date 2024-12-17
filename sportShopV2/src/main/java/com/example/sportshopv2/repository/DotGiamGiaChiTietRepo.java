@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface DotGiamGiaChiTietRepo extends JpaRepository<DotGiamGiaChiTiet, Integer> {
     List<DotGiamGiaChiTiet> findAllByDotGiamGia_IdAndStatus(Integer idDotGiamgia, String status);
+    List<DotGiamGiaChiTiet> findAllByStatus(String status);
 }

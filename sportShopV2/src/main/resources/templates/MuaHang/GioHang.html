@@ -329,6 +329,7 @@
                 transform: translate(-50%, -40%);
             }
         }
+
         body {
             margin-top: 60px; /* Khoảng cách đủ để bảng không bị che bởi navbar */
         }
@@ -336,11 +337,12 @@
         .table-container {
             margin-top: 20px; /* Tùy chỉnh nếu cần thêm khoảng cách */
         }
+
         nav {
             margin-bottom: 2px; /* Tạo khoảng cách giữa nút và bảng */
-            margin-left: 50px;   /* Căn chỉnh nút sang bên trái */
-            margin-right: auto;  /* Đảm bảo nút thẳng hàng theo nội dung */
-            width: fit-content;  /* Chỉ chiếm không gian cần thiết */
+            margin-left: 50px; /* Căn chỉnh nút sang bên trái */
+            margin-right: auto; /* Đảm bảo nút thẳng hàng theo nội dung */
+            width: fit-content; /* Chỉ chiếm không gian cần thiết */
         }
 
         button.btn-info {
@@ -402,7 +404,7 @@
                     </td>
                     <td>
                         <p th:text="${list.SanPhamChiTiet.idSanPham.tenSanPham}"></p>
-                        <p> Giá tiền: <span style="color: red" th:text="${list.SanPhamChiTiet.gia}"></span></p>
+                        <p> Giá tiền: <span style="color: red" th:text="${list.giaTien}"></span></p>
                         <p>Kích cỡ: <span th:text="${list.SanPhamChiTiet.idKichThuoc.tenKichThuoc}"></span></p>
                     </td>
                     <td class="border px-4 py-2 text-center">
@@ -813,24 +815,33 @@
 
         if (quantityInput) {
             let currentQuantity = parseInt(quantityInput.value, 10);
-            currentQuantity += 1;
 
-            // Gửi yêu cầu cập nhật số lượng đến server
-            updateServerQuantity(id, currentQuantity, idSanPhamChiTiet)
-                .then(response => {
-                    if (response.ok) {
-                        quantityInput.value = currentQuantity;
-                        const totalPrice = currentQuantity * giaTien;
-                        if (totalPriceElement) {
-                            totalPriceElement.textContent = totalPrice.toLocaleString("vi-VN") + ' VND';
+            // Lấy số lượng còn lại từ sản phẩm
+            // const availableQuantity = parseInt(quantityInput.getAttribute('data-available-quantity')); // Giả sử bạn lưu số lượng tồn kho trong data-attribute
+
+            // if (currentQuantity < availableQuantity) {
+                currentQuantity += 1;
+
+                // Gửi yêu cầu cập nhật số lượng đến server
+                updateServerQuantity(id, currentQuantity, idSanPhamChiTiet)
+                    .then(response => {
+                        if (response.ok) {
+                            quantityInput.value = currentQuantity;
+                            const totalPrice = currentQuantity * giaTien;
+                            if (totalPriceElement) {
+                                totalPriceElement.textContent = totalPrice.toLocaleString("vi-VN") + ' VND';
+                            }
+                        } else {
+                            response.json().then(data => alert(data.error));
                         }
-                    } else {
-                        response.json().then(data => alert(data.error));
-                    }
-                })
-                .catch(error => console.error("Error:", error));
+                    })
+                    .catch(error => console.error("Error:", error));
+            // } else {
+            //     alert("Không đủ hàng!");
+            // }
         }
     }
+
 
     function decreaseQuantity(id, giaTien, idSanPhamChiTiet) {
         const quantityInput = document.querySelector(`#quantity-${id}`);
@@ -838,11 +849,11 @@
 
         if (quantityInput) {
             let currentQuantity = parseInt(quantityInput.value, 10);
-            if (currentQuantity > 1) {
+            if (currentQuantity > 1) { // Chỉ giảm nếu số lượng lớn hơn 1
                 currentQuantity -= 1;
 
                 // Gửi yêu cầu cập nhật số lượng đến server
-                updateServerQuantity(id, currentQuantity, idSanPhamChiTiet)
+                updateQuantity(id, currentQuantity, idSanPhamChiTiet)
                     .then(response => {
                         if (response.ok) {
                             quantityInput.value = currentQuantity;
@@ -861,6 +872,13 @@
 
     function updateServerQuantity(id, newQuantity, idSanPhamChiTiet) {
         return fetch('/mua-sam-SportShopV2/update-quantity', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({id: id, soLuong: newQuantity, idSPCT: idSanPhamChiTiet})
+        });
+    }
+    function updateQuantity(id, newQuantity, idSanPhamChiTiet) {
+        return fetch('/mua-sam-SportShopV2/update-quantity-low', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({id: id, soLuong: newQuantity, idSPCT: idSanPhamChiTiet})
