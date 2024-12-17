@@ -716,7 +716,6 @@ public class DatHangController {
         }
 
         List<HoaDon> hoaDon = hdService.getBillsByCustomerId(account_Id);
-        Collections.sort(hoaDon, (o1, o2) -> o2.getCreateAt().compareTo(o1.getCreateAt()));
         model.addAttribute("hoaDon", hoaDon);
 
         Map<Integer, String> anhSPMap = new HashMap<>();
