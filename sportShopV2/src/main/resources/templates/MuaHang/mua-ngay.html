@@ -409,6 +409,62 @@
             }
         }
 
+        // async function fetchProductDetail() {
+        //     try {
+        //         const response = await fetch(`/mua-sam-SportShopV2/product-detail?id=${listProduct.id}&idcolor=${selectedColorId}&idsize=${selectedSizeId}`);
+        //         if (!response.ok) {
+        //             throw new Error("Không tìm thấy sản phẩm chi tiết!");
+        //         }
+        //         const data = await response.json();
+        //
+        //         // Định dạng giá tiền
+        //         const formatCurrency = (value) => {
+        //             return new Intl.NumberFormat('vi-VN', {maximumFractionDigits: 0}).format(value);
+        //         };
+        //         maxQuantity = data.soLuong;
+        //         // Hiển thị giá sản phẩm
+        //         const priceElement = document.getElementById("price");
+        //         if (data.giaSauGiam == null) {
+        //             priceElement.innerText = formatCurrency(data.gia) + "VND"; // Hiển thị giá gốc nếu không có khuyến mãi
+        //         } else {
+        //             priceElement.innerText = formatCurrency(data.giaSauGiam) + "VND"; // Hiển thị giá sau giảm nếu có
+        //         }
+        //     } catch (error) {
+        //         console.error('Lỗi khi lấy dữ liệu sản phẩm chi tiết:', error);
+        //     }
+        // }
+
+
+        function increaseValue() {
+            const input = document.getElementById("quantity");
+            let currentValue = parseInt(input.value);
+            if (isNaN(currentValue)) {
+                alert("Giá trị số lượng không hợp lệ!");
+                return;
+            }
+            if (currentValue + 1 > maxQuantity) {
+                alert("Không đủ hàng!");
+            } else {
+                input.value = currentValue + 1;
+                console.log("Số lượng sau khi tăng:", input.value);
+                updateCartLink();
+            }
+        }
+
+        function decreaseValue() {
+            const input = document.getElementById("quantity");
+            let currentValue = parseInt(input.value);
+            if (isNaN(currentValue)) {
+                alert("Giá trị số lượng không hợp lệ!");
+                return;
+            }
+            if (currentValue > 1) {
+                input.value = currentValue - 1;
+                console.log("Số lượng sau khi giảm:", input.value);
+                updateCartLink();
+            }
+        }
+
         async function fetchProductDetail() {
             try {
                 const response = await fetch(`/mua-sam-SportShopV2/product-detail?id=${listProduct.id}&idcolor=${selectedColorId}&idsize=${selectedSizeId}`);
@@ -419,18 +475,32 @@
 
                 // Định dạng giá tiền
                 const formatCurrency = (value) => {
-                    return new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 0 }).format(value);
+                    return new Intl.NumberFormat('vi-VN', {maximumFractionDigits: 0}).format(value);
                 };
-
-                // Cập nhật giá sản phẩm với định dạng
-                document.getElementById("price").innerText = formatCurrency(data.gia) + 'VND';
-
-                // Cập nhật số lượng tối đa
                 maxQuantity = data.soLuong;
+
+                // Hiển thị giá sản phẩm
+                const priceElement = document.getElementById("price");
+                if (data.giaSauGiam == null) {
+                    priceElement.innerText = formatCurrency(data.gia) + "VND"; // Hiển thị giá gốc nếu không có khuyến mãi
+                } else {
+                    priceElement.innerText = formatCurrency(data.giaSauGiam) + "VND"; // Hiển thị giá sau giảm nếu có
+                }
+
+                // Update the cart link with the correct price after fetch
+                updateCartLink(data.giaSauGiam || data.gia);
             } catch (error) {
                 console.error('Lỗi khi lấy dữ liệu sản phẩm chi tiết:', error);
             }
         }
+<<<<<<< HEAD
+        function updateCartLink() {
+            const input = document.getElementById("quantity");
+            let currentValue = parseInt(input.value);
+            if (isNaN(currentValue) || currentValue <= 0) {
+                alert("Giá trị số lượng không hợp lệ!");
+                return;
+=======
 
         function increaseValue() {
             const input = document.getElementById("quantity");
@@ -454,11 +524,20 @@
             const input = document.getElementById("quantity");
             if (input.value > maxQuantity) {
                 console.error('Số lượng đã đạt tối đa!');
+>>>>>>> f212490bb408da85d920c4d974ae1ace081bd0ae
             }
-            const soLuong = input.value; // Lấy giá trị hiện tại của số lượng
+            const soLuong = currentValue;
+            console.log("Giá trị số lượng (soLuong):", soLuong);
+
+            // Lấy giá sản phẩm từ phần tử #price
+            const priceElement = document.getElementById("price");
+            const giaSanPham = priceElement.innerText || priceElement.textContent; // Dùng innerText hoặc textContent thay vì value
+            console.log("Giá sản phẩm:", giaSanPham);
+
             const link = document.querySelector('.add-to-cart-link'); // Đảm bảo đúng selector
             if (selectedColorId && selectedSizeId && listProduct.id) {
-                const href = `/mua-sam-SportShopV2/gio-hang?id=${listProduct.id}&idcolor=${selectedColorId}&idsize=${selectedSizeId}&soLuong=${soLuong}`;
+                const href = `/mua-sam-SportShopV2/gio-hang?id=${listProduct.id}&idcolor=${selectedColorId}&idsize=${selectedSizeId}&soLuong=${soLuong}&giaSanPham=${giaSanPham}`;
+                console.log("Link giỏ hàng:", href);  // Kiểm tra đường dẫn
                 link.setAttribute('href', href);
             }
         }
@@ -485,6 +564,9 @@
     </script>
 </head>
 <body>
+<div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+    <p th:text="${errorMessage}"></p>
+</div>
 <div class="container" th:object="${listProduct}">
     <div class="product-header">
         <h1 th:text="${listProduct.sanPham.tenSanPham}">
@@ -509,10 +591,9 @@
         </div>
     </div>
     <div class="product-price" id="price" th:text="${price}">
-        <del>
-            ₫1.500.000
-        </del>
+
     </div>
+
     <input type="hidden" id="productId" value="[[${product.id}]]">
     <div class="product-content">
         <div class="product-images" th:each="product, index:  ${listProduct}">

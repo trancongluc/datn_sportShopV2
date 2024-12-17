@@ -734,7 +734,8 @@
 
             <ul class="dropdown-menu dropdown-menu-end">
                 <li><a class="dropdown-item" th:href="@{/login/home}">Login</a></li>
-                <li><a class="dropdown-item" th:href="@{/mua-sam-SportShopV2/accountDetail}">Thông tin tài khoản</a></li>
+                <li><a class="dropdown-item" th:href="@{/mua-sam-SportShopV2/accountDetail}">Thông tin tài khoản</a>
+                </li>
                 <li><a class="dropdown-item" href="#">Something else here</a></li>
             </ul>
         </div>
@@ -869,8 +870,16 @@
                  th:src="${imageUrls[index.index]}"
             />
             <h3 th:text="${spct.sanPham.tenSanPham}"></h3>
+            <div class="price"
+                 th:text="${#numbers.formatDecimal(listspct[index.index].gia, 0, 'DEFAULT', 0, 'POINT') + 'VND'}"></div>
+            <div th:if="${promotionMap[spct.id] != null}">
+                <p>Khuyến mãi:
+                    <span th:text="'Chỉ còn: ' + ${#numbers.formatDecimal(promotionMap[spct.id], 0, 'DEFAULT', 0, 'POINT') + 'VND' ?: 'Không có khuyến mãi'}"></span>
+                </p>
+                <p>Debug: <span th:text="${promotionMap}"></span></p>
+            </div>
             <p th:text="${listspct[index.index].moTa}"><br>
-            <div class="price" th:text="${#numbers.formatDecimal(listspct[index.index].gia, 0, 'DEFAULT', 0, 'POINT') + 'VND'}"></div>
+
             <div class="rating">
                 <span class="star" data-value="1">★</span>
                 <span class="star" data-value="2">★</span>
@@ -951,7 +960,9 @@
         </div>
     </div>
 </div>
-
+<div th:if="${successMessage}" class="alert alert-success" role="alert">
+    <p th:text="${successMessage}"></p>
+</div>
 <!-- Nút mở chat -->
 <button id="openChatButton">
     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-chat-dots"
